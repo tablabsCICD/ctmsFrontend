@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
+
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)),
       home:  EmloyeeListScreen(),
     );
