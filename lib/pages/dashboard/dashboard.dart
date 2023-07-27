@@ -26,7 +26,7 @@ class _DashboardState extends State<Dashboard> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(),
+          HeaderWidget(title: "Dashboard",),
           Expanded(
             child: SingleChildScrollView(
               child: Row(
@@ -47,7 +47,7 @@ class _DashboardState extends State<Dashboard> {
                               height: 20,
                             ),
                           },
-                          RecruitmentDataWidget(),
+                          RecruitmentDataWidget(title: 'Pending Recruitment',),
                         ],
                       ),
                     ),

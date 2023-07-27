@@ -8,6 +8,9 @@ import '../../../common/app_colors.dart';
 import '../../../common/app_responsive.dart';
 
 class HeaderWidget extends StatefulWidget {
+ final String title;
+
+  const HeaderWidget({Key? key, required this.title}) : super(key: key);
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
 }
@@ -30,7 +33,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               },
             ),
           Text(
-            "Dashboard",
+            widget.title,
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,

@@ -64,10 +64,12 @@ class _AddEmployeeState extends State<AddEmployee> {
                 vertical: 10,
                 horizontal: 20,
               ),
-              child: Text(
-                "Submit",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: AppColor.black),
+              child: Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: AppColor.black),
+                ),
               ),
             ),
           )

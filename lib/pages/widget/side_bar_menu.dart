@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/route/app_routes.dart';
 
 class SideBar extends StatefulWidget {
   @override
@@ -30,30 +31,42 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               title: "Dashboard",
               icon: "assets/menu_home.png",
-              press: () {},
+              press: () {
+                Navigator.restorablePushReplacementNamed(context,AppRoutes.home);
+
+              },
             ),
             DrawerListTile(
-              title: "Recruitment",
+              title: "Employee",
               icon: "assets/menu_recruitment.png",
-              press: () {},
+              press: () {
+                Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
+              },
             ),
             DrawerListTile(
-              title: "Onboarding",
+              title: "Leads",
               icon: "assets/menu_onboarding.png",
-              press: () {},
+              press: () {
+                Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
+              },
             ),
             DrawerListTile(
               title: "Reports",
               icon: "assets/menu_report.png",
-              press: () {},
+              press: () {
+
+                Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+              },
             ),
             DrawerListTile(
-              title: "Calendar",
+              title: "Profile",
               icon: "assets/menu_calendar.png",
-              press: () {},
+              press: () {
+                Navigator.restorablePushReplacementNamed(context, AppRoutes.profile);
+              },
             ),
             DrawerListTile(
-              title: "Settings",
+              title: "Log Out",
               icon: "assets/menu_settings.png",
               press: () {},
             ),
@@ -67,10 +80,10 @@ class _SideBarState extends State<SideBar> {
 }
 
 class DrawerListTile extends StatelessWidget {
-  final String title, icon;
-  final VoidCallback press;
+  final String? title, icon;
+  final VoidCallback? press;
 
-  const DrawerListTile({Key key, this.title, this.icon, this.press})
+  const DrawerListTile({Key? key, this.title, this.icon, this.press})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -78,12 +91,12 @@ class DrawerListTile extends StatelessWidget {
       onTap: press,
       horizontalTitleGap: 0.0,
       leading: Image.asset(
-        icon,
+        icon!,
         color: AppColor.white,
         height: 16,
       ),
       title: Text(
-        title,
+        title!,
         style: TextStyle(color: AppColor.white),
       ),
     );

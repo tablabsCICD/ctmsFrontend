@@ -1,144 +1,63 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/app_colors.dart';
 
 class AddLead extends StatefulWidget {
-  const AddLead({Key key}) : super(key: key);
-
   @override
-  State<AddLead> createState() => _AddLeadState();
+  _AddLeadeState createState() => _AddLeadeState();
 }
 
-class _AddLeadState extends State<AddLead> {
-  // Variables to store the form field values
-  String leadName = '';
-  String leadEmail = '';
-  String phoneNumber = '';
-  String description = '';
-  String acquireFrom = '';
-
-  // List of options for the 'Acquire From' dropdown
-  List<String> acquireFromOptions = [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-    'Option 4',
-  ];
-  List<String> additionalDropdownOptions = [
-    'Digvijay',
-    'Kishor',
-  ];
-
-  // Selected option for the additional dropdown
-  String selectedAdditionalDropdownOption = '';
-
+class _AddLeadeState extends State<AddLead> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _addLeadController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-        decoration: BoxDecoration(
-        color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-    padding: EdgeInsets.all(10),
-      child: addLeadForm(),);
-  }
-
-
-  Widget addLeadForm() {
-    // String? _selectedAssignee;
-    final _formKey = GlobalKey<FormState>();
-
-    return Form(
-      key: _formKey,
-      child:
-      Column(
+    return Container(
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(child: Text(
-            "Add New Lead",
+            "Add Lead Name",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: AppColor.black,
               fontSize: 22,
             ),
           )),
-          // Lead name field
-          textFieldWithBorder(
-            labelText: 'Lead Name',
-            onChanged: (value) {
-              setState(() {
-                leadName = value;
-              });
-            },
-          ),
-          SizedBox(height: 15),
-          textFieldWithBorder(
-            labelText: 'Lead Email',
-            onChanged: (value) {
-              setState(() {
-                leadEmail = value;
-              });
-            },
-          ),
-          SizedBox(height: 15),
-          textFieldWithBorder(
-            labelText: 'Phone Number',
-            onChanged: (value) {
-              setState(() {
-                phoneNumber = value;
-              });
-            },
-          ),
-          SizedBox(height: 15),
-          // Description field
-          textFieldWithBorder(
-            labelText: 'Description',
-            onChanged: (value) {
-              setState(() {
-                description = value;
-              });
-            },
-          ),
-          SizedBox(height: 15),
-          // Acquire From dropdown field
-          InputDecorator(
-            decoration: InputDecoration(
-              labelText: 'Acquire From',
-              labelStyle: TextStyle(color: Colors.grey),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 2.0, color: Colors.black),),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: BorderSide(
-                  color: Colors.blue,
-                  width: 2.0,
-                ),
+          SizedBox(height: 16),
+          _buildTextField('Name of Lead', _nameController),
+          SizedBox(height: 16),
+          _buildTextField('Email', _emailController),
+          SizedBox(height: 16),
+          _buildTextField('Phone', _phoneController),
+          SizedBox(height: 16),
+          _buildTextField('Discription', _phoneController),
+          /*Row(
+            children: [
+              Expanded(
+                child: _buildTextField('Email', _emailController),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: selectedAdditionalDropdownOption.isNotEmpty
-                    ? selectedAdditionalDropdownOption
-                    : null,
-                isDense: true,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedAdditionalDropdownOption = newValue;
-                  });
-                },
-                items: additionalDropdownOptions.map((option) {
-                  return DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-                  );
-                }).toList(),
+              SizedBox(width: 16),
+              Expanded(
+                child: _buildTextField('Phone', _phoneController),
               ),
-            ),
-
-          ),
-          SizedBox(height: 15),
+            ],
+          ),*/
+          SizedBox(height: 16),
+          _buildTextField('Add Lead', _addLeadController),
+          SizedBox(height: 16),
+          /*ElevatedButton(
+            onPressed: _submitForm,
+            child: Center(child: Text('Submit')),
+          ),*/
           InkWell(
-            onTap: (){},
+            onTap: _submitForm,
             child: Container(
               decoration: BoxDecoration(
                   color: AppColor.yellow,
@@ -147,10 +66,12 @@ class _AddLeadState extends State<AddLead> {
                 vertical: 10,
                 horizontal: 20,
               ),
-              child: Text(
-                "Submit",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: AppColor.black),
+              child: Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: AppColor.black),
+                ),
               ),
             ),
           )
@@ -159,37 +80,33 @@ class _AddLeadState extends State<AddLead> {
     );
   }
 
-  Widget textFieldWithBorder({
-    String labelText,
-    ValueChanged<String> onChanged,
-  }) {
-    return TextField(
-      onChanged: onChanged,
-
-
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: 'Enter $labelText',
-        labelStyle:TextStyle(
-          color: Colors.grey,
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(8),
       ),
-
-    enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(width: 2.0, color: Colors.black),),
-
-
-
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8.0),
-          ),
-          borderSide: BorderSide(
-            color: Colors.blue,
-            width: 2.0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            labelText: label,
+            labelStyle: TextStyle(color: Colors.black),
           ),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
       ),
     );
+  }
+
+  void _submitForm() {
+    String name = _nameController.text;
+    String email = _emailController.text;
+    String phone = _phoneController.text;
+    String addLead = _addLeadController.text;
+
+    // Here you can perform any logic with the data obtained from the form
+    // For example, you can send this data to a server or save it locally.
   }
 }

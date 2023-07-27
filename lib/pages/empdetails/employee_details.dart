@@ -7,7 +7,7 @@ import '../dashboard/widget/header_widget.dart';
 import '../dashboard/widget/notification_card_widget.dart';
 import '../dashboard/widget/profile_card_widget.dart';
 import '../dashboard/widget/recruitment_data_widget.dart';
-import '../leaddeatils/add_lead.dart';
+
 import 'add_employee.dart';
 import 'count_notification.dart';
 
@@ -32,7 +32,7 @@ class _EmpDashboard extends State<EmpDashboard> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(),
+          HeaderWidget(title: "Employee Data",),
           Expanded(
             child: SingleChildScrollView(
               child: Row(
@@ -47,7 +47,14 @@ class _EmpDashboard extends State<EmpDashboard> {
                           SizedBox(
                             height: 20,
                           ),
-                          RecruitmentDataWidget(),
+                          RecruitmentDataWidget(title: 'All Employee',),
+                          if (AppResponsive.isMobile(context)) ...{
+                            AddEmployee(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          },
+
                         ],
                       ),
                     ),
@@ -58,10 +65,11 @@ class _EmpDashboard extends State<EmpDashboard> {
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           children: [
-                            AddEmployee(),
+                           AddEmployee(),
                             SizedBox(
                               height: 20,
                             ),
+
                           ],
                         ),
                       ),

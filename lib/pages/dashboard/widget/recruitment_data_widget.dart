@@ -3,6 +3,9 @@ import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 
 class RecruitmentDataWidget extends StatefulWidget {
+  final String title;
+
+  const RecruitmentDataWidget({Key? key, required this.title}) : super(key: key);
   @override
   _RecruitmentDataWidgetState createState() => _RecruitmentDataWidgetState();
 }
@@ -20,7 +23,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "All Employees",
+                widget.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppColor.black,
