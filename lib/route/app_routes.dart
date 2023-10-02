@@ -8,5 +8,10 @@ class AppRoutes{
   static const report="/report";
 
   static const profile="/profile";
+  static const entry="/entryScreen";
+  static const meeting="/meeting";
+
+
+
 
 }

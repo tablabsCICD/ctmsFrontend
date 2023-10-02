@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 import '../common/app_colors.dart';
 
@@ -10,10 +12,23 @@ class ProfileInfo extends StatefulWidget {
 }
 
 class _ProfileInfoState extends State<ProfileInfo> {
+  late LoginDeatils loginDeatils;
+  bool isload=true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    inCallData();
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return  SingleChildScrollView(
-        child: Container(
+        child: isload?Center(
+          child: CircularProgressIndicator(),
+
+        ):Container(
           height: MediaQuery.of(context).size.height,
             margin: EdgeInsets.all(10),
             padding: EdgeInsets.all(10),
@@ -40,11 +55,11 @@ class _ProfileInfoState extends State<ProfileInfo> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Stefeni Albert",
+                         loginDeatils.data!.firstName!+" "+loginDeatils.data!.lastName!,
                           style: TextStyle(fontSize: 32),
                         ),
                         Text(
-                          "Project Manger",
+                          loginDeatils!.data!.role!.name!,
                           style: TextStyle(fontSize: 19, color: Colors.grey),
                         ),
                         SizedBox(
@@ -98,7 +113,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                                   width:
                                   MediaQuery.of(context).size.width - 268,
                                   child: Text(
-                                    "House # 2, Road # 5, Green Road Dhanmondi, India, India",
+                                    loginDeatils!.data!.address!,
                                     style: TextStyle(color: Colors.grey),
                                   ))
                             ],
@@ -118,7 +133,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                "Todays Hours",
+                                "Contact Info",
                                 style: TextStyle(
                                     color: Colors.black87.withOpacity(0.7),
                                     fontSize: 20),
@@ -130,8 +145,15 @@ class _ProfileInfoState extends State<ProfileInfo> {
                                   width:
                                   MediaQuery.of(context).size.width - 268,
                                   child: Text(
-                                    '''Monday - Friday
-Open till 7 Pm''',
+                                   "Email : ${loginDeatils!.data!.emailId!}",
+                                    style: TextStyle(color: Colors.grey),
+                                  )),
+
+                              Container(
+                                  width:
+                                  MediaQuery.of(context).size.width - 268,
+                                  child: Text(
+                                    "Mobile : ${loginDeatils!.data!.mobileNumber!}",
                                     style: TextStyle(color: Colors.grey),
                                   ))
                             ],
@@ -146,6 +168,16 @@ Open till 7 Pm''',
           ),
         ),
     );
+  }
+
+
+  void inCallData()async {
+
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+    isload=false;
+    setState(() {
+
+    });
   }
 }
 
@@ -171,4 +203,7 @@ class IconTile extends StatelessWidget {
       ),
     );
   }
+
+
+
 }

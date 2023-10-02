@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'widget/calender_widget.dart';
 import 'widget/header_widget.dart';
@@ -17,12 +18,12 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColor.bgColor,
-        borderRadius: BorderRadius.circular(30),
-      ),
+      // margin: EdgeInsets.all(10),
+      // padding: EdgeInsets.all(10),
+      // decoration: BoxDecoration(
+      //   color: AppColor.white,
+      //   borderRadius: BorderRadius.circular(30),
+      // ),
       child: Column(
         children: [
           /// Header Part
@@ -37,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Container(
                       child: Column(
                         children: [
-                          NotificationCardWidget(),
+                         // NotificationCardWidget(),
                           SizedBox(
                             height: 20,
                           ),
@@ -57,7 +58,11 @@ class _DashboardState extends State<Dashboard> {
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
+
                           children: [
+                            SizedBox(
+                              height: 20,
+                            ),
                             CalendarWidget(),
                             SizedBox(
                               height: 20,
@@ -75,4 +80,9 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+
+
+
+
+
 }

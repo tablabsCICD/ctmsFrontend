@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/entry_screen.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
+import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
+import '../pages/aut/login.dart';
 import '../pages/empdetails/employee_list_dashboard.dart';
-
-import '../pages/leaddeatils/add_lead.dart';
 import '../pages/leaddeatils/lead_dashboard.dart';
 import '../pages/report/report_dashbord.dart';
+import '../pages/start/start_home.dart';
+import '../pages/widget/employee_dialog.dart';
 import '../profile/profile_dashbord.dart';
 import 'app_routes.dart';
 
@@ -15,6 +18,12 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.home:
         return buildRoute(HomePage(), settings: settings);
+
+      case AppRoutes.login:
+        return buildRoute(LoginScreen(), settings: settings);
+
+      case AppRoutes.entry:
+        return buildRoute(EntryScreen(), settings: settings);
 
       case AppRoutes.employee_dashbord:
         return buildRoute(EmloyeeListScreen(), settings: settings);
@@ -25,6 +34,9 @@ class RouteGenerator {
         return buildRoute(ReportDashboard(), settings: settings);
  case AppRoutes.profile:
         return buildRoute(ProfileDashbord(), settings: settings);
+
+ case AppRoutes.meeting:
+        return buildRoute(CreateMeetingDashbord(), settings: settings);
 
         default:
         return _errorRoute();

@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/request/save_emp.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 
 import '../../common/app_colors.dart';
 
@@ -9,6 +14,7 @@ class AddEmployee extends StatefulWidget {
 
 class _AddEmployeeState extends State<AddEmployee> {
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _lastnameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addLeadController = TextEditingController();
@@ -31,7 +37,9 @@ class _AddEmployeeState extends State<AddEmployee> {
             ),
           )),
           SizedBox(height: 16),
-          _buildTextField('Name', _nameController),
+          _buildTextField('Frist Name', _nameController),
+          SizedBox(height: 16),
+          _buildTextField('Last Name', _lastnameController),
           SizedBox(height: 16),
           _buildTextField('Email', _emailController),
           SizedBox(height: 16),
@@ -48,7 +56,7 @@ class _AddEmployeeState extends State<AddEmployee> {
             ],
           ),*/
           SizedBox(height: 16),
-          _buildTextField('Add Employee', _addLeadController),
+          _buildTextField('Address', _addLeadController),
           SizedBox(height: 16),
           /*ElevatedButton(
             onPressed: _submitForm,
@@ -98,13 +106,28 @@ class _AddEmployeeState extends State<AddEmployee> {
     );
   }
 
-  void _submitForm() {
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String phone = _phoneController.text;
-    String addLead = _addLeadController.text;
+  void _submitForm() async{
+    String name = _nameController.text.toString();
+    String email = _emailController.text.toString();
+    String phone = _phoneController.text.toString();
+    String addLead = _addLeadController.text.toString();
+    String lastName=_lastnameController.text.toString();
+    SaveEmploye saveEmploye=SaveEmploye();
+    saveEmploye.firstName=name;
+    saveEmploye.lastName=lastName;
+    saveEmploye.os="Web";
+    saveEmploye.emailId=email;
+    saveEmploye.address=addLead;
+    saveEmploye.mobileNumber=phone;
+    saveEmploye.role=2;
 
-    // Here you can perform any logic with the data obtained from the form
-    // For example, you can send this data to a server or save it locally.
+    Dio dio=Dio();
+    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()));
+    if(response.statusCode==200){
+      print('The Employee Added Successfully ');
+    }
+
   }
+
+
 }
