@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/pages/dashboard/widget/calender_widget.dart';
+import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../common/app_colors.dart';
@@ -28,53 +31,98 @@ class _CreateMail extends State<CreateMail>{
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.all(10),
-            width: 522.w,
-            height: 67.h,
-            decoration: ShapeDecoration(
-              color: Color(0xFF102C54),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-              ),
+            height: 848.h,
+            width: 361.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white
             ),
-
-            child: Row(
+            child: Column(
               children: [
-                Text(
-                  'Create email',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.sp,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w300,
-                  ),
+                SizedBox(height: 500.h,),
+                SizedBox(
+                  height: 86.h,
+                  width: 308.w,
+                  child: ElevatedButton(
+                      onPressed: (){},
+                      style: ElevatedButton.styleFrom(
+                          primary: ThemeColor.theme_blue,
+                          onPrimary: Colors.white
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_circle,size:35,),
+                          SizedBox(width: 6.w,),
+                          TextView(
+                            title: "Create Mail",
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w400, color: Colors.white,
+                          ),
+                        ],
+                      )),
                 )
-
               ],
             ),
-
           ),
+          SizedBox(width: 48.w,),
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                width: 522.w,
+                height: 67.h,
+                decoration: ShapeDecoration(
+                  color: Color(0xFF102C54),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                  ),
+                ),
 
-          Container(
-            width: 522.w,
-            height: 500.h,
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                child: Row(
+                  children: [
+                    Text(
+                      'Create email',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w300,
+                      ),
+                    )
 
+                  ],
+                ),
 
               ),
+              Container(
+                width: 522.w,
+                height: 800.h,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
 
-            ),
-            child: createReminder(context),
-          )
+
+                  ),
+
+                ),
+                child: createReminder(context),
+              )
+            ],
+          ),
+          SizedBox(width: 60.w,),
+          Container(
+              height: 439.h,
+              width: 382.w,
+              child: CalendarWidget()),
         ],
       ),
     );
@@ -84,8 +132,8 @@ class _CreateMail extends State<CreateMail>{
 
   createReminder(context){
     return Container(
-      width: 600.h,
-      height: 500.h,
+      width: 522.w,
+      height: 848.h,
       padding: EdgeInsets.all(20),
 
       decoration: ShapeDecoration(

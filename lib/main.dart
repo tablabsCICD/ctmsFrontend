@@ -4,6 +4,7 @@ import 'package:flutter_hr_management/controllers/menu_controller.dart';
 import 'package:flutter_hr_management/pages/empdetails/employee_details.dart';
 
 import 'package:flutter_hr_management/pages/empdetails/employee_list_dashboard.dart';
+import 'package:flutter_hr_management/pages/widget/custom_scroll_behavior.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/route/routes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
       builder: (context , child) {
         return MaterialApp(
               title: 'TKD CRM',
+              scrollBehavior: MyCustomScrollBehavior(),
               theme: ThemeData(
                 primarySwatch: Colors.blue,
                 fontFamily: GoogleFonts.poppins().fontFamily

@@ -14,20 +14,38 @@ class LeadReminder extends StatelessWidget{
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 220.w,
-            child: Text(
-              'Reminder',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 30.sp,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w500,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 220.w,
+                child: Text(
+                  'Reminder',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
+              Container(
+                width: 100.w,
+                child: Text(
+                  'View All',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 20.h,),
-          Row(
+          listTile(context),
+         /* Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,7 +56,7 @@ class LeadReminder extends StatelessWidget{
                   width: 400.w,
                   child: CalendarWidget()),
             ],
-          ),
+          ),*/
 
         ],
 
@@ -50,7 +68,7 @@ class LeadReminder extends StatelessWidget{
 
   listTile(context){
     return Container(
-      width: MediaQuery.of(context).size.width-600.h,
+     // width: MediaQuery.of(context).size.width-600.h,
       height: 124.h,
       decoration: ShapeDecoration(
         color: Colors.white,
@@ -70,7 +88,7 @@ class LeadReminder extends StatelessWidget{
             'You have meeting with vivek within 1hr',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 20,
+              fontSize: 20.sp,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400,
             ),
@@ -80,7 +98,7 @@ class LeadReminder extends StatelessWidget{
             'Today, 01:00 PM ',
             style: TextStyle(
               color: Color(0xFF858585),
-              fontSize: 16,
+              fontSize: 16.sp,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w300,
             ),

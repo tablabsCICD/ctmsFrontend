@@ -5,11 +5,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/post_lead.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
+import 'package:flutter_hr_management/pages/widget/filter_button.dart';
+import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/date.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
@@ -17,6 +23,7 @@ import '../../model/response/lead_list.dart';
 import '../../utils/constant.dart';
 import '../../utils/sharepreferences.dart';
 import '../dashboard/widget/header_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LeadDashboard extends StatefulWidget {
   @override
@@ -39,6 +46,25 @@ class _LeadDashboard extends State<LeadDashboard> {
   bool isLoad=false;
   late EmpData empData =EmpData();
 
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog( // <-- SEE HERE
+          title: const Text(''),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              height: 1024.h,
+              width: 408.w,
+              child: addLead()
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,19 +76,80 @@ class _LeadDashboard extends State<LeadDashboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
+
       decoration: BoxDecoration(
         color: AppColor.bgColor,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(0),
       ),
       child: Column(
         children: [
           /// Header Part
           HeaderWidget(title: "Lead Data",),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Text(
+                  'Lead Data',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily:GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w600,
+                    height: 0,
+                  ),
+                ),
+                Spacer(),
+                Row(
+                  children: [
+                    filterIconButton(),
+                    SizedBox(width: 27.w,),
+                    SizedBox(
+                      height: 58.h,
+                      width: 180.w,
+                      child: ElevatedButton(
+                          onPressed: (){
+                            _showAlertDialog();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: ThemeColor.theme_blue,
+                            onPrimary: Colors.white
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_circle,size:18,),
+                              SizedBox(width: 6.w,),
+                              TextView(
+                               title: "Add Lead",
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400, color: Colors.white,
+                              ),
+                            ],
+                          )),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                leadCountCard('Total Lead','700','',true,Colors.green.shade50),
+                SizedBox(width: 32.w,),
+                leadCountCard('Converted','300','',false,Colors.red.shade50),
+                SizedBox(width: 32.w,),
+                leadCountCard('Rejected','200','',false,Colors.orange.shade50),
+                SizedBox(width: 32.w,),
+                leadCountCard('Pending','200','',false,Colors.blue.shade50),
+              ],
+            ),
+          ),
           Expanded(
             child: SingleChildScrollView(
-              child: Row(
+              child:/* Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -105,7 +192,8 @@ class _LeadDashboard extends State<LeadDashboard> {
                       ),
                     ),
                 ],
-              ),
+              ),*/
+              leadList()
             ),
           ),
         ],
@@ -122,28 +210,34 @@ class _LeadDashboard extends State<LeadDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Text(
-            "Add Lead Name",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColor.black,
-              fontSize: 22,
-            ),
-          )),
+          Row(
+            children: [
+              IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+              Text(
+                "Add Lead",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ],
+          ),
+          Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
           SizedBox(height: 16),
-          _buildTextField('Company Name', _nameController),
+          _buildTextField('Company Name','Please enter your first name', _nameController),
           SizedBox(height: 16),
-          _buildTextField('Email', _emailController),
+          _buildTextField('Company Name','Please enter your last name', _nameController),
           SizedBox(height: 16),
-          _buildTextField('Phone', _phoneController),
+          _buildTextField('Email','Please enter your email ID', _emailController),
+          SizedBox(height: 16),
+          _buildTextField('Phone','Please enter your phone number', _phoneController),
           SizedBox(height: 16),
          // _buildTextField('Name Coordinator', _coordinatorController),
-          _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
+       //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
           SizedBox(height: 16),
-          _buildTextField('Source Of Lead', _sourceofleadController),
-          SizedBox(height: 16), _buildTextField('Address', _addressController),
-          SizedBox(height: 16),
-          SizedBox(height: 16), _buildTextField('typeOfBusiness', _typeOfBusinessController),
+          _buildTextField('Source Of Lead', 'Please select',_sourceofleadController),
+
           SizedBox(height: 16),
 
           /*ElevatedButton(
@@ -154,8 +248,8 @@ class _LeadDashboard extends State<LeadDashboard> {
             onTap: _submitForm,
             child: Container(
               decoration: BoxDecoration(
-                  color: AppColor.yellow,
-                  borderRadius: BorderRadius.circular(100)),
+                  color: ThemeColor.theme_blue,
+                  borderRadius: BorderRadius.circular(5)),
               padding: EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 20,
@@ -164,7 +258,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                 child: Text(
                   "Submit",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.black),
+                      fontWeight: FontWeight.bold, color: AppColor.white),
                 ),
               ),
             ),
@@ -174,7 +268,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, String hint,TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
@@ -187,7 +281,9 @@ class _LeadDashboard extends State<LeadDashboard> {
           decoration: InputDecoration(
             border: InputBorder.none,
             labelText: label,
-            labelStyle: TextStyle(color: Colors.black),
+            hintText: hint,
+            labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),
+            hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
           ),
         ),
       ),
@@ -249,32 +345,28 @@ class _LeadDashboard extends State<LeadDashboard> {
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),
       padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(left: 15.w),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "All Leads",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+              TextView(
+               title: "All Leads",
+                  fontWeight: FontWeight.w600,
                   color: AppColor.black,
-                  fontSize: 22,
-                ),
+                  fontSize: 30.sp,
+
               ),
               Container(
                 decoration: BoxDecoration(
-                    color: AppColor.yellow,
+                    color: AppColor.white,
                     borderRadius: BorderRadius.circular(100)),
                 padding: EdgeInsets.symmetric(
                   vertical: 10,
                   horizontal: 20,
                 ),
-                child: Text(
-                  "View All",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.black),
-                ),
+                child: Icon(Icons.more_horiz,size: 20,)
               )
             ],
           ),
@@ -295,11 +387,15 @@ class _LeadDashboard extends State<LeadDashboard> {
                       )),
                 ),
                 children: [
-                  tableHeader("Company Name"),
-                  if (!AppResponsive.isMobile(context))
+                  tableHeader("Name"),
+                  tableHeader("Client"),
+                  tableHeader("Project"),
+                  tableHeader("Contact"),
+                  tableHeader("Status"),
+                  /*if (!AppResponsive.isMobile(context))
                     tableHeader("Email"),
                   tableHeader("Assign to"),
-                  if (!AppResponsive.isMobile(context)) tableHeader(""),
+                  if (!AppResponsive.isMobile(context)) tableHeader(""),*/
 
                 ],
               ),
@@ -307,14 +403,16 @@ class _LeadDashboard extends State<LeadDashboard> {
               /// Table Data
 
               for (int i=0;i<emData.length;i++)  tableRow(
-                context,
+                  context,
                 name: emData[i].lead!.companyName,
                 color: Colors.blue,
                 image: "assets/user1.jpg",
-                designation: emData[i].lead!.emailId,
+                client: emData[i].lead!.companyName,
+               project: emData[i].lead!.companyName,
+                  contact: emData[i].lead!.companyName,
                // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                status: "name",
-                  index: i
+                status: emData[i].lead!.leadAddedBy!.firstName,
+                index: i
               ),
 
             ],
@@ -337,7 +435,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  TableRow tableRow(context, {name, image, designation, status, color, index}) {
+  TableRow tableRow(context, {name, image, client, project,status, color, index, String? contact}) {
     return TableRow(
         decoration: BoxDecoration(
           border: Border(
@@ -367,55 +465,49 @@ class _LeadDashboard extends State<LeadDashboard> {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(name)
+                  TextView(title: name, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
                 ],
               ),
             ),
           ),
-          // Designation
-          if (!AppResponsive.isMobile(context)) Text(designation),
 
-
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
+          TextView(title: client, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+          TextView(title: project, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+          TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+          Container(
+            height: 27.h,
+            width: 83.w,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.red.shade50
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.circle,size: 8,color: Colors.red),
+                SizedBox(width: 9.w,),
+                Text(
+                  "Pending",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-                height: 10,
-                width: 10,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(status),
-            ],
-          ),
-          // Menu icon
-          if (!AppResponsive.isMobile(context))
-            // Image.asset(
-            //   "assets/more.png",
-            //   color: Colors.grey,
-            //   height: 30,
-            // )
-            InkWell(
-              onTap: (){
-
-                showAlertDialog(context,index);
-              },
-              child: Icon(Icons.delete,size: 30,color: Colors.red,),
-            )
+              ],
+            ),
+          )
         ]);
   }
 
   Widget tableHeader(text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
-      child: Text(
-        text,
-        style: TextStyle(fontWeight: FontWeight.bold, color: AppColor.black),
-      ),
+      child: TextView(title: text, fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w900),
+
     );
   }
 
@@ -566,6 +658,53 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           );
         },
+      ),
+    );
+  }
+
+
+  leadCountCard(String title,String count,String img, bool isSelected, Color bgColor,){
+    return InkWell(
+      onTap: (){
+        setState(() {
+          isSelected = true;
+        });
+      },
+      child: Container(
+        width: 243.w,
+        height: 166.h,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50, color: isSelected?Color(0xFFC3262C):Colors.white),
+            borderRadius: BorderRadius.circular(10),
+
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 89.w,
+              height: 89.h,
+              alignment: Alignment.center,
+              decoration: ShapeDecoration(
+                color: bgColor,
+                shape: CircleBorder(),
+              ),
+              child: SvgPicture.asset(Images.emp_tot,height: 50.h,width: 50.w,),
+            ),
+            SizedBox(width: 17.w,),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextView(title: count, fontSize: 35.sp, color: AppColor.black, fontWeight: FontWeight.w600),
+                TextView(title: title, fontSize: 20.sp, color: Color(0xff6C6C6C), fontWeight: FontWeight.w300)
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -121,8 +121,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime? _selectedDay;
   getCalender() {
     return Container(
-      height: 424.h,
-      width: 337.w,
+      height: 439.h,
+      width: 382.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
@@ -136,13 +136,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         ),
         headerStyle: HeaderStyle(titleTextStyle: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w500,fontFamily: GoogleFonts.poppins().fontFamily,),formatButtonVisible: false,),
         calendarStyle: CalendarStyle(
+          todayDecoration: BoxDecoration(shape: BoxShape.circle,color: ThemeColor.red),
           defaultTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
           weekendTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
           selectedTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
           selectedDecoration: BoxDecoration(color: ThemeColor.baground),
           rangeEndTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
           rangeStartTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
-          todayTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,),
+          todayTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Colors.white),
           outsideTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Color(0xFFBFBFBF)),
           withinRangeTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Color(0xFFBFBFBF)),
           disabledTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Color(0xFFBFBFBF)),
