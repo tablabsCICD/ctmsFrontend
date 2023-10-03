@@ -47,7 +47,11 @@ class Images {
   static String load_post = "assets/images/load_post.svg";
   static String add_image = "assets/images/add_image.svg";
   static String kyc_one = "assets/images/kyc_one.svg";
- static String share_icon = "assets/images/share_icon.svg";
-static String emp_tot = "assets/images/emp_tot.svg";
-
+  static String share_icon = "assets/images/share_icon.svg";
+  static String emp_tot = "assets/images/emp_tot.svg";
+  static String red_arrow = "assets/images/red_arrow.svg";
+  static String back_arrow = "assets/images/back_arrow.svg";
+  static String add_circle = "assets/images/add_circle.svg";
+  static String call = "assets/images/call.svg";
+  static String mail_black = "assets/images/mail_black.svg";
 }

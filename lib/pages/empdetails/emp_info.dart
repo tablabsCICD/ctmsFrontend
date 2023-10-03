@@ -1,51 +1,95 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/colors.dart';
 import '../dashboard/widget/header_widget.dart';
 import 'activity/assign_project.dart';
+import 'activity/customer_grpah.dart';
 import 'activity/emp_meeting.dart';
-
 
 class EmpInfo extends StatefulWidget {
   EmpData empData;
 
   EmpInfo({Key? key, required this.empData}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _EmpInfo();
   }
-
-
-
 }
 
-class _EmpInfo extends State<EmpInfo>{
-
-  bool isActivity=true;
-  bool isReminder=false;
-  bool isCreateMail=false;
-  bool isMeeting=false;
-
+class _EmpInfo extends State<EmpInfo> {
+  bool isActivity = true;
+  bool isReminder = false;
+  bool isCreateMail = false;
+  bool isMeeting = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
-          color: Color(0xffF6F6F6),
+          color: ThemeColor.baground,
           child: Column(
             children: [
               HeaderWidget(title: "Employee Info"),
-
               Container(
-                padding: EdgeInsets.all(30),
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        Images.back_arrow,
+                        height: 21.h,
+                        width: 10.w,
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Text(
+                        'Back',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+
+
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 30.w, bottom: 40.h),
+                child: Text(
+                  'About Employee',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(30.r),
                 width: 1362.w,
                 height: 320.h,
                 decoration: BoxDecoration(
@@ -56,221 +100,234 @@ class _EmpInfo extends State<EmpInfo>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
-
                         CircleAvatar(
                             radius: 50.r,
-                            backgroundImage: NetworkImage('assets/user1.jpg')
+                            backgroundImage: NetworkImage('assets/user1.jpg')),
+                        SizedBox(
+                          width: 32.w,
                         ),
-                        SizedBox(width: 32.w,),
-
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                                widget.empData.firstName!+" "+widget.empData.lastName!,
+                                widget.empData.firstName! +
+                                    " " +
+                                    widget.empData.lastName!,
                                 style: TextStyle(
-                                  fontSize: 40.sp,
-                                  fontWeight: FontWeight.w400,
-                                )
-                            ),
-
-                            Text(
-                                widget.empData!.role!.name!,
+                                    fontSize: 40.sp,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily)),
+                            Text(widget.empData!.role!.name!,
                                 style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w300,
-                                )
-                            )
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily))
                           ],
-                        )
-
+                        ),
+                        Spacer(),
+                        icons(Images.add_circle),
+                        SizedBox(width: 19.w,),
+                        icons(Images.call),
+                        SizedBox(width: 19.w,),
+                        icons(Images.mail_black),
                       ],
-
-
-
                     ),
-
-                    SizedBox(height: 36.h,),
-
+                    SizedBox(
+                      height: 36.h,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
                           children: [
-                            Text(
-                                "Address",
+                            Text("Address",
                                 style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500,
-                                )
-                            ),
-                            Text(
-                                widget.empData!.address!,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily)),
+                            Text(widget.empData!.address!,
                                 style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w300,
-                                )
-                            )
-
-
-
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily))
                           ],
                         ),
                         Container(
                             width: 6.w,
                             height: 100.h,
-                            decoration: BoxDecoration(
-                                color: Color(0xffc3262c))
-                        ),
+                            decoration:
+                                BoxDecoration(color: Color(0xffc3262c))),
                         Column(
                           children: [
-                            Text(
-                                "Email",
+                            Text("Email",
                                 style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500,
-                                )
-                            ),
-                            Text(
-                                widget.empData.emailId!,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily)),
+                            Text(widget.empData.emailId!,
                                 style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w300,
-                                )
-                            )
-
-
-
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily))
                           ],
                         ),
                         Container(
                             width: 6.w,
                             height: 100.h,
-                            decoration: BoxDecoration(
-                                color: Color(0xffc3262c))
-                        ),
+                            decoration:
+                                BoxDecoration(color: Color(0xffc3262c))),
                         Column(
                           children: [
-                            Text(
-                                "Mobile Number",
+                            Text("Mobile Number",
                                 style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500,
-                                )
-                            ),
-                            Text(
-                                widget.empData!.mobileNumber!,
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily)),
+                            Text(widget.empData!.mobileNumber!,
                                 style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w300,
-                                )
-                            )
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w300,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily))
                           ],
                         ),
-                        Container(
-                            width: 6.w,
-                            height: 100.h,
-                            decoration: BoxDecoration(
-                                color: Color(0xffc3262c))
-                        ),
+                        // Container(
+                        //     width: 6.w,
+                        //     height: 100.h,
+                        //     decoration:
+                        //         BoxDecoration(color: Color(0xffc3262c))
+                        // ),
                       ],
                     )
                   ],
                 ),
               ),
-
-              SizedBox(height: 20.h,),
-
-              SizedBox(height: 20.h,),
-
+              SizedBox(
+                height: 20.h,
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
               Container(
                 padding: EdgeInsets.all(30),
                 child: Row(
                   children: [
                     InkWell(
-
-                        onTap: (){
-                          isActivity=true;
-                          isReminder=false;
-                          isCreateMail=false;
-                          isMeeting=false;
-                          setState(() {
-
-                          });
-
-                        },child:tab(isActivity,"Assign Lead")),
-                    InkWell(
-
-                        onTap: (){
-                          isActivity=false;
-                          isReminder=false;
-                          isCreateMail=false;;
-                          isMeeting=true;
-                          setState(() {
-
-                          });
-
-                        },child:tab(isMeeting,"Meeting")),
+                        onTap: () {
+                          isActivity = true;
+                          isReminder = false;
+                          isCreateMail = false;
+                          isMeeting = false;
+                          setState(() {});
+                        },
+                        child: tab(isActivity, "Assign Lead")),
+                    Container(
+                      transform: Matrix4.translationValues(-80.w, 0, 0.0),
+                      child: InkWell(
+                          onTap: () {
+                            isActivity = false;
+                            isReminder = false;
+                            isCreateMail = true;
+                            ;
+                            isMeeting = false;
+                            setState(() {});
+                          },
+                          child: tab(isCreateMail, "Customer Acquisition")),
+                    ),
+                    Container(
+                      transform: Matrix4.translationValues(-160.w, 0, 0.0),
+                      child: InkWell(
+                          onTap: () {
+                            isActivity = false;
+                            isReminder = false;
+                            isCreateMail = false;
+                            ;
+                            isMeeting = true;
+                            setState(() {});
+                          },
+                          child: tab(isMeeting, "Meeting")),
+                    ),
                   ],
                 ),
               ),
-
-              Visibility(visible: isActivity,child: AssignProject(id:  widget.empData!.id!,)),
-              Visibility(visible: isMeeting,child: EmpMeeting(id:widget.empData!.id!))
-
-
+              Visibility(
+                  visible: isActivity,
+                  child: AssignProject(
+                    id: widget.empData!.id!,
+                  )),
+              Visibility(
+                  visible: isMeeting,
+                  child: EmpMeeting(id: widget.empData!.id!)),
+              Visibility(visible: isCreateMail, child: CustomerGrpah())
             ],
-
-
           ),
         ),
       ),
-
     );
   }
 
-
-  tab(bool isSelect,String title){
-    return  Container(
-      width: 220.w,
-      height: 78.h,
+  tab(bool isSelect, String title) {
+    return Container(
+      width: 450.w,
+      height: 90.h,
       child: Stack(
         children: <Widget>[
-
           SvgPicture.asset(
-            'assets/react.svg',
+            Images.red_arrow,
             alignment: Alignment.center,
-            width: 150.w,
-            height: 78.h,
-            color: isSelect?Color(0xffC3262C):Colors.white,
+            width: 450.w,
+            height: 90.h,
+            color: isSelect ? Color(0xffC3262C) : Colors.white,
           ),
+          // Container(
+          //     transform: Matrix4.translationValues(-24.w, 0, 0.0),
+          //     child: SvgPicture.asset("assets/back_arrow.svg")),
           Container(
-              transform: Matrix4.translationValues(-24.w, 0, 0.0),
-              child: SvgPicture.asset("assets/back_arrow.svg")),
-          Container(
-            transform: Matrix4.translationValues(-20.w, 0, 0.0),
+            transform: Matrix4.translationValues(-30.w, 0, 0.0),
             height: 78.h,
             child: Center(
               child: Text(
                 title,
                 style: TextStyle(
-                  color: isSelect?Colors.white:Colors.black,
+                  color: isSelect ? Colors.white : Colors.black,
                   fontSize: 20.sp,
-                  fontFamily: 'Poppins',
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
           ),
-
-
         ],
       ),
     );
   }
 
-
-
+  icons(String  Image){
+    return Container(
+      width: 54.w,
+      height: 48.h,
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 0.50),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        
+      ),
+      child: Container(
+          width: 30.w,
+          height: 30.h,
+          child: Padding(
+            padding:  EdgeInsets.all(7),
+            child: SvgPicture.asset(Image),
+          )),
+    );
+  }
 }

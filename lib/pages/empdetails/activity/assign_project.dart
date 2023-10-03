@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/model/response/lead_assign.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../model/response/lead_activity.dart';
 
@@ -47,7 +48,7 @@ class _AssignProject extends State<AssignProject>{
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 30.sp,
-                fontFamily: 'Poppins',
+                fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -55,9 +56,8 @@ class _AssignProject extends State<AssignProject>{
           SizedBox(height: 20.h,),
 
           Container(
-            height: 300,
+            height: 300.h,
             child: ListView.builder(
-
               itemCount: listLeadActivityData.length,
               itemBuilder: (context, i) {
                 return listTile(context,i);
@@ -81,7 +81,7 @@ class _AssignProject extends State<AssignProject>{
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
       ),
 
@@ -103,7 +103,7 @@ class _AssignProject extends State<AssignProject>{
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.sp,
-                    fontFamily: 'Poppins',
+                    fontFamily:  GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -113,7 +113,7 @@ class _AssignProject extends State<AssignProject>{
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.sp,
-                    fontFamily: 'Poppins',
+                    fontFamily:  GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -125,8 +125,8 @@ class _AssignProject extends State<AssignProject>{
             "${listLeadActivityData[index].date}",
             style: TextStyle(
               color: Color(0xFF858585),
-              fontSize: 16,
-              fontFamily: 'Poppins',
+              fontSize: 16.sp,
+              fontFamily:  GoogleFonts.poppins().fontFamily,
               fontWeight: FontWeight.w300,
             ),
           ),
