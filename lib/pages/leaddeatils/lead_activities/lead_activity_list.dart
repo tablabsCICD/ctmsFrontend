@@ -39,24 +39,41 @@ class _LeadActivity extends State<LeadActivity>{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 220.w,
-              child: Text(
-                'All Activities',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30.sp,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 220.w,
+                  child: Text(
+                    'All Activities',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 30.sp,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                  width: 100.w,
+                  child: Text(
+                    'View All',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 30.sp,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20.h,),
 
             Container(
-              height: 300,
+              height: 300.h,
               child: ListView.builder(
-
+                shrinkWrap: true,
                 itemCount: listLeadActivityData.length,
                 itemBuilder: (context, i) {
                   return listTile(context,i);
