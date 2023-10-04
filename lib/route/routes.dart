@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/entry_screen.dart';
+import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.dart';
+import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
@@ -32,7 +34,10 @@ class RouteGenerator {
         return buildRoute(LeadListScreen(), settings: settings);
   case AppRoutes.report:
         return buildRoute(ReportDashboard(), settings: settings);
- case AppRoutes.profile:
+      case AppRoutes.customer:
+        return buildRoute(CustomerDashboard(), settings: settings);
+
+      case AppRoutes.profile:
         return buildRoute(ProfileDashbord(), settings: settings);
 
  case AppRoutes.meeting:

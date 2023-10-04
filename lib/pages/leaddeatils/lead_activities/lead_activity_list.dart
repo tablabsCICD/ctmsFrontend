@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../model/response/lead_activity.dart';
 
@@ -108,7 +109,7 @@ class _LeadActivity extends State<LeadActivity>{
               radius: 40.r,
               backgroundImage: NetworkImage('assets/user1.jpg')
           ),
-          title: Padding(
+          title: /*Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -149,18 +150,36 @@ class _LeadActivity extends State<LeadActivity>{
                )
               ],
             ),
-          ),
+          ),*/
 
-          trailing:  Text(
-            "${listLeadActivityData[index].date}",
+          Text(
+            'Updated By : ${listLeadActivityData[index].updatedByUser!.firstName!}',
             style: TextStyle(
-              color: Color(0xFF858585),
-              fontSize: 16,
+              color: Colors.black,
+              fontSize: 20.sp,
               fontFamily: 'Poppins',
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.w400,
             ),
           ),
-
+          trailing:  SizedBox(
+            width: 300.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${listLeadActivityData[index].date}",
+                  style: TextStyle(
+                    color: Color(0xFF858585),
+                    fontSize: 16.sp,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                SvgPicture.asset('assets/notification.svg',color:Colors.black,width: 20.w,height: 20.h,),
+                SvgPicture.asset('assets/more_icon.svg',width: 20.w,height: 20.h,)
+              ],
+            ),
+          ),
 
         ),
       ),

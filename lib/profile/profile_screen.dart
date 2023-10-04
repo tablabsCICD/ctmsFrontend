@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../common/app_colors.dart';
 
@@ -30,146 +33,211 @@ class _ProfileInfoState extends State<ProfileInfo> {
 
         ):Container(
           height: MediaQuery.of(context).size.height,
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColor.bgColor,
-              borderRadius: BorderRadius.circular(30),
-            ),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               HeaderWidget(title: "Profile"),
-              Row(
-                children: <Widget>[
-                  Image.asset("assets/user1.jpg", height: 220),
-                  SizedBox(
-                    width: 20,
+              SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 30,vertical: 30),
+                  margin: EdgeInsets.fromLTRB(39,33,39,33),
+                  decoration: BoxDecoration(
+                     color: AppColor.white,
+                     borderRadius: BorderRadius.circular(10),
                   ),
-                  Container(
-
-                    height: 220,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                         loginDeatils.data!.firstName!+" "+loginDeatils.data!.lastName!,
-                          style: TextStyle(fontSize: 32),
-                        ),
-                        Text(
-                          loginDeatils!.data!.role!.name!,
-                          style: TextStyle(fontSize: 19, color: Colors.grey),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 26,
-              ),
-              Text(
-                "About",
-                style: TextStyle(fontSize: 22),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Text(
-                "Engginering degree from Duke University School of Medicine and has been in practice for more than 20 years. ",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-              SizedBox(
-                height: 24,
-              ),
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Icon(Icons.pin_drop_outlined),
+                          CircleAvatar(
+                              radius: 100.r,
+                              backgroundImage: NetworkImage('assets/user1.jpg')),
                           SizedBox(
-                            width: 20,
+                            width: 20.w,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Address",
-                                style: TextStyle(
-                                    color: Colors.black87.withOpacity(0.7),
-                                    fontSize: 20),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Container(
-                                  width:
-                                  MediaQuery.of(context).size.width - 268,
-                                  child: Text(
-                                    loginDeatils!.data!.address!,
-                                    style: TextStyle(color: Colors.grey),
-                                  ))
-                            ],
-                          )
+                          Container(
+                            height: 220.h,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                 loginDeatils.data!.firstName!+" "+loginDeatils.data!.lastName!,
+                                  style: TextStyle(color: Colors.black,
+                                    fontSize: 40.sp,
+                                    fontFamily: GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,),
+                                ),
+                                SizedBox(height: 10.h,),
+                                Text(
+                                  loginDeatils!.data!.role!.name!,
+                                  style: TextStyle(color: Colors.black,
+                                    fontSize: 20.sp,
+                                    fontFamily: GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w300,),
+                                ),
+                                SizedBox(height: 20.h,),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset('assets/images/fb_logo.svg',height: 25.h,width: 25.h,),
+                                    SizedBox(width: 25.w,),
+                                    SvgPicture.asset('assets/images/gmail_logo.svg',height: 25.h,width: 25.h,),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
                       Row(
-                        children: <Widget>[
-                          Icon(Icons.watch_later),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Contact Info",
-                                style: TextStyle(
-                                    color: Colors.black87.withOpacity(0.7),
-                                    fontSize: 20),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Container(
-                                  width:
-                                  MediaQuery.of(context).size.width - 268,
-                                  child: Text(
-                                   "Email : ${loginDeatils!.data!.emailId!}",
-                                    style: TextStyle(color: Colors.grey),
-                                  )),
+                        children: [
+                          getIconData('assets/call.svg',onTap:(){
 
-                              Container(
-                                  width:
-                                  MediaQuery.of(context).size.width - 268,
-                                  child: Text(
-                                    "Mobile : ${loginDeatils!.data!.mobileNumber!}",
-                                    style: TextStyle(color: Colors.grey),
-                                  ))
-                            ],
-                          )
+                          }),
+                          getIconData('assets/mail.svg',onTap:(){
+
+                          }),
+                          getIconData('assets/more_icon.svg',onTap:(){
+
+                          }),
                         ],
                       )
                     ],
                   ),
-                ],
+                ),
               ),
+
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 33,vertical: 20),
+                margin: EdgeInsets.fromLTRB(39,33,39,33),
+                decoration: BoxDecoration(
+                  color: AppColor.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "About",
+                      style: TextStyle(color: Colors.black,
+                        fontSize: 20.sp,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                      "Engginering degree from Duke University School of Medicine and has been in practice for more than 20 years. ",
+                      style: TextStyle(color: Colors.grey,
+                        fontSize: 20.sp,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w300,),
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.pin_drop_outlined),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Address",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              loginDeatils!.data!.address!,
+                              style: TextStyle(color: Colors.grey,
+                                fontSize: 20.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w300,),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.watch_later),
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Contact Info",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w500,),
+                            ),
+                            SizedBox(
+                              height: 3,
+                            ),
+                            Text(
+                              "Email : ${loginDeatils.data!.emailId!}",
+                              style: TextStyle(color: Colors.grey,
+                                fontSize: 20.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w300,),
+                            ),
+
+                            Text(
+                              "Mobile : ${loginDeatils.data!.mobileNumber!}",
+                              style: TextStyle(color: Colors.grey,
+                                fontSize: 20.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w300,),
+                            )
+                          ],
+                        )
+                      ],
+                    )
+
+                  ],
+                ),
+              ),
+
             ],
           ),
         ),
     );
   }
 
+  getIconData(String icon, {required  Function() onTap}) {
+    return Container(
+      height: 54.h,
+      width: 48.w,
+      padding: EdgeInsets.all(7),
+      margin: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: icon=="assets/more_icon.svg"?Border(top: BorderSide.none,bottom: BorderSide.none,left: BorderSide.none,right: BorderSide.none):Border.all(color: Colors.black)
+      ),
+      child: SvgPicture.asset(icon,height: 30.h,width: 30.h,),
+    );
+  }
 
   void inCallData()async {
 

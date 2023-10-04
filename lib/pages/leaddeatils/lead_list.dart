@@ -86,7 +86,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           /// Header Part
           HeaderWidget(title: "Lead Data",),
           Container(
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.all(33),
             child: Row(
               children: [
                 Text(
@@ -134,7 +134,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           Container(
-            margin: EdgeInsets.all(10),
+            margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
             child: Row(
               children: [
                 leadCountCard('Total Lead','700','',true,Colors.green.shade50),
@@ -211,8 +211,9 @@ class _LeadDashboard extends State<LeadDashboard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+              IconButton(onPressed: (){Navigator.of(context).pop();}, icon: Icon(Icons.arrow_back_ios)),
               Text(
                 "Add Lead",
                 style: TextStyle(
@@ -223,22 +224,23 @@ class _LeadDashboard extends State<LeadDashboard> {
               ),
             ],
           ),
+          SizedBox(height: 20.h),
           Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
-          SizedBox(height: 16),
-          _buildTextField('Company Name','Please enter your first name', _nameController),
-          SizedBox(height: 16),
-          _buildTextField('Company Name','Please enter your last name', _nameController),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
+          _buildTextField('First Name','Please enter your first name', _nameController),
+          SizedBox(height: 16.h),
+          _buildTextField('Last Name','Please enter your last name', _nameController),
+          SizedBox(height: 16.h),
           _buildTextField('Email','Please enter your email ID', _emailController),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildTextField('Phone','Please enter your phone number', _phoneController),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
          // _buildTextField('Name Coordinator', _coordinatorController),
        //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildTextField('Source Of Lead', 'Please select',_sourceofleadController),
 
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           /*ElevatedButton(
             onPressed: _submitForm,
@@ -272,10 +274,10 @@ class _LeadDashboard extends State<LeadDashboard> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
         child: TextField(
           controller: controller,
           decoration: InputDecoration(
@@ -342,8 +344,8 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   leadList(){
    return isLoad?Center(child: CircularProgressIndicator(),) :Container(
-      decoration: BoxDecoration(
-          color: AppColor.white, borderRadius: BorderRadius.circular(20)),
+      /*decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(left: 15.w),
       child: Column(
@@ -359,77 +361,87 @@ class _LeadDashboard extends State<LeadDashboard> {
 
               ),
               Container(
-                decoration: BoxDecoration(
-                    color: AppColor.white,
-                    borderRadius: BorderRadius.circular(100)),
-                padding: EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 20,
+                width: 350.w,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 260.w,
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(onPressed: (){},
+                              icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                          Text("Showing ${emData.length} out of ${emData.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                          GoogleFonts.poppins().fontFamily),),
+                          IconButton(onPressed: (){},
+                              icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20.w,),
+                    SvgPicture.asset('assets/more_icon.svg')
+                  ],
                 ),
-                child: Icon(Icons.more_horiz,size: 20,)
-              )
+              ),
             ],
           ),
-          Divider(
+        /*  Divider(
             thickness: 0.5,
             color: Colors.grey,
-          ),
-          Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              /// Table Header
-              TableRow(
-                decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey,
-                        width: 0.5,
-                      )),
-                ),
-                children: [
-                  tableHeader("Name"),
-                  tableHeader("Client"),
-                  tableHeader("Project"),
-                  tableHeader("Contact"),
-                  tableHeader("Status"),
-                  /*if (!AppResponsive.isMobile(context))
-                    tableHeader("Email"),
-                  tableHeader("Assign to"),
-                  if (!AppResponsive.isMobile(context)) tableHeader(""),*/
-
-                ],
-              ),
-
-              /// Table Data
-
-              for (int i=0;i<emData.length;i++)  tableRow(
-                  context,
-                name: emData[i].lead!.companyName,
-                color: Colors.blue,
-                image: "assets/user1.jpg",
-                client: emData[i].lead!.companyName,
-               project: emData[i].lead!.companyName,
-                  contact: emData[i].lead!.companyName,
-               // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                status: emData[i].lead!.leadAddedBy!.firstName,
-                index: i
-              ),
-
-            ],
-          ),
+          ),*/
+          SizedBox(height: 25.h,),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            decoration: BoxDecoration(
+                color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.all(20),
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
-                Text("Showing ${emData.length} out of ${emData.length} Results"),
-                Text(
-                  "View All",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                /// Table Header
+                TableRow(
+                  /*decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 0.5,
+                        )),
+                  ),*/
+                  children: [
+                    tableHeader("Name"),
+                    tableHeader("Client"),
+                    tableHeader("Project"),
+                    tableHeader("Contact"),
+                    tableHeader("Status"),
+                    /*if (!AppResponsive.isMobile(context))
+                      tableHeader("Email"),
+                    tableHeader("Assign to"),
+                    if (!AppResponsive.isMobile(context)) tableHeader(""),*/
+
+                  ],
                 ),
+
+                /// Table Data
+
+                for (int i=0;i<emData.length;i++)  tableRow(
+                    context,
+                  name: emData[i].lead!.leadAddedBy!.firstName,
+                  color: Colors.blue,
+                  image: "assets/user1.jpg",
+                  client: emData[i].lead!.companyName,
+                 project: emData[i].lead!.companyName,
+                    contact: emData[i].lead!.mobileNumber,
+                 // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                  status: emData[i].lead!.leadAddedBy!.firstName,
+                  index: i
+                ),
+
               ],
             ),
-          )
+          ),
+
         ],
       ),
     );
@@ -438,12 +450,12 @@ class _LeadDashboard extends State<LeadDashboard> {
   TableRow tableRow(context, {name, image, client, project,status, color, index, String? contact}) {
     return TableRow(
         decoration: BoxDecoration(
-          border: Border(
+         /* border: Border(
             bottom: BorderSide(
               color: Colors.grey,
               width: 0.5,
             ),
-          ),
+          ),*/
         ),
         children: [
           //Full Name
@@ -476,22 +488,22 @@ class _LeadDashboard extends State<LeadDashboard> {
           TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           Container(
             height: 27.h,
-            width: 83.w,
+            width: 50.w,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: Colors.red.shade50
+                color: Colors.blue.shade50
             ),
             padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.circle,size: 8,color: Colors.red),
+                Icon(Icons.circle,size: 8,color: Colors.blue),
                 SizedBox(width: 9.w,),
                 Text(
-                  "Pending",
+                  "In-Progress",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.blue,
                     fontSize: 15.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w300,

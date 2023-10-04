@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
       builder: (context , child) {
         return MaterialApp(
               title: 'TKD CRM',
+              debugShowCheckedModeBanner: false,
               scrollBehavior: MyCustomScrollBehavior(),
               theme: ThemeData(
                 primarySwatch: Colors.blue,

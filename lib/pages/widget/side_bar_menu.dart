@@ -17,6 +17,7 @@ class _SideBarState extends State<SideBar> {
  static bool  isDashbord=true;
  static bool isEmp=false;
  static bool isLead=false;
+ static bool isCustomer=false;
  static bool isMeeting=false;
  static bool isreport=false;
  static bool isProfile=false;
@@ -41,12 +42,13 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isDashbord,
               title: "Dashboard",
-              icon: "assets/menu_home.png",
+              icon: "assets/dashboard_menu.svg",
               press: () {
                  isDashbord=true;
                  isEmp=false;
                  isLead=false;
                  isMeeting=false;
+                 isCustomer = false;
                  isreport=false;
                  isProfile=false;
                  setState(() {
@@ -59,10 +61,11 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isEmp,
               title: "Employee",
-              icon: "assets/menu_recruitment.png",
+              icon: "assets/emp_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=true;
+                isCustomer = false;
                 isLead=false;
                 isMeeting=false;
                 isreport=false;
@@ -76,9 +79,10 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isLead,
               title: "Leads",
-              icon: "assets/menu_onboarding.png",
+              icon: "assets/lead_menu.svg",
               press: () {
                 isDashbord=false;
+                isCustomer = false;
                 isEmp=false;
                 isLead=true;
                 isMeeting=false;
@@ -92,12 +96,13 @@ class _SideBarState extends State<SideBar> {
             ), DrawerListTile(
               isSelect: isMeeting,
               title: "Meetings",
-              icon: "assets/menu_onboarding.png",
+              icon: "assets/meeting_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=false;
                 isLead=false;
                 isMeeting=true;
+                isCustomer = false;
                 isreport=false;
                 isProfile=false;
                 setState(() {
@@ -109,12 +114,33 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             DrawerListTile(
-              isSelect: isreport,
-              title: "Reports",
-              icon: "assets/menu_report.png",
+              isSelect: isCustomer,
+              title: "Customer",
+              icon: "assets/customer_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=false;
+                isLead=false;
+                isMeeting=false;
+                isCustomer = true;
+                isreport=false;
+                isProfile=false;
+                setState(() {
+
+                });
+
+
+                Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isreport,
+              title: "Reports",
+              icon: "assets/report_menu.svg",
+              press: () {
+                isDashbord=false;
+                isEmp=false;
+                isCustomer = false;
                 isLead=false;
                 isMeeting=false;
                 isreport=true;
@@ -129,11 +155,12 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isProfile,
               title: "Profile",
-              icon: "assets/menu_calendar.png",
+              icon: "assets/profile_menu.svg",
               press: () {
 
                 isDashbord=false;
                 isEmp=false;
+                isCustomer = false;
                 isLead=false;
                 isMeeting=false;
                 isreport=false;
@@ -147,7 +174,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: false,
               title: "Log Out",
-              icon: "assets/menu_settings.png",
+              icon: "assets/logout_menu.svg",
               press: () {
 
                 showAlertDialog(context);
@@ -233,10 +260,10 @@ class DrawerListTile extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(width: 33.w,),
-              Image.asset(
+              SvgPicture.asset(
                 icon!,
-                color: AppColor.white,
-                height: 16,
+                color: isSelect?AppColor.white:Colors.grey,
+                height: 16.h,
               ),
               SizedBox(width: 27.w,),
               Text(

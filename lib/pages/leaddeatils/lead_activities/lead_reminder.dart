@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../dashboard/widget/calender_widget.dart';
 
@@ -94,13 +95,23 @@ class LeadReminder extends StatelessWidget{
             ),
           ),
 
-          trailing:  Text(
-            'Today, 01:00 PM ',
-            style: TextStyle(
-              color: Color(0xFF858585),
-              fontSize: 16.sp,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w300,
+          trailing:  SizedBox(
+            width: 300.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Today, 01:00 PM ',
+                  style: TextStyle(
+                    color: Color(0xFF858585),
+                    fontSize: 16.sp,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                SvgPicture.asset('assets/notification.svg',color:Colors.black,width: 20.w,height: 20.h,),
+                SvgPicture.asset('assets/more_icon.svg',width: 20.w,height: 20.h,)
+              ],
             ),
           ),
 

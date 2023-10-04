@@ -11,11 +11,6 @@ class ProfileCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      padding: EdgeInsets.all(10),
       child: getProfile(),
       // child: Column(
       //   children: [
@@ -82,19 +77,9 @@ class ProfileCardWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              color: Colors.teal,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            ),
-            child: Container(
-              width: 114.w,
-              height: 114.h,
-              child:Image.asset(
-                "assets/user1.jpg",
-              ),
-            ),),
+          CircleAvatar(
+          radius: 65.r,
+          backgroundImage: NetworkImage('assets/user1.jpg')),
           SizedBox(height: 19.h,),
           Text(
              'Mridula V',

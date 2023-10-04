@@ -6,6 +6,7 @@ import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_mee
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../dashboard/widget/header_widget.dart';
 import 'lead_activities/create_mail.dart';
@@ -40,6 +41,55 @@ class _LeadInfo extends State<LeadInfo> {
           child: Column(
             children: [
               HeaderWidget(title: "Lead Info"),
+              SizedBox(height: 26.h,),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        Images.back_arrow,
+                        height: 21.h,
+                        width: 10.w,
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      Text(
+                        'Back',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+
+
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 25.h,),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(left: 30.w, bottom: 40.h),
+                child: Text(
+                  'About Lead',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 20.h,
               ),
@@ -197,7 +247,7 @@ class _LeadInfo extends State<LeadInfo> {
                                     color: Color(0xffEFEFEF),
                                     shape: CircleBorder(),
                                   ),
-                                  child: SvgPicture.asset("assets/loan_status.svg",height: 30.h,width: 30.w,),
+                                  child: SvgPicture.asset("assets/lead_status.svg",height: 30.h,width: 30.w,),
                                 ),
                                 SizedBox(width: 23.w,),
                                 Text("Lead Status",

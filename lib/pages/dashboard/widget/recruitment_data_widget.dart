@@ -41,106 +41,87 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Text(
-              //   widget.title,
-              //   style: TextStyle(
-              //     fontWeight: FontWeight.bold,
-              //     color: AppColor.black,
-              //     fontSize: 22,
-              //   ),
-              // ),
               getHeader(),
-              // Container(
-              //   decoration: BoxDecoration(
-              //       color: AppColor.yellow,
-              //       borderRadius: BorderRadius.circular(100)),
-              //   padding: EdgeInsets.symmetric(
-              //     vertical: 10,
-              //     horizontal: 20,
-              //   ),
-              //   child: Text(
-              //     "View All",
-              //     style: TextStyle(
-              //         fontWeight: FontWeight.bold, color: AppColor.black),
-              //   ),
-              // )
               filterIcon(),
-
             ],
           ),
-          // Divider(
-          //   thickness: 0.5,
-          //   color: Colors.grey,
-          // ),
-          // Table(
-          //   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          //   children: [
-          //     /// Table Header
-          //     TableRow(
-          //       decoration: BoxDecoration(
-          //         border: Border(
-          //             bottom: BorderSide(
-          //           color: Colors.grey,
-          //           width: 0.5,
-          //         )),
-          //       ),
-          //       children: [
-          //         tableHeader("Full Name"),
-          //         if (!AppResponsive.isMobile(context))
-          //           tableHeader("Designation"),
-          //         tableHeader("Status"),
-          //         if (!AppResponsive.isMobile(context)) tableHeader(""),
-          //       ],
-          //     ),
-          //
-          //     /// Table Data
-          //
-          //     for (int i=0;i<emData.length;i++)  tableRow(
-          //       context,
-          //       name: emData[i].firstName!+" "+emData[i].lastName!,
-          //       color: Colors.blue,
-          //       image: "assets/user1.jpg",
-          //       designation: "tets",
-          //       status: "Practical Round",
-          //     ),
-          //
-          //   ],
-          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                width: 350.w,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 260.w,
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(onPressed: (){},
+                              icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                          Text("Showing ${emData.length} out of ${emData.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                          GoogleFonts.poppins().fontFamily),),
+                          IconButton(onPressed: (){},
+                              icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20.w,),
+                    SvgPicture.asset('assets/more_icon.svg')
+                  ],
+                ),
+              ),
+            ],
+          ),
+           Container(
+             decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+             padding: EdgeInsets.all(20),
+             margin: EdgeInsets.only(left: 15.w),
+             child: Table(
+               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+               children: [
+                 /// Table Header
+                 TableRow(
+                   children: [
+                     tableHeader("Name"),
+                     tableHeader("Designation"),
+                     tableHeader("Contact"),
+                     tableHeader("Gmail"),
+                     tableHeader("Status"),
+                  ],
+                ),
+                 for (int i=0;i<emData.length;i++)  tableRow(
+                   context,
+                   name: emData[i].firstName!+" "+emData[i].lastName!,
+                   color: Colors.blue,
+                   image: "assets/user1.jpg",
+                   designation: emData[i].role!.name,
+                   contact:emData[i].mobileNumber,
+                   gmail:emData[i].emailId,
+                   status: "Practical Round",
+                   isSelected: emData[i].isSelected
+                 ),
+
+               ],
+             ),
+           ),
 
 
 
-
-          // Container(
-          //   margin: EdgeInsets.symmetric(vertical: 10),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text("Showing 4 out of 4 Results"),
-          //       Text(
-          //         "View All",
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //     ],
-          //   ),
-          // )
-
-          getEmpTable(),
+        //  getEmpTable(),
         ],
       ),
     );
   }
 
-  TableRow tableRow(context, {name, image, designation, status, color}) {
+  TableRow tableRow(context, {name, image, designation, status, color, contact,gmail,isSelected}) {
     return TableRow(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 0.5,
-            ),
-          ),
-        ),
-        children: [
+       children: [
           //Full Name
           Container(
             margin: EdgeInsets.symmetric(vertical: 15),
@@ -156,36 +137,71 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                 SizedBox(
                   width: 10,
                 ),
-                Text(name)
+                Text(
+                  name,
+                  style:TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
               ],
             ),
           ),
-          // Designation
-          if (!AppResponsive.isMobile(context)) Text(designation),
-
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
-                height: 10,
-                width: 10,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(status),
-            ],
+          Text(
+            designation,
+            style:TextStyle(
+              color: Colors.black,
+              fontSize: 15.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w300,
+            ),
           ),
-          // Menu icon
-          if (!AppResponsive.isMobile(context))
-            Image.asset(
-              "assets/more.png",
-              color: Colors.grey,
-              height: 30,
-            )
+          Text(
+            gmail,
+            style:TextStyle(
+              color: Colors.black,
+              fontSize: 15.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Text(
+            contact,
+            style:TextStyle(
+              color: Colors.black,
+              fontSize: 15.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+          Container(
+            height: 27.h,
+            width: 83.w,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: isSelected!?Colors.amber.shade50:Colors.red.shade50
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.circle,size: 8,color: isSelected!?Colors.amber :Colors.red),
+                SizedBox(width: 10.w,),
+                Text(
+                  isSelected!?"Selected":"Pending",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+          )
         ]);
   }
 
@@ -194,7 +210,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Text(
         text,
-        style: TextStyle(fontWeight: FontWeight.bold, color: AppColor.black),
+        style: TextStyle(fontWeight: FontWeight.w700, color: AppColor.black,fontSize: 15.sp),
       ),
     );
   }
@@ -397,16 +413,11 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              color: Colors.teal,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            ),
-            child: Container(
-              width: 32.w,
-              height: 32.h,
-              child: Image.network(employeeModel!.image!),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(1000),
+            child: Image.asset('assets/user1.jpg',
+              //employeeModel.image.toString(),
+              width: 30,
             ),
           ),
           SizedBox(

@@ -17,7 +17,7 @@ class _ProfileDashbord extends State<ProfileDashbord> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideBar(),
-      backgroundColor: AppColor.bgSideMenu,
+     // backgroundColor: AppColor.bgSideMenu,
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

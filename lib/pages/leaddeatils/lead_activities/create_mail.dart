@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../common/app_colors.dart';
 import '../../../utils/constant.dart';
@@ -43,7 +44,24 @@ class _CreateMail extends State<CreateMail>{
             ),
             child: Column(
               children: [
-                SizedBox(height: 500.h,),
+                SvgPicture.asset('assets/images/img2.svg',height: 500.h,),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextView(
+                    title: 'Writing good emails is tough.Finding out when, and what to write is even tougher.',
+                    fontSize: 20.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                SizedBox(height: 40.h,),
+                TextView(
+                  title: 'GET READY!',
+                  fontSize: 20.sp,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w500,
+                ),
+                SizedBox(height: 30.h,),
                 SizedBox(
                   height: 86.h,
                   width: 308.w,
@@ -163,18 +181,18 @@ class _CreateMail extends State<CreateMail>{
               },
               child: Container(
                 decoration: BoxDecoration(
-                    color: AppColor.yellow,
-                    borderRadius: BorderRadius.circular(100)),
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5.r)),
                 padding: EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 20,
+                  vertical: 20.h,
+                  horizontal: 20.w,
                 ),
 
                 child: Center(
                   child: Text(
                     "Submit",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: AppColor.black),
+                        fontWeight: FontWeight.bold, color: AppColor.white),
                   ),
                 ),
               ),
@@ -191,16 +209,18 @@ class _CreateMail extends State<CreateMail>{
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
         child: TextField(
           controller: controller,
           decoration: InputDecoration(
             border: InputBorder.none,
             labelText: label,
-            labelStyle: TextStyle(color: Colors.black),
+            hintText: label,
+            labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),
+            hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
           ),
         ),
       ),

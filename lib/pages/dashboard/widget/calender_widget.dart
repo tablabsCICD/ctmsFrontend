@@ -122,7 +122,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   getCalender() {
     return Container(
       height: 439.h,
-      width: 382.w,
+      width: 317.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.white
@@ -130,6 +130,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       child: TableCalendar(
         headerVisible: true,
         daysOfWeekVisible: true,
+        daysOfWeekHeight: 50.h,
         daysOfWeekStyle: DaysOfWeekStyle(
             weekendStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,fontFamily: GoogleFonts.poppins().fontFamily,),
           weekdayStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,)
@@ -148,7 +149,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           withinRangeTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Color(0xFFBFBFBF)),
           disabledTextStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w400,fontFamily: GoogleFonts.poppins().fontFamily,color: Color(0xFFBFBFBF)),
         ),
-        rowHeight: 40.h,
+        rowHeight: 50.h,
         firstDay: DateTime.utc(2010, 10, 20),
         lastDay: DateTime.utc(2040, 10, 20),
         focusedDay: _focusedDay,
