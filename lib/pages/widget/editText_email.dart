@@ -6,33 +6,40 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
-class EditTextEmail extends StatelessWidget {
+class EditTextEmail extends StatefulWidget {
   final double width;
   final double height;
   final String hint ;
+  final bool? isPassword;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
+
   final TextEditingController controller;
   TextInputType? keybordType=TextInputType.text;
   Function(String val)? onChange =(val){};
 
-  EditTextEmail({this.onChange,this.keybordType ,required this.width, required this.height, required this.hint, required this.controller,this.prefixIcon,this.suffixIcon} );
+  EditTextEmail({this.onChange,this.keybordType ,required this.width, required this.height, required this.hint, required this.controller,this.prefixIcon,this.suffixIcon,this.isPassword} );
 
+  @override
+  State<EditTextEmail> createState() => _EditTextEmailState();
+}
 
-
+class _EditTextEmailState extends State<EditTextEmail> {
+  bool passwordVisible = true;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       child: TextField(
-        controller: controller,
+        controller: widget.controller,
         onChanged: (value){
-          onChange!(value);
+          widget.onChange!(value);
         },
-        keyboardType: keybordType,
+        obscureText: widget.isPassword==true?passwordVisible:false,
+        keyboardType: widget.keybordType,
         decoration: InputDecoration(
-            hintText: hint,
+            hintText: widget.hint,
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.redAccent.shade100),
             ),
@@ -42,9 +49,20 @@ class EditTextEmail extends StatelessWidget {
             border: UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.red),
             ),
-            prefixIcon: Icon(prefixIcon,color: Color(0xff7F7E7E),),
-            suffixIcon: Icon(suffixIcon,color: Color(0xff7F7E7E))
-            ,
+            prefixIcon: Icon(widget.prefixIcon,color: Color(0xff7F7E7E),),
+            suffixIcon: widget.suffixIcon==null?null:IconButton(
+              icon: Icon(passwordVisible
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,color: Colors.grey,),
+              onPressed: () {
+                setState(
+                      () {
+                    passwordVisible = !passwordVisible;
+                  },
+                );
+              },
+            ),
+           // Icon(suffixIcon,color: Color(0xff7F7E7E)),
             hintStyle:TextStyle(
               color: Color(0x662C363F),
               fontSize: 15,
@@ -62,6 +80,4 @@ class EditTextEmail extends StatelessWidget {
       ),
     );
   }
-
-
 }

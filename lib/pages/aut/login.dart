@@ -279,7 +279,7 @@ class _LoginScreen extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            Images.gmail_logo,
+            Images.fb_logo,
             height: 32.h,
             width: 32.w,
           ),
@@ -288,7 +288,7 @@ class _LoginScreen extends State<LoginScreen> {
           ),
           SvgPicture.asset(
             Images.gmail_logo,
-            height: 32.w,
+            height: 32.h,
             width: 32.w,
           ),
           SizedBox(
@@ -339,8 +339,9 @@ class _LoginScreen extends State<LoginScreen> {
               EditTextEmail(
                 width: 327.w,
                 height: 52.h,
+                keybordType: TextInputType.emailAddress,
                 hint: "Please enter your email ID",
-                prefixIcon: Icons.lock_outline,
+                prefixIcon: Icons.mail_outline,
                 controller: _emailController,
               ),
             ],
@@ -361,6 +362,8 @@ class _LoginScreen extends State<LoginScreen> {
               EditTextEmail(
                 width: 327.w,
                 height: 52.h,
+                isPassword:true,
+                keybordType: TextInputType.visiblePassword,
                 hint: "Please enter your password",
                 prefixIcon: Icons.lock_outline,
                 suffixIcon: Icons.visibility_outlined,
@@ -402,13 +405,31 @@ class _LoginScreen extends State<LoginScreen> {
           SizedBox(
             height: 28.h,
           ),
-          Textview(
-              TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black),
-              title: "Don't have an Account? Sign Up"),
+          Row(
+            children: [
+              Textview(
+                  TextStyle(
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black),
+                  title: "Don't have an Account? "),
+              InkWell(
+                onTap:(){
+                  setState(() {
+                    isSignIn = false;
+                  });
+                },
+                child: Textview(
+                    TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w400,
+                        color: ThemeColor.theme_blue),
+                    title: "Sign Up"),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -469,8 +490,9 @@ class _LoginScreen extends State<LoginScreen> {
               EditTextEmail(
                 width: 327.w,
                 height: 52.h,
+                keybordType: TextInputType.emailAddress,
                 hint: "Please enter your email ID",
-                prefixIcon: Icons.lock_outline,
+                prefixIcon: Icons.mail_outline,
                 controller: TextEditingController(),
               ),
             ],
@@ -492,6 +514,8 @@ class _LoginScreen extends State<LoginScreen> {
               EditTextEmail(
                 width: 327.w ,
                 height: 52.h ,
+                isPassword:true,
+                keybordType: TextInputType.visiblePassword,
                 hint: "Please enter your password",
                 prefixIcon: Icons.lock_outline,
                 suffixIcon: Icons.visibility_outlined,
@@ -518,14 +542,31 @@ class _LoginScreen extends State<LoginScreen> {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 }),
           ),
-
-          Textview(
-              TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 20.sp ,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black),
-              title: "Already have an Account? Sign In"),
+          Row(
+            children: [
+              Textview(
+                  TextStyle(
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontSize: 20.sp ,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black),
+                  title: "Already have an Account? "),
+              InkWell(
+                onTap: (){
+                  setState(() {
+                    isSignIn = true;
+                  });
+                },
+                child: Textview(
+                    TextStyle(
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontSize: 20.sp ,
+                        fontWeight: FontWeight.w400,
+                        color: ThemeColor.theme_blue),
+                    title: "Sign In"),
+              ),
+            ],
+          ),
         ],
       ),
     );

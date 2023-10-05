@@ -38,7 +38,6 @@ class _LeadDashboard extends State<LeadDashboard> {
   TextEditingController _sourceofleadController = TextEditingController();
   TextEditingController _coordinatorController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-
   TextEditingController _typeOfBusinessController = TextEditingController();
 
 
@@ -233,6 +232,8 @@ class _LeadDashboard extends State<LeadDashboard> {
             child: Text(
               "Add Lead",
               style: TextStyle(
+                fontFamily:
+                GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,
                 color: AppColor.black,
                 fontSize: 25.sp,
@@ -274,8 +275,9 @@ class _LeadDashboard extends State<LeadDashboard> {
               child: Center(
                 child: Text(
                   "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.white),
+                  style: TextStyle(fontSize: 20.sp,fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500, color: AppColor.white),
                 ),
               ),
             ),
@@ -287,16 +289,18 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   Widget _buildTextField(String label, String hint,TextEditingController controller) {
     return Container(
-      decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(5.r),
-      ),
+      ),*/
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0.w),
         child: TextField(
           controller: controller,
           decoration: InputDecoration(
-            border: InputBorder.none,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: BorderSide.none),
             labelText: label,
             hintText: hint,
             labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),

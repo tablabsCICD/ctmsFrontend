@@ -1,5 +1,6 @@
 class ApiConstant{
- static String BASE_URL="http://ec2-3-111-144-125.ap-south-1.compute.amazonaws.com:8080/crm/";
+// static String BASE_URL="http://ec2-3-111-144-125.ap-south-1.compute.amazonaws.com:8080/crm/";
+ static String BASE_URL="http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/crm/";
  static String SAVE_EMP=BASE_URL+"Employee/save";
  static String GET_ALL_LEAD=BASE_URL+"api/Lead/getAll";
  static String SAVE_LEAD=BASE_URL+"api/Lead/save";

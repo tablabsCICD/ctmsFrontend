@@ -363,7 +363,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.active = true;
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = 1;
-    createMeeting.employeeId = [1];
+    createMeeting.employeeId = [deatils.data!.id!];
     var response = await ApiHelper()
         .postParameter(ApiConstant.CREATE_MEETING, createMeeting.toJson());
     print('the response is ${response.response}');
