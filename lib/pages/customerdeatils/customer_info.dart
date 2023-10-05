@@ -80,7 +80,7 @@ class _LeadInfo extends State<CustomerInfo> {
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 40.h),
                 child: Text(
-                  'About Lead',
+                  'About Customer',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.sp,

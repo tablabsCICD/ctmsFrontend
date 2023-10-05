@@ -42,7 +42,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isDashbord,
               title: "Dashboard",
-              icon: "assets/dashboard_menu.svg",
+              icon: "assets/menu/dashboard_menu.svg",
               press: () {
                  isDashbord=true;
                  isEmp=false;
@@ -61,7 +61,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isEmp,
               title: "Employee",
-              icon: "assets/emp_menu.svg",
+              icon: "assets/menu/emp_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=true;
@@ -79,7 +79,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isLead,
               title: "Leads",
-              icon: "assets/lead_menu.svg",
+              icon: "assets/menu/lead_menu.svg",
               press: () {
                 isDashbord=false;
                 isCustomer = false;
@@ -96,7 +96,7 @@ class _SideBarState extends State<SideBar> {
             ), DrawerListTile(
               isSelect: isMeeting,
               title: "Meetings",
-              icon: "assets/meeting_menu.svg",
+              icon: "assets/menu/meeting_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=false;
@@ -116,7 +116,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isCustomer,
               title: "Customer",
-              icon: "assets/customer_menu.svg",
+              icon: "assets/menu/customer_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=false;
@@ -136,7 +136,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isreport,
               title: "Reports",
-              icon: "assets/report_menu.svg",
+              icon: "assets/menu/report_menu.svg",
               press: () {
                 isDashbord=false;
                 isEmp=false;
@@ -155,7 +155,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: isProfile,
               title: "Profile",
-              icon: "assets/profile_menu.svg",
+              icon: "assets/menu/profile_menu.svg",
               press: () {
 
                 isDashbord=false;
@@ -174,7 +174,7 @@ class _SideBarState extends State<SideBar> {
             DrawerListTile(
               isSelect: false,
               title: "Log Out",
-              icon: "assets/logout_menu.svg",
+              icon: "assets/menu/logout_menu.svg",
               press: () {
 
                 showAlertDialog(context);
@@ -263,7 +263,8 @@ class DrawerListTile extends StatelessWidget {
               SvgPicture.asset(
                 icon!,
                 color: isSelect?AppColor.white:Colors.grey,
-                height: 16.h,
+                height: 25.h,
+                width: 25.w,
               ),
               SizedBox(width: 27.w,),
               Text(
@@ -272,7 +273,7 @@ class DrawerListTile extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w300,
                 ):TextStyle(
                   color: Colors.black,
                   fontSize: 20.sp,

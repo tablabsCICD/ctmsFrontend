@@ -20,7 +20,7 @@ static String GET_ACTIVITY(id) =>BASE_URL+"api/LeadUpdate/getByLeadId?lead=$id";
 
 static String GET_LEAD_METTING(id) =>BASE_URL+"api/Meetings2/getByLeadId?LeadId=$id";
 
-static String GET_EMPLOYE_ALL_METTING(id) =>BASE_URL+"api/Meetings2/getByEmployeeId?employeeID=$id";
+static String GET_EMPLOYE_ALL_METTING(id) =>BASE_URL+"api/Meetings2/getByEmployeeId?employeeID=1";
 
  static String ASSIGN_PROJECT(id) =>BASE_URL+"api/Lead/getByleadAssignedToId?leadAssignedTo=$id";
 

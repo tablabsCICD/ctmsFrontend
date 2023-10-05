@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/post_lead.dart';
+import 'package:flutter_hr_management/pages/customerdeatils/customer_info.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
@@ -197,18 +198,33 @@ class _LeadDashboard extends State<CustomerList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-             children: [
-              IconButton(onPressed: (){Navigator.of(context).pop();}, icon: Icon(Icons.arrow_back_ios)),
-
+            children: [
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
               Text(
-                "Add Customer",
+                "Back",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColor.black,
-                  fontSize: 25.sp,
+                  fontSize: 16.sp,
                 ),
               ),
             ],
+          ),
+          Center(
+            child: Text(
+              "Add Customer",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
           ),
           SizedBox(height: 20.h),
           Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
@@ -340,7 +356,7 @@ class _LeadDashboard extends State<CustomerList> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextView(
-               title: "All Leads",
+               title: "Customer",
                   fontWeight: FontWeight.w600,
                   color: AppColor.black,
                   fontSize: 30.sp,
@@ -436,7 +452,7 @@ class _LeadDashboard extends State<CustomerList> {
           //Full Name
           InkWell(
             onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => LeadInfo(leadData: emData[index],)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CustomerInfo(leadData: emData[index],)));
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 15),

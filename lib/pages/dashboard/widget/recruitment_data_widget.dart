@@ -83,6 +83,13 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
              padding: EdgeInsets.all(20),
              margin: EdgeInsets.only(left: 15.w),
              child: Table(
+               columnWidths: {
+                 0: FlexColumnWidth(90),
+                 1: FlexColumnWidth(50),
+                 2: FlexColumnWidth(70),
+                 3: FlexColumnWidth(50),
+                 4: FlexColumnWidth(50),
+               },
                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                children: [
                  /// Table Header

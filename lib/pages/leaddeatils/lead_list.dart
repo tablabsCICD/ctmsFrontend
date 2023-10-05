@@ -211,18 +211,33 @@ class _LeadDashboard extends State<LeadDashboard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: (){Navigator.of(context).pop();}, icon: Icon(Icons.arrow_back_ios)),
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
               Text(
-                "Add Lead",
+                "Back",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColor.black,
-                  fontSize: 25.sp,
+                  fontSize: 16.sp,
                 ),
               ),
             ],
+          ),
+          Center(
+            child: Text(
+              "Add Lead",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
           ),
           SizedBox(height: 20.h),
           Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
