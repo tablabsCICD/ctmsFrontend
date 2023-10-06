@@ -9,6 +9,7 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -371,8 +372,8 @@ TextEditingController _passwordController = TextEditingController();
                 context,
                 name: emData[i].firstName!+" "+emData[i].lastName!,
                 color: Colors.blue,
-                image: "assets/img.png",
-                designation: emData[i].role!.name!,
+                image: emData[i].image,
+                designation: emData[i].firstName,
                 status: emData[i].mobileNumber,
                 index: i,
                 email: emData[i].emailId
@@ -401,14 +402,7 @@ TextEditingController _passwordController = TextEditingController();
 
   TableRow tableRow(context, {name, image, designation, status, color,index,email}) {
     return TableRow(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 0.5,
-            ),
-          ),
-        ),
+
         children: [
           //Full Name
           InkWell(
@@ -416,18 +410,17 @@ TextEditingController _passwordController = TextEditingController();
               Navigator.push(context, MaterialPageRoute(builder: (context) => EmpInfo(empData: emData[index])));
             },
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 15),
+              margin: EdgeInsets.symmetric(vertical: 15.h),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(1000),
-                    child: Image.asset(
-                      image,
-                      width: 30,
-                    ),
-                  ),
                   SizedBox(
-                    width: 10,
+                    width: 35.w,
+                  ),
+                  getImage(image,height: 30.h,width: 30.w),
+                  SizedBox(
+                    width: 10.w,
                   ),
                   Center(child: Text(name,style: tableRowStyle()))
                 ],

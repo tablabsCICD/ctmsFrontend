@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/model/response/lead_assign.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,10 +89,7 @@ class _AssignProject extends State<AssignProject>{
       child: Center(
         child: ListTile(
 
-          leading:  CircleAvatar(
-              radius: 40.r,
-              backgroundImage: NetworkImage('assets/user1.jpg')
-          ),
+          leading: getImage('${listLeadActivityData[index].addLogo}',height: 30.h,width: 30.w),
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

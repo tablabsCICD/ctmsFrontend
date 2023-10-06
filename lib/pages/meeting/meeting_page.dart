@@ -12,6 +12,7 @@ import 'package:flutter_hr_management/model/response/meeting_list.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
@@ -67,9 +68,15 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   void initState() {
     // TODO: implement initState
     ApiGetMeeting();
+    getLoginDetail();
     super.initState();
   }
 
+  LocalSharePreferences localSharePreferences = LocalSharePreferences();
+  LoginDeatils? loginDetails;
+  getLoginDetail() async {
+  loginDetails = await localSharePreferences.getLoginData();
+}
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -529,10 +536,23 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = 1;
     createMeeting.employeeId = editSelectedEmpList!;
-    var response = await ApiHelper()
-        .apiPut(ApiConstant.EDIT_MEETING, createMeeting.toJson());
-    print('the response is ${response.response.body}');
-    if (response.status == 200) {
+    Map<String,dynamic> parameter={
+      "active": true,
+      "date": editSelectDate,
+      "description": dec,
+      "id": meetingData.id,
+      "meetingLink": link,
+      "time": editSelectTime,
+      "title": title
+    };
+    print(parameter);
+    var data= jsonEncode(parameter);
+
+    Dio dio=Dio();
+    var response=await dio.put(ApiConstant.EDIT_MEETING,data: data);
+    print('the response is ${response}');
+    if (response.statusCode == 200) {
+      ToastMessage.show(context, "Meeting Edit Success");
       ApiGetMeeting();
       Navigator.of(context).pop();
     }
@@ -690,9 +710,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                    radius: 35.r,
-                    backgroundImage: NetworkImage('assets/user1.jpg')),
+                getImage(meetingData.createdMettingBy!.image!,height: 35.h,width: 35.w),
                 SizedBox(width: 23.w,),
                 Text(meetingData.title.toString()??'',
                  // "Document Update",
@@ -742,9 +760,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                     fontWeight: FontWeight.w300,),
                 ),
                 SizedBox(height:5.h),
-                CircleAvatar(
-                    radius: 20.r,
-                    backgroundImage: NetworkImage('assets/user1.jpg')),
+                getImage('',height: 20.h,width: 20.w),
                 SizedBox(height: 34.h,),
                 Row(
                   children: [
@@ -764,7 +780,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                loginDetails!.data!.id! == meetingData.createdMettingBy!.id ?SizedBox(
                   width: 134.w ,
                   height: 45 .h,
                   child: OutlinedButton(
@@ -787,8 +803,10 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         },
                       ),
                     ),
-                    onPressed: () {
-                      _showEditAlertDialog(meetingData);
+                    onPressed: () async {
+
+                      if(loginDetails!.data!.id! == meetingData.createdMettingBy!.id){
+                      _showEditAlertDialog(meetingData);}
                       setState(() {
                         isJoin = false;
                       });
@@ -801,7 +819,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         ),
                         title: 'Reschedule'),
                   ),
-                ),
+                ):SizedBox.shrink(),
                 SizedBox(
                   width: 23.w,
                 ),

@@ -29,12 +29,15 @@ class Data {
   String? emailId;
   String? mobileNumber;
   String? address;
-  Null? employeeId;
+  String? image;
+  String? employeeId;
   Role? role;
+  int? is_admin;
   int? isActive;
   String? otp;
   String? password;
   String? os;
+  String? status;
   String? deviceId;
 
   Data(
@@ -44,12 +47,15 @@ class Data {
         this.emailId,
         this.mobileNumber,
         this.address,
+        this.image,
         this.employeeId,
         this.role,
         this.isActive,
         this.otp,
         this.password,
         this.os,
+        this.is_admin,
+        this.status,
         this.deviceId});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -59,9 +65,12 @@ class Data {
     emailId = json['emailId'];
     mobileNumber = json['mobileNumber'];
     address = json['address'];
+    image = json['image'];
     employeeId = json['employeeId'];
     role = json['role'] != null ? new Role.fromJson(json['role']) : null;
+    is_admin = json['is_admin'];
     isActive = json['isActive'];
+    status = json['status'];
     otp = json['otp'];
     password = json['password'];
     os = json['os'];
@@ -76,11 +85,14 @@ class Data {
     data['emailId'] = this.emailId;
     data['mobileNumber'] = this.mobileNumber;
     data['address'] = this.address;
+    data['image'] = this.image;
     data['employeeId'] = this.employeeId;
     if (this.role != null) {
       data['role'] = this.role!.toJson();
     }
     data['isActive'] = this.isActive;
+    data['is_admin'] = this.is_admin;
+    data['status'] = this.status;
     data['otp'] = this.otp;
     data['password'] = this.password;
     data['os'] = this.os;
@@ -98,7 +110,7 @@ class Role {
 
   Role.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    name = json['name']??'';
     isActive = json['isActive'];
   }
 

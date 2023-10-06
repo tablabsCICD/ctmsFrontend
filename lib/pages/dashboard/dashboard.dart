@@ -18,15 +18,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: EdgeInsets.all(10),
-      // padding: EdgeInsets.all(10),
-      // decoration: BoxDecoration(
-      //   color: AppColor.white,
-      //   borderRadius: BorderRadius.circular(30),
-      // ),
       child: Column(
         children: [
-          /// Header Part
           HeaderWidget(title: "Dashboard",),
           Expanded(
             child: SingleChildScrollView(

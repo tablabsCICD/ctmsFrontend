@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -126,13 +127,7 @@ class _EmpMeeting extends State<EmpMeeting>{
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(1000),
-                    child: Image.asset(
-                      image,
-                      width: 30,
-                    ),
-                  ),
+                  getImage(image,height: 30.h,width: 30.w),
                   SizedBox(
                     width: 10,
                   ),

@@ -11,6 +11,7 @@ import 'package:flutter_hr_management/model/response/post_lead.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_info.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -389,7 +390,7 @@ class _LeadDashboard extends State<CustomerList> {
                       fontSize: 30.sp,
                     ),
                     Container(
-                      width: 260.w,
+                      width: 270.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -497,13 +498,7 @@ class _LeadDashboard extends State<CustomerList> {
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(1000),
-                    child: Image.asset(
-                      image,
-                      width: 30,
-                    ),
-                  ),
+                  getImage('',height: 30.h,width: 30.w),
                   SizedBox(
                     width: 10,
                   ),

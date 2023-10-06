@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/pages/report/report_data.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/app_colors.dart';
@@ -19,7 +20,7 @@ class _ReportDashboard extends State<ReportDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideBar(),
-      backgroundColor: AppColor.bgSideMenu,
+      backgroundColor: ThemeColor.baground,
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

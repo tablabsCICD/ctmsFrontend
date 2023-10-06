@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/progress_dialog.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,7 +57,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 260.w,
+                      width: 275.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,11 +107,11 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                    context,
                    name: emData[i].firstName!+" "+emData[i].lastName!,
                    color: Colors.blue,
-                   image: "assets/user1.jpg",
-                   designation: emData[i].role!.name,
+                   image: emData[i].image,
+                   designation: emData[i].firstName,
                    contact:emData[i].mobileNumber,
                    gmail:emData[i].emailId,
-                   status: "Practical Round",
+                   status: emData[i].status,
                    isSelected: emData[i].isSelected
                  ),
 
@@ -134,13 +135,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
             margin: EdgeInsets.symmetric(vertical: 15),
             child: Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(1000),
-                  child: Image.asset(
-                    image,
-                    width: 30,
-                  ),
-                ),
+                getImage(image,height: 30.h,width: 30.w),
                 SizedBox(
                   width: 10,
                 ),

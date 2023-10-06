@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,9 +23,9 @@ class _ProfileInfoState extends State<ProfileInfo> {
   void initState() {
     // TODO: implement initState
     inCallData();
-
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return  SingleChildScrollView(
@@ -52,9 +53,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          CircleAvatar(
-                              radius: 100.r,
-                              backgroundImage: NetworkImage('assets/user1.jpg')),
+                          getImage(loginDeatils.data!.image!,height: 200.h,width: 200.w),
                           SizedBox(
                             width: 20.w,
                           ),

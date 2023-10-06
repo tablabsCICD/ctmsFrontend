@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -111,9 +112,7 @@ class _LeadInfo extends State<LeadInfo> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CircleAvatar(
-                                radius: 50.r,
-                                backgroundImage: NetworkImage('assets/user1.jpg')),
+                            getImage('image',height: 50.h,width: 50.w),
                             SizedBox(
                               width: 32.w,
                             ),
@@ -394,6 +393,36 @@ class _LeadInfo extends State<LeadInfo> {
 
   tab(bool isSelect, String title) {
     return Container(
+      width: 250.w,
+      height: 150.h,
+      child: Stack(
+        children: <Widget>[
+          SvgPicture.asset(
+            Images.red_arrow,
+            alignment: Alignment.center,
+            width: 250.w,
+            height: 100.h,
+            color: isSelect ? Color(0xffC3262C) : Colors.white,
+          ),
+
+          Container(
+            transform: Matrix4.translationValues(-30.w, 0, 0.0),
+            height: 100.h,
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: isSelect ? Colors.white : Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );/*Container(
       width: 220.w,
       height: 78.h,
       child: Stack(
@@ -407,7 +436,7 @@ class _LeadInfo extends State<LeadInfo> {
           ),
           Container(
               transform: Matrix4.translationValues(-24.w, 0, 0.0),
-              child: SvgPicture.asset("assets/back_arrow.svg")),
+              child: SvgPicture.asset("assets/images/red_arrow.svg")),
           Container(
             transform: Matrix4.translationValues(-20.w, 0, 0.0),
             height: 78.h,
@@ -425,7 +454,7 @@ class _LeadInfo extends State<LeadInfo> {
           ),
         ],
       ),
-    );
+    );*/
   }
 
   getIconData(String icon, {required  Function() onTap}) {
