@@ -56,44 +56,47 @@ class _EmpMeeting extends State<EmpMeeting>{
             ),
           ),
           SizedBox(height: 20.h,),
-          listMeeting.length>0?
-          Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              /// Table Header
-              TableRow(
-                decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey,
-                        width: 0.5,
-                      )),
-                ),
-                children: [
-                  tableHeader("Subject"),
-                  if (!AppResponsive.isMobile(context))
-                    tableHeader("CreateBy"),
-                  tableHeader("Meeting Link"),
-                  if (!AppResponsive.isMobile(context)) tableHeader("Time"),
+         Container(
+           color: Colors.white,
+           child:  listMeeting.length>0?
+           Table(
+             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+             children: [
+               /// Table Header
+               TableRow(
+                 // decoration: BoxDecoration(
+                 //   border: Border(
+                 //       bottom: BorderSide(
+                 //         color: Colors.grey,
+                 //         width: 0.5,
+                 //       )),
+                 // ),
+                 children: [
+                   tableHeader("Subject"),
+                   if (!AppResponsive.isMobile(context))
+                     tableHeader("CreateBy"),
+                   tableHeader("Meeting Link"),
+                   if (!AppResponsive.isMobile(context)) tableHeader("Time"),
 
-                ],
-              ),
+                 ],
+               ),
 
-              /// Table Data
+               /// Table Data
 
-              for (int i=0;i<listMeeting.length;i++)  tableRow(
-                  context,
-                  time: listMeeting[i].date!+" "+listMeeting[i].time!,
-                  guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
+               for (int i=0;i<listMeeting.length;i++)  tableRow(
+                   context,
+                   time: listMeeting[i].date!+" "+listMeeting[i].time!,
+                   guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
 
-                  image: "assets/user1.jpg",
-                  meetinglink: listMeeting[i].meetingLink,
-                  title: listMeeting[i].title,
-                  index: i
-              ),
+                   image: "assets/user1.jpg",
+                   meetinglink: listMeeting[i].meetingLink,
+                   title: listMeeting[i].title,
+                   index: i
+               ),
 
-            ],
-          ):Center(child: Text("No Any Meeting Found")),
+             ],
+           ):Center(child: Text("No Any Meeting Found")),
+         )
 
         ],
 
@@ -108,7 +111,7 @@ class _EmpMeeting extends State<EmpMeeting>{
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: Colors.grey,
+              color: Colors.white,
               width: 0.5,
             ),
           ),
@@ -165,7 +168,8 @@ class _EmpMeeting extends State<EmpMeeting>{
 
   Widget tableHeader(text) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
+
+      margin: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
       child: Text(
         text,
         style: TextStyle(fontWeight: FontWeight.bold, color: AppColor.black),
