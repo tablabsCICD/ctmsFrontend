@@ -3,11 +3,21 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/model/request/save_emp.dart';
+import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/pages/widget/toast.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/app_colors.dart';
+import '../../model/request/update_emp.dart';
 
 class AddEmployee extends StatefulWidget {
+  final EmpData empData;
+
+  const AddEmployee({Key? key, required this.empData}) : super(key: key);
+
   @override
   _AddEmployeeState createState() => _AddEmployeeState();
 }
@@ -20,6 +30,25 @@ class _AddEmployeeState extends State<AddEmployee> {
   TextEditingController _addLeadController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setData();
+  }
+
+  setData(){
+    _nameController.text=widget.empData.firstName!;
+    _lastnameController.text=widget.empData.lastName!;
+    _emailController.text=widget.empData.emailId!;
+    _phoneController.text=widget.empData.mobileNumber!;
+    _addLeadController.text=widget.empData.address!;
+    setState(() {
+
+    });
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -28,8 +57,28 @@ class _AddEmployeeState extends State<AddEmployee> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
+          Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
+              Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
           Center(child: Text(
-            "Add New Employee",
+            "Edit Employee",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: AppColor.black,
@@ -66,8 +115,8 @@ class _AddEmployeeState extends State<AddEmployee> {
             onTap: _submitForm,
             child: Container(
               decoration: BoxDecoration(
-                  color: AppColor.yellow,
-                  borderRadius: BorderRadius.circular(100)),
+                  color: ThemeColor.theme_blue,
+                  borderRadius: BorderRadius.circular(5)),
               padding: EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 20,
@@ -75,8 +124,9 @@ class _AddEmployeeState extends State<AddEmployee> {
               child: Center(
                 child: Text(
                   "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.black),
+                  style: TextStyle(fontSize: 20.sp,fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500, color: AppColor.white),
                 ),
               ),
             ),
@@ -86,25 +136,25 @@ class _AddEmployeeState extends State<AddEmployee> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: label,
-            labelStyle: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildTextField(String label, TextEditingController controller) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       border: Border.all(color: Colors.black),
+  //       borderRadius: BorderRadius.circular(8),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  //       child: TextField(
+  //         controller: controller,
+  //         decoration: InputDecoration(
+  //           border: InputBorder.none,
+  //           labelText: label,
+  //           labelStyle: TextStyle(color: Colors.black),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _submitForm() async{
     String name = _nameController.text.toString();
@@ -112,21 +162,55 @@ class _AddEmployeeState extends State<AddEmployee> {
     String phone = _phoneController.text.toString();
     String addLead = _addLeadController.text.toString();
     String lastName=_lastnameController.text.toString();
-    SaveEmploye saveEmploye=SaveEmploye();
+    UpdateEMP saveEmploye=UpdateEMP();
+
     saveEmploye.firstName=name;
     saveEmploye.lastName=lastName;
     saveEmploye.os="Web";
     saveEmploye.emailId=email;
     saveEmploye.address=addLead;
     saveEmploye.mobileNumber=phone;
-    saveEmploye.role=2;
+    saveEmploye.id=widget.empData.id;
+    //saveEmploye.=widget.empData.role!.id!;
 
     Dio dio=Dio();
-    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()));
+    var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()));
     if(response.statusCode==200){
-      print('The Employee Added Successfully ');
+      ToastMessage.show(context, "Emp Edit Success");
+      Navigator.pop(context);
     }
 
+  }
+
+
+  Widget _buildTextField(String label,TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+        ),
+        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: label,
+                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
 

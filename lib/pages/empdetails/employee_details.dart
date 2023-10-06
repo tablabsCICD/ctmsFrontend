@@ -7,6 +7,7 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
+import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -81,11 +82,11 @@ TextEditingController _passwordController = TextEditingController();
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("10","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
+                empCounts("${emData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
                 SizedBox(width: 38.w,),
-                empCounts("10","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
+                empCounts("0","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
                 SizedBox(width: 38.w,),
-                empCounts("10","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
               ],
             ),
           ),
@@ -438,13 +439,27 @@ TextEditingController _passwordController = TextEditingController();
           if (!AppResponsive.isMobile(context)) Center(child: Text(email,style: tableRowStyle())),
           Center(child: Text(status,style: tableRowStyle())),
           // Menu icon
-          if (!AppResponsive.isMobile(context))
-            InkWell(
-              onTap: (){
+            Row(
+              children: [
 
-                showAlertDialog(context,index);
-              },
-              child: Icon(Icons.delete,size: 30,color: Colors.red,),
+                InkWell(
+                  onTap: (){
+                    editEmp(index);
+
+                  },
+                  child: Icon(Icons.edit,size: 20,color: Colors.grey,),
+                ),
+                SizedBox(width: 7,),
+                InkWell(
+                  onTap: (){
+
+                    showAlertDialog(context,index);
+                  },
+                  child: Icon(Icons.delete,size: 20,color: Colors.red,),
+                ),
+
+
+              ],
             )
         ]);
   }
@@ -647,5 +662,42 @@ TextEditingController _passwordController = TextEditingController();
         ],
       ),
     );
+  }
+
+
+  editEmp(int index) async{
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
+          title: const Text(''),
+          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: 1024.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: AddEmployee(empData: emData[index],),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
+        );
+      },
+    );
+    ApiGetData("");
   }
 }

@@ -7,4 +7,6 @@ class Constants {
 
 
   static List<EmpData>allEmployee=[];
+  static String LOGIN_NAME="";
+  static String PROFILE="";
 }

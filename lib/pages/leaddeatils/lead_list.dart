@@ -169,7 +169,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Lead','700','',true,Colors.green.shade50),
+                leadCountCard('Total Lead','${emData.length}','',true,Colors.green.shade50),
                 SizedBox(width: 32.w,),
                 leadCountCard('Converted','300','',false,Colors.red.shade50),
                 SizedBox(width: 32.w,),
@@ -519,7 +519,9 @@ class _LeadDashboard extends State<LeadDashboard> {
                     tableHeader("Client"),
                     tableHeader("Project"),
                     tableHeader("Contact"),
+                   // tableHeader("Status"),
                     tableHeader(""),
+
                     /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
@@ -539,7 +541,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                  project: emData[i].lead!.companyName,
                     contact: emData[i].lead!.mobileNumber,
                  // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                  status: emData[i].lead!.leadAddedBy!.firstName,
+                 // status: emData[i].leadUpdates![0].status,
                   index: i
                 ),
 
@@ -591,6 +593,8 @@ class _LeadDashboard extends State<LeadDashboard> {
           TextView(title: client, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           TextView(title: project, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+         // TextView(title: status.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+
           Row(
             children: [
               InkWell(onTap:(){
@@ -889,7 +893,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           ),
           Center(
             child: Text(
-              "Add Lead",
+              "Edit Lead",
               style: TextStyle(
                 fontFamily:
                 GoogleFonts.poppins().fontFamily,

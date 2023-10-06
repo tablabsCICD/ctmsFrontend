@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/widget/editText_email.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/app_colors.dart';
 import '../../../common/app_responsive.dart';
+import '../../../constant/constants.dart';
 
 class HeaderWidget extends StatefulWidget {
   final String title;
@@ -22,6 +25,14 @@ class HeaderWidget extends StatefulWidget {
 }
 
 class _HeaderWidgetState extends State<HeaderWidget> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getLoginDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,7 +103,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         ),
       ),
       SizedBox(width: 18.w,),
-      TextView(title: "Name Last", fontSize: 20.sp, color: Colors.black, fontWeight: FontWeight.w500),
+      TextView(title: Constants.LOGIN_NAME, fontSize: 20.sp, color: Colors.black, fontWeight: FontWeight.w500),
       SizedBox(width: 20.w,)
 
 
@@ -174,5 +185,14 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         ),
       ),
     );
+  }
+
+  void getLoginDetails() async{
+  LoginDeatils deatils = await LocalSharePreferences().getLoginData();
+  Constants.LOGIN_NAME=deatils.data!.firstName!+" "+deatils.data!.lastName!;
+  setState(() {
+
+  });
+
   }
 }

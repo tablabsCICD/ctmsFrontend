@@ -148,7 +148,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 child: Row(
                   children: [
                     Text(
-                      'Today Meeting',
+                      'Your Meeting',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 30.sp,
