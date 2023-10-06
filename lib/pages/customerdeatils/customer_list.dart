@@ -19,6 +19,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
+import '../../model/response/custmer_list.dart';
 import '../../model/response/employeelist.dart';
 import '../../model/response/lead_list.dart';
 import '../../utils/constant.dart';
@@ -32,7 +33,6 @@ class CustomerList extends StatefulWidget {
 }
 
 class _LeadDashboard extends State<CustomerList> {
-
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -42,24 +42,20 @@ class _LeadDashboard extends State<CustomerList> {
 
   TextEditingController _typeOfBusinessController = TextEditingController();
 
-
-  List<LeadData>emData=[];
-  bool isLoad=false;
-  late EmpData empData =EmpData();
+  List<CustomerData> emData = [];
+  bool isLoad = false;
+  late EmpData empData = EmpData();
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog( // <-- SEE HERE
+        return AlertDialog(
+          // <-- SEE HERE
           title: const Text(''),
           content: SingleChildScrollView(
-            child: SizedBox(
-              height: 1024.h,
-              width: 408.w,
-              child: addLead()
-            ),
+            child: SizedBox(height: 1024.h, width: 408.w, child: addLead()),
           ),
         );
       },
@@ -84,7 +80,9 @@ class _LeadDashboard extends State<CustomerList> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(title: "Customer Data",),
+          HeaderWidget(
+            title: "Customer Data",
+          ),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(
@@ -94,7 +92,7 @@ class _LeadDashboard extends State<CustomerList> {
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.sp,
-                    fontFamily:GoogleFonts.poppins().fontFamily,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w600,
                     height: 0,
                   ),
@@ -103,30 +101,40 @@ class _LeadDashboard extends State<CustomerList> {
                 Row(
                   children: [
                     filterIconButton(),
-                    SizedBox(width: 27.w,),
                     SizedBox(
-                      height: 58.h,
-                      width: 180.w,
-                      child: ElevatedButton(
-                          onPressed: (){
-                            _showAlertDialog();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: ThemeColor.theme_blue,
-                            onPrimary: Colors.white
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_circle,size:18,),
-                              SizedBox(width: 6.w,),
-                              TextView(
-                               title: "Add Customer",
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400, color: Colors.white,
-                              ),
-                            ],
-                          )),
+                      width: 27.w,
+                    ),
+                    Visibility(
+                      visible:false,
+                      child: SizedBox(
+                        height: 58.h,
+                        width: 180.w,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              _showAlertDialog();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: ThemeColor.theme_blue,
+                                onPrimary: Colors.white),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_circle,
+                                  size: 18,
+                                ),
+                                SizedBox(
+                                  width: 6.w,
+                                ),
+                                TextView(
+                                  title: "Add Customer",
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            )),
+                      ),
                     )
                   ],
                 ),
@@ -136,7 +144,7 @@ class _LeadDashboard extends State<CustomerList> {
 
           Expanded(
             child: SingleChildScrollView(
-              child:/* Row(
+                child: /* Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -180,16 +188,14 @@ class _LeadDashboard extends State<CustomerList> {
                     ),
                 ],
               ),*/
-              leadList()
-            ),
+                    leadList()),
           ),
         ],
       ),
     );
   }
 
-
-  addLead(){
+  addLead() {
     return Container(
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
@@ -203,8 +209,12 @@ class _LeadDashboard extends State<CustomerList> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -227,20 +237,27 @@ class _LeadDashboard extends State<CustomerList> {
             ),
           ),
           SizedBox(height: 20.h),
-          Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
+          Center(
+              child: SvgPicture.asset('assets/upload_profile.svg',
+                  height: 202.h, width: 202.w)),
           SizedBox(height: 16.h),
-          _buildTextField('First Name','Please enter your first name', _nameController),
+          _buildTextField(
+              'First Name', 'Please enter your first name', _nameController),
           SizedBox(height: 16.h),
-          _buildTextField('Last Name','Please enter your last name', _nameController),
+          _buildTextField(
+              'Last Name', 'Please enter your last name', _nameController),
           SizedBox(height: 16.h),
-          _buildTextField('Email','Please enter your email ID', _emailController),
+          _buildTextField(
+              'Email', 'Please enter your email ID', _emailController),
           SizedBox(height: 16.h),
-          _buildTextField('Phone','Please enter your phone number', _phoneController),
+          _buildTextField(
+              'Phone', 'Please enter your phone number', _phoneController),
           SizedBox(height: 16.h),
-         // _buildTextField('Name Coordinator', _coordinatorController),
-       //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
+          // _buildTextField('Name Coordinator', _coordinatorController),
+          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
           SizedBox(height: 16.h),
-          _buildTextField('Project Name', 'Please select',_sourceofleadController),
+          _buildTextField(
+              'Project Name', 'Please select', _sourceofleadController),
 
           SizedBox(height: 16.h),
 
@@ -272,7 +289,8 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
-  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
@@ -286,173 +304,194 @@ class _LeadDashboard extends State<CustomerList> {
             border: InputBorder.none,
             labelText: label,
             hintText: hint,
-            labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),
-            hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+            labelStyle: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300),
+            hintStyle: TextStyle(
+                color: Color(0xffcccccc),
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w300),
           ),
         ),
       ),
     );
   }
 
-  void _submitForm() async{
-
-   LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+  void _submitForm() async {
+    LoginDeatils loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
-    SaveLeadRequest saveEmploye=SaveLeadRequest();
-    saveEmploye.companyName=name;
-    saveEmploye.coordinator=_coordinatorController.text;
-    saveEmploye.emailId=email;
-    saveEmploye.mobileNumber=phone;
-    saveEmploye.address=_addressController.text;
-    saveEmploye.sourceOfLead=_sourceofleadController.text;
-    saveEmploye.typeOfBusiness=_typeOfBusinessController.text;
-    saveEmploye.leadAssignedTo=empData.id;
-    saveEmploye.leadAddedBy=loginDeatils.data!.id;
+    SaveLeadRequest saveEmploye = SaveLeadRequest();
+    saveEmploye.companyName = name;
+    saveEmploye.coordinator = _coordinatorController.text;
+    saveEmploye.emailId = email;
+    saveEmploye.mobileNumber = phone;
+    saveEmploye.address = _addressController.text;
+    saveEmploye.sourceOfLead = _sourceofleadController.text;
+    saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
+    saveEmploye.leadAssignedTo = empData.id;
+    saveEmploye.leadAddedBy = loginDeatils.data!.id;
     EasyLoading.show(status: "Loading");
-    Dio dio=Dio();
+    Dio dio = Dio();
     //try{
-      var response=await dio.post(ApiConstant.SAVE_LEAD,data: jsonEncode(saveEmploye.toJson()));
-      print('the body ${response.data}');
-      if(response.statusCode==200){
-
-        PostLead postLead =PostLead.fromJson(jsonDecode(response.data));
-        Map<String,dynamic> parameter={
-          "date":GetDateFormat.getCurrentDate(),
-          "lead":postLead.data!.id,
-          "nextFollowUpBy":empData.id,
-          "potential":"10",
-          "status":"Pending",
-          "updatedByUser":loginDeatils.data!.id,
-          "description":" Lead Created "
-        };
-        var para= jsonEncode(parameter);
-        var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
-        if(leadResponse.statusCode==200){
-          print('done is done ');
+    var response = await dio.post(ApiConstant.SAVE_LEAD,
+        data: jsonEncode(saveEmploye.toJson()));
+    print('the body ${response.data}');
+    if (response.statusCode == 200) {
+      PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
+      Map<String, dynamic> parameter = {
+        "date": GetDateFormat.getCurrentDate(),
+        "lead": postLead.data!.id,
+        "nextFollowUpBy": empData.id,
+        "potential": "10",
+        "status": "Pending",
+        "updatedByUser": loginDeatils.data!.id,
+        "description": " Lead Created "
+      };
+      var para = jsonEncode(parameter);
+      var leadResponse =
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+      if (leadResponse.statusCode == 200) {
+        print('done is done ');
       }
-        ApiGetData("");
-      }else{
-        ToastMessage.show(context, "Please try Again");
-      }
-      EasyLoading.dismiss();
+      ApiGetData("");
+    } else {
+      ToastMessage.show(context, "Please try Again");
+    }
+    EasyLoading.dismiss();
     // }catch(e){
     //   EasyLoading.dismiss();
     // }
-
-
   }
 
-  leadList(){
-   return isLoad?Center(child: CircularProgressIndicator(),) :Container(
-      /*decoration: BoxDecoration(
+  leadList() {
+    return isLoad
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            /*decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(left: 15.w),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextView(
-               title: "Customer",
-                  fontWeight: FontWeight.w600,
-                  color: AppColor.black,
-                  fontSize: 30.sp,
-
-              ),
-              Container(
-                width: 260.w,
-                margin: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+            padding: EdgeInsets.all(20),
+            margin: EdgeInsets.only(left: 15.w),
+            child: Column(
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(onPressed: (){},
-                        icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                    Text("Showing ${emData.length} out of ${emData.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                    GoogleFonts.poppins().fontFamily),),
-                    IconButton(onPressed: (){},
-                        icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                    TextView(
+                      title: "Customer",
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.black,
+                      fontSize: 30.sp,
+                    ),
+                    Container(
+                      width: 260.w,
+                      margin: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.arrow_back_ios,
+                                size: 16,
+                              )),
+                          Text(
+                            "Showing ${emData.length} out of ${emData.length} Results",
+                            style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: GoogleFonts.poppins().fontFamily),
+                          ),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ))
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        /*  Divider(
+                /*  Divider(
             thickness: 0.5,
             color: Colors.grey,
           ),*/
-          SizedBox(height: 25.h,),
-          Container(
-            decoration: BoxDecoration(
-                color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(20),
-            child: Table(
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                /// Table Header
-                TableRow(
-                  /*decoration: BoxDecoration(
+                SizedBox(
+                  height: 25.h,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: AppColor.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(20),
+                  child: Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        /*decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
                           color: Colors.grey,
                           width: 0.5,
                         )),
                   ),*/
-                  children: [
-                    tableHeader("Name"),
-                    tableHeader("Project Name"),
-                    tableHeader("Gmail"),
-                    tableHeader("Contact"),
-                    tableHeader("Edit"),
-                    /*if (!AppResponsive.isMobile(context))
+                        children: [
+                          tableHeader("Company Name"),
+                          tableHeader("Type Of Business"),
+                          tableHeader("Email"),
+                          tableHeader("Contact"),
+                          tableHeader(""),
+                          /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
                     if (!AppResponsive.isMobile(context)) tableHeader(""),*/
+                        ],
+                      ),
 
-                  ],
+                      /// Table Data
+
+                      for (int i = 0; i < emData.length; i++)
+                        tableRow(context,
+                            name: emData[i].companyName,
+                            color: Colors.blue,
+                            image: "assets/user1.jpg",
+                            client: emData[i].typeOfBusiness,
+                            project: emData[i].emailId,
+                            contact: emData[i].mobileNumber,
+                            // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                            status: emData[i].leadconvertedByEmployee,
+                            index: i),
+                    ],
+                  ),
                 ),
-
-                /// Table Data
-
-                for (int i=0;i<emData.length;i++)  tableRow(
-                    context,
-                  name: emData[i].lead!.leadAddedBy!.firstName,
-                  color: Colors.blue,
-                  image: "assets/user1.jpg",
-                  client: emData[i].lead!.companyName,
-                 project: emData[i].lead!.companyName,
-                    contact: emData[i].lead!.mobileNumber,
-                 // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                  status: emData[i].lead!.leadAddedBy!.firstName,
-                  index: i
-                ),
-
               ],
             ),
-          ),
-
-        ],
-      ),
-    );
+          );
   }
 
-  TableRow tableRow(context, {name, image, client, project,status, color, index, String? contact}) {
+  TableRow tableRow(context,
+      {name, image, client, project, status, color, index, String? contact}) {
     return TableRow(
         decoration: BoxDecoration(
-         /* border: Border(
+            /* border: Border(
             bottom: BorderSide(
               color: Colors.grey,
               width: 0.5,
             ),
           ),*/
-        ),
+            ),
         children: [
           //Full Name
           InkWell(
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CustomerInfo(leadData: emData[index],)));
+            onTap: () {
+              //  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CustomerInfo(leadData: emData[index],)));
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 15),
@@ -468,78 +507,72 @@ class _LeadDashboard extends State<CustomerList> {
                   SizedBox(
                     width: 10,
                   ),
-                  TextView(title: name, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
+                  TextView(
+                      title: name,
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w300)
                 ],
               ),
             ),
           ),
 
-          TextView(title: client, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          TextView(title: project, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          Container(
-            height: 27.h,
-            width: 50.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.blue.shade50
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.circle,size: 8,color: Colors.blue),
-                SizedBox(width: 9.w,),
-                Text(
-                  "In-Progress",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 15.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
-          )
+          TextView(
+              title: client,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: project,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: contact.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          InkWell(
+              onTap: () {
+                callDelete(index);
+              },
+              child: Icon(Icons.delete, color: Colors.red)),
         ]);
   }
 
   Widget tableHeader(text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
-      child: TextView(title: text, fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w900),
-
+      child: TextView(
+          title: text,
+          fontSize: 18.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w900),
     );
   }
 
-  Future<void> ApiGetData(String URL) async{
-
-    isLoad=true;
-    setState(() {
-
-    });
+  Future<void> ApiGetData(String URL) async {
+    isLoad = true;
+    setState(() {});
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD);
+    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER);
     print(response.data);
-    if(response.statusCode==200){
-      LeadList employeeList =LeadList.fromJson(jsonDecode(response.data));
+    if (response.statusCode == 200) {
+      CustomerListModel employeeList =
+          CustomerListModel.fromJson(jsonDecode(response.data));
       emData.clear();
       emData.addAll(employeeList.data!);
       print('this is ${emData.length}');
-      isLoad=false;
-      setState(() {
-      });
+      isLoad = false;
+      setState(() {});
     }
   }
 
-
-  showAlertDialog(BuildContext context,int index) {
+  showAlertDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
       child: Text("Ok"),
-      onPressed: () async{
+      onPressed: () async {
         callDelete(index);
         Navigator.pop(context);
       },
@@ -549,7 +582,6 @@ class _LeadDashboard extends State<CustomerList> {
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
-
       },
     );
 
@@ -557,10 +589,7 @@ class _LeadDashboard extends State<CustomerList> {
     AlertDialog alert = AlertDialog(
       title: Text("Delete !"),
       content: Text("Do you want to delete this lead ?"),
-      actions: [
-        okButton,
-        cancelButton
-      ],
+      actions: [okButton, cancelButton],
     );
 
     // show the dialog
@@ -572,27 +601,21 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
-  void callDelete(int index) async{
-
-    Dio dio=Dio();
-    var response=await dio.delete(ApiConstant.LEAD_DELTEB,queryParameters: {
-      "id":emData[index].lead!.id!
-    });
-    if(response.statusCode==200){
+  void callDelete(int index) async {
+    Dio dio = Dio();
+    var response = await dio.delete(ApiConstant.LEAD_DELTEB,
+        queryParameters: {"id": emData[index].id});
+    if (response.statusCode == 200) {
       emData.removeAt(index);
-      setState(() {
-
-      });
-
-    }else{
+      setState(() {});
+    } else {
       ToastMessage.show(context, "Please try Again");
     }
   }
 
-
   Widget _buildText(String label) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -615,12 +638,7 @@ class _LeadDashboard extends State<CustomerList> {
             //margin: EdgeInsets.only(top: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    label
-                ),
-                Icon(Icons.arrow_drop_down_outlined)
-              ],
+              children: [Text(label), Icon(Icons.arrow_drop_down_outlined)],
             ),
           ),
         ),
@@ -628,36 +646,38 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
-  getAllEmployee()async{
-    Dio dio=Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
+  getAllEmployee() async {
+    Dio dio = Dio();
+    final response = await dio.get(ApiConstant.BASE_URL + "/Employee/getAll");
     print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+    if (response.statusCode == 200) {
+      EmployeeList employeeList =
+          EmployeeList.fromJson(jsonDecode(response.data));
       Constants.allEmployee.clear();
       Constants.allEmployee.addAll(employeeList.data!);
     }
   }
-  Widget setupAlertDialoadContainer(){
 
+  Widget setupAlertDialoadContainer() {
     return Container(
       height: 300.0, // Change as per your requirement
       width: 300.0, // Change as per your requirement
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount:  Constants.allEmployee.length,
+        itemCount: Constants.allEmployee.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-            onTap: (){
+            onTap: () {
               // selectRole=dataRole[index].id!;
               // selectedRole=dataRole[index].name!;
-              empData=Constants.allEmployee[index];
+              empData = Constants.allEmployee[index];
               Navigator.pop(context);
-              setState(() {
-              });
+              setState(() {});
             },
             child: ListTile(
-              title: Text( Constants.allEmployee[index].firstName!+" "+Constants.allEmployee[index].lastName!),
+              title: Text(Constants.allEmployee[index].firstName! +
+                  " " +
+                  Constants.allEmployee[index].lastName!),
             ),
           );
         },
@@ -665,10 +685,15 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
-
-  leadCountCard(String title,String count,String img, bool isSelected, Color bgColor,){
+  leadCountCard(
+    String title,
+    String count,
+    String img,
+    bool isSelected,
+    Color bgColor,
+  ) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         setState(() {
           isSelected = true;
         });
@@ -679,9 +704,10 @@ class _LeadDashboard extends State<CustomerList> {
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 0.50, color: isSelected?Color(0xFFC3262C):Colors.white),
+            side: BorderSide(
+                width: 0.50,
+                color: isSelected ? Color(0xFFC3262C) : Colors.white),
             borderRadius: BorderRadius.circular(10),
-
           ),
         ),
         child: Row(
@@ -696,14 +722,28 @@ class _LeadDashboard extends State<CustomerList> {
                 color: bgColor,
                 shape: CircleBorder(),
               ),
-              child: SvgPicture.asset(Images.emp_tot,height: 50.h,width: 50.w,),
+              child: SvgPicture.asset(
+                Images.emp_tot,
+                height: 50.h,
+                width: 50.w,
+              ),
             ),
-            SizedBox(width: 17.w,),
+            SizedBox(
+              width: 17.w,
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextView(title: count, fontSize: 35.sp, color: AppColor.black, fontWeight: FontWeight.w600),
-                TextView(title: title, fontSize: 20.sp, color: Color(0xff6C6C6C), fontWeight: FontWeight.w300)
+                TextView(
+                    title: count,
+                    fontSize: 35.sp,
+                    color: AppColor.black,
+                    fontWeight: FontWeight.w600),
+                TextView(
+                    title: title,
+                    fontSize: 20.sp,
+                    color: Color(0xff6C6C6C),
+                    fontWeight: FontWeight.w300)
               ],
             )
           ],

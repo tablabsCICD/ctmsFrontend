@@ -20,6 +20,7 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/request/save_emp.dart';
 import '../../model/response/employeelist.dart';
 import '../../model/response/meeting_by_employee.dart';
@@ -174,7 +175,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                     crossAxisCount: 3,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 12,
-                    itemCount: meetingList.length-1,///meetingList.length,
+                    itemCount: meetingList.length,///meetingList.length,
                     itemBuilder: (context, index) {
                       return meetingDetailCard(meetingList[index]);
                     }
@@ -189,7 +190,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  addMeeting() {
+  addMeeting(StateSetter setState) {
     return Container(
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
@@ -197,8 +198,10 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 5.h,),
           Row(
             children: [
+
               InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
@@ -227,11 +230,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             ),
           ),
           SizedBox(height: 20.h),
-          _buildTextField('Title', _meetingTitleController),
+          _buildTextField('Title', 'Title',_meetingTitleController),
           SizedBox(height: 16),
-          _buildTextField('Description', _meetingDecController),
+          _buildTextField('Description','Description' ,_meetingDecController),
           SizedBox(height: 16),
-          _buildTextField('Link', _meetingLinkController),
+          _buildTextField('Link','Link' ,_meetingLinkController),
           SizedBox(height: 16),
           _buildText(selectDate, () async {
             selectDate = await DateTimePickerDialog().pickDateDialog(context);
@@ -291,31 +294,33 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(5.r),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: label,
-            hintText: label,
-            labelStyle: TextStyle(
-                color: Color(0xff1B1B1B),
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w300),
-            hintStyle: TextStyle(
-                color: Color(0xffcccccc),
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w300),
+  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+        ),
+        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -326,6 +331,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 10.w),
         height: 60.h,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
@@ -663,9 +669,12 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       ),
                     ),
                     onPressed: () {
+                      _launchUrl(meetingData.meetingLink!);
+
                       setState(() {
                         isJoin = true;
                       });
+
 
                     },
                     child: Textview(
@@ -688,6 +697,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    Uri _url = Uri.parse(url);
+    await launchUrl(_url,mode: LaunchMode.externalApplication,);
   }
 
   TableRow tableRow(context, {title, image, guest, meetinglink, time, index}) {
@@ -772,14 +786,53 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          // <-- SEE HERE
+          backgroundColor: Colors.transparent,// <-- SEE HERE
           title: const Text(''),
-          content: SingleChildScrollView(
-            child: SizedBox(height: 1024.h, width: 408.w, child: addMeeting()),
-          ),
-        );
+          content:StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: 1024.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: addMeeting(setState),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
+        );;
       },
     );
+
+    //SingleChildScrollView(
+    //             child: Container(
+    //                 color: Colors.transparent,
+    //                 height: 1024.h,
+    //                 width: MediaQuery.of(context).size.width,
+    //                 child: Stack(
+    //                   children: [
+    //                     Align(
+    //                       alignment: Alignment.centerRight,
+    //                       child: Container(
+    //                         color: Colors.transparent,
+    //                         width: 408.w,
+    //                         child: addMeeting(),
+    //                       ),
+    //                     )
+    //                   ],
+    //                 )
+    //             ),
+    //           )
   }
 
   meetingCard(
@@ -848,4 +901,36 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       ),
     );
   }
+
+  // Future<void> _showEditAlertDialog() async {
+  //   return showDialog<void>(
+  //     context: context,
+  //     barrierDismissible: false, // user must tap button!
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         backgroundColor: Colors.transparent,// <-- SEE HERE
+  //         title: const Text(''),
+  //         content: SingleChildScrollView(
+  //           child: Container(
+  //               color: Colors.transparent,
+  //               height: 1024.h,
+  //               width: MediaQuery.of(context).size.width,
+  //               child: Stack(
+  //                 children: [
+  //                   Align(
+  //                     alignment: Alignment.centerRight,
+  //                     child: Container(
+  //                       color: Colors.transparent,
+  //                       width: 408.w,
+  //                       child: addMeeting(),
+  //                     ),
+  //                   )
+  //                 ],
+  //               )
+  //           ),
+  //         ),
+  //       );;
+  //     },
+  //   );
+  // }
 }

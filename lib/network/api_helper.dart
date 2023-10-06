@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../model/api_response.dart';
 
@@ -55,6 +56,19 @@ class ApiHelper{
       ApiResponse apiResponseHelper = ApiResponse(request.statusCode!, null);
       return apiResponseHelper;
     }
+  }
+
+
+  Future<String> uploadImage(XFile file) async {
+    EasyLoading.show(status: "Uploading");
+    String fileName = file.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "profilePicture":
+      await MultipartFile.fromFile(file.path, filename:fileName),
+    });
+    var response = await dio.post("http://ec2-3-111-144-125.ap-south-1.compute.amazonaws.com:8080/TKDConnect1/api/saveImage", data: formData);
+    EasyLoading.dismiss();
+    return response.data;
   }
 
 

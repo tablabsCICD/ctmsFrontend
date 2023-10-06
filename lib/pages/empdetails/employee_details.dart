@@ -614,7 +614,7 @@ TextEditingController _passwordController = TextEditingController();
               height: 110.h,
               decoration: ShapeDecoration(
                 color: color,//Color(0xFFEAF8F4)
-                shape: OvalBorder(),
+                shape: CircleBorder(),
 
               ),
             child: Padding(

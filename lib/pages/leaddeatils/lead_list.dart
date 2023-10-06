@@ -21,9 +21,13 @@ import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
 import '../../model/response/lead_list.dart';
 import '../../utils/constant.dart';
+import '../../utils/image_upload.dart';
 import '../../utils/sharepreferences.dart';
 import '../dashboard/widget/header_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../widget/employee_dialog.dart';
+import '../widget/one_emp_dilaog.dart';
 
 class LeadDashboard extends StatefulWidget {
   @override
@@ -41,27 +45,56 @@ class _LeadDashboard extends State<LeadDashboard> {
   TextEditingController _typeOfBusinessController = TextEditingController();
 
 
+
+  TextEditingController _editnameController = TextEditingController();
+  TextEditingController _editemailController = TextEditingController();
+  TextEditingController _editphoneController = TextEditingController();
+  TextEditingController _editsourceofleadController = TextEditingController();
+  TextEditingController _editcoordinatorController = TextEditingController();
+  TextEditingController _editaddressController = TextEditingController();
+  TextEditingController _edittypeOfBusinessController = TextEditingController();
+
   List<LeadData>emData=[];
   bool isLoad=false;
   late EmpData empData =EmpData();
+  int selectedEmp=0;
+  int editselectedEmp=0;
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog( // <-- SEE HERE
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
           title: const Text(''),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              height: 1024.h,
-              width: 408.w,
-              child: addLead()
-            ),
-          ),
+          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: 1024.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: addLead(setState),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
         );
       },
     );
+
+
   }
 
   @override
@@ -201,8 +234,9 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
 
-  addLead(){
+  addLead(StateSetter stateSetter){
     return Container(
+      width: 408.w,
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
@@ -241,11 +275,26 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           SizedBox(height: 20.h),
-          Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
+          Center(child: InkWell(onTap:(){
+           // ImageUpload().postImage(context);
+    },child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w))),
           SizedBox(height: 16.h),
-          _buildTextField('First Name','Please enter your first name', _nameController),
+          _buildTextField('Company Name','Please Comapny name', _nameController),
           SizedBox(height: 16.h),
-          _buildTextField('Last Name','Please enter your last name', _nameController),
+          _buildText('${selectedEmp==0?"Select Employee ":"One Employee Selected"}', () async {
+            int list = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return EmpDialogOne();
+                });
+           // print('the list is ${list}');
+            selectedEmp=list;
+            print('the list is$selectedEmp');
+            stateSetter(() {
+              selectedEmp=list;
+            });
+
+          }),
           SizedBox(height: 16.h),
           _buildTextField('Email','Please enter your email ID', _emailController),
           SizedBox(height: 16.h),
@@ -257,11 +306,12 @@ class _LeadDashboard extends State<LeadDashboard> {
           _buildTextField('Source Of Lead', 'Please select',_sourceofleadController),
 
           SizedBox(height: 16.h),
-
+          _buildTextField('typeOfBusiness',"Enter type of business" ,_typeOfBusinessController),
           /*ElevatedButton(
             onPressed: _submitForm,
             child: Center(child: Text('Submit')),
           ),*/
+          SizedBox(height: 16.h),
           InkWell(
             onTap: _submitForm,
             child: Container(
@@ -287,27 +337,62 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  Widget _buildTextField(String label, String hint,TextEditingController controller) {
-    return Container(
-      /*decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(5.r),
-      ),*/
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                borderSide: BorderSide.none),
-            labelText: label,
-            hintText: hint,
-            labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),
-            hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+  Widget _buildText(String label, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        height: 60.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w300),
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+        ),
+        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -318,14 +403,15 @@ class _LeadDashboard extends State<LeadDashboard> {
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
     SaveLeadRequest saveEmploye=SaveLeadRequest();
+    saveEmploye.id=1;
     saveEmploye.companyName=name;
-    saveEmploye.coordinator=_coordinatorController.text;
+    saveEmploye.coordinator="Parag Kumbhar";
     saveEmploye.emailId=email;
     saveEmploye.mobileNumber=phone;
     saveEmploye.address=_addressController.text;
     saveEmploye.sourceOfLead=_sourceofleadController.text;
     saveEmploye.typeOfBusiness=_typeOfBusinessController.text;
-    saveEmploye.leadAssignedTo=empData.id;
+    saveEmploye.leadAssignedTo=selectedEmp;
     saveEmploye.leadAddedBy=loginDeatils.data!.id;
     EasyLoading.show(status: "Loading");
     Dio dio=Dio();
@@ -433,7 +519,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                     tableHeader("Client"),
                     tableHeader("Project"),
                     tableHeader("Contact"),
-                    tableHeader("Status"),
+                    tableHeader(""),
                     /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
@@ -505,31 +591,18 @@ class _LeadDashboard extends State<LeadDashboard> {
           TextView(title: client, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           TextView(title: project, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          Container(
-            height: 27.h,
-            width: 50.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.blue.shade50
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.circle,size: 8,color: Colors.blue),
-                SizedBox(width: 9.w,),
-                Text(
-                  "In-Progress",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 15.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              InkWell(onTap:(){
+                showAlertDialog(context,index);
+              },child: Icon(Icons.delete,color: Colors.red)),
+              SizedBox(
+                width: 5.w,
+              ),
+              InkWell(onTap:(){
+                editleadDilaog(emData[index]);
+              },child: Icon(Icons.edit,color: Colors.grey)),
+            ],
           )
         ]);
   }
@@ -618,7 +691,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
 
-  Widget _buildText(String label) {
+  Widget _buildTextOne(String label) {
     return InkWell(
       onTap: (){
         showDialog(
@@ -738,5 +811,207 @@ class _LeadDashboard extends State<LeadDashboard> {
         ),
       ),
     );
+  }
+
+  editleadDilaog(LeadData leadData){
+    editselectedEmp=leadData.lead!.leadAssignedTo!.id!;
+    _editnameController.text =leadData.lead!.companyName!;
+     _editemailController.text=leadData.lead!.emailId!;
+    _editphoneController.text=leadData.lead!.mobileNumber!;
+     _editsourceofleadController.text= leadData.lead!.sourceOfLead!;
+     _editcoordinatorController.text=leadData.lead!.coordinator!;
+     _editaddressController.text=leadData.lead!.address!;
+     _edittypeOfBusinessController.text= leadData.lead!.typeOfBusiness!;
+
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
+          title: const Text(''),
+          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: 1024.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: EditLeadLead(leadData,setState),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
+        );
+      },
+    );
+
+  }
+
+  EditLeadLead(LeadData leadData,StateSetter stateSetter){
+    return Container(
+      width: 408.w,
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
+              Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
+          Center(
+            child: Text(
+              "Add Lead",
+              style: TextStyle(
+                fontFamily:
+                GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
+          SizedBox(height: 16.h),
+          _buildTextField('Company Name','Please Comapny name', _editnameController),
+          SizedBox(height: 16.h),
+          _buildText('${editselectedEmp==0?"Select Employee ":"One Employee Selected"}', () async {
+            int list = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return EmpDialogOne();
+                });
+            // print('the list is ${list}');
+            editselectedEmp=list;
+            print('the list is$selectedEmp');
+            stateSetter(() {
+              editselectedEmp=list;
+            });
+
+          }),
+          SizedBox(height: 16.h),
+          _buildTextField('Email','Please enter your email ID', _editemailController),
+          SizedBox(height: 16.h),
+          _buildTextField('Phone','Please enter your phone number', _editphoneController),
+          SizedBox(height: 16.h),
+          // _buildTextField('Name Coordinator', _coordinatorController),
+          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
+          SizedBox(height: 16.h),
+          _buildTextField('Source Of Lead', 'Please select',_editsourceofleadController),
+
+          SizedBox(height: 16.h),
+          _buildTextField('typeOfBusiness',"Enter type of business" ,_edittypeOfBusinessController),
+          /*ElevatedButton(
+            onPressed: _submitForm,
+            child: Center(child: Text('Submit')),
+          ),*/
+          SizedBox(height: 16.h),
+          InkWell(
+            onTap: (){
+              submitEditForm(leadData);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: ThemeColor.theme_blue,
+                  borderRadius: BorderRadius.circular(5)),
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
+              ),
+              child: Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(fontSize: 20.sp,fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500, color: AppColor.white),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
+  void submitEditForm(LeadData leadData) async{
+
+    LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+    String name = _editnameController.text.toString();
+    String email = _editemailController.text.toString();
+    String phone = _editphoneController.text.toString();
+    SaveLeadRequest saveEmploye=SaveLeadRequest();
+    saveEmploye.id=leadData.lead!.id;
+    saveEmploye.companyName=name;
+    saveEmploye.coordinator="Parag Kumbhar";
+    saveEmploye.emailId=email;
+    saveEmploye.mobileNumber=phone;
+    saveEmploye.address=_editaddressController.text;
+    saveEmploye.sourceOfLead=_editsourceofleadController.text;
+    saveEmploye.typeOfBusiness=_edittypeOfBusinessController.text;
+    saveEmploye.leadAssignedTo=editselectedEmp;
+    saveEmploye.leadAddedBy=loginDeatils.data!.id;
+    EasyLoading.show(status: "Loading");
+    Dio dio=Dio();
+    //try{
+    var response=await dio.put(ApiConstant.UPDATE_LEAD,data: jsonEncode(saveEmploye.toJson()));
+    print('the body ${response.data}');
+    if(response.statusCode==200){
+
+      PostLead postLead =PostLead.fromJson(jsonDecode(response.data));
+      Map<String,dynamic> parameter={
+        "date":GetDateFormat.getCurrentDate(),
+        "lead":postLead.data!.id,
+        "nextFollowUpBy":empData.id,
+        "potential":"10",
+        "status":"Pending",
+        "updatedByUser":loginDeatils.data!.id,
+        "description":" Lead Created "
+      };
+      var para= jsonEncode(parameter);
+      var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
+      if(leadResponse.statusCode==200){
+        print('done is done ');
+      }
+      Navigator.pop(context);
+      ApiGetData("");
+    }else{
+      ToastMessage.show(context, "Please try Again");
+    }
+    EasyLoading.dismiss();
+    // }catch(e){
+    //   EasyLoading.dismiss();
+    // }
+
+
   }
 }

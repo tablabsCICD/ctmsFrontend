@@ -1,4 +1,5 @@
 class SaveLeadRequest {
+  int? id;
   String? address;
   String? city;
   String? companyName;
@@ -26,7 +27,7 @@ class SaveLeadRequest {
         this.mobileNumber,
         this.pinCode,
         this.sourceOfLead,
-        this.typeOfBusiness});
+        this.typeOfBusiness,this.id});
 
   SaveLeadRequest.fromJson(Map<String, dynamic> json) {
     address = json['address'];
@@ -42,6 +43,7 @@ class SaveLeadRequest {
     pinCode = json['pinCode'];
     sourceOfLead = json['sourceOfLead'];
     typeOfBusiness = json['typeOfBusiness'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +61,7 @@ class SaveLeadRequest {
     data['pinCode'] = this.pinCode;
     data['sourceOfLead'] = this.sourceOfLead;
     data['typeOfBusiness'] = this.typeOfBusiness;
+    data['id'] = this.id;
     return data;
   }
 }
