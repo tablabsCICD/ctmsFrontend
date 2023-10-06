@@ -17,6 +17,8 @@ class ApiConstant {
 
   static String CREATE_MEETING = BASE_URL + "api/Meetings2/save/withemail";
 
+  static String EDIT_MEETING = BASE_URL + "api/Meetings2/update";
+
   static String SAVE_LEAD_UPDATe = BASE_URL + "api/LeadUpdate/saveCustomer";
 
   static String GET_ACTIVITY(id) =>

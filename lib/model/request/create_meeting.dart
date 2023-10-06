@@ -8,9 +8,12 @@ class CreateMeeting {
   String? meetingLink;
   String? time;
   String? title;
+  int? id;
 
   CreateMeeting(
+
       {this.active,
+        this.id,
         this.createdMettingBy,
         this.date,
         this.description,
@@ -21,6 +24,7 @@ class CreateMeeting {
         this.title});
 
   CreateMeeting.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     active = json['active'];
     createdMettingBy = json['createdMettingBy'];
     date = json['date'];
@@ -34,6 +38,7 @@ class CreateMeeting {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['active'] = this.active;
     data['createdMettingBy'] = this.createdMettingBy;
     data['date'] = this.date;

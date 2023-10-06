@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/app_colors.dart';
 import '../../constant/constants.dart';
@@ -133,18 +135,23 @@ class _EmpDialogOne extends State<EmpDialogOne>{
 
                     },
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      width: 600.w,
-                      height: 59.h,
                       decoration: BoxDecoration(
-
-                          color: AppColor.yellow,
+                          color: ThemeColor.theme_blue,
                           borderRadius: BorderRadius.circular(5)),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      margin: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
                       child: Center(
                         child: Text(
                           "Done",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: AppColor.black),
+                          style: TextStyle(fontSize: 20.sp,fontFamily:
+                          GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w500, color: AppColor.white),
                         ),
                       ),
                     ),

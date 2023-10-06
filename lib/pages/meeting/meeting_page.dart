@@ -44,6 +44,19 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   String selectDate = "Select Date";
   String selectTime = "Select Time";
+
+  TextEditingController _editmeetingTitleController = TextEditingController();
+  TextEditingController _editmeetingDecController = TextEditingController();
+  TextEditingController _editmeetingLinkController = TextEditingController();
+
+  String editSelectDate = "Select Date";
+  String editSelectTime = "Select Time";
+  List<int> selectedEmpList = [];
+  List<int> selectedLead = [];
+
+
+  List<int> editSelectedEmpList = [];
+  List<int> editSelectLead = [];
   ScrollController _scrollController = ScrollController();
 
 
@@ -59,133 +72,134 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          /// Header Part
-          HeaderWidget(
-            title: "Meeting Data",
-          ),
-          Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 33,vertical: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      'Meeting',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                    ),
-                    Spacer(),
-                    Row(
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            /// Header Part
+            HeaderWidget(
+              title: "Meeting Data",
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 33,vertical: 20),
+                    child: Row(
                       children: [
-                        filterIconButton(),
-                        SizedBox(
-                          width: 27.w,
+                        Text(
+                          'Meeting',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30.sp,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
                         ),
-                        SizedBox(
-                          height: 58.h,
-                          width: 180.w,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                _showAlertDialog();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  primary: ThemeColor.theme_blue,
-                                  onPrimary: Colors.white),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add_circle,
-                                    size: 18,
-                                  ),
-                                  SizedBox(
-                                    width: 6.w,
-                                  ),
-                                  TextView(
-                                    title: "Create Meeting",
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
-                                  ),
-                                ],
-                              )),
-                        )
+                        Spacer(),
+                        Row(
+                          children: [
+                            filterIconButton(),
+                            SizedBox(
+                              width: 27.w,
+                            ),
+                            SizedBox(
+                              height: 58.h,
+                              width: 180.w,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _showAlertDialog();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: ThemeColor.theme_blue,
+                                      onPrimary: Colors.white),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_circle,
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 6.w,
+                                      ),
+                                      TextView(
+                                        title: "Create Meeting",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  )),
+                            )
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
+                    child: Row(
+                      children: [
+                        meetingCard('Total Lead', '700', 'assets/schedule.svg', true,
+                            Colors.green.shade50),
+                        SizedBox(
+                          width: 32.w,
+                        ),
+                        meetingCard(
+                            'Converted', '300', 'assets/re_schedule.svg', false, Colors.red.shade50),
+                        SizedBox(
+                          width: 32.w,
+                        ),
+                        meetingCard('Rejected', '200', 'assets/canceled.svg', false,
+                            Colors.orange.shade50),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Your Meeting',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30.sp,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                        Spacer(),
+                        filterIconButton(),
+                      ],
+                    ),
+                  ),
               Container(
-                margin:
-                    EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
-                child: Row(
-                  children: [
-                    meetingCard('Total Lead', '700', 'assets/schedule.svg', true,
-                        Colors.green.shade50),
-                    SizedBox(
-                      width: 32.w,
-                    ),
-                    meetingCard(
-                        'Converted', '300', 'assets/re_schedule.svg', false, Colors.red.shade50),
-                    SizedBox(
-                      width: 32.w,
-                    ),
-                    meetingCard('Rejected', '200', 'assets/canceled.svg', false,
-                        Colors.orange.shade50),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      'Today Meeting',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                    ),
-                    Spacer(),
-                    filterIconButton(),
-                  ],
-                ),
-              ),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
-
-              child: SingleChildScrollView(
-                child: StaggeredGridView.countBuilder(
-                    controller: _scrollController,
-                    physics: ScrollPhysics(),
-                    staggeredTileBuilder: (int index) =>
-                        StaggeredTile.fit(1),
-                    shrinkWrap: true,
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 12,
-                    itemCount: meetingList.length,///meetingList.length,
-                    itemBuilder: (context, index) {
-                      return meetingDetailCard(meetingList[index]);
-                    }
-                ),
+                  margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
+                  child: StaggeredGridView.countBuilder(
+                      controller: _scrollController,
+                      physics: ScrollPhysics(),
+                      staggeredTileBuilder: (int index) =>
+                          StaggeredTile.fit(1),
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 12,
+                      itemCount: meetingList.length,///meetingList.length,
+                      itemBuilder: (context, index) {
+                        return meetingDetailCard(meetingList[index]);
+                      }
+                  )
               )
-          )
-             // empdeatils()
-            ],
-          ),
-        ],
+                 // empdeatils()
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -252,26 +266,144 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText('Select Employee', () async {
+          _buildText(selectedEmpList.length==0?'Select Employee':'selected emp is ${selectedEmpList.length}', () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return EmpDialog();
                 });
             print('the list is ${list}');
+            selectedEmpList = list;
+            setState(() {
+              selectedEmpList=list;
+            });
           }),
           SizedBox(height: 16),
-          _buildText("Select Lead", () async {
+          _buildText(selectedLead.length==0?"Select Lead":'selected lead count ${selectedLead.length.toString()}', () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return LeadDialog();
                 });
             print('the list is ${list}');
+            selectedLead = list;
+            setState(() {
+              selectedLead=list;
+            });
           }),
           SizedBox(height: 16),
           InkWell(
             onTap: _submitForm,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: ThemeColor.theme_blue,
+                  borderRadius: BorderRadius.circular(5)),
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
+              ),
+              child: Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: AppColor.white),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  editMeeting(MeetingData meetingData,StateSetter setState) {
+
+
+    return Container(
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10.h,),
+          Row(
+            children: [
+
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
+              Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
+          Center(
+            child: Text(
+              "Edit Meeting",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          _buildTextField('Title', 'Title',_editmeetingTitleController),
+          SizedBox(height: 16),
+          _buildTextField('Description','Description' ,_editmeetingDecController),
+          SizedBox(height: 16),
+          _buildTextField('Link','Link' ,_editmeetingLinkController),
+          SizedBox(height: 16),
+          _buildText(editSelectDate, () async {
+            editSelectDate = await DateTimePickerDialog().pickDateDialog(context);
+            if (editSelectDate == null) {
+              editSelectDate = "Select Date";
+            }
+            setState(() {});
+          }),
+          SizedBox(height: 16),
+          _buildText(editSelectTime, () async {
+            editSelectTime = await DateTimePickerDialog().selectTime(context);
+            if (editSelectTime == null) {
+              editSelectTime = "Select Time";
+            }
+            setState(() {});
+          }),
+          SizedBox(height: 16),
+          _buildText(editSelectedEmpList.length==0?'Select Employee':'selected emp is ${editSelectedEmpList.length}', () async {
+            var list = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return EmpDialog();
+                });
+            print('the list is ${list}');
+            selectedEmpList = list;
+            setState(() {});
+          }),
+          SizedBox(height: 16),
+          _buildText(editSelectLead.length==0?"Select Lead":'selected le${editSelectLead.length.toString()}', () async {
+            var list = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LeadDialog();
+                });
+            print('the list is ${list}');
+            selectedLead = list;
+            setState(() {});
+          }),
+          SizedBox(height: 16),
+          InkWell(
+            onTap: (){_editSubmitForm(meetingData);},
             child: Container(
               decoration: BoxDecoration(
                   color: ThemeColor.theme_blue,
@@ -375,6 +507,34 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     print('the response is ${response.response}');
     if (response.status == 200) {
       ApiGetMeeting();
+      Navigator.of(context).pop();
+    }
+  }
+
+   void _editSubmitForm(MeetingData meetingData) async {
+    LocalSharePreferences localSharePreferences = LocalSharePreferences();
+    LoginDeatils deatils = await localSharePreferences.getLoginData();
+
+    String title = _editmeetingTitleController.text;
+    String dec = _editmeetingDecController.text;
+    String link = _editmeetingLinkController.text;
+    CreateMeeting createMeeting = CreateMeeting();
+    createMeeting.id = meetingData.id;
+    createMeeting.time = editSelectTime;
+    createMeeting.date = editSelectDate;
+    createMeeting.title = title;
+    createMeeting.description = dec;
+    createMeeting.meetingLink = link;
+    createMeeting.active = true;
+    createMeeting.createdMettingBy = deatils.data!.id;
+    createMeeting.leadId = 1;
+    createMeeting.employeeId = editSelectedEmpList!;
+    var response = await ApiHelper()
+        .apiPut(ApiConstant.EDIT_MEETING, createMeeting.toJson());
+    print('the response is ${response.response.body}');
+    if (response.status == 200) {
+      ApiGetMeeting();
+      Navigator.of(context).pop();
     }
   }
 
@@ -628,6 +788,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       ),
                     ),
                     onPressed: () {
+                      _showEditAlertDialog(meetingData);
                       setState(() {
                         isJoin = false;
                       });
@@ -788,7 +949,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         return AlertDialog(
           backgroundColor: Colors.transparent,// <-- SEE HERE
           title: const Text(''),
-          content:StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+          content:StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
 
             return SingleChildScrollView(
               child: Container(
@@ -802,7 +963,70 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         child: Container(
                           color: Colors.transparent,
                           width: 408.w,
-                          child: addMeeting(setState),
+                          child: addMeeting(stateSetter),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
+        );;
+      },
+    );
+
+    //SingleChildScrollView(
+    //             child: Container(
+    //                 color: Colors.transparent,
+    //                 height: 1024.h,
+    //                 width: MediaQuery.of(context).size.width,
+    //                 child: Stack(
+    //                   children: [
+    //                     Align(
+    //                       alignment: Alignment.centerRight,
+    //                       child: Container(
+    //                         color: Colors.transparent,
+    //                         width: 408.w,
+    //                         child: addMeeting(),
+    //                       ),
+    //                     )
+    //                   ],
+    //                 )
+    //             ),
+    //           )
+  }
+
+  Future<void> _showEditAlertDialog(MeetingData meetingData) async {
+    _editmeetingTitleController.text = meetingData.title!;
+    _editmeetingDecController.text = meetingData.description!;
+    _editmeetingLinkController.text = meetingData.meetingLink!;
+    editSelectDate = meetingData.date!;
+    editSelectTime = meetingData.time!;
+    editSelectLead = [meetingData.lead!.id==null?0:meetingData.lead!.id!];
+    editSelectedEmpList = [meetingData.lead!.id==null?0:meetingData.lead!.id!];
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
+          title: const Text(''),
+          content:StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: 1024.h,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: editMeeting(meetingData,stateSetter),
                         ),
                       )
                     ],
