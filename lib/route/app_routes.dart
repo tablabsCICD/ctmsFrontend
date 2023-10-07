@@ -10,6 +10,7 @@ class AppRoutes{
   static const profile="/profile";
   static const entry="/entryScreen";
   static const meeting="/meeting";
+  static const crm="crm";
 
 
 
