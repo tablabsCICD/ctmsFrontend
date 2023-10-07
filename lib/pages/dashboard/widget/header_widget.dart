@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/widget/editText_email.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
@@ -96,14 +97,14 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ),
-        child: Container(
-          width: 50.w,
-          height: 50.h,
-          child: SvgPicture.asset(Images.profilepicture),
-        ),
+        child: getImage(details!.data!.image!,height: 50.h,width: 50.w),
       ),
       SizedBox(width: 18.w,),
-      TextView(title: Constants.LOGIN_NAME, fontSize: 20.sp, color: Colors.black, fontWeight: FontWeight.w500),
+      Text('${Constants.LOGIN_NAME}', style: TextStyle(
+          fontSize: 20.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w300,
+          fontFamily: GoogleFonts.poppins().fontFamily)),
       SizedBox(width: 20.w,)
 
 
@@ -186,10 +187,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       ),
     );
   }
-
+  LoginDeatils? details;
   void getLoginDetails() async{
-  LoginDeatils deatils = await LocalSharePreferences().getLoginData();
-  Constants.LOGIN_NAME=deatils.data!.firstName!+" "+deatils.data!.lastName!;
+  details = await LocalSharePreferences().getLoginData();
+  Constants.LOGIN_NAME=details!.data!.firstName!+" "+details!.data!.lastName!;
   setState(() {
 
   });

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -81,10 +82,7 @@ class LeadReminder extends StatelessWidget{
       child: Center(
         child: ListTile(
 
-          leading:  CircleAvatar(
-              radius: 40.r,
-              backgroundImage: NetworkImage('assets/user1.jpg')
-          ),
+          leading:  getImage('',height: 30.h,width: 30.w),
           title: Text(
             'You have meeting with vivek within 1hr',
             style: TextStyle(

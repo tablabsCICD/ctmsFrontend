@@ -34,6 +34,7 @@ class EmpData {
   String? emailId;
   String? mobileNumber;
   String? address;
+  String? status;
   int? employeeId;
   Role? role;
   int? isActive;
@@ -59,6 +60,7 @@ class EmpData {
         this.os,
         this.deviceId,
         this.isSelected,
+        this.status,
         this.image
       });
 
@@ -77,6 +79,7 @@ class EmpData {
     os = json['os'];
     deviceId = json['deviceId'];
     image = json['image'];
+    status = json['status'];
     isSelected=false;
   }
 
@@ -97,6 +100,7 @@ class EmpData {
     data['password'] = this.password;
     data['os'] = this.os;
     data['deviceId'] = this.deviceId;
+    data['status'] = this.status;
     return data;
   }
 }
@@ -109,8 +113,8 @@ class Role {
   Role({this.id, this.name, this.isActive});
 
   Role.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
+    id = json['id']??0;
+    name = json['name']??'';
     isActive = json['isActive'];
   }
 

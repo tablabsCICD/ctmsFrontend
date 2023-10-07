@@ -4,6 +4,7 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -101,14 +102,13 @@ class _EmpInfo extends State<EmpInfo> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                            radius: 50.r,
-                            backgroundImage: NetworkImage('assets/user1.jpg')),
+                        getImage('${widget.empData.image!}',height: 100.h,width: 100.w),
                         SizedBox(
                           width: 32.w,
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                                 widget.empData.firstName! +

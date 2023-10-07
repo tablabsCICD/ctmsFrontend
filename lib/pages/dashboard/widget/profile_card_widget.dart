@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,8 +11,16 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../constant/images.dart';
 
 class ProfileCardWidget extends StatelessWidget {
+
+  LocalSharePreferences localSharePreferences = LocalSharePreferences();
+  LoginDeatils? loginDeatils;
+  getLoginData() async {
+    loginDeatils = await localSharePreferences.getLoginData();
+
+  }
   @override
   Widget build(BuildContext context) {
+    getLoginData();
     return Container(
       child: getProfile(),
       // child: Column(
@@ -77,9 +88,10 @@ class ProfileCardWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleAvatar(
+          /*CircleAvatar(
           radius: 65.r,
-          backgroundImage: NetworkImage('assets/user1.jpg')),
+          backgroundImage: NetworkImage('assets/user1.jpg')),*/
+          getImage('',height: 114.h,width: 114.w),
           SizedBox(height: 19.h,),
           Text(
              'Mridula V',

@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/app_colors.dart';
 import '../../common/app_responsive.dart';
@@ -20,12 +21,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppColor.bgColor,
-          borderRadius: BorderRadius.circular(30),
-        ),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,21 +29,38 @@ class _ReportDataScreen extends State<ReportDataScreen>{
             HeaderWidget(title: "Report",),
 
             AppResponsive.isDesktop(context)||AppResponsive.isTablet(context)?Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  children: [
-                    Text("Head Count Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                    SizedBox(height: 30,),
-                    barChart(),
-                  ],
+                Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColor.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("Head Count Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+                      SizedBox(height: 30,),
+                      barChart(),
+                    ],
+                  ),
                 ),
 
-                Column(
-                  children: [
-                    Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                    SizedBox(height: 30,),
-                    pieChart(),
-                  ],
+                Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColor.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    children: [
+                      Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+                      SizedBox(height: 30,),
+                      pieChart(),
+                    ],
+                  ),
                 )
 
               ],
@@ -63,16 +76,19 @@ class _ReportDataScreen extends State<ReportDataScreen>{
 
                 Column(
                   children: [
-                    Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                    SizedBox(height: 30,),
+                    Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
+                    SizedBox(height: 30.h,),
                     pieChart(),
                   ],
                 )
 
               ],
             ),
-            SizedBox(height: 30,),
-            Text("Performance Mangment Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+            SizedBox(height: 30.h,),
+            Padding(
+              padding: EdgeInsets.only(left: 20.0.w),
+              child: Text("Performance Mangment Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
+            ),
             SizedBox(height: 20,),
             linerChart()
 
@@ -85,8 +101,8 @@ class _ReportDataScreen extends State<ReportDataScreen>{
   barChart(){
 
     return Container(
-      height: 200,
-      width: 500,
+      height: 200.h,
+      width: 500.w,
       child: BarChart(BarChartData(
           borderData: FlBorderData(
               border: const Border(
@@ -146,8 +162,8 @@ class _ReportDataScreen extends State<ReportDataScreen>{
 
   pieChart(){
      return Container(
-       height: 200,
-       width: 500,
+       height: 200.h,
+       width: 500.w,
        child: PieChart(PieChartData(
           sections: pieChartSectionData
     )),
@@ -172,10 +188,14 @@ class _ReportDataScreen extends State<ReportDataScreen>{
 
   linerChart(){
     return Container(
-
+      margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
       width: double.infinity,
       height: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r)
+      ),
       child: LineChart(
         LineChartData(
           borderData: FlBorderData(show: false),
@@ -189,6 +209,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
             ),
             // The orange line
             LineChartBarData(
+      
               spots: dummyData2,
               isCurved: true,
               barWidth: 3,

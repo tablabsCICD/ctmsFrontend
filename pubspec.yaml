@@ -46,6 +46,7 @@ dependencies:
   staggered_grid_view_flutter: ^0.0.4
   image_picker: ^1.0.0
   url_launcher: ^6.1.14
+  photo_view:
 
 dev_dependencies:
   flutter_test:
