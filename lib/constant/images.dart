@@ -54,4 +54,10 @@ class Images {
   static String add_circle = "assets/images/add_circle.svg";
   static String call = "assets/images/call.svg";
   static String mail_black = "assets/images/mail_black.svg";
+  static String monitoring = "assets/images/monitoring.svg";
+  static String crm = "assets/images/crm.svg";
+  static String hrm = "assets/images/hrm.svg";
+static String bilty = "assets/images/bilty.svg";
+static String invoice = "assets/images/invoice.svg";
+
 }

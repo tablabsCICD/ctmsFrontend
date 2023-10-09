@@ -5,6 +5,7 @@ import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.d
 import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
+import 'package:flutter_hr_management/pages/orgnaization/home_orgnization.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
 import '../pages/aut/login.dart';
 import '../pages/empdetails/employee_list_dashboard.dart';
@@ -19,7 +20,9 @@ class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.home:
-        return buildRoute(HomePage(), settings: settings);
+        return buildRoute(HomeOrganizationScreen(), settings: settings);
+  case AppRoutes.crm:
+    return buildRoute(HomePage(), settings: settings);;
 
       case AppRoutes.login:
         return buildRoute(LoginScreen(), settings: settings);

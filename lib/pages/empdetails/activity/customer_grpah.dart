@@ -8,7 +8,7 @@ class CustomerGrpah extends StatelessWidget {
     return Container(
       child:  Column(
         children: [
-        Text("Head Count Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+        Text("Performance",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
         SizedBox(height: 30,),
         barChart(),
 
