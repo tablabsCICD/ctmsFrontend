@@ -54,7 +54,7 @@ class _SideBarState extends State<SideBar> {
                  setState(() {
 
                  });
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.home);
+                Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
 
               },
             ),

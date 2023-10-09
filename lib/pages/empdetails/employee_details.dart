@@ -36,6 +36,7 @@ TextEditingController _passwordController = TextEditingController();
 
 
   List<EmpData>emData=[];
+  List<EmpData>temEmData=[];
 
   bool isLoad=false;
   List<RoleData>dataRole=[];
@@ -57,7 +58,7 @@ TextEditingController _passwordController = TextEditingController();
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(title: "Employee Data",),
+          HeaderWidget(title: "Employee Data"),
          Container(
            margin: EdgeInsets.all(30),
            child: Row(
@@ -490,6 +491,7 @@ TextEditingController _passwordController = TextEditingController();
       EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
       emData.clear();
       emData.addAll(employeeList.data!);
+      temEmData.addAll(employeeList.data!);
 
       isLoad=false;
       setState(() {
@@ -692,5 +694,26 @@ TextEditingController _passwordController = TextEditingController();
       },
     );
     ApiGetData("");
+  }
+
+  void onFilter(String value) {
+    // if(value.length>2){
+    //   emData.clear();
+    //   for(int i=0;i<temEmData.length;i++){
+    //     if(temEmData[i].firstName!.contains(value)==0){
+    //       emData.add(temEmData[i]);
+    //     }
+    //   }
+    // }else{
+    //   emData.clear();
+    //   emData.addAll(temEmData);
+    // }
+
+    emData.addAll(temEmData);
+
+    setState(() {
+
+    });
+
   }
 }

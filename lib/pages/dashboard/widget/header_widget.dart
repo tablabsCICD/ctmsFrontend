@@ -19,7 +19,8 @@ import '../../../constant/constants.dart';
 class HeaderWidget extends StatefulWidget {
   final String title;
 
-  const HeaderWidget({Key? key, required this.title}) : super(key: key);
+
+   HeaderWidget({Key? key, required this.title}) : super(key: key);
 
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
