@@ -151,6 +151,8 @@ class _LeadActivity extends State<LeadActivity>{
             ),
           ),*/
 
+
+
           Text(
             'Updated By : ${listLeadActivityData[index].updatedByUser!.firstName!}',
             style: TextStyle(
@@ -174,8 +176,8 @@ class _LeadActivity extends State<LeadActivity>{
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                SvgPicture.asset('assets/notification.svg',color:Colors.black,width: 20.w,height: 20.h,),
-                SvgPicture.asset('assets/more_icon.svg',width: 20.w,height: 20.h,)
+                // SvgPicture.asset('assets/notification.svg',color:Colors.black,width: 20.w,height: 20.h,),
+                // SvgPicture.asset('assets/more_icon.svg',width: 20.w,height: 20.h,)
               ],
             ),
           ),

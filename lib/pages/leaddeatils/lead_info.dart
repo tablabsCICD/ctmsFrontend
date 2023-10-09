@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
@@ -9,7 +13,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../common/app_colors.dart';
+import '../../model/response/login_data.dart';
+import '../../utils/constant.dart';
+import '../../utils/sharepreferences.dart';
 import '../dashboard/widget/header_widget.dart';
+import '../widget/datepicker.dart';
+import '../widget/one_emp_dilaog.dart';
+import '../widget/toast.dart';
 import 'lead_activities/create_mail.dart';
 import 'lead_activities/create_reminder.dart';
 import 'lead_activities/lead_activity_list.dart';
@@ -136,9 +147,14 @@ class _LeadInfo extends State<LeadInfo> {
                         ),
                         Row(
                           children: [
-                            getIconData('assets/add.svg',onTap:(){
+                            InkWell(onTap: (
 
-                            }),
+
+                                ){
+                              _showAlertDialog();
+                            },child: getIconData('assets/add.svg',onTap:(){
+
+                            }),),
                             getIconData('assets/call.svg',onTap:(){
 
                             }),
@@ -335,16 +351,16 @@ class _LeadInfo extends State<LeadInfo> {
                           isMeeting = false;
                           setState(() {});
                         },
-                        child: tab(isActivity, "Activities")),
-                    InkWell(
-                        onTap: () {
-                          isActivity = false;
-                          isReminder = true;
-                          isCreateMail = false;
-                          isMeeting = false;
-                          setState(() {});
-                        },
-                        child: tab(isReminder, "Reminder")),
+                         child: tab(isActivity, "Activities")),
+                    // InkWell(
+                    //     onTap: () {
+                    //       isActivity = false;
+                    //       isReminder = true;
+                    //       isCreateMail = false;
+                    //       isMeeting = false;
+                    //       setState(() {});
+                    //     },
+                    //     child: tab(isReminder, "Reminder")),
                     InkWell(
                         onTap: () {
                           isActivity = false;
@@ -469,5 +485,275 @@ class _LeadInfo extends State<LeadInfo> {
       ),
       child: SvgPicture.asset(icon,height: 30.h,width: 30.h,),
     );
+  }
+
+
+
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
+          title: const Text(''),
+          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+
+            return SingleChildScrollView(
+              child: Container(
+                  color: Colors.transparent,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          color: Colors.transparent,
+                          width: 408.w,
+                          child: addLead(setState),
+                        ),
+                      )
+                    ],
+                  )
+              ),
+            );
+          }),
+        );
+      },
+    );
+
+
+  }
+  TextEditingController _nameController=TextEditingController();
+  TextEditingController _sourceofleadController=TextEditingController();
+  String selectDate="";
+  int selectedEmp=0;
+  String selectedStatus="Select Status";
+  addLead(StateSetter stateSetter){
+    return Container(
+      width: 408.w,
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
+              Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
+          Center(
+            child: Text(
+              "Fllow Up Lead",
+              style: TextStyle(
+                fontFamily:
+                GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          SizedBox(height: 16.h),
+          _buildTextField('Description ','Please Description', _nameController),
+          SizedBox(height: 16.h),
+
+          SizedBox(height: 16.h),
+          _buildText(selectDate.length==0?'Next Followup Date':selectDate,()async{
+            selectDate = await DateTimePickerDialog().pickDateDialog(context);
+            if (selectDate == null) {
+              selectDate = "Next Followup Date";
+            }
+            stateSetter(() {
+
+            });
+          }),
+          SizedBox(height: 16.h),
+          _buildText(selectedEmp==0?'Next Followup By':"Selected one employee", ()async{
+
+            int list = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return EmpDialogOne();
+                });
+            // print('the list is ${list}');
+            selectedEmp=list;
+            print('the list is$selectedEmp');
+            stateSetter(() {
+              selectedEmp=list;
+            });
+
+          }),
+          SizedBox(height: 16.h),
+          // _buildTextField('Name Coordinator', _coordinatorController),
+          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
+          SizedBox(height: 16.h),
+          _buildTextField('Potential', 'Please Enter potential',_sourceofleadController),
+
+          SizedBox(height: 16.h),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 60.h,
+            child: DropdownButton<String>(
+              isExpanded: true,
+              hint: Text("$selectedStatus"),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+
+              items: <String>['Pending', 'Converted', 'Rejected'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value,style:TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300)),
+                );
+              }).toList(),
+              onChanged: (val) {
+                stateSetter(() {
+                  selectedStatus=val!;
+                });
+
+              },
+            ),
+          ),
+
+          SizedBox(height: 16.h),
+          InkWell(
+            onTap: _submitForm,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: ThemeColor.theme_blue,
+                  borderRadius: BorderRadius.circular(5)),
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
+              ),
+              child: Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(fontSize: 20.sp,fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500, color: AppColor.white),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
+
+
+  Widget _buildText(String label, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        height: 60.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+        ),
+        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _submitForm() async{
+
+    LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+
+    Dio dio=Dio();
+    Map<String,dynamic> parameter={
+      "date":selectDate,
+      "lead":widget.leadData.lead!.id!,
+      "nextFollowUpBy":selectedEmp,
+      "potential":_sourceofleadController.text,
+      "status":selectedStatus,
+      "updatedByUser":loginDeatils.data!.id,
+      "description":_nameController.text
+    };
+    var para= jsonEncode(parameter);
+    var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
+    if(leadResponse.statusCode==200){
+      print('done is done ');
+      _nameController=TextEditingController();
+      _sourceofleadController=TextEditingController();
+       selectDate="";
+       selectedEmp=0;
+       selectedStatus="Select Status";
+      Navigator.pop(context);
+
+    }else{
+      ToastMessage.show(context, "Please try Again");
+    }
+    EasyLoading.dismiss();
+
+
+
   }
 }

@@ -753,7 +753,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 ),
                 SizedBox(height: 20.h,),
                 Text(
-                  "Members",
+                  "Company Name ${meetingData.lead!.companyName}",
                   style: TextStyle(color: Colors.black,
                     fontSize: 17.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
@@ -766,7 +766,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   children: [
                     SvgPicture.asset('assets/time.svg',width: 16.w,height: 19.h,),
                     SizedBox(width: 20.w,),
-                    Text(meetingData.time.toString()??'',
+                    Text("${meetingData.date.toString()??''} "+meetingData.time.toString()??'',
                      // "Time : 11:00 AM",
                       style: TextStyle(color: Colors.black,
                         fontSize: 15.sp,
@@ -942,6 +942,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     LoginDeatils deatils = await localSharePreferences.getLoginData();
     print("EmpId::"+deatils.data!.id!.toString());
     isLoad = true;
+    meetingList.clear();
     setState(() {});
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));

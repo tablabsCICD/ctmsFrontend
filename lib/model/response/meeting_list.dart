@@ -179,9 +179,9 @@ class LeadAddedBy {
   String? mobileNumber;
   String? address;
   String? image;
-  Null? employeeId;
+  int? employeeId;
   Role? role;
-  Null? isAdmin;
+  bool? isAdmin;
   int? isActive;
   String? otp;
   String? password;
