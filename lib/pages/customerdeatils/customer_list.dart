@@ -75,15 +75,13 @@ class _LeadDashboard extends State<CustomerList> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColor.bgColor,
+        color: ThemeColor.baground,
         borderRadius: BorderRadius.circular(0),
       ),
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(
-            title: "Customer Data",
-          ),
+          HeaderWidget(),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(

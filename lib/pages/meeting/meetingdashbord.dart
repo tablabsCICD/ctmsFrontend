@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/app_colors.dart';
@@ -33,6 +34,7 @@ class _CreateMeetingDashbord extends State<CreateMeetingDashbord> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ThemeColor.baground,
       drawer: SideBar(),
       body: SafeArea(
         child: Row(

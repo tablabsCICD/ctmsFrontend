@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/response/report_list.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/app_colors.dart';
@@ -16,7 +21,13 @@ class ReportDataScreen extends StatefulWidget{
 
 }
 class _ReportDataScreen extends State<ReportDataScreen>{
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    GetReportData();
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -26,7 +37,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderWidget(title: "Report",),
+            HeaderWidget(),
 
             AppResponsive.isDesktop(context)||AppResponsive.isTablet(context)?Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,6 +238,19 @@ class _ReportDataScreen extends State<ReportDataScreen>{
       ),
     );
 
+  }
+
+  ReportData? reportData;
+  Future<void> GetReportData() async {
+    final dio = Dio();
+    final response = await dio.get(ApiConstant.GET_ALL_REPORT);
+    print(response.data);
+    if (response.statusCode == 200) {
+      ReportModel reportModel = ReportModel.fromJson(jsonDecode(response.data));
+      reportData = reportModel.data;
+      print('this is the report data list${reportData!.customer!.length}');
+      setState(() {});
+    }
   }
 
 }

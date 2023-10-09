@@ -58,7 +58,7 @@ TextEditingController _passwordController = TextEditingController();
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(title: "Employee Data"),
+          HeaderWidget(),
          Container(
            margin: EdgeInsets.all(30),
            child: Row(
@@ -374,7 +374,7 @@ TextEditingController _passwordController = TextEditingController();
                 name: emData[i].firstName!+" "+emData[i].lastName!,
                 color: Colors.blue,
                 image: emData[i].image,
-                designation: emData[i].firstName,
+                designation: emData[i].role!.name,
                 status: emData[i].mobileNumber,
                 index: i,
                 email: emData[i].emailId

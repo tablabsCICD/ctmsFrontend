@@ -39,7 +39,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
              flex: 4,
              child: Column(
                children: [
-                 HeaderWidget( title: '',),
+                 HeaderWidget(),
                  SizedBox(height: 38.h,),
                  Container(
                    color:  AppColor.bgColor,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/calender_widget.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
@@ -66,7 +67,9 @@ class _CreateMail extends State<CreateMail>{
                   height: 86.h,
                   width: 308.w,
                   child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: () async {
+
+                      },
                       style: ElevatedButton.styleFrom(
                           primary: ThemeColor.theme_blue,
                           onPrimary: Colors.white
@@ -229,7 +232,30 @@ class _CreateMail extends State<CreateMail>{
 
   void callAPI() async{
 
-    Dio dio = Dio();
+    EasyLoading.show(status: "Loading");
+    Map<String,dynamic> parameter={
+      "emailId": toNameController.text,
+      "subject": subjectController.text,
+      "message": mailController.text,
+    };
+    print(parameter);
+    var data= jsonEncode(parameter);
+    Dio dio=Dio();
+    print(ApiConstant.CREATE_MAIL);
+    var response=await dio.post(ApiConstant.CREATE_MAIL+"?emailId=${toNameController.text}&subject=${subjectController.text}&message=${mailController.text}");
+    print('the response is ${response}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      ToastMessage.show(context, "mail send successfully");
+      toNameController.clear();
+      mailController.clear();
+      subjectController.clear();
+      setState(() {
+
+      });
+    }
+
+   /* Dio dio = Dio();
     var response = await dio.post(
         "http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/crm/api/Employee/SendEmailRemainder", queryParameters: {
       "message": mailController.text.toString(),
@@ -239,7 +265,7 @@ class _CreateMail extends State<CreateMail>{
     print('the body ${response.data}');
     if (response.statusCode == 200) {
 
-    }
+    }*/
 
     // print('${mailController.text.isEmpty}');
     //

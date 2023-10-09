@@ -11,7 +11,7 @@ class ApiConstant {
   static String LOGIN_DATA = BASE_URL + "Login";
   static String LEAD_DELTEB = BASE_URL + "api/Lead/deleteById";
   static String EMP_DELTEB = BASE_URL + "Employee/deleteById";
-
+  static String GET_ALL_REPORT = BASE_URL + "CountAll/AllCountReport";
   static String GET_ALL_ROLES = BASE_URL + "api/Role/getAll";
 
   static String GET_ALL_EMPLOYEE = BASE_URL + "Employee/getAll";
@@ -20,7 +20,7 @@ class ApiConstant {
   static String CREATE_MEETING = BASE_URL + "api/Meetings2/save/withemail";
 
   static String EDIT_MEETING = BASE_URL + "api/Meetings2/update";
-
+  static String UPDATE_LEAD_STATUS = BASE_URL + "api/Lead/update/ByLeadIdAndStatus/customer";
   static String SAVE_LEAD_UPDATe = BASE_URL + "api/LeadUpdate/saveCustomer";
 
   static String GET_ACTIVITY(id) =>
@@ -34,4 +34,6 @@ class ApiConstant {
 
   static String ASSIGN_PROJECT(id) =>
       BASE_URL + "api/Lead/getByleadAssignedToId?leadAssignedTo=$id";
+
+  static String CREATE_MAIL = BASE_URL + "Employee/SendEmail";
 }

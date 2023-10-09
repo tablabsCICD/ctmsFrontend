@@ -108,7 +108,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                    name: emData[i].firstName!+" "+emData[i].lastName!,
                    color: Colors.blue,
                    image: emData[i].image,
-                   designation: emData[i].firstName,
+                   designation: emData[i].role!.name,
                    contact:emData[i].mobileNumber,
                    gmail:emData[i].emailId,
                    status: emData[i].status,

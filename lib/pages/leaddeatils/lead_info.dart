@@ -52,7 +52,7 @@ class _LeadInfo extends State<LeadInfo> {
           color: Color(0xffF6F6F6),
           child: Column(
             children: [
-              HeaderWidget(title: "Lead Info"),
+              HeaderWidget(),
               SizedBox(height: 26.h,),
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -669,26 +669,45 @@ class _LeadInfo extends State<LeadInfo> {
       onTap: () {
         onClick();
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        height: 60.h,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: Text(
               label,
               style: TextStyle(
-                  color: Color(0xff1B1B1B),
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w300),
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
             ),
           ),
-        ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

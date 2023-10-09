@@ -36,7 +36,6 @@ class LeadDashboard extends StatefulWidget {
 }
 
 class _LeadDashboard extends State<LeadDashboard> {
-
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -44,8 +43,6 @@ class _LeadDashboard extends State<LeadDashboard> {
   TextEditingController _coordinatorController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _typeOfBusinessController = TextEditingController();
-
-
 
   TextEditingController _editnameController = TextEditingController();
   TextEditingController _editemailController = TextEditingController();
@@ -55,11 +52,14 @@ class _LeadDashboard extends State<LeadDashboard> {
   TextEditingController _editaddressController = TextEditingController();
   TextEditingController _edittypeOfBusinessController = TextEditingController();
 
-  List<LeadData>emData=[];
-  bool isLoad=false;
-  late EmpData empData =EmpData();
-  int selectedEmp=0;
-  int editselectedEmp=0;
+  List<LeadData> leadData = [];
+  List<LeadData> convertedLead = [];
+  List<LeadData> rejectedLead = [];
+  List<LeadData> pendingLead = [];
+  bool isLoad = false;
+  late EmpData empData = EmpData();
+  int selectedEmp = 0;
+  int editselectedEmp = 0;
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
@@ -67,15 +67,15 @@ class _LeadDashboard extends State<LeadDashboard> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
+          backgroundColor: Colors.transparent, // <-- SEE HERE
           title: const Text(''),
-          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
             return SingleChildScrollView(
               child: Container(
                   color: Colors.transparent,
-                  height: 1024.h,
                   width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
                   child: Stack(
                     children: [
                       Align(
@@ -83,19 +83,17 @@ class _LeadDashboard extends State<LeadDashboard> {
                         child: Container(
                           color: Colors.transparent,
                           width: 408.w,
+                          height: MediaQuery.of(context).size.height,
                           child: addLead(setState),
                         ),
                       )
                     ],
-                  )
-              ),
+                  )),
             );
           }),
         );
       },
     );
-
-
   }
 
   @override
@@ -109,15 +107,14 @@ class _LeadDashboard extends State<LeadDashboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
       decoration: BoxDecoration(
-        color: AppColor.bgColor,
+        color: ThemeColor.baground,
         borderRadius: BorderRadius.circular(0),
       ),
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(title: "Lead Data",),
+          HeaderWidget(),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(
@@ -127,7 +124,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.sp,
-                    fontFamily:GoogleFonts.poppins().fontFamily,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w600,
                     height: 0,
                   ),
@@ -136,27 +133,34 @@ class _LeadDashboard extends State<LeadDashboard> {
                 Row(
                   children: [
                     filterIconButton(),
-                    SizedBox(width: 27.w,),
+                    SizedBox(
+                      width: 27.w,
+                    ),
                     SizedBox(
                       height: 58.h,
                       width: 180.w,
                       child: ElevatedButton(
-                          onPressed: (){
+                          onPressed: () {
                             _showAlertDialog();
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: ThemeColor.theme_blue,
-                            onPrimary: Colors.white
-                          ),
+                              primary: ThemeColor.theme_blue,
+                              onPrimary: Colors.white),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add_circle,size:18,),
-                              SizedBox(width: 6.w,),
+                              Icon(
+                                Icons.add_circle,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 6.w,
+                              ),
                               TextView(
-                               title: "Add Lead",
+                                title: "Add Lead",
                                 fontSize: 16.sp,
-                                fontWeight: FontWeight.w400, color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
                               ),
                             ],
                           )),
@@ -167,22 +171,32 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
+            margin: EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Lead','${emData.length}','',true,Colors.green.shade50),
-                SizedBox(width: 32.w,),
-                leadCountCard('Converted','300','',false,Colors.red.shade50),
-                SizedBox(width: 32.w,),
-                leadCountCard('Rejected','200','',false,Colors.orange.shade50),
-                SizedBox(width: 32.w,),
-                leadCountCard('Pending','200','',false,Colors.blue.shade50),
+                leadCountCard('Total Lead', '${leadData.length}', '', true,
+                    Colors.green.shade50),
+                SizedBox(
+                  width: 32.w,
+                ),
+                leadCountCard('Converted', '${convertedLead.length}', '', false,
+                    Colors.red.shade50),
+                SizedBox(
+                  width: 32.w,
+                ),
+                leadCountCard('Rejected', '${rejectedLead.length}', '', false,
+                    Colors.orange.shade50),
+                SizedBox(
+                  width: 32.w,
+                ),
+                leadCountCard('Pending', '${pendingLead.length}', '', false,
+                    Colors.blue.shade50),
               ],
             ),
           ),
           Expanded(
             child: SingleChildScrollView(
-              child:/* Row(
+                child: /* Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
@@ -226,16 +240,14 @@ class _LeadDashboard extends State<LeadDashboard> {
                     ),
                 ],
               ),*/
-              leadList()
-            ),
+                    leadList(context)),
           ),
         ],
       ),
     );
   }
 
-
-  addLead(StateSetter stateSetter){
+  addLead(StateSetter stateSetter) {
     return Container(
       width: 408.w,
       decoration: BoxDecoration(
@@ -250,8 +262,12 @@ class _LeadDashboard extends State<LeadDashboard> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -267,8 +283,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             child: Text(
               "Add Lead",
               style: TextStyle(
-                fontFamily:
-                GoogleFonts.poppins().fontFamily,
+                fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,
                 color: AppColor.black,
                 fontSize: 25.sp,
@@ -276,38 +291,47 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           SizedBox(height: 20.h),
-          Center(child: InkWell(onTap:(){
-           // ImageUpload().postImage(context);
-    },child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w))),
+          Center(
+              child: InkWell(
+                  onTap: () {
+                    uploadLeadImage(1);
+                  },
+                  child: SvgPicture.asset('assets/upload_profile.svg',
+                      height: 202.h, width: 202.w))),
           SizedBox(height: 16.h),
-          _buildTextField('Company Name','Please Comapny name', _nameController),
+          _buildTextField(
+              'Company Name', 'Please Comapny name', _nameController),
           SizedBox(height: 16.h),
-          _buildText('${selectedEmp==0?"Select Employee ":"One Employee Selected"}', () async {
+          _buildText(
+              '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+              () async {
             int list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return EmpDialogOne();
                 });
-           // print('the list is ${list}');
-            selectedEmp=list;
+            // print('the list is ${list}');
+            selectedEmp = list;
             print('the list is$selectedEmp');
             stateSetter(() {
-              selectedEmp=list;
+              selectedEmp = list;
             });
-
           }),
           SizedBox(height: 16.h),
-          _buildTextField('Email','Please enter your email ID', _emailController),
+          _buildTextField(
+              'Email', 'Please enter your email ID', _emailController),
           SizedBox(height: 16.h),
-          _buildTextField('Phone','Please enter your phone number', _phoneController),
+          _buildTextField(
+              'Phone', 'Please enter your phone number', _phoneController),
           SizedBox(height: 16.h),
-         // _buildTextField('Name Coordinator', _coordinatorController),
-       //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
-          SizedBox(height: 16.h),
-          _buildTextField('Source Of Lead', 'Please select',_sourceofleadController),
+          // _buildTextField('Name Coordinator', _coordinatorController),
+          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
+          _buildTextField(
+              'Source Of Lead', 'Please select', _sourceofleadController),
 
           SizedBox(height: 16.h),
-          _buildTextField('typeOfBusiness',"Enter type of business" ,_typeOfBusinessController),
+          _buildTextField('typeOfBusiness', "Enter type of business",
+              _typeOfBusinessController),
           /*ElevatedButton(
             onPressed: _submitForm,
             child: Center(child: Text('Submit')),
@@ -326,9 +350,11 @@ class _LeadDashboard extends State<LeadDashboard> {
               child: Center(
                 child: Text(
                   "Submit",
-                  style: TextStyle(fontSize: 20.sp,fontFamily:
-                  GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500, color: AppColor.white),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.white),
                 ),
               ),
             ),
@@ -343,52 +369,88 @@ class _LeadDashboard extends State<LeadDashboard> {
       onTap: () {
         onClick();
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.symmetric(horizontal: 10),
-        height: 60.h,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: Text(
               label,
               style: TextStyle(
-                  color: Color(0xff1B1B1B),
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w300),
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
             ),
           ),
-        ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 10.h,
+        ),
         SizedBox(
           height: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
               controller: controller,
-              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 hintText: hint,
-                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+                hintStyle: TextStyle(
+                    color: Color(0xffcccccc),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
               ),
             ),
           ),
@@ -397,211 +459,317 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  void _submitForm() async{
-
-   LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+  void _submitForm() async {
+    LoginDeatils loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
-    SaveLeadRequest saveEmploye=SaveLeadRequest();
-    saveEmploye.id=1;
-    saveEmploye.companyName=name;
-    saveEmploye.coordinator=" ";
-    saveEmploye.emailId=email;
-    saveEmploye.mobileNumber=phone;
-    saveEmploye.address=_addressController.text;
-    saveEmploye.sourceOfLead=_sourceofleadController.text;
-    saveEmploye.typeOfBusiness=_typeOfBusinessController.text;
-    saveEmploye.leadAssignedTo=selectedEmp;
-    saveEmploye.leadAddedBy=loginDeatils.data!.id;
+    SaveLeadRequest saveEmploye = SaveLeadRequest();
+    saveEmploye.id = 0;
+    saveEmploye.companyName = name;
+    saveEmploye.coordinator = " ";
+    saveEmploye.emailId = email;
+    saveEmploye.mobileNumber = phone;
+    saveEmploye.address = _addressController.text;
+    saveEmploye.sourceOfLead = _sourceofleadController.text;
+    saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
+    saveEmploye.leadAssignedTo = selectedEmp;
+    saveEmploye.leadAddedBy = loginDeatils.data!.id;
     EasyLoading.show(status: "Loading");
-    Dio dio=Dio();
+    Dio dio = Dio();
     //try{
-      var response=await dio.post(ApiConstant.SAVE_LEAD,data: jsonEncode(saveEmploye.toJson()));
-      print('the body ${response.data}');
-      if(response.statusCode==200){
-
-        PostLead postLead =PostLead.fromJson(jsonDecode(response.data));
-        Map<String,dynamic> parameter={
-          "date":GetDateFormat.getCurrentDate(),
-          "lead":postLead.data!.id,
-          "nextFollowUpBy":empData.id,
-          "potential":"10",
-          "status":"Pending",
-          "updatedByUser":loginDeatils.data!.id,
-          "description":" Lead Created "
-        };
-        var para= jsonEncode(parameter);
-        var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
-        if(leadResponse.statusCode==200){
-          print('done is done ');
+    var response = await dio.post(ApiConstant.SAVE_LEAD,
+        data: jsonEncode(saveEmploye.toJson()));
+    print('the body ${response.data}');
+    if (response.statusCode == 200) {
+      PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
+      Map<String, dynamic> parameter = {
+        "date": GetDateFormat.getCurrentDate(),
+        "lead": postLead.data!.id,
+        "nextFollowUpBy": empData.id,
+        "potential": "10",
+        "status": "Pending",
+        "updatedByUser": loginDeatils.data!.id,
+        "description": " Lead Created "
+      };
+      var para = jsonEncode(parameter);
+      var leadResponse =
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+      if (leadResponse.statusCode == 200) {
+        print('done is done ');
       }
-        ApiGetData("");
-      }else{
-        ToastMessage.show(context, "Please try Again");
-      }
-      EasyLoading.dismiss();
+      ApiGetData("");
+    } else {
+      ToastMessage.show(context, "Please try Again");
+    }
+    EasyLoading.dismiss();
     // }catch(e){
     //   EasyLoading.dismiss();
     // }
-
-
   }
 
-  leadList(){
-   return isLoad?Center(child: CircularProgressIndicator(),) :Container(
-      /*decoration: BoxDecoration(
+  leadList(BuildContext context) {
+    return isLoad
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            /*decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(left: 15.w),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextView(
-               title: "All Leads",
-                  fontWeight: FontWeight.w600,
-                  color: AppColor.black,
-                  fontSize: 30.sp,
-
-              ),
-              Container(
-                width: 350.w,
-                margin: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
+            padding: EdgeInsets.all(20),
+            margin: EdgeInsets.only(left: 15.w),
+            child: Column(
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    TextView(
+                      title: "All Leads",
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.black,
+                      fontSize: 30.sp,
+                    ),
                     Container(
-                      width: 270.w,
+                      width: 350.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(onPressed: (){},
-                              icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                          Text("Showing ${emData.length} out of ${emData.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                          GoogleFonts.poppins().fontFamily),),
-                          IconButton(onPressed: (){},
-                              icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                          Container(
+                            width: 270.w,
+                            margin: EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
+                                      size: 16,
+                                    )),
+                                Text(
+                                  "Showing ${leadData.length} out of ${leadData.length} Results",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily),
+                                ),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                    ))
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20.w,
+                          ),
+                          SvgPicture.asset('assets/more_icon.svg')
                         ],
                       ),
                     ),
-                    SizedBox(width: 20.w,),
-                    SvgPicture.asset('assets/more_icon.svg')
                   ],
                 ),
-              ),
-            ],
-          ),
-        /*  Divider(
+                /*  Divider(
             thickness: 0.5,
             color: Colors.grey,
           ),*/
-          SizedBox(height: 25.h,),
-          Container(
-            decoration: BoxDecoration(
-                color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(20),
-            child: Table(
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                /// Table Header
-                TableRow(
-                  /*decoration: BoxDecoration(
+                SizedBox(
+                  height: 25.h,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: AppColor.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(20),
+                  child: Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        /*decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
                           color: Colors.grey,
                           width: 0.5,
                         )),
                   ),*/
-                  children: [
-                    tableHeader("Name"),
-                    tableHeader("Client"),
-                    tableHeader("Project"),
-                    tableHeader("Contact"),
-                   // tableHeader("Status"),
-                    tableHeader(""),
+                        children: [
+                          tableHeader("Name"),
+                          tableHeader("Client"),
+                          tableHeader("Project"),
+                          tableHeader("Contact"),
+                          tableHeader("Status"),
+                          tableHeader(""),
 
-                    /*if (!AppResponsive.isMobile(context))
+                          /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
                     if (!AppResponsive.isMobile(context)) tableHeader(""),*/
+                        ],
+                      ),
 
-                  ],
+                      /// Table Data
+
+                      for (int i = 0; i < leadData.length; i++)
+                        tableRow(context,
+                            name: leadData[i].lead!.leadAddedBy!.firstName,
+                            color: Colors.blue,
+                            image: "leadData[i].lead!.addLogo",
+                            client: leadData[i].lead!.companyName,
+                            project: leadData[i].lead!.typeOfBusiness,
+                            contact: leadData[i].lead!.mobileNumber,
+                            // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                            status: "Pending",
+                            index: i),
+                    ],
+                  ),
                 ),
-
-                /// Table Data
-
-                for (int i=0;i<emData.length;i++)  tableRow(
-                    context,
-                  name: emData[i].lead!.leadAddedBy!.firstName,
-                  color: Colors.blue,
-                  image: "assets/user1.jpg",
-                  client: emData[i].lead!.companyName,
-                 project: emData[i].lead!.companyName,
-                    contact: emData[i].lead!.mobileNumber,
-                 // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                 // status: emData[i].leadUpdates![0].status,
-                  index: i
-                ),
-
               ],
             ),
-          ),
-
-        ],
-      ),
-    );
+          );
   }
 
-  TableRow tableRow(context, {name, image, client, project,status, color, index, String? contact}) {
+  TableRow tableRow(context,
+      {name, image, client, project, status, color, index, String? contact}) {
     return TableRow(
         decoration: BoxDecoration(
-         /* border: Border(
+            /* border: Border(
             bottom: BorderSide(
               color: Colors.grey,
               width: 0.5,
             ),
           ),*/
-        ),
+            ),
         children: [
           //Full Name
           InkWell(
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => LeadInfo(leadData: emData[index],)));
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => LeadInfo(
+                        leadData: leadData[index],
+                      )));
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-
-                  getImage(image,height: 30.h,width: 30.w),
+                  getImage('image', height: 30.h, width: 30.w),
                   SizedBox(
                     width: 10,
                   ),
-                  TextView(title: name, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
+                  TextView(
+                      title: name,
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w300)
                 ],
               ),
             ),
           ),
 
-          TextView(title: client, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          TextView(title: project, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          TextView(title: contact.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-         // TextView(title: status.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-
+          TextView(
+              title: client,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: project,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: contact.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          // TextView(title: status.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
+          Container(
+            height: 27.h,
+            width: 70.w,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: status == "Converted"
+                    ? Colors.green.shade50
+                    : status == "Rejected"
+                        ? Colors.red.shade50
+                        : Colors.amber.shade100),
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 0.h),
+            margin: EdgeInsets.only(left: 0.w, right: 30.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.circle,
+                    size: 8,
+                    color: status == "Converted"
+                        ? Colors.green
+                        : status == "Rejected"
+                            ? Colors.red
+                            : Colors.amber),
+                SizedBox(
+                  width: 10.w,
+                ),
+                Text(
+                  status,
+                  style: TextStyle(
+                    color: status == "Converted"
+                  ? Colors.green
+                      : status == "Rejected"
+                  ? Colors.red
+                      : Colors.amber,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                /*  SizedBox(width: 10.w,),
+                Icon(Icons.arrow_drop_down_outlined,size: 18,
+                    color: status =="Converted"?Colors.green:status=="Rejected"?Colors.red:Colors.amber),*/
+                PopupMenuButton(
+                  position: PopupMenuPosition.under,
+                  padding: EdgeInsets.only(bottom: 20),
+                  icon: Icon(Icons.arrow_drop_down_outlined,
+                      size: 18,
+                      color: status == "Converted"
+                          ? Colors.green
+                          : status == "Rejected"
+                              ? Colors.red
+                              : Colors.amber),
+                  onSelected: (value) {
+                    callChangeStatusApi(leadData[index],value);
+                    setState(() {
+                      status = value;
+                    });
+                  },
+                  itemBuilder: (ctx) => [
+                    _buildPopupMenuItem('Converted'),
+                    _buildPopupMenuItem('Pending'),
+                    _buildPopupMenuItem('Rejected'),
+                  ],
+                )
+              ],
+            ),
+          ),
           Row(
             children: [
-              InkWell(onTap:(){
-                showAlertDialog(context,index);
-              },child: Icon(Icons.delete,color: Colors.red)),
+              InkWell(
+                  onTap: () {
+                    showAlertDialog(context, index);
+                  },
+                  child: Icon(Icons.delete, color: Colors.red)),
               SizedBox(
                 width: 5.w,
               ),
-              InkWell(onTap:(){
-                editleadDilaog(emData[index]);
-              },child: Icon(Icons.edit,color: Colors.grey)),
+              InkWell(
+                  onTap: () {
+                    editleadDilaog(leadData[index]);
+                  },
+                  child: Icon(Icons.edit, color: Colors.grey)),
             ],
           )
         ]);
@@ -610,37 +778,46 @@ class _LeadDashboard extends State<LeadDashboard> {
   Widget tableHeader(text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
-      child: TextView(title: text, fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w900),
-
+      child: TextView(
+          title: text,
+          fontSize: 18.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w900),
     );
   }
 
-  Future<void> ApiGetData(String URL) async{
-
-    isLoad=true;
-    setState(() {
-
-    });
+  Future<void> ApiGetData(String URL) async {
+    isLoad = true;
+    setState(() {});
     final dio = Dio();
     final response = await dio.get(ApiConstant.GET_ALL_LEAD);
     print(response.data);
-    if(response.statusCode==200){
-      LeadList employeeList =LeadList.fromJson(jsonDecode(response.data));
-      emData.clear();
-      emData.addAll(employeeList.data!);
-      print('this is ${emData.length}');
-      isLoad=false;
-      setState(() {
+    if (response.statusCode == 200) {
+      LeadList leadList = LeadList.fromJson(jsonDecode(response.data));
+      leadData.clear();
+      leadData.addAll(leadList.data! as Iterable<LeadData>);
+      leadData.forEach((element) {
+        if (element.status == "converted") {
+          convertedLead.add(element);
+        } else {
+          if (element.status == "pending") {
+            pendingLead.add(element);
+          } else {
+            rejectedLead.add(element);
+          }
+        }
       });
+      print('this is ${leadData.length}');
+      isLoad = false;
+      setState(() {});
     }
   }
 
-
-  showAlertDialog(BuildContext context,int index) {
+  showAlertDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
       child: Text("Ok"),
-      onPressed: () async{
+      onPressed: () async {
         callDelete(index);
         Navigator.pop(context);
       },
@@ -650,7 +827,6 @@ class _LeadDashboard extends State<LeadDashboard> {
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
-
       },
     );
 
@@ -658,10 +834,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     AlertDialog alert = AlertDialog(
       title: Text("Delete !"),
       content: Text("Do you want to delete this lead ?"),
-      actions: [
-        okButton,
-        cancelButton
-      ],
+      actions: [okButton, cancelButton],
     );
 
     // show the dialog
@@ -673,27 +846,21 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  void callDelete(int index) async{
-
-    Dio dio=Dio();
-    var response=await dio.delete(ApiConstant.LEAD_DELTEB,queryParameters: {
-      "id":emData[index].lead!.id!
-    });
-    if(response.statusCode==200){
-      emData.removeAt(index);
-      setState(() {
-
-      });
-
-    }else{
+  void callDelete(int index) async {
+    Dio dio = Dio();
+    var response = await dio.delete(ApiConstant.LEAD_DELTEB,
+        queryParameters: {"id": leadData[index].lead!.id!});
+    if (response.statusCode == 200) {
+      leadData.removeAt(index);
+      setState(() {});
+    } else {
       ToastMessage.show(context, "Please try Again");
     }
   }
 
-
   Widget _buildTextOne(String label) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -716,12 +883,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             //margin: EdgeInsets.only(top: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    label
-                ),
-                Icon(Icons.arrow_drop_down_outlined)
-              ],
+              children: [Text(label), Icon(Icons.arrow_drop_down_outlined)],
             ),
           ),
         ),
@@ -729,36 +891,38 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  getAllEmployee()async{
-    Dio dio=Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
+  getAllEmployee() async {
+    Dio dio = Dio();
+    final response = await dio.get(ApiConstant.BASE_URL + "/Employee/getAll");
     print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+    if (response.statusCode == 200) {
+      EmployeeList employeeList =
+          EmployeeList.fromJson(jsonDecode(response.data));
       Constants.allEmployee.clear();
       Constants.allEmployee.addAll(employeeList.data!);
     }
   }
-  Widget setupAlertDialoadContainer(){
 
+  Widget setupAlertDialoadContainer() {
     return Container(
       height: 300.0, // Change as per your requirement
       width: 300.0, // Change as per your requirement
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount:  Constants.allEmployee.length,
+        itemCount: Constants.allEmployee.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-            onTap: (){
+            onTap: () {
               // selectRole=dataRole[index].id!;
               // selectedRole=dataRole[index].name!;
-              empData=Constants.allEmployee[index];
+              empData = Constants.allEmployee[index];
               Navigator.pop(context);
-              setState(() {
-              });
+              setState(() {});
             },
             child: ListTile(
-              title: Text( Constants.allEmployee[index].firstName!+" "+Constants.allEmployee[index].lastName!),
+              title: Text(Constants.allEmployee[index].firstName! +
+                  " " +
+                  Constants.allEmployee[index].lastName!),
             ),
           );
         },
@@ -766,10 +930,15 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-
-  leadCountCard(String title,String count,String img, bool isSelected, Color bgColor,){
+  leadCountCard(
+    String title,
+    String count,
+    String img,
+    bool isSelected,
+    Color bgColor,
+  ) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         setState(() {
           isSelected = true;
         });
@@ -780,9 +949,10 @@ class _LeadDashboard extends State<LeadDashboard> {
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 0.50, color: isSelected?Color(0xFFC3262C):Colors.white),
+            side: BorderSide(
+                width: 0.50,
+                color: isSelected ? Color(0xFFC3262C) : Colors.white),
             borderRadius: BorderRadius.circular(10),
-
           ),
         ),
         child: Row(
@@ -797,14 +967,28 @@ class _LeadDashboard extends State<LeadDashboard> {
                 color: bgColor,
                 shape: CircleBorder(),
               ),
-              child: SvgPicture.asset(Images.emp_tot,height: 50.h,width: 50.w,),
+              child: SvgPicture.asset(
+                Images.emp_tot,
+                height: 50.h,
+                width: 50.w,
+              ),
             ),
-            SizedBox(width: 17.w,),
+            SizedBox(
+              width: 17.w,
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextView(title: count, fontSize: 35.sp, color: AppColor.black, fontWeight: FontWeight.w600),
-                TextView(title: title, fontSize: 20.sp, color: Color(0xff6C6C6C), fontWeight: FontWeight.w300)
+                TextView(
+                    title: count,
+                    fontSize: 35.sp,
+                    color: AppColor.black,
+                    fontWeight: FontWeight.w600),
+                TextView(
+                    title: title,
+                    fontSize: 20.sp,
+                    color: Color(0xff6C6C6C),
+                    fontWeight: FontWeight.w300)
               ],
             )
           ],
@@ -813,26 +997,25 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  editleadDilaog(LeadData leadData){
-    editselectedEmp=leadData.lead!.leadAssignedTo!.id!;
-    _editnameController.text =leadData.lead!.companyName!;
-     _editemailController.text=leadData.lead!.emailId!;
-    _editphoneController.text=leadData.lead!.mobileNumber!;
-     _editsourceofleadController.text= leadData.lead!.sourceOfLead!;
-     _editcoordinatorController.text=leadData.lead!.coordinator!;
-     _editaddressController.text=leadData.lead!.address!;
-     _edittypeOfBusinessController.text= leadData.lead!.typeOfBusiness!;
-
+  editleadDilaog(LeadData leadData) {
+    editselectedEmp = leadData.lead!.leadAssignedTo!.id!;
+    _editnameController.text = leadData.lead!.companyName!;
+    _editemailController.text = leadData.lead!.emailId!;
+    _editphoneController.text = leadData.lead!.mobileNumber!;
+    _editsourceofleadController.text = leadData.lead!.sourceOfLead!;
+    _editcoordinatorController.text = leadData.lead!.coordinator!;
+    _editaddressController.text = leadData.lead!.address!;
+    _edittypeOfBusinessController.text = leadData.lead!.typeOfBusiness!;
 
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
+          backgroundColor: Colors.transparent, // <-- SEE HERE
           title: const Text(''),
-          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
             return SingleChildScrollView(
               child: Container(
                   color: Colors.transparent,
@@ -845,21 +1028,19 @@ class _LeadDashboard extends State<LeadDashboard> {
                         child: Container(
                           color: Colors.transparent,
                           width: 408.w,
-                          child: EditLeadLead(leadData,setState),
+                          child: EditLeadLead(leadData, setState),
                         ),
                       )
                     ],
-                  )
-              ),
+                  )),
             );
           }),
         );
       },
     );
-
   }
 
-  EditLeadLead(LeadData leadData,StateSetter stateSetter){
+  EditLeadLead(LeadData leadData, StateSetter stateSetter) {
     return Container(
       width: 408.w,
       decoration: BoxDecoration(
@@ -874,8 +1055,12 @@ class _LeadDashboard extends State<LeadDashboard> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -891,8 +1076,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             child: Text(
               "Edit Lead",
               style: TextStyle(
-                fontFamily:
-                GoogleFonts.poppins().fontFamily,
+                fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,
                 color: AppColor.black,
                 fontSize: 25.sp,
@@ -900,43 +1084,51 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           SizedBox(height: 20.h),
-          Center(child: SvgPicture.asset('assets/upload_profile.svg',height: 202.h,width:202.w)),
+          Center(
+              child: SvgPicture.asset('assets/upload_profile.svg',
+                  height: 202.h, width: 202.w)),
           SizedBox(height: 16.h),
-          _buildTextField('Company Name','Please Comapny name', _editnameController),
+          _buildTextField(
+              'Company Name', 'Please Comapny name', _editnameController),
           SizedBox(height: 16.h),
-          _buildText('${editselectedEmp==0?"Select Employee ":"One Employee Selected"}', () async {
+          _buildText(
+              '${editselectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+              () async {
             int list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return EmpDialogOne();
                 });
             // print('the list is ${list}');
-            editselectedEmp=list;
+            editselectedEmp = list;
             print('the list is$selectedEmp');
             stateSetter(() {
-              editselectedEmp=list;
+              editselectedEmp = list;
             });
-
           }),
           SizedBox(height: 16.h),
-          _buildTextField('Email','Please enter your email ID', _editemailController),
+          _buildTextField(
+              'Email', 'Please enter your email ID', _editemailController),
           SizedBox(height: 16.h),
-          _buildTextField('Phone','Please enter your phone number', _editphoneController),
+          _buildTextField(
+              'Phone', 'Please enter your phone number', _editphoneController),
           SizedBox(height: 16.h),
           // _buildTextField('Name Coordinator', _coordinatorController),
           //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
           SizedBox(height: 16.h),
-          _buildTextField('Source Of Lead', 'Please select',_editsourceofleadController),
+          _buildTextField(
+              'Source Of Lead', 'Please select', _editsourceofleadController),
 
           SizedBox(height: 16.h),
-          _buildTextField('typeOfBusiness',"Enter type of business" ,_edittypeOfBusinessController),
+          _buildTextField('typeOfBusiness', "Enter type of business",
+              _edittypeOfBusinessController),
           /*ElevatedButton(
             onPressed: _submitForm,
             child: Center(child: Text('Submit')),
           ),*/
           SizedBox(height: 16.h),
           InkWell(
-            onTap: (){
+            onTap: () {
               submitEditForm(leadData);
             },
             child: Container(
@@ -950,9 +1142,11 @@ class _LeadDashboard extends State<LeadDashboard> {
               child: Center(
                 child: Text(
                   "Submit",
-                  style: TextStyle(fontSize: 20.sp,fontFamily:
-                  GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500, color: AppColor.white),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.white),
                 ),
               ),
             ),
@@ -962,56 +1156,98 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-
-  void submitEditForm(LeadData leadData) async{
-
-    LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+  void submitEditForm(LeadData leadData) async {
+    LoginDeatils loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
     String name = _editnameController.text.toString();
     String email = _editemailController.text.toString();
     String phone = _editphoneController.text.toString();
-    SaveLeadRequest saveEmploye=SaveLeadRequest();
-    saveEmploye.id=leadData.lead!.id;
-    saveEmploye.companyName=name;
-    saveEmploye.coordinator="Parag Kumbhar";
-    saveEmploye.emailId=email;
-    saveEmploye.mobileNumber=phone;
-    saveEmploye.address=_editaddressController.text;
-    saveEmploye.sourceOfLead=_editsourceofleadController.text;
-    saveEmploye.typeOfBusiness=_edittypeOfBusinessController.text;
-    saveEmploye.leadAssignedTo=editselectedEmp;
-    saveEmploye.leadAddedBy=loginDeatils.data!.id;
+    SaveLeadRequest saveEmploye = SaveLeadRequest();
+    saveEmploye.id = leadData.lead!.id;
+    saveEmploye.companyName = name;
+    saveEmploye.coordinator = "Parag Kumbhar";
+    saveEmploye.emailId = email;
+    saveEmploye.mobileNumber = phone;
+    saveEmploye.address = _editaddressController.text;
+    saveEmploye.sourceOfLead = _editsourceofleadController.text;
+    saveEmploye.typeOfBusiness = _edittypeOfBusinessController.text;
+    saveEmploye.leadAssignedTo = editselectedEmp;
+    saveEmploye.leadAddedBy = loginDeatils.data!.id;
     EasyLoading.show(status: "Loading");
-    Dio dio=Dio();
+    Dio dio = Dio();
     //try{
-    var response=await dio.put(ApiConstant.UPDATE_LEAD,data: jsonEncode(saveEmploye.toJson()));
+    var response = await dio.put(ApiConstant.UPDATE_LEAD,
+        data: jsonEncode(saveEmploye.toJson()));
     print('the body ${response.data}');
-    if(response.statusCode==200){
-
-      PostLead postLead =PostLead.fromJson(jsonDecode(response.data));
-      Map<String,dynamic> parameter={
-        "date":GetDateFormat.getCurrentDate(),
-        "lead":postLead.data!.id,
-        "nextFollowUpBy":empData.id,
-        "potential":"10",
-        "status":"Pending",
-        "updatedByUser":loginDeatils.data!.id,
-        "description":" Lead Created "
+    if (response.statusCode == 200) {
+      PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
+      Map<String, dynamic> parameter = {
+        "date": GetDateFormat.getCurrentDate(),
+        "lead": postLead.data!.id,
+        "nextFollowUpBy": empData.id,
+        "potential": "10",
+        "status": "Pending",
+        "updatedByUser": loginDeatils.data!.id,
+        "description": " Lead Created "
       };
-      var para= jsonEncode(parameter);
-      var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
-      if(leadResponse.statusCode==200){
+      var para = jsonEncode(parameter);
+      var leadResponse =
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+      if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
       Navigator.pop(context);
       ApiGetData("");
-    }else{
+    } else {
       ToastMessage.show(context, "Please try Again");
     }
     EasyLoading.dismiss();
     // }catch(e){
     //   EasyLoading.dismiss();
     // }
+  }
 
+  PopupMenuItem _buildPopupMenuItem(
+    String title,
+  ) {
+    return PopupMenuItem(
+      child: Text(title),
+    );
+  }
 
+  Future<void> callChangeStatusApi(LeadData leadData, Object? value) async {
+    EasyLoading.show(status: "Loading");
+    print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
+    Map<String,dynamic> parameter={
+      "id": leadData.lead!.id,
+      "status": value.toString()
+    };
+    print(parameter);
+    var data= jsonEncode(parameter);
+    Dio dio=Dio();
+    var response=await dio.put(ApiConstant.UPDATE_LEAD_STATUS,data: data);
+    print('the response is ${response}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      ToastMessage.show(context, "Status updated");
+      ApiGetData('');
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> uploadLeadImage(int id) async {
+    EasyLoading.show(status: "Loading");
+    print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
+    Dio dio=Dio();
+    var response=await dio.post(
+        "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/crm/api/Lead/uploadProfile?id=${id}",
+        );
+    print('the response is ${response}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      ToastMessage.show(context, "Image updated");
+      ApiGetData('');
+      Navigator.of(context).pop();
+    }
   }
 }

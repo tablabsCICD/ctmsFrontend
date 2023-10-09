@@ -20,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
     return Container(
       child: Column(
         children: [
-          HeaderWidget(title: "Dashboard",),
+          HeaderWidget(),
           Expanded(
             child: SingleChildScrollView(
               child: Row(

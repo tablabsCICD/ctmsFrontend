@@ -41,7 +41,7 @@ class _EmpInfo extends State<EmpInfo> {
           color: ThemeColor.baground,
           child: Column(
             children: [
-              HeaderWidget(title: "Employee Info"),
+              HeaderWidget(),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),

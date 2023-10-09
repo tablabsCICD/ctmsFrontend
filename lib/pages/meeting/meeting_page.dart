@@ -21,6 +21,7 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/request/save_emp.dart';
 import '../../model/response/employeelist.dart';
@@ -63,6 +64,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   bool isLoad = false;
   List<MeetingData> meetingList = [];
+  List<MeetingData> upcomingMeetingList = [];
+  List<MeetingData> pastMeetingList = [];
 
   @override
   void initState() {
@@ -81,12 +84,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
+        color: ThemeColor.baground,
         child: Column(
           children: [
             /// Header Part
-            HeaderWidget(
-              title: "Meeting Data",
-            ),
+            HeaderWidget(),
             SingleChildScrollView(
               child: Column(
                 children: [
@@ -150,17 +152,17 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
                     child: Row(
                       children: [
-                        meetingCard('Total Lead', '700', 'assets/schedule.svg', true,
+                        meetingCard('Schedule', '${meetingList.length}', 'assets/schedule.svg', true,
                             Colors.green.shade50),
                         SizedBox(
                           width: 32.w,
                         ),
                         meetingCard(
-                            'Converted', '300', 'assets/re_schedule.svg', false, Colors.red.shade50),
+                            'Reschedule', '${meetingList.length}', 'assets/re_schedule.svg', false, Colors.red.shade50),
                         SizedBox(
                           width: 32.w,
                         ),
-                        meetingCard('Rejected', '200', 'assets/canceled.svg', false,
+                        meetingCard('Cancelled', '${meetingList.length}', 'assets/canceled.svg', false,
                             Colors.orange.shade50),
                       ],
                     ),
@@ -468,26 +470,36 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       onTap: () {
         onClick();
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
-        height: 60.h,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                  color: Color(0xff1B1B1B),
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w300),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+          ),
+          SizedBox(height: 10.h,),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -789,17 +801,17 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
                           if (states.contains(MaterialState.hovered))
-                            return ThemeColor.white; //<-- SEE HERE
-                         return isJoin?ThemeColor.theme_blue:ThemeColor.white; // Defer to the widget's default.
+                            return ThemeColor.theme_blue; //<-- SEE HERE
+                         return isJoin?ThemeColor.theme_blue:ThemeColor.theme_blue; // Defer to the widget's default.
                         },
                       ),
                       backgroundColor:
                       MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
                           if (states.contains(MaterialState.hovered))
-                            return ThemeColor.theme_blue; //<-- SEE HERE
+                            return ThemeColor.white; //<-- SEE HERE
                           return isJoin?ThemeColor.white:ThemeColor
-                              .theme_blue; // Defer to the widget's default.
+                              .white; // Defer to the widget's default.
                         },
                       ),
                     ),
@@ -834,7 +846,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                             (Set<MaterialState> states) {
                           if (states.contains(MaterialState.hovered))
                             return ThemeColor.white; //<-- SEE HERE
-                          return isJoin?ThemeColor.white:ThemeColor.theme_blue; // Defer to the widget's default.
+                          return isJoin?ThemeColor.white:ThemeColor.white; // Defer to the widget's default.
                         },
                       ),
                       backgroundColor:
@@ -843,7 +855,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           if (states.contains(MaterialState.hovered))
                             return ThemeColor.theme_blue; //<-- SEE HERE
                           return isJoin?ThemeColor.theme_blue:ThemeColor
-                              .white; // Defer to the widget's default.
+                              .theme_blue; // Defer to the widget's default.
                         },
                       ),
                     ),
@@ -949,7 +961,16 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     print('the data us ${roleResponse.response}');
     if (roleResponse.status == 200) {
       MeetingList role = MeetingList.fromJson(roleResponse.response);
-      meetingList.addAll(role!.data!);
+      meetingList.addAll(role.data!);
+      meetingList.forEach((element) {
+          if(checkDateExpiry(element.date)){
+            pastMeetingList.add(element);
+          }else{
+            upcomingMeetingList.add(element);
+          }
+      });
+      print("PastMEETING lIST : "+pastMeetingList.length.toString());
+      print("upcomingMEETING lIST : "+upcomingMeetingList.length.toString());
       setState(() {
 
       });
@@ -1143,6 +1164,13 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         ),
       ),
     );
+  }
+
+  bool checkDateExpiry(String? date) {
+    DateTime tempDate = new DateFormat("dd/mm/yyyy").parse(date!);
+    final expirationDate = DateTime.now();
+    final bool isExpired = expirationDate.isBefore(tempDate);
+    return isExpired;
   }
 
   // Future<void> _showEditAlertDialog() async {

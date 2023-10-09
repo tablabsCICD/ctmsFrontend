@@ -17,10 +17,9 @@ import '../../../common/app_responsive.dart';
 import '../../../constant/constants.dart';
 
 class HeaderWidget extends StatefulWidget {
-  final String title;
 
 
-   HeaderWidget({Key? key, required this.title}) : super(key: key);
+   HeaderWidget({Key? key}) : super(key: key);
 
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
@@ -98,7 +97,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ),
-        child: getImage(details!.data!.image!,height: 50.h,width: 50.w),
+        child: getImage("details!.data!.image!",height: 50.h,width: 50.w),
       ),
       SizedBox(width: 18.w,),
       Text('${Constants.LOGIN_NAME}', style: TextStyle(

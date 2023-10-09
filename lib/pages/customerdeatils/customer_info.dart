@@ -40,7 +40,7 @@ class _LeadInfo extends State<CustomerInfo> {
           color: Color(0xffF6F6F6),
           child: Column(
             children: [
-              HeaderWidget(title: "Lead Info"),
+              HeaderWidget(),
               SizedBox(height: 26.h,),
               Container(
                 width: MediaQuery.of(context).size.width,

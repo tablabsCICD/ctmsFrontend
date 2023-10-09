@@ -22,7 +22,7 @@ class LeadProvider extends BaseProvider{
     print(response.data);
     if(response.statusCode==200){
       LeadList employeeList =LeadList.fromJson(jsonDecode(response.data));
-      emData.addAll(employeeList.data!);
+      emData.addAll(employeeList.data! as Iterable<LeadData>);
     }else{
       ToastMessage.show(context,"Please Try Again");
     }

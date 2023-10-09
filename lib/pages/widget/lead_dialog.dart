@@ -170,8 +170,8 @@ class _LeadDialog extends State<LeadDialog>{
     if(response.status==200){
       LeadList employeeList =LeadList.fromJson(response.response);
       //emData=employeeList.data!;
-      emData.addAll(employeeList.data!);
-      temData.addAll(employeeList.data!);
+      emData.addAll(employeeList.data! as Iterable<LeadData>);
+      temData.addAll(employeeList.data! as Iterable<LeadData>);
 
       setState(() {
 

@@ -93,15 +93,15 @@ class Lead {
   String? mobileNumber;
   String? emailId;
   String? sourceOfLead;
-  Null? pinCode;
-  Null? city;
+  String? pinCode;
+  String? city;
   String? address;
   String? typeOfBusiness;
-  Null? date;
+  String? date;
   LeadAddedBy? leadAddedBy;
   LeadAddedBy? leadAssignedTo;
-  Null? isEnquiry;
-  Null? addLogo;
+  bool? isEnquiry;
+  String? addLogo;
   bool? isRobinRound;
 
   Lead(

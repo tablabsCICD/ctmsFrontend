@@ -37,7 +37,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              HeaderWidget(title: "Profile"),
+              HeaderWidget(),
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 30,vertical: 30),

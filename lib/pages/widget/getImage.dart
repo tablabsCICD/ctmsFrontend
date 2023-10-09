@@ -5,7 +5,7 @@ import 'package:photo_view/photo_view.dart';
 
 getImage(String src, {double? height, double? width}) {
   print('imageSrc ::: ${src}');
-  return src == '' || src==null ?CircleAvatar(
+  return src == '' || src=="string" ?CircleAvatar(
       radius: height!.r,
       backgroundImage: AssetImage('assets/user1.jpg',))
   /*Container(
