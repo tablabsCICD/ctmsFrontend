@@ -147,6 +147,89 @@ class Lead {
   }
 }
 
+class NextFollowUpBy {
+  int? id;
+  String? firstName;
+  String? lastName;
+  String? emailId;
+  String? mobileNumber;
+  String? address;
+  String? image;
+  String? employeeId;
+  Role? role;
+  bool? isAdmin;
+  bool? isActive;
+  String? otp;
+  String? password;
+  String? os;
+  String? status;
+  String? deviceId;
+  String? createdDate;
+
+  NextFollowUpBy(
+      {this.id,
+        this.firstName,
+        this.lastName,
+        this.emailId,
+        this.mobileNumber,
+        this.address,
+        this.image,
+        this.employeeId,
+        this.role,
+        this.isAdmin,
+        this.isActive,
+        this.otp,
+        this.password,
+        this.os,
+        this.status,
+        this.deviceId,
+        this.createdDate});
+
+  NextFollowUpBy.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
+    emailId = json['emailId'];
+    mobileNumber = json['mobileNumber'];
+    address = json['address'];
+    image = json['image'];
+    employeeId = json['employeeId'];
+    role = json['role'] != null ? new Role.fromJson(json['role']) : null;
+    isAdmin = json['is_admin'];
+    isActive = json['isActive'];
+    otp = json['otp'];
+    password = json['password'];
+    os = json['os'];
+    status = json['status'];
+    deviceId = json['deviceId'];
+    createdDate = json['createdDate'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
+    data['emailId'] = this.emailId;
+    data['mobileNumber'] = this.mobileNumber;
+    data['address'] = this.address;
+    data['image'] = this.image;
+    data['employeeId'] = this.employeeId;
+    if (this.role != null) {
+      data['role'] = this.role!.toJson();
+    }
+    data['is_admin'] = this.isAdmin;
+    data['isActive'] = this.isActive;
+    data['otp'] = this.otp;
+    data['password'] = this.password;
+    data['os'] = this.os;
+    data['status'] = this.status;
+    data['deviceId'] = this.deviceId;
+    data['createdDate'] = this.createdDate;
+    return data;
+  }
+}
+
 class LeadAddedBy {
   int? id;
   String? firstName;
@@ -258,8 +341,8 @@ class LeadUpdates {
   LeadAddedBy? updatedByUser;
   String? date;
   String? status;
-  String? nextFollowUpBy;
-  String? potential;
+  NextFollowUpBy? nextFollowUpBy;
+  int? potential;
   String? description;
 
   LeadUpdates(
@@ -280,7 +363,9 @@ class LeadUpdates {
         : null;
     date = json['date'];
     status = json['status'];
-    nextFollowUpBy = json['nextFollowUpBy'];
+    nextFollowUpBy = json['nextFollowUpBy'] != null
+        ? new NextFollowUpBy.fromJson(json['nextFollowUpBy'])
+        : null;
     potential = json['potential'];
     description = json['description'];
   }
@@ -294,7 +379,9 @@ class LeadUpdates {
     }
     data['date'] = this.date;
     data['status'] = this.status;
-    data['nextFollowUpBy'] = this.nextFollowUpBy;
+    if (this.nextFollowUpBy != null) {
+      data['nextFollowUpBy'] = this.nextFollowUpBy!.toJson();
+    }
     data['potential'] = this.potential;
     data['description'] = this.description;
     return data;
