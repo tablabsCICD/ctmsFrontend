@@ -12,6 +12,14 @@ class AppRoutes{
   static const meeting="/meeting";
   static const crm="crm";
 
+  static const org="org";
+  static const allUser="/allUser";
+  static const buySell="/buy&sell";
+  static const fullLoad="/fullLoad";
+  static const bids="/bids";
+  static const discussion="/discussion";
+
+
 
 
 

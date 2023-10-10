@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hr_management/pages/orgnaization/side_bar_orgnization.dart';
+import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
+import 'package:flutter_hr_management/organization/company/company_menu_page.dart';
+import 'package:flutter_hr_management/organization/model/organization_model.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,6 +23,7 @@ class HomeOrganizationScreen extends StatefulWidget{
 
 }
 class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
+  final orgProvider = locator<OrgProvider>();
   @override
   Widget build(BuildContext context) {
    return Scaffold(
@@ -47,7 +53,17 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
                    child: Row(
                      children: [
                        SizedBox(width: 38.w,),
-                       empCounts("0","Monitoring",Images.monitoring,Color(0xFFEAF8F4)),
+                   InkWell(onTap: () async {
+                     List<Organization> organization = await orgProvider.getCompanyDetails(26);
+                     Navigator.pushReplacement(
+                         context,
+                         MaterialPageRoute(
+                             builder: (builder) =>
+                                 CompanyDashboard(organization[0])));
+                    /* {id: 26, companyName: Skillup, companyAddress: Pune, isVerified: 0, website: www.skillup.com, landlineNumber: 020336677, companyMobileNumber: 8379939930, pointOfContact: Navale, gstNumber: 123456789, gstNumber2: 123456789, typeOfRegistration: Private Ltd., panCardNumber: CHI5789H, tanCardNumber: CHI5789H, officialEmailId: skillup@gmail.com, rating: 5, numberOfRatings: 5, city: Pune, state: Maharastra, otp: }, {id: 41, companyName: abcd, companyAddress: pune, isVerified: 0, website: www.abcd.com, landlineNumber: 123456, companyMobileNumber: 8379939930, pointOfContact: swati, gstNumber: 12345, gstNumber2: "https://s3.ap-south-1.amazonaws.com//tkd-profile/profileImages//1675949056174-aadhar.jpg", typeOfRegistration: One Person Company, panCardNumber: 123456, tanCardNumber: 123456, officialEmailId: swatibahir@gmail.com, rating: 5, numberOfRatings: 1, city: Pune, state: Maharastra, otp: null}*/
+                   //  Navigator.pushNamed(context, AppRoutes.org);
+                   },
+                      child: empCounts("0","Monitoring",Images.monitoring,Color(0xFFEAF8F4)),),
                        SizedBox(width: 38.w,),
                        InkWell(onTap: (){
                          Navigator.pushNamed(context, AppRoutes.crm);

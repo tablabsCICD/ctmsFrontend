@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/entry_screen.dart';
+import 'package:flutter_hr_management/organization/auth/login_screen.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
-import 'package:flutter_hr_management/pages/orgnaization/home_orgnization.dart';
+import 'package:flutter_hr_management/pages/orgnaization_page/home_orgnization.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
 import '../pages/aut/login.dart';
 import '../pages/empdetails/employee_list_dashboard.dart';
@@ -22,8 +23,10 @@ class RouteGenerator {
       case AppRoutes.home:
         return buildRoute(HomeOrganizationScreen(), settings: settings);
   case AppRoutes.crm:
-    return buildRoute(HomePage(), settings: settings);;
+    return buildRoute(HomePage(), settings: settings);
 
+      case AppRoutes.org:
+        return buildRoute(Login_Screen(), settings: settings);;
       case AppRoutes.login:
         return buildRoute(LoginScreen(), settings: settings);
 
