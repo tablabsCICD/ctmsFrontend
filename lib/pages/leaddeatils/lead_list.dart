@@ -671,7 +671,6 @@ class _LeadDashboard extends State<LeadDashboard> {
               ),
             ),
           ),
-
           TextView(
               title: client,
               fontSize: 16.sp,
