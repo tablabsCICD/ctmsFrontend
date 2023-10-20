@@ -473,6 +473,7 @@ class _BuyCardState extends State<BuyCard> {
                                                             'Your post deleted successfully',
                                                             isFailed:
                                                             false,
+                                                              isFromPost:false
                                                           ),
                                                           dismissible:
                                                           false,
@@ -842,7 +843,7 @@ class _SellCardState extends State<SellCard> {
                                                             description:
                                                             'Your post deleted successfully',
                                                             isFailed:
-                                                            false,
+                                                            false, isFromPost: false,
                                                           ),
                                                           dismissible:
                                                           false,

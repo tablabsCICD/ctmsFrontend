@@ -503,18 +503,27 @@ class _LeadDashboard extends State<LeadDashboard> {
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
+    DateTime dt = DateTime.now();
+    final finalDate = '${dt.day}-${dt.month}-${dt.year}})';
+    print(finalDate);
+
     SaveLeadRequest saveEmploye = SaveLeadRequest();
     saveEmploye.id = 0;
-    saveEmploye.companyName = name;
     saveEmploye.addLogo = imgPath;
-    saveEmploye.coordinator = loginDeatils.data!.firstName;
-    saveEmploye.emailId = email;
-    saveEmploye.mobileNumber = phone;
     saveEmploye.address = _addressController.text;
-    saveEmploye.sourceOfLead = _sourceofleadController.text;
-    saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
+    saveEmploye.city = _addressController.text;
+    saveEmploye.companyName = name;
+    saveEmploye.coordinator = loginDeatils.data!.firstName;
+    saveEmploye.date = finalDate;
+    saveEmploye.emailId = email;
+    saveEmploye.isEnquiry = 0;
     saveEmploye.leadAssignedTo = selectedEmp;
     saveEmploye.leadAddedBy = loginDeatils.data!.id;
+    saveEmploye.mobileNumber = phone;
+    saveEmploye.pinCode = '000000';
+    saveEmploye.sourceOfLead = _sourceofleadController.text;
+    saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
+
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     //try{
@@ -661,7 +670,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                             project: finalLeadData[i].lead!.typeOfBusiness,
                             contact: finalLeadData[i].lead!.mobileNumber,
                             // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                            status: "Pending",
+                            status: finalLeadData[i].status,
                             index: i),
                     ],
                   ),
@@ -729,9 +738,9 @@ class _LeadDashboard extends State<LeadDashboard> {
             width: 70.w,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: status == "Converted"
+                color: status == "converted"
                     ? Colors.green.shade50
-                    : status == "Rejected"
+                    : status == "rejected"
                         ? Colors.red.shade50
                         : Colors.amber.shade100),
             padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 0.h),
@@ -742,9 +751,9 @@ class _LeadDashboard extends State<LeadDashboard> {
               children: [
                 Icon(Icons.circle,
                     size: 8,
-                    color: status == "Converted"
+                    color: status == "converted"
                         ? Colors.green
-                        : status == "Rejected"
+                        : status == "rejected"
                             ? Colors.red
                             : Colors.amber),
                 SizedBox(
@@ -753,9 +762,9 @@ class _LeadDashboard extends State<LeadDashboard> {
                 Text(
                   status,
                   style: TextStyle(
-                    color: status == "Converted"
+                    color: status == "converted"
                         ? Colors.green
-                        : status == "Rejected"
+                        : status == "rejected"
                             ? Colors.red
                             : Colors.amber,
                     fontSize: 15.sp,
@@ -771,9 +780,9 @@ class _LeadDashboard extends State<LeadDashboard> {
                   padding: EdgeInsets.only(bottom: 20),
                   icon: Icon(Icons.arrow_drop_down_outlined,
                       size: 18,
-                      color: status == "Converted"
+                      color: status == "converted"
                           ? Colors.green
-                          : status == "Rejected"
+                          : status == "rejected"
                               ? Colors.red
                               : Colors.amber),
                   onSelected: (value) {
@@ -835,7 +844,7 @@ class _LeadDashboard extends State<LeadDashboard> {
       leadData.addAll(leadList.data! as Iterable<LeadData>);
       leadData.forEach((element) {
         finalLeadData.add(element);
-        /*if (element.status!.toLowerCase() == "converted") {
+       if (element.status!.toLowerCase() == "converted") {
           convertedLead.add(element);
         } else {
           if (element.status!.toLowerCase() == "pending") {
@@ -843,7 +852,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           } else if (element.status!.toLowerCase() == "rejected") {
             rejectedLead.add(element);
           }
-        }*/
+        }
       });
       print('this is ${leadData.length}');
       isLoad = false;

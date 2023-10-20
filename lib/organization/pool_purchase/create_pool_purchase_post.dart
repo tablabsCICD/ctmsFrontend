@@ -170,7 +170,7 @@ class _CreatePoolPurchasePostState extends State<CreatePoolPurchasePost> {
                               'New Post',
                               description:
                               'Your post submitted successfully',
-                              isFailed: false,
+                              isFailed: false, isFromPost: false,
                             ),
                             dismissible: false,
                             isFlip: false),

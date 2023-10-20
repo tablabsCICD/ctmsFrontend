@@ -112,7 +112,7 @@ class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
                       description:
                       'Your feedback submitted successfully',
                       isFailed:
-                      false,
+                      false, isFromPost: false,
                     ),
                     dismissible:
                     false,

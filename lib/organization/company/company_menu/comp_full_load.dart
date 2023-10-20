@@ -135,6 +135,7 @@ class _CompLoadScreenState extends State<CompLoadScreen> {
               children: [
                 HeaderWidget(),
                 Expanded(child: LoadList(widget.organization,index: 1,)),
+               // Expanded(child: DiscussionDashboard()),
                /* Container(
                     child: Column(
                         children: [

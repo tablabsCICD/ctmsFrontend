@@ -347,7 +347,7 @@ class _CreateOrganizationState extends State<CreateOrganization> {
                                                           title: 'New Organization',
                                                           description:
                                                           'Organization Created successfully',
-                                                          isFailed: false,
+                                                          isFailed: false, isFromPost: false,
                                                         ),
                                                         dismissible: false,
                                                         isFlip: false),
@@ -399,7 +399,8 @@ class _CreateOrganizationState extends State<CreateOrganization> {
                                                           'Link Organization',
                                                       description:
                                                           'Your organization link successfully',
-                                                      isFailed: false,
+                                                      isFailed: false, isFromPost: false,
+
                                                     ),
                                                     dismissible: false,
                                                     isFlip: false)
@@ -628,6 +629,7 @@ class _CreateOrganizationState extends State<CreateOrganization> {
                                           description:
                                               'Organization Created successfully',
                                           isFailed: false,
+                                          isFromPost: false,
                                         ),
                                         dismissible: false,
                                         isFlip: false),
