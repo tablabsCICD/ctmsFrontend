@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hr_management/organization/util/color-resource.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Style{
  static TextStyle searchHint = TextStyle(fontSize: 14,fontFamily: 'RobotoSlabRegular',fontWeight:FontWeight.normal,color: Color(0xffb19f88));
- static TextStyle dashboardSearchHint = TextStyle(fontSize: 14,fontFamily: 'RobotoSlabBold',color: Color(0xff000000));
+ static TextStyle dashboardSearchHint = TextStyle(fontSize: 14.sp,fontFamily: 'RobotoSlabBold',color: Color(0xff292929));
  static TextStyle leadingName = TextStyle(fontSize: 12,fontFamily: 'RobotoSlabRegular',color: Color(0xff000000),);
  static TextStyle companyName = TextStyle(fontSize: 10,fontFamily: 'RobotoSlabRegular',color: Color(0xff888888));
  static TextStyle languageHeading = TextStyle(fontSize: 10,fontFamily: 'RobotoSlabRegular',color: Color(0xff010101));

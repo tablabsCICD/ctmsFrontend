@@ -100,25 +100,26 @@ class Lead {
 
   Lead.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    companyName = json['companyName'];
-    coordinator = json['coordinator'];
-    mobileNumber = json['mobileNumber'];
-    emailId = json['emailId'];
-    sourceOfLead = json['sourceOfLead'];
-    pinCode = json['pinCode'];
-    city = json['city'];
-    address = json['address'];
-    typeOfBusiness = json['typeOfBusiness'];
-    date = json['date'];
+    companyName = json['companyName']??'';
+    coordinator = json['coordinator']??'';
+    mobileNumber = json['mobileNumber']??'';
+    emailId = json['emailId']??"";
+    sourceOfLead = json['sourceOfLead']??'';
+    pinCode = json['pinCode']??"";
+    city = json['city']??"";
+    address = json['address']??'';
+    typeOfBusiness = json['typeOfBusiness']??"";
+    date = json['date']??"";
     leadAddedBy = json['leadAddedBy'] != null
         ? new LeadAddedBy.fromJson(json['leadAddedBy'])
         : null;
     leadAssignedTo = json['leadAssignedTo'] != null
         ? new LeadAddedBy.fromJson(json['leadAssignedTo'])
         : null;
-    isEnquiry = json['isEnquiry'];
-    addLogo = json['addLogo'];
-    isRobinRound = json['isRobinRound'];
+    isEnquiry = json['isEnquiry']??1;
+    addLogo = json['addLogo']??'';
+    isRobinRound = json['isRobinRound']??false;
+    isSelected = false;
   }
 
   Map<String, dynamic> toJson() {

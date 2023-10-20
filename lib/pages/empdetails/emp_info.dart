@@ -119,7 +119,7 @@ class _EmpInfo extends State<EmpInfo> {
                                     fontWeight: FontWeight.w400,
                                     fontFamily:
                                         GoogleFonts.poppins().fontFamily)),
-                            Text(widget.empData!.role!.name!,
+                            Text(widget.empData!.designation!,
                                 style: TextStyle(
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.w300,

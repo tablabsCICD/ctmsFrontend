@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
 
     //
     final dio = Dio();
+    print("Api get All Emp : ${ApiConstant.GET_ALL_EMPLOYEE}");
     final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
      print(response.data);
     return response.statusCode!;

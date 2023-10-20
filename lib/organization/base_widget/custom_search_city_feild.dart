@@ -4,6 +4,8 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hr_management/organization/util/color-resource.dart';
 import 'package:flutter_hr_management/organization/util/style.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class CustomSearchCityTextField extends StatelessWidget {
@@ -43,8 +45,8 @@ class CustomSearchCityTextField extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-       // height: 30,
-        width: 120,
+        height: 52.h,
+        width: 275.w,
 
         child: TextFormField(
           textAlign: TextAlign.center,
@@ -58,13 +60,21 @@ class CustomSearchCityTextField extends StatelessWidget {
             return null;
           },
           decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
             contentPadding: EdgeInsets.only(bottom: 10,left: 0,right: 0),
-              suffixIcon: Icon(Icons.arrow_drop_down_outlined,size: 25,color: Colors.black,),
+            prefixIcon: Icon(Icons.location_on_outlined,size: 15,color: Color(0xff292929)),
+              suffixIcon: Icon(Icons.keyboard_arrow_down,size: 20,color: Color(0xff292929)),
               hintText: hintText,
-              hintStyle: Style.dashboardSearchHint,
+              hintStyle: TextStyle(
+                  fontSize: 15.sp,
+                  color: Color(0xff292929),
+                  fontWeight: FontWeight.w300,
+                  fontFamily: GoogleFonts.poppins().fontFamily
+              ),
               border:OutlineInputBorder(
-                borderRadius: new BorderRadius.circular(10.0),
-                borderSide: BorderSide.none),
+                borderRadius: new BorderRadius.circular(8.0.r),
+                ),
           ),
           keyboardType: TextInputType.text,
         ),

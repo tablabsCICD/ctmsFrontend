@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/organization/company/buy_sell_list.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:number_pagination/number_pagination.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +57,7 @@ class _CompBuySellState extends State<CompBuySell> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: ColorResources.HOME_BG,
+        backgroundColor: ThemeColor.baground,
         body:Row(
           children: [
             if (AppResponsive.isDesktop(context))
@@ -69,6 +71,7 @@ class _CompBuySellState extends State<CompBuySell> {
               child: Column(
                 children: [
                   HeaderWidget(),
+                  Expanded(child: BuySellList(widget.organization,)),
                  /* Container(
                     child: Column(
                       children: [

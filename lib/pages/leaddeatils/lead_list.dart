@@ -1,6 +1,14 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/response/img_upload_response.dart';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter_hr_management/utils/camerabottomsheet.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
@@ -17,6 +25,8 @@ import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:universal_html/html.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
@@ -53,6 +63,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   TextEditingController _edittypeOfBusinessController = TextEditingController();
 
   List<LeadData> leadData = [];
+  List<LeadData> finalLeadData = [];
   List<LeadData> convertedLead = [];
   List<LeadData> rejectedLead = [];
   List<LeadData> pendingLead = [];
@@ -104,6 +115,20 @@ class _LeadDashboard extends State<LeadDashboard> {
     super.initState();
   }
 
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total leads : ${leadData.length}');
+    finalLeadData.clear();
+    debugPrint('Total leads : ${leadData.length}');
+    leadData.forEach((element) {
+      if (element.lead!.companyName!.contains(query) ||
+          element.lead!.mobileNumber!.contains(query)) {
+        finalLeadData.add(element);
+      }
+    });
+    debugPrint('Final Leads : ${finalLeadData.length}');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -114,7 +139,11 @@ class _LeadDashboard extends State<LeadDashboard> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(),
+          HeaderWidget(
+            onSearchTap: (value) {
+              filterSearchResults(value);
+            },
+          ),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(
@@ -240,7 +269,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                     ),
                 ],
               ),*/
-                    leadList(context)),
+                     leadList(context)),
           ),
         ],
       ),
@@ -293,11 +322,20 @@ class _LeadDashboard extends State<LeadDashboard> {
           SizedBox(height: 20.h),
           Center(
               child: InkWell(
-                  onTap: () {
-                    uploadLeadImage(1);
+                  onTap: () async {
+                    pickFile();
                   },
-                  child: SvgPicture.asset('assets/upload_profile.svg',
-                      height: 202.h, width: 202.w))),
+                  child: imgPath == ''
+                      ? Container(
+                          height: 200.h,
+                          width: 408.w,
+                          alignment: Alignment.center,
+                          child: Image.network(
+                            imgPath,
+                            width: 202.w,
+                          ))
+                      : SvgPicture.asset('assets/upload_profile.svg',
+                          height: 202.h, width: 202.w))),
           SizedBox(height: 16.h),
           _buildTextField(
               'Company Name', 'Please Comapny name', _nameController),
@@ -468,7 +506,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     SaveLeadRequest saveEmploye = SaveLeadRequest();
     saveEmploye.id = 0;
     saveEmploye.companyName = name;
-    saveEmploye.coordinator = " ";
+    saveEmploye.addLogo = imgPath;
+    saveEmploye.coordinator = loginDeatils.data!.firstName;
     saveEmploye.emailId = email;
     saveEmploye.mobileNumber = phone;
     saveEmploye.address = _addressController.text;
@@ -531,44 +570,31 @@ class _LeadDashboard extends State<LeadDashboard> {
                       fontSize: 30.sp,
                     ),
                     Container(
-                      width: 350.w,
+                      width: 300.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            width: 270.w,
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.arrow_back_ios,
-                                      size: 16,
-                                    )),
-                                Text(
-                                  "Showing ${leadData.length} out of ${leadData.length} Results",
-                                  style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w300,
-                                      fontFamily:
-                                          GoogleFonts.poppins().fontFamily),
-                                ),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 16,
-                                    ))
-                              ],
-                            ),
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.arrow_back_ios,
+                                size: 16,
+                              )),
+                          Text(
+                            "Showing ${finalLeadData.length} out of ${leadData.length} Results",
+                            style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w300,
+                                fontFamily:
+                                    GoogleFonts.poppins().fontFamily),
                           ),
-                          SizedBox(
-                            width: 20.w,
-                          ),
-                          SvgPicture.asset('assets/more_icon.svg')
+                          IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ))
                         ],
                       ),
                     ),
@@ -586,7 +612,18 @@ class _LeadDashboard extends State<LeadDashboard> {
                       color: AppColor.white,
                       borderRadius: BorderRadius.circular(10)),
                   padding: EdgeInsets.all(20),
-                  child: Table(
+                  child: finalLeadData.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height:
+                          MediaQuery.of(context).size.height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      :Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
                       /// Table Header
@@ -615,14 +652,14 @@ class _LeadDashboard extends State<LeadDashboard> {
 
                       /// Table Data
 
-                      for (int i = 0; i < leadData.length; i++)
+                      for (int i = 0; i < finalLeadData.length; i++)
                         tableRow(context,
-                            name: leadData[i].lead!.leadAddedBy!.firstName,
+                            name: finalLeadData[i].lead!.companyName,
                             color: Colors.blue,
                             image: "leadData[i].lead!.addLogo",
-                            client: leadData[i].lead!.companyName,
-                            project: leadData[i].lead!.typeOfBusiness,
-                            contact: leadData[i].lead!.mobileNumber,
+                            client: finalLeadData[i].lead!.companyName,
+                            project: finalLeadData[i].lead!.typeOfBusiness,
+                            contact: finalLeadData[i].lead!.mobileNumber,
                             // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
                             status: "Pending",
                             index: i),
@@ -717,10 +754,10 @@ class _LeadDashboard extends State<LeadDashboard> {
                   status,
                   style: TextStyle(
                     color: status == "Converted"
-                  ? Colors.green
-                      : status == "Rejected"
-                  ? Colors.red
-                      : Colors.amber,
+                        ? Colors.green
+                        : status == "Rejected"
+                            ? Colors.red
+                            : Colors.amber,
                     fontSize: 15.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w300,
@@ -740,7 +777,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                               ? Colors.red
                               : Colors.amber),
                   onSelected: (value) {
-                    callChangeStatusApi(leadData[index],value);
+                    callChangeStatusApi(finalLeadData[index], value);
                     setState(() {
                       status = value;
                     });
@@ -794,17 +831,19 @@ class _LeadDashboard extends State<LeadDashboard> {
     if (response.statusCode == 200) {
       LeadList leadList = LeadList.fromJson(jsonDecode(response.data));
       leadData.clear();
+      finalLeadData.clear();
       leadData.addAll(leadList.data! as Iterable<LeadData>);
       leadData.forEach((element) {
-        if (element.status == "converted") {
+        finalLeadData.add(element);
+        /*if (element.status!.toLowerCase() == "converted") {
           convertedLead.add(element);
         } else {
-          if (element.status == "pending") {
+          if (element.status!.toLowerCase() == "pending") {
             pendingLead.add(element);
-          } else {
+          } else if (element.status!.toLowerCase() == "rejected") {
             rejectedLead.add(element);
           }
-        }
+        }*/
       });
       print('this is ${leadData.length}');
       isLoad = false;
@@ -848,9 +887,9 @@ class _LeadDashboard extends State<LeadDashboard> {
   void callDelete(int index) async {
     Dio dio = Dio();
     var response = await dio.delete(ApiConstant.LEAD_DELTEB,
-        queryParameters: {"id": leadData[index].lead!.id!});
+        queryParameters: {"id": finalLeadData[index].lead!.id!});
     if (response.statusCode == 200) {
-      leadData.removeAt(index);
+      finalLeadData.removeAt(index);
       setState(() {});
     } else {
       ToastMessage.show(context, "Please try Again");
@@ -937,7 +976,20 @@ class _LeadDashboard extends State<LeadDashboard> {
     Color bgColor,
   ) {
     return InkWell(
-      onTap: () {
+      onTap: (){
+        if(title=="Pending"){
+          finalLeadData.clear();
+          finalLeadData.addAll(pendingLead);
+        }else if(title=="Converted"){
+          finalLeadData.clear();
+          finalLeadData.addAll(convertedLead);
+        }else if(title=="Rejected"){
+          finalLeadData.clear();
+          finalLeadData.addAll(rejectedLead);
+        }else{
+          finalLeadData.clear();
+          finalLeadData.addAll(leadData);
+        }
         setState(() {
           isSelected = true;
         });
@@ -1084,8 +1136,21 @@ class _LeadDashboard extends State<LeadDashboard> {
           ),
           SizedBox(height: 20.h),
           Center(
-              child: SvgPicture.asset('assets/upload_profile.svg',
-                  height: 202.h, width: 202.w)),
+              child: InkWell(
+                  onTap: () async {
+                    pickFile();
+                  },
+                  child: imgPath == ''
+                      ? Container(
+                      height: 200.h,
+                      width: 408.w,
+                      alignment: Alignment.center,
+                      child: Image.network(
+                        imgPath,
+                        width: 202.w,
+                      ))
+                      : SvgPicture.asset('assets/upload_profile.svg',
+                      height: 202.h, width: 202.w))),
           SizedBox(height: 16.h),
           _buildTextField(
               'Company Name', 'Please Comapny name', _editnameController),
@@ -1217,14 +1282,14 @@ class _LeadDashboard extends State<LeadDashboard> {
   Future<void> callChangeStatusApi(LeadData leadData, Object? value) async {
     EasyLoading.show(status: "Loading");
     print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
-    Map<String,dynamic> parameter={
+    Map<String, dynamic> parameter = {
       "id": leadData.lead!.id,
       "status": value.toString()
     };
     print(parameter);
-    var data= jsonEncode(parameter);
-    Dio dio=Dio();
-    var response=await dio.put(ApiConstant.UPDATE_LEAD_STATUS,data: data);
+    var data = jsonEncode(parameter);
+    Dio dio = Dio();
+    var response = await dio.put(ApiConstant.UPDATE_LEAD_STATUS, data: data);
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
@@ -1234,19 +1299,56 @@ class _LeadDashboard extends State<LeadDashboard> {
     }
   }
 
-  Future<void> uploadLeadImage(int id) async {
-    EasyLoading.show(status: "Loading");
-    print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
-    Dio dio=Dio();
-    var response=await dio.post(
-        "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/crm/api/Lead/uploadProfile?id=${id}",
-        );
-    print('the response is ${response}');
-    EasyLoading.dismiss();
-    if (response.statusCode == 200) {
-      ToastMessage.show(context, "Image updated");
-      ApiGetData('');
-      Navigator.of(context).pop();
+  String imgPath = '';
+  PlatformFile? objFile;
+  Uint8List? imageBytes;
+  String? fileName;
+
+  pickFile() async {
+    var result = await FilePicker.platform.pickFiles(
+      withReadStream:
+          true, // this will return PlatformFile object with read stream
+    );
+    if (result != null) {
+      setState(() {
+        objFile = result.files.single;
+      });
+      try {
+        fileName = result.files.first.name;
+        print(result.files.first.toString());
+        imageBytes = result.files.first.bytes;
+        print(fileName);
+        print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
+        var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
+        var request = new http.MultipartRequest("POST", postUri);
+
+        Map<String, String> headers = {"Content-Type": "multipart/form-data"};
+        request.files.add(new http.MultipartFile(
+            "image1", objFile!.readStream!, objFile!.size,
+            filename: objFile!.name));
+        /* request.files.add(new http.MultipartFile(
+        "imageFile",filename: objectFile.name));*/
+        request.headers.addAll(headers);
+        var response = await request.send();
+        print(response.statusCode);
+        response.stream.transform(utf8.decoder).listen((value) {
+          print(value);
+          var jsonData = jsonDecode(value);
+          ImgUploadResponse imgUploadResponse =
+              ImgUploadResponse.fromJson(jsonData);
+          imgPath = imgUploadResponse.data!;
+          print(imgPath);
+          setState(() {});
+        });
+        print('the response is ${response}');
+
+        EasyLoading.dismiss();
+        if (response.statusCode == 200) {
+          ToastMessage.show(context, "Image uploaded");
+        }
+      } catch (ex) {
+        throw Exception("Exception Occurred ${ex.toString()}");
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
+import 'package:flutter_hr_management/organization/company/load_list.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:http/http.dart';
 import 'package:number_pagination/number_pagination.dart';
@@ -133,6 +134,7 @@ class _CompLoadScreenState extends State<CompLoadScreen> {
             child: Column(
               children: [
                 HeaderWidget(),
+                Expanded(child: LoadList(widget.organization,index: 1,)),
                /* Container(
                     child: Column(
                         children: [

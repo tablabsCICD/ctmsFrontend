@@ -37,7 +37,7 @@ class MeetingData {
   String? description;
   String? employeeId;
   bool? active;
-  LeadAddedBy? createdMettingBy;
+  CreatedMettingBy? createdMettingBy;
 
   MeetingData(
       {this.id,
@@ -62,7 +62,7 @@ class MeetingData {
     employeeId = json['employeeId'];
     active = json['active'];
     createdMettingBy = json['createdMettingBy'] != null
-        ? new LeadAddedBy.fromJson(json['createdMettingBy'])
+        ? new CreatedMettingBy.fromJson(json['createdMettingBy'])
         : null;
   }
 
@@ -98,9 +98,7 @@ class Lead {
   String? address;
   String? typeOfBusiness;
   String? date;
-  LeadAddedBy? leadAddedBy;
-  LeadAddedBy? leadAssignedTo;
-  bool? isEnquiry;
+  int? isEnquiry;
   String? addLogo;
   bool? isRobinRound;
 
@@ -116,33 +114,25 @@ class Lead {
         this.address,
         this.typeOfBusiness,
         this.date,
-        this.leadAddedBy,
-        this.leadAssignedTo,
         this.isEnquiry,
         this.addLogo,
         this.isRobinRound});
 
   Lead.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    companyName = json['companyName'];
-    coordinator = json['coordinator'];
-    mobileNumber = json['mobileNumber'];
-    emailId = json['emailId'];
-    sourceOfLead = json['sourceOfLead'];
-    pinCode = json['pinCode'];
-    city = json['city'];
-    address = json['address'];
-    typeOfBusiness = json['typeOfBusiness'];
-    date = json['date'];
-    leadAddedBy = json['leadAddedBy'] != null
-        ? new LeadAddedBy.fromJson(json['leadAddedBy'])
-        : null;
-    leadAssignedTo = json['leadAssignedTo'] != null
-        ? new LeadAddedBy.fromJson(json['leadAssignedTo'])
-        : null;
-    isEnquiry = json['isEnquiry'];
-    addLogo = json['addLogo'];
-    isRobinRound = json['isRobinRound'];
+    companyName = json['companyName']??'';
+    coordinator = json['coordinator']??'';
+    mobileNumber = json['mobileNumber']??'';
+    emailId = json['emailId']??'';
+    sourceOfLead = json['sourceOfLead']??'';
+    pinCode = json['pinCode']??'';
+    city = json['city']??'';
+    address = json['address']??"";
+    typeOfBusiness = json['typeOfBusiness']??'';
+    date = json['date']??'';
+    isEnquiry = json['isEnquiry']??1;
+    addLogo = json['addLogo']??'';
+    isRobinRound = json['isRobinRound']??false;
   }
 
   Map<String, dynamic> toJson() {
@@ -158,12 +148,6 @@ class Lead {
     data['address'] = this.address;
     data['typeOfBusiness'] = this.typeOfBusiness;
     data['date'] = this.date;
-    if (this.leadAddedBy != null) {
-      data['leadAddedBy'] = this.leadAddedBy!.toJson();
-    }
-    if (this.leadAssignedTo != null) {
-      data['leadAssignedTo'] = this.leadAssignedTo!.toJson();
-    }
     data['isEnquiry'] = this.isEnquiry;
     data['addLogo'] = this.addLogo;
     data['isRobinRound'] = this.isRobinRound;
@@ -171,34 +155,46 @@ class Lead {
   }
 }
 
-class LeadAddedBy {
+class CreatedMettingBy {
   int? id;
+  String? employeeId;
   String? firstName;
   String? lastName;
   String? emailId;
   String? mobileNumber;
   String? address;
   String? image;
-  int? employeeId;
-  Role? role;
-  bool? isAdmin;
-  int? isActive;
-  String? otp;
+  String? designation;
+  String? contact;
+  String? employeeLocation;
+  int? departmentId;
+  BoardingDeatails? boardingDeatails;
+  dynamic? role;
+  dynamic? isAdmin;
+  dynamic? isActive;
+  dynamic? otp;
   String? password;
   String? os;
   String? status;
   String? deviceId;
   String? createdDate;
+  String? securityQuestion;
+  String? securityAnswer;
 
-  LeadAddedBy(
+  CreatedMettingBy(
       {this.id,
+        this.employeeId,
         this.firstName,
         this.lastName,
         this.emailId,
         this.mobileNumber,
         this.address,
         this.image,
-        this.employeeId,
+        this.designation,
+        this.contact,
+        this.employeeLocation,
+        this.departmentId,
+        this.boardingDeatails,
         this.role,
         this.isAdmin,
         this.isActive,
@@ -207,18 +203,27 @@ class LeadAddedBy {
         this.os,
         this.status,
         this.deviceId,
-        this.createdDate});
+        this.createdDate,
+        this.securityQuestion,
+        this.securityAnswer});
 
-  LeadAddedBy.fromJson(Map<String, dynamic> json) {
+  CreatedMettingBy.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    employeeId = json['employeeId'];
     firstName = json['firstName'];
     lastName = json['lastName'];
     emailId = json['emailId'];
     mobileNumber = json['mobileNumber'];
     address = json['address'];
     image = json['image'];
-    employeeId = json['employeeId'];
-    role = json['role'] != null ? new Role.fromJson(json['role']) : null;
+    designation = json['designation'];
+    contact = json['contact'];
+    employeeLocation = json['employeeLocation'];
+    departmentId = json['departmentId'];
+    boardingDeatails = json['boardingDeatails'] != null
+        ? new BoardingDeatails.fromJson(json['boardingDeatails'])
+        : null;
+    role = json['role'];
     isAdmin = json['is_admin'];
     isActive = json['isActive'];
     otp = json['otp'];
@@ -227,21 +232,28 @@ class LeadAddedBy {
     status = json['status'];
     deviceId = json['deviceId'];
     createdDate = json['createdDate'];
+    securityQuestion = json['securityQuestion'];
+    securityAnswer = json['securityAnswer'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['employeeId'] = this.employeeId;
     data['firstName'] = this.firstName;
     data['lastName'] = this.lastName;
     data['emailId'] = this.emailId;
     data['mobileNumber'] = this.mobileNumber;
     data['address'] = this.address;
     data['image'] = this.image;
-    data['employeeId'] = this.employeeId;
-    if (this.role != null) {
-      data['role'] = this.role!.toJson();
+    data['designation'] = this.designation;
+    data['contact'] = this.contact;
+    data['employeeLocation'] = this.employeeLocation;
+    data['departmentId'] = this.departmentId;
+    if (this.boardingDeatails != null) {
+      data['boardingDeatails'] = this.boardingDeatails!.toJson();
     }
+    data['role'] = this.role;
     data['is_admin'] = this.isAdmin;
     data['isActive'] = this.isActive;
     data['otp'] = this.otp;
@@ -250,28 +262,57 @@ class LeadAddedBy {
     data['status'] = this.status;
     data['deviceId'] = this.deviceId;
     data['createdDate'] = this.createdDate;
+    data['securityQuestion'] = this.securityQuestion;
+    data['securityAnswer'] = this.securityAnswer;
     return data;
   }
 }
 
-class Role {
-  int? id;
-  String? name;
-  int? isActive;
+class BoardingDeatails {
+  int? boardingId;
+  String? tenthDCertificate;
+  String? twelthCertificate;
+  String? degreeCertificate;
+  String? aadharCard;
+  String? panCard;
+  Null? experienceCertificate;
+  String? active;
+  List<String>? otherDocuments;
 
-  Role({this.id, this.name, this.isActive});
+  BoardingDeatails(
+      {this.boardingId,
+        this.tenthDCertificate,
+        this.twelthCertificate,
+        this.degreeCertificate,
+        this.aadharCard,
+        this.panCard,
+        this.experienceCertificate,
+        this.active,
+        this.otherDocuments});
 
-  Role.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    isActive = json['isActive'];
+  BoardingDeatails.fromJson(Map<String, dynamic> json) {
+    boardingId = json['boardingId'];
+    tenthDCertificate = json['tenthDCertificate'];
+    twelthCertificate = json['twelthCertificate'];
+    degreeCertificate = json['degreeCertificate'];
+    aadharCard = json['aadharCard'];
+    panCard = json['panCard'];
+    experienceCertificate = json['experienceCertificate'];
+    active = json['active'];
+    otherDocuments = json['otherDocuments'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['isActive'] = this.isActive;
+    data['boardingId'] = this.boardingId;
+    data['tenthDCertificate'] = this.tenthDCertificate;
+    data['twelthCertificate'] = this.twelthCertificate;
+    data['degreeCertificate'] = this.degreeCertificate;
+    data['aadharCard'] = this.aadharCard;
+    data['panCard'] = this.panCard;
+    data['experienceCertificate'] = this.experienceCertificate;
+    data['active'] = this.active;
+    data['otherDocuments'] = this.otherDocuments;
     return data;
   }
 }

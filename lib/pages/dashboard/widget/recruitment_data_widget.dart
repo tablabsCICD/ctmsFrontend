@@ -34,6 +34,9 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
     ApiGetData("");
     super.initState();
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +45,14 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              getHeader(),
+              Textview(
+                  TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  title: 'Pending Recruitment'),
               filterIcon(),
             ],
           ),
@@ -108,7 +118,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                    name: emData[i].firstName!+" "+emData[i].lastName!,
                    color: Colors.blue,
                    image: emData[i].image,
-                   designation: emData[i].role!.name,
+                   designation: emData[i].designation,
                    contact:emData[i].mobileNumber,
                    gmail:emData[i].emailId,
                    status: emData[i].status,
@@ -437,7 +447,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
           SizedBox(
             width: 120.w,
             child: Text(
-             employeeModel!.role!.name!,
+             employeeModel!.designation!,
               style:TextStyle(
                 color: Colors.black,
                 fontSize: 15.sp,

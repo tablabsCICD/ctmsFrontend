@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
+import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -94,15 +95,12 @@ class _LeadDialog extends State<LeadDialog>{
 
                               title: Row(
                                 children: [
-                                  CircleAvatar(
-                                      radius: 30.r,
-                                      backgroundImage: NetworkImage("emData[index].lead!.image!")
-                                  ),
+                                  getImage('${emData[index].lead!.addLogo}',height: 50.h,width: 50.w),
                                   SizedBox(width: 10,),
                                   Text(emData[index].lead!.companyName!,style: TextStyle(color: Colors.black),),
                                 ],
                               ),
-                              trailing: emData[index]!.lead!.isSelected! ?Icon(Icons.check,color: Colors.green,):SizedBox(),
+                              trailing: emData[index].lead!.isSelected! ?Icon(Icons.check,color: Colors.green,):SizedBox(),
 
 
                             ),

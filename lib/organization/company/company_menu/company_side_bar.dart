@@ -3,6 +3,7 @@ import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/all_users.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/comp_buy_sell.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/comp_discussion_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/comp_full_load.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_bids.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
@@ -52,7 +53,6 @@ class _CompanySideBarState extends State<CompanySideBar> {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
             ),
-
             SizedBox(height: 47.h,),
             DrawerListTile(
               isSelect: isDashbord,
@@ -66,7 +66,6 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBuySell = false;
                 isBid=false;
                 setState(() {
-
                 });
                 //Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
                 Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompanyDashboard(organization[0])));
@@ -75,7 +74,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
             DrawerListTile(
               isSelect: isAllUser,
               title: "All Users",
-              icon: "assets/menu/emp_menu.svg",
+              icon: "assets/org/all_users.svg",
               press: () {
                 isDashbord=false;
                 isAllUser=true;
@@ -84,17 +83,15 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isDiscussion=false;
                 isBid=false;
                 setState(() {
-
                 });
               //  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
                 Navigator.of(context).restorablePushReplacement((context, arguments) => MaterialPageRoute(builder: (builder)=>AllUsers(organization[0])));
-
               },
             ),
             DrawerListTile(
               isSelect: isFullLoad,
               title: "Full Load",
-              icon: "assets/menu/lead_menu.svg",
+              icon: "assets/org/full_load.svg",
               press: () {
                 isDashbord=false;
                 isBuySell = false;
@@ -103,16 +100,15 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isDiscussion=false;
                 isBid=false;
                 setState(() {
-
                 });
                // Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
                 Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompLoadScreen(organization[0])));
-
               },
-            ), DrawerListTile(
+            ),
+            DrawerListTile(
               isSelect: isBuySell,
               title: "Buy & Sell",
-              icon: "assets/menu/meeting_menu.svg",
+              icon: "assets/org/buy_sell.svg",
               press: () {
                 isDashbord=false;
                 isAllUser=false;
@@ -121,18 +117,15 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBuySell = true;
                 isBid=false;
                 setState(() {
-
                 });
                 Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompBuySell(organization[0])));
-
-
               //  Navigator.restorablePushReplacementNamed(context,AppRoutes.meeting);
               },
             ),
             DrawerListTile(
               isSelect: isDiscussion,
               title: "Discussion",
-              icon: "assets/menu/customer_menu.svg",
+              icon: "assets/org/discussion.svg",
               press: () {
                 isDashbord=false;
                 isAllUser=false;
@@ -141,18 +134,15 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBuySell = false;
                 isBid=false;
                 setState(() {
-
                 });
-                Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompBuySell(organization[0])));
-
-
+                Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompDiscussionScreen(organization[0])));
                // Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
               },
             ),
             DrawerListTile(
               isSelect: isBid,
               title: "Bid",
-              icon: "assets/menu/report_menu.svg",
+              icon: "assets/org/bid.svg",
               press: () {
                 isDashbord=false;
                 isAllUser=false;
@@ -162,8 +152,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid=true;
                 setState(() {
                 });
-                Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompBuySell(organization[0])));
-
+                Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompanyBidsScreen(organization[0])));
               //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),

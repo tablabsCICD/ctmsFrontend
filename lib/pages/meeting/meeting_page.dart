@@ -64,6 +64,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   bool isLoad = false;
   List<MeetingData> meetingList = [];
+  List<MeetingData> filteredMeetingList = [];
   List<MeetingData> upcomingMeetingList = [];
   List<MeetingData> pastMeetingList = [];
 
@@ -73,6 +74,19 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     ApiGetMeeting();
     getLoginDetail();
     super.initState();
+  }
+
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total leads : ${meetingList.length}');
+    filteredMeetingList.clear();
+    debugPrint('Total leads : ${meetingList.length}');
+    meetingList.forEach((element) {
+      if(element.title!.contains(query) || element.date!.contains(query)){
+        filteredMeetingList.add(element);
+      }
+    });
+    debugPrint('Final Leads : ${filteredMeetingList.length}');
+    setState(() {});
   }
 
   LocalSharePreferences localSharePreferences = LocalSharePreferences();
@@ -88,12 +102,12 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         child: Column(
           children: [
             /// Header Part
-            HeaderWidget(),
+            HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
             SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 33,vertical: 20),
+                    margin: EdgeInsets.symmetric(horizontal: 30,vertical: 20),
                     child: Row(
                       children: [
                         Text(
@@ -114,8 +128,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                               width: 27.w,
                             ),
                             SizedBox(
-                              height: 58.h,
-                              width: 180.w,
+                              height: 50.h,
+                              width: 190.w,
                               child: ElevatedButton(
                                   onPressed: () {
                                     _showAlertDialog();
@@ -197,9 +211,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       crossAxisCount: 3,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 12,
-                      itemCount: meetingList.length,///meetingList.length,
+                      itemCount: filteredMeetingList.length,///meetingList.length,
                       itemBuilder: (context, index) {
-                        return meetingDetailCard(meetingList[index]);
+                        return meetingDetailCard(filteredMeetingList[index]);
                       }
                   )
               )
@@ -215,7 +229,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   addMeeting(StateSetter setState) {
     return Container(
-      decoration: BoxDecoration(
+       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -602,7 +616,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                               children: [
                                 IconButton(onPressed: (){},
                                     icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                                Text("Showing ${meetingList.length} out of ${meetingList.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                                Text("Showing ${filteredMeetingList.length} out of ${meetingList.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
                                 GoogleFonts.poppins().fontFamily),),
                                 IconButton(onPressed: (){},
                                     icon: Icon(Icons.arrow_forward_ios,size: 16,))
@@ -660,7 +674,18 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   decoration: BoxDecoration(
                       color: AppColor.white, borderRadius: BorderRadius.circular(5)),
                   padding: EdgeInsets.all(20),
-                  child: Table(
+                  child:  filteredMeetingList.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height:
+                          MediaQuery.of(context).size.height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      : Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
                       /// Table Header
@@ -675,16 +700,16 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         ],
                       ),
                       /// Table Data
-                      for (int i = 0; i < meetingList.length; i++)
+                      for (int i = 0; i < filteredMeetingList.length; i++)
                         tableRow(context,
                             time:
-                                meetingList[i].date! + " " + meetingList[i].time!,
-                            guest: meetingList[i].createdMettingBy!.firstName! +
+                            filteredMeetingList[i].date! + " " + filteredMeetingList[i].time!,
+                            guest: filteredMeetingList[i].createdMettingBy!.firstName! +
                                 " " +
-                                meetingList[i].createdMettingBy!.lastName!,
-                            image: "assets/user1.jpg",
-                            meetinglink: meetingList[i].meetingLink,
-                            title: meetingList[i].title,
+                                filteredMeetingList[i].createdMettingBy!.lastName!,
+                            image: filteredMeetingList[i].createdMettingBy!.image,
+                            meetinglink: filteredMeetingList[i].meetingLink,
+                            title: filteredMeetingList[i].title,
                             index: i),
                     ],
                   ),
@@ -955,6 +980,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     print("EmpId::"+deatils.data!.id!.toString());
     isLoad = true;
     meetingList.clear();
+    filteredMeetingList.clear();
     setState(() {});
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
@@ -963,6 +989,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       MeetingList role = MeetingList.fromJson(roleResponse.response);
       meetingList.addAll(role.data!);
       meetingList.forEach((element) {
+        filteredMeetingList.add(element);
           if(checkDateExpiry(element.date)){
             pastMeetingList.add(element);
           }else{

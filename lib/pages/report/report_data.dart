@@ -127,19 +127,19 @@ class _ReportDataScreen extends State<ReportDataScreen>{
           // add bars
           barGroups: [
             BarChartGroupData(x: 1, barRods: [
-              BarChartRodData(toY: 10, width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 2, barRods: [
-              BarChartRodData(toY: 9, width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse(reportData!.lead![0].count.toString()), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 3, barRods: [
-              BarChartRodData(toY: 4, width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 4, barRods: [
-              BarChartRodData(toY: 2, width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse(reportData!.lead![0].count.toString()), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 5, barRods: [
-              BarChartRodData(toY: 13, width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
             ]),
 
           ])),

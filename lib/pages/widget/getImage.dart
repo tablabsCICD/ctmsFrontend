@@ -5,20 +5,20 @@ import 'package:photo_view/photo_view.dart';
 
 getImage(String src, {double? height, double? width}) {
   print('imageSrc ::: ${src}');
-  return src == '' || src=="string" ?CircleAvatar(
-      radius: height!.r,
-      backgroundImage: AssetImage('assets/user1.jpg',))
-  /*Container(
+  return src == '' || src=="string" ?/*CircleAvatar(
+      radius: height!-10.r,
+      backgroundImage: AssetImage('assets/user1.jpg',))*/
+  Container(
     width: height==null ? 35 : height,
     height: width==null ? 35 : width,
     decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.grey[100],
         image: new DecorationImage(
-            fit: BoxFit.contain,
+            fit: BoxFit.fill,
             image: AssetImage('assets/images/my_profile.png')
         )
-    ))*/
+    ))
       :
   Container(
       width: height==null ? 35 : height,

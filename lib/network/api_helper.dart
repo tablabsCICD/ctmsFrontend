@@ -66,7 +66,7 @@ class ApiHelper{
       "profilePicture":
       await MultipartFile.fromFile(file.path, filename:fileName),
     });
-    var response = await dio.post("http://ec2-3-111-144-125.ap-south-1.compute.amazonaws.com:8080/TKDConnect1/api/saveImage", data: formData);
+    var response = await dio.post("http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/tkdmain/api/UploadImage1", data: formData);
     EasyLoading.dismiss();
     return response.data;
   }

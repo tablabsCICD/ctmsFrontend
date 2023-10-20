@@ -1,5 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/organization/company/all_bids.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
+import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:number_pagination/number_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
@@ -51,14 +56,25 @@ class CompanyBidsScreen extends StatefulWidget {
 class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: ColorResources.HOME_BG,
-        child: ResponsiveWidget(
-          desktop: WebScreenForBid(),
-          mobile: WebScreenForBid(),
-          tablet: WebScreenForBid(),
-        ),
+    return Scaffold(
+        backgroundColor: ThemeColor.baground,
+        body:Row(
+            children: [
+            if (AppResponsive.isDesktop(context))
+            Expanded(
+              child: CompanySideBar(),
+            ),
+
+    /// Main Body Part
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  HeaderWidget(),
+                  Expanded(child: BidList(widget.organization,)),
+                ]
+              )
+            ),]
       ),
     );
   }
@@ -93,7 +109,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                   child: Center(child: Text(getTranslated('no_post', context)!,style: Style.heading,))))
               :Column(
             children: [
-              Expanded(
+             /* Expanded(
                 child: StaggeredGridView.countBuilder(
                   crossAxisCount: ResponsiveWidget.isDesktop(context)
                       ? 3
@@ -171,12 +187,12 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                             : ColorResources
                                             .PLA_TEXT)),
                                   ),
-                                  /*Padding(
+                                  *//*Padding(
                                               padding:
                                                   const EdgeInsets.only(right: 8.0),
                                               child: ConvertStringToDate(
                                                   model.truckLoadTypeList[index].postingTime.toString()),
-                                            ),*/
+                                            ),*//*
                                 ],
                               ),
                               ListTile(
@@ -355,7 +371,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                   child: Text(getTranslated('delete', context)!,style: Style.button,),
                                 ),
                               ),
-                              /*Center(
+                              *//*Center(
                                           child: CustomButton(
                                               onTap: () {
                                                 showDialog(
@@ -417,7 +433,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                               },
                                               buttonText: getTranslated(
                                                   'delete', context)!),
-                                        )*/
+                                        )*//*
                             ],
                           ),
                         ),
@@ -428,9 +444,8 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                   shrinkWrap: true,
                   staggeredTileBuilder: (int index) =>
                       StaggeredTile.fit(1),
-                ),
-              ),
-              getLoader(model.isLoading)
+                )*/
+
             ],
           ),
         )

@@ -163,8 +163,9 @@ class _AddEmployeeState extends State<AddEmployee> {
     String addLead = _addLeadController.text.toString();
     String lastName=_lastnameController.text.toString();
     UpdateEMP saveEmploye=UpdateEMP();
-
+    saveEmploye.image = widget.empData.image;
     saveEmploye.firstName=name;
+    saveEmploye.isActive=widget.empData.isActive;
     saveEmploye.lastName=lastName;
     saveEmploye.os="Web";
     saveEmploye.emailId=email;

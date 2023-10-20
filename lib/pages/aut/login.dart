@@ -866,8 +866,10 @@ class _LoginScreen extends State<LoginScreen> {
 
       EasyLoading.show(status: "Loading");
       Dio dio=Dio();
+      print(ApiConstant.LOGIN_DATA+"/emailId");
       var response= await dio.post(ApiConstant.LOGIN_DATA+"/emailId",data:formData);
       EasyLoading.dismiss();
+      print('the body is ${response.data}');
       if(response.statusCode==200){
         print('the body is ${response.data}');
         LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));

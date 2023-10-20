@@ -5,6 +5,7 @@ import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/widget/editText_email.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
+import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,14 +19,16 @@ import '../../../constant/constants.dart';
 
 class HeaderWidget extends StatefulWidget {
 
-
-   HeaderWidget({Key? key}) : super(key: key);
+  Function? onSearchTap;
+   HeaderWidget({Key? key, this.onSearchTap,}) : super(key: key);
 
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
 }
 
 class _HeaderWidgetState extends State<HeaderWidget> {
+
+  final searchController = TextEditingController();
 
   @override
   void initState() {
@@ -36,7 +39,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return isLoading == true?SizedBox(height: 60.h,width: 60.h,child: CircularProgressIndicator(),):Container(
         color: Colors.white,
         height: 111.h,
         child: Row(
@@ -50,15 +53,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       onPressed: () {
 
       },
-    )
-    ,
-    // Text(
-    //   widget.title,
-    //   style: TextStyle(
-    //     fontSize: 30.sp,
-    //     fontWeight: FontWeight.bold,
-    //   ),
-    // ),
+    ),
+
     searchBar(),
     if (!AppResponsive.isMobile(context)) ...{
     Spacer(),
@@ -97,14 +93,19 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ),
-        child: getImage("details!.data!.image!",height: 50.h,width: 50.w),
+        child: getImage(details!.data!.image==null?'':details!.data!.image!,height: 50.h,width: 50.w),
       ),
       SizedBox(width: 18.w,),
-      Text('${Constants.LOGIN_NAME}', style: TextStyle(
-          fontSize: 20.sp,
-          color: Colors.black,
-          fontWeight: FontWeight.w300,
-          fontFamily: GoogleFonts.poppins().fontFamily)),
+      InkWell(
+        onTap: (){
+          Navigator.restorablePushReplacementNamed(context, AppRoutes.profile);
+        },
+        child: Text('${Constants.LOGIN_NAME}', style: TextStyle(
+            fontSize: 20.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.w300,
+            fontFamily: GoogleFonts.poppins().fontFamily)),
+      ),
       SizedBox(width: 20.w,)
 
 
@@ -151,9 +152,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         width: 414.w,
         height: 62.h,
         child: TextField(
-          controller: TextEditingController(),
+          controller: searchController,
           onChanged: (value) {
-
+            widget.onSearchTap!(value);
           },
 
           decoration: InputDecoration(
@@ -188,9 +189,15 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     );
   }
   LoginDeatils? details;
+  bool isLoading = false;
   void getLoginDetails() async{
+    isLoading = true;
+    setState(() {
+
+    });
   details = await LocalSharePreferences().getLoginData();
   Constants.LOGIN_NAME=details!.data!.firstName!+" "+details!.data!.lastName!;
+  isLoading = false;
   setState(() {
 
   });

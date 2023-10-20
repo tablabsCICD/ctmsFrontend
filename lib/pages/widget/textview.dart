@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TextView extends StatelessWidget{
   final String title;
@@ -14,8 +15,8 @@ class TextView extends StatelessWidget{
     return Text(title,style: TextStyle(
       fontSize: fontSize,
       color: color,
-      fontWeight: fontWeight
-
+      fontWeight: fontWeight,
+      fontFamily: GoogleFonts.poppins().fontFamily
     ),);
   }
 

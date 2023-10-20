@@ -95,7 +95,7 @@ class _EmpListData extends State<EmpListData> {
                 name: emData[i].firstName!+" "+emData[i].lastName!,
                 color: Colors.blue,
                 image: "assets/user1.jpg",
-                designation: emData[i].role!.name!,
+                designation: emData[i].designation!,
                 status: "Practical Round",
               ),
 

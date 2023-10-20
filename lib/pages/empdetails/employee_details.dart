@@ -10,6 +10,7 @@ import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,9 +36,10 @@ class _EmpDashboard extends State<EmpDashboard> {
 TextEditingController _passwordController = TextEditingController();
 
 
-  List<EmpData>emData=[];
-  List<EmpData>temEmData=[];
-
+  List<EmpData>finalEmData=[];
+  List<EmpData>empData=[];
+  List<EmpData>activeEmpData=[];
+  List<EmpData>inActiveEmpData=[];
   bool isLoad=false;
   List<RoleData>dataRole=[];
   int selectRole=0;
@@ -49,16 +51,27 @@ TextEditingController _passwordController = TextEditingController();
     ApiGetDataDashbord("");
     super.initState();
   }
+
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total leads : ${empData.length}');
+    finalEmData.clear();
+    debugPrint('Total leads : ${empData.length}');
+    empData.forEach((element) {
+      if(element.firstName!.contains(query) || element.mobileNumber!.contains(query)){
+        finalEmData.add(element);
+      }
+    });
+    debugPrint('Final Leads : ${finalEmData.length}');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: ThemeColor.baground,
-    
-
       child: Column(
         children: [
-          /// Header Part
-          HeaderWidget(),
+          HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
          Container(
            margin: EdgeInsets.all(30),
            child: Row(
@@ -80,70 +93,17 @@ TextEditingController _passwordController = TextEditingController();
            ),
          ),
           Container(
-           // margin: EdgeInsets.all(10),
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("${emData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
+                empCounts("${empData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
                 SizedBox(width: 38.w,),
-                empCounts("0","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
+                empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
                 SizedBox(width: 38.w,),
-                empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                empCounts("${inActiveEmpData.length}","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
               ],
             ),
           ),
-          // Expanded(
-          //   child: SingleChildScrollView(
-          //     child: Row(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //
-          //         Expanded(
-          //           flex: 1,
-          //           child: Container(
-          //             child: Column(
-          //               children: [
-          //                 // CountCardWidget(),
-          //                 // SizedBox(
-          //                 //   height: 20,
-          //                 // ),
-          //                 //EmpListData(title: 'All Employee',),
-          //                 empdeatils(),
-          //                 if (AppResponsive.isMobile(context)) ...{
-          //                   //AddEmployee(),
-          //
-          //                  // addemp(),
-          //                   SizedBox(
-          //                     height: 20,
-          //                   ),
-          //                 },
-          //
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //         if (!AppResponsive.isMobile(context))
-          //           Expanded(
-          //             child: Container(
-          //               margin: EdgeInsets.symmetric(horizontal: 10),
-          //               child: Column(
-          //                 children: [
-          //                 // AddEmployee(),
-          //
-          //                  // addemp(),
-          //                   SizedBox(
-          //                     height: 20,
-          //                   ),
-          //
-          //                 ],
-          //               ),
-          //             ),
-          //           ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-
           Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(30),
@@ -159,7 +119,53 @@ TextEditingController _passwordController = TextEditingController();
           ),
           Container(
             margin: EdgeInsets.only(left: 30,right: 38),
-            child: empdeatils(),),
+            child: isLoad?Center(child: CircularProgressIndicator(),) :Container(
+              decoration: BoxDecoration(
+                  color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+              child: Column(
+                children: [
+                  finalEmData.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height:
+                          MediaQuery.of(context).size.height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      : Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        children: [
+                          tableHeader("Name"),
+                          if (!AppResponsive.isMobile(context))
+                            tableHeader("Designation"),
+                          tableHeader("Mail"),
+                          tableHeader("Contact"),
+                          if (!AppResponsive.isMobile(context)) tableHeader(""),
+                        ],
+                      ),
+                      for (int i=0;i<finalEmData.length;i++)  tableRow(
+                          context,
+                          name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
+                          color: Colors.blue,
+                          image: finalEmData[i].image,
+                          designation: finalEmData[i].designation,
+                          status: finalEmData[i].mobileNumber,
+                          index: i,
+                          email: finalEmData[i].emailId
+                      ),
+
+                    ],
+                  ),
+
+                ],
+              ),
+            )),
         ],
       ),
     );
@@ -318,45 +324,13 @@ TextEditingController _passwordController = TextEditingController();
     return isLoad?Center(child: CircularProgressIndicator(),) :Container(
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-     // padding: EdgeInsets.all(20),
       child: Column(
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //
-          //     Container(
-          //       decoration: BoxDecoration(
-          //           color: AppColor.yellow,
-          //           borderRadius: BorderRadius.circular(100)),
-          //       padding: EdgeInsets.symmetric(
-          //         vertical: 10,
-          //         horizontal: 20,
-          //       ),
-          //       child: Text(
-          //         "View All",
-          //         style: TextStyle(
-          //             fontWeight: FontWeight.bold, color: AppColor.black),
-          //       ),
-          //     )
-          //   ],
-          // ),
-          // Divider(
-          //   thickness: 0.5,
-          //   color: Colors.grey,
-          // ),
           Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
               /// Table Header
               TableRow(
-                // decoration: BoxDecoration(
-                //   border: Border(
-                //       bottom: BorderSide(
-                //         color: Colors.grey,
-                //         width: 0.5,
-                //       )),
-                // ),
                 children: [
                   tableHeader("Name"),
                   if (!AppResponsive.isMobile(context))
@@ -366,35 +340,20 @@ TextEditingController _passwordController = TextEditingController();
                   if (!AppResponsive.isMobile(context)) tableHeader(""),
                 ],
               ),
-
-              /// Table Data
-
-              for (int i=0;i<emData.length;i++)  tableRow(
+              for (int i=0;i<finalEmData.length;i++)  tableRow(
                 context,
-                name: emData[i].firstName!+" "+emData[i].lastName!,
+                name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
                 color: Colors.blue,
-                image: emData[i].image,
-                designation: emData[i].role!.name,
-                status: emData[i].mobileNumber,
+                image: finalEmData[i].image,
+                designation: finalEmData[i].designation,
+                status: finalEmData[i].mobileNumber,
                 index: i,
-                email: emData[i].emailId
+                email: finalEmData[i].emailId
               ),
 
             ],
           ),
-          // Container(
-          //   margin: EdgeInsets.symmetric(vertical: 10),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text("Showing ${emData.length} out of ${emData.length} Results"),
-          //       Text(
-          //         "View All",
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //     ],
-          //   ),
-          // )
+
         ],
       ),
     );
@@ -408,7 +367,7 @@ TextEditingController _passwordController = TextEditingController();
           //Full Name
           InkWell(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => EmpInfo(empData: emData[index])));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => EmpInfo(empData: finalEmData[index])));
             },
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 15.h),
@@ -489,10 +448,10 @@ TextEditingController _passwordController = TextEditingController();
     print(response.data);
     if(response.statusCode==200){
       EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      emData.clear();
-      emData.addAll(employeeList.data!);
-      temEmData.addAll(employeeList.data!);
-
+      finalEmData.clear();
+      finalEmData.addAll(employeeList.data!);
+      empData.clear();
+      empData.addAll(employeeList.data!);
       isLoad=false;
       setState(() {
       });
@@ -515,9 +474,19 @@ TextEditingController _passwordController = TextEditingController();
     print(response.data);
     if(response.statusCode==200){
       EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      emData.clear();
-      emData.addAll(employeeList.data!);
+      finalEmData.clear();
+      finalEmData.addAll(employeeList.data!);
       //print('this is ${emData.length}');
+      empData.clear();
+      empData.addAll(employeeList.data!);
+      empData.forEach((element) {
+        if (element.isActive == 1) {
+          activeEmpData.add(element);
+        } else {
+            inActiveEmpData.add(element);
+
+        }
+      });
       Constants.allEmployee.clear();
       Constants.allEmployee.addAll(employeeList.data!);
       isLoad=false;
@@ -565,10 +534,10 @@ TextEditingController _passwordController = TextEditingController();
   void callDelete(int index) async{
     Dio dio=Dio();
     var response=await dio.delete(ApiConstant.LEAD_DELTEB,queryParameters: {
-      "id":emData[index].id
+      "id":finalEmData[index].id
     });
     if(response.statusCode==200){
-      emData.removeAt(index);
+      finalEmData.removeAt(index);
       setState(() {
       });
     }else{
@@ -602,59 +571,74 @@ TextEditingController _passwordController = TextEditingController();
     );
   }
 
-
   empCounts(String totCount,String name,String image,Color color){
-    return Container(
-      width: 329.w,
-      height: 166.h,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.50, color: Color(0xFFC3262C)),
-          borderRadius: BorderRadius.circular(10),
+    return InkWell(
+      onTap: (){
+        if(name=="Active Employee"){
+          finalEmData.clear();
+          finalEmData.addAll(activeEmpData);
+        }else if(name=="Inactive Employee"){
+          finalEmData.clear();
+          finalEmData.addAll(inActiveEmpData);
+        }else{
+          finalEmData.clear();
+          finalEmData.addAll(empData);
+        }
+        setState(() {
+        });
+      },
+      child: Container(
+        width: 329.w,
+        height: 166.h,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50, color: Color(0xFFC3262C)),
+            borderRadius: BorderRadius.circular(10),
 
-        ),
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 108.w,
-              height: 110.h,
-              decoration: ShapeDecoration(
-                color: color,//Color(0xFFEAF8F4)
-                shape: CircleBorder(),
-
-              ),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SvgPicture.asset(image,height: 10.h,width: 10.w,),
-            ),
-            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                totCount,
-                  style: TextStyle(
-                    fontSize: 35.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 108.w,
+                height: 110.h,
+                decoration: ShapeDecoration(
+                  color: color,//Color(0xFFEAF8F4)
+                  shape: CircleBorder(),
 
-
+                ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: SvgPicture.asset(image,height: 10.h,width: 10.w,),
               ),
-              Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w300,
-                  )
-              )
-            ],
-          )
-        ],
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  totCount,
+                    style: TextStyle(
+                      fontSize: 35.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+
+
+                ),
+                Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w300,
+                    )
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -682,7 +666,7 @@ TextEditingController _passwordController = TextEditingController();
                         child: Container(
                           color: Colors.transparent,
                           width: 408.w,
-                          child: AddEmployee(empData: emData[index],),
+                          child: AddEmployee(empData: finalEmData[index],),
                         ),
                       )
                     ],
@@ -709,7 +693,7 @@ TextEditingController _passwordController = TextEditingController();
     //   emData.addAll(temEmData);
     // }
 
-    emData.addAll(temEmData);
+    finalEmData.addAll(empData);
 
     setState(() {
 

@@ -43,7 +43,8 @@ class _LeadDashboard extends State<CustomerList> {
 
   TextEditingController _typeOfBusinessController = TextEditingController();
 
-  List<CustomerData> emData = [];
+  List<CustomerData> finalCustomerList = [];
+  List<CustomerData> customerList = [];
   bool isLoad = false;
   late EmpData empData = EmpData();
 
@@ -71,6 +72,19 @@ class _LeadDashboard extends State<CustomerList> {
     super.initState();
   }
 
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total customer : ${customerList.length}');
+    finalCustomerList.clear();
+    debugPrint('Total leads : ${customerList.length}');
+    customerList.forEach((element) {
+      if(element.companyName!.contains(query) || element.mobileNumber!.contains(query)){
+        finalCustomerList.add(element);
+      }
+    });
+    debugPrint('Final Customer : ${finalCustomerList.length}');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -81,7 +95,7 @@ class _LeadDashboard extends State<CustomerList> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(),
+          HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(
@@ -400,7 +414,7 @@ class _LeadDashboard extends State<CustomerList> {
                                 size: 16,
                               )),
                           Text(
-                            "Showing ${emData.length} out of ${emData.length} Results",
+                            "Showing ${finalCustomerList.length} out of ${customerList.length} Results",
                             style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w300,
@@ -429,7 +443,18 @@ class _LeadDashboard extends State<CustomerList> {
                       color: AppColor.white,
                       borderRadius: BorderRadius.circular(10)),
                   padding: EdgeInsets.all(20),
-                  child: Table(
+                  child: finalCustomerList.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height:
+                          MediaQuery.of(context).size.height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      :  Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
                       /// Table Header
@@ -456,16 +481,16 @@ class _LeadDashboard extends State<CustomerList> {
 
                       /// Table Data
 
-                      for (int i = 0; i < emData.length; i++)
+                      for (int i = 0; i < finalCustomerList.length; i++)
                         tableRow(context,
-                            name: emData[i].companyName,
+                            name: finalCustomerList[i].companyName,
                             color: Colors.blue,
                             image: "assets/user1.jpg",
-                            client: emData[i].typeOfBusiness,
-                            project: emData[i].emailId,
-                            contact: emData[i].mobileNumber,
+                            client: finalCustomerList[i].typeOfBusiness,
+                            project: finalCustomerList[i].emailId,
+                            contact: finalCustomerList[i].mobileNumber,
                             // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                            status: emData[i].leadconvertedByEmployee,
+                            status: finalCustomerList[i].leadconvertedByEmployee,
                             index: i),
                     ],
                   ),
@@ -553,9 +578,11 @@ class _LeadDashboard extends State<CustomerList> {
     if (response.statusCode == 200) {
       CustomerListModel employeeList =
           CustomerListModel.fromJson(jsonDecode(response.data));
-      emData.clear();
-      emData.addAll(employeeList.data!);
-      print('this is ${emData.length}');
+      customerList.clear();
+      finalCustomerList.clear();
+      customerList.addAll(employeeList.data!);
+      finalCustomerList.addAll(employeeList.data!);
+      print('this is ${finalCustomerList.length}');
       isLoad = false;
       setState(() {});
     }
@@ -597,9 +624,9 @@ class _LeadDashboard extends State<CustomerList> {
   void callDelete(int index) async {
     Dio dio = Dio();
     var response = await dio.delete(ApiConstant.LEAD_DELTEB,
-        queryParameters: {"id": emData[index].id});
+        queryParameters: {"id": finalCustomerList[index].id});
     if (response.statusCode == 200) {
-      emData.removeAt(index);
+      finalCustomerList.removeAt(index);
       setState(() {});
     } else {
       ToastMessage.show(context, "Please try Again");

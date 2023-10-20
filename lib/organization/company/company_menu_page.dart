@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hr_management/organization/auth/login_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_drawer_menu.dart';
-import 'package:flutter_hr_management/organization/company/company_menu/comp_pool_purchase_screen.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/comp_discussion_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_bids.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_hr_management/locator.dart';
@@ -186,7 +186,7 @@ class _CompanyMenuPageState extends State<CompanyMenuPage> {
         container = CompBuySell(widget.organization!);
         break;
       case CPool_Purchase:
-        container = CompanyPoolPurchesScreen(widget.organization!); //BuySellVehicles();
+        container = CompDiscussionScreen(widget.organization!); //BuySellVehicles();
         break;
       case Bids:
         container = CompanyBidsScreen(widget.organization!);

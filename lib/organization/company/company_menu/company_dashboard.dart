@@ -2,17 +2,30 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/organization/base_widget/custom_search_city_feild.dart';
+import 'package:flutter_hr_management/organization/company/all_bids.dart';
+import 'package:flutter_hr_management/organization/company/all_user_list.dart';
+import 'package:flutter_hr_management/organization/company/buy_sell_list.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
+import 'package:flutter_hr_management/organization/company/load_list.dart';
+import 'package:flutter_hr_management/organization/get_city_list.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
+import 'package:flutter_hr_management/pages/widget/textview.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_hr_management/organization/auth/login_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/all_users.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/comp_buy_sell.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/comp_full_load.dart';
-import 'package:flutter_hr_management/organization/company/company_menu/comp_pool_purchase_screen.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/comp_discussion_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_bids.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
@@ -50,13 +63,14 @@ class CompanyDashboard extends StatefulWidget {
 class _CompanyDashboardState extends State<CompanyDashboard> {
   final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgProvider>();
+  String? selectedFromCity = '', selectedToCity = "";
   late Widget container ;
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    container = CompLoadScreen(widget.organization);
+    container = LoadList(widget.organization,index: 0,);
     return Scaffold(
-      backgroundColor: ColorResources.HOME_BG,
+      backgroundColor: ThemeColor.baground,
       body: Consumer<OrgProvider>(
           builder: (context, model, child) => Row(
             children: [
@@ -71,6 +85,103 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                 child: Column(
                   children: [
                     HeaderWidget(),
+                    SizedBox(height: 35.h,),
+                    Container(
+                        height: 60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: InkWell(
+                                onTap: () {
+                                 // _showMultiSelect(context);
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomSearchCityTextField(
+                                      hintText: 'From',
+                                      controller: selectedFromCity!,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GetCityList())).then((value) {
+                                          if (value.toString().isNotEmpty &&
+                                              value != null) {
+                                            selectedFromCity = value[0];
+                                            setState(() {});
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 25.w,
+                                    ),
+                                    TextView(
+                                      title: "To",
+                                      fontSize:15.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff000000),
+                                    ),
+                                    SizedBox(
+                                      width: 25.w,
+                                    ),
+                                    CustomSearchCityTextField(
+                                      hintText: 'To',
+                                      controller: selectedToCity!,
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GetCityList())).then((value) {
+                                          if (value.toString().isNotEmpty &&
+                                              value != null) {
+                                            selectedToCity = value[0];
+                                            setState(() {});
+                                          }
+                                        });
+                                      },
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            Row(
+                              children: [
+                                filterIconButton(),
+                                SizedBox(
+                                  width: 27.w,
+                                ),
+                                SvgPicture.asset('assets/more_icon.svg'),
+                                SizedBox(
+                                  width: 27.w,
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                    ),
+                    SizedBox(height: 35.h,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        getContainer("Total User",0,model.allUserList.length.toString(), Color(0xffEAF8F4),'assets/org/total_users.svg'),
+                        getContainer("Load Post",1,model.fullLoadPostCount.toString(), Color(0xffFFEDF9),'assets/org/all_load.svg'),
+                        getContainer("Buy Sell",3, model.buySellPostCount.toString(), Color(0xffFEF0E5),'assets/org/buy_sell.svg'),
+                        getContainer("All Bids",4,model.bidCont.toString(), Color(0xffEDE8FF),'assets/org/bid.svg'),
+                      ],
+                    ),
+                    SizedBox(height: 35.h,),
+                    Expanded(
+                        child: container)
                    /* Container(
                       height: 430,
                       child: Stack(
@@ -159,70 +270,78 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
       onTap: (){
         switch(value){
           case 0:
-            container = AllUsers(widget.organization);
+            container = AllUsersList(widget.organization);
           //Navigator.push(context, MaterialPageRoute(builder: (builder)=>AllUsers(widget.organization)));
             break;
           case 1:
-            container = CompLoadScreen(widget.organization);
+            container = LoadList(widget.organization,index: 0,);
            // Navigator.push(context, MaterialPageRoute(builder: (builder)=>CompLoadScreen()));
             break;
           case 2:
-            container = CompanyPoolPurchesScreen(widget.organization);
+            container = CompDiscussionScreen(widget.organization);
            // Navigator.push(context, MaterialPageRoute(builder: (builder)=>CompanyPoolPurchesScreen()));
             break;
           case 3:
-            container = CompBuySell(widget.organization);
+            container = BuySellList(widget.organization);
            // Navigator.push(context, MaterialPageRoute(builder: (builder)=>CompBuySell()));
             break;
           case 4:
-            container = CompBuySell(widget.organization);
+            container = BidList(widget.organization);
            // Navigator.push(context, MaterialPageRoute(builder: (builder)=>CompanyBidsScreen()));
             break;
           default:
             container = AllUsers(widget.organization);
         }
       },
-      child: Card(
-        elevation: 5,
-        child: Container(
-          height: 150,
-          width: title == "All Users"?400:250,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: bgColor, borderRadius: BorderRadius.circular(5)),
-          child:Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                  width: 50.0,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey[100],
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(
-                              img)))),
-              SizedBox(height: 10,),
-              CustomText(count,style: Style.heading,),
-              SizedBox(height: 10,),
-              CustomText(title,style: Style.heading1,),
-            ],
-          )
-          /*child: ListTile(
-            leading: Container(
-                width: 50.0,
-                height: 50.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[100],
-                    image: new DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(
-                            img)))),
-            title: CustomText(title,style: Style.title,),
-            subtitle: CustomText(count,style: Style.subtitle,),
-          ),*/
+      child:  Container(
+        width: 243.w,
+        height: 162.h,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+                width: 0.50,
+                color: Colors.white),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 89.w,
+              height: 89.h,
+              alignment: Alignment.center,
+              decoration: ShapeDecoration(
+                color: bgColor,
+                shape: CircleBorder(),
+              ),
+              child: SvgPicture.asset(
+                img,
+                height: 50.h,
+                width: 50.w,
+              ),
+            ),
+            SizedBox(
+              width: 17.w,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextView(
+                    title: count,
+                    fontSize: 35.sp,
+                    color: AppColor.black,
+                    fontWeight: FontWeight.w600),
+                TextView(
+                    title: title,
+                    fontSize: 20.sp,
+                    color: Color(0xff6C6C6C),
+                    fontWeight: FontWeight.w300)
+              ],
+            )
+          ],
         ),
       ),
     );
