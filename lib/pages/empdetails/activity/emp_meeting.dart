@@ -14,9 +14,8 @@ import '../../../model/response/meeting_list.dart';
 import '../../dashboard/widget/calender_widget.dart';
 
 class EmpMeeting extends StatefulWidget{
-  int id;
 
-  EmpMeeting({Key? key, required this.id}) : super(key: key);
+  EmpMeeting({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -47,7 +46,7 @@ class _EmpMeeting extends State<EmpMeeting>{
           Container(
             width: 220.w,
             child: Text(
-              'Meetings',
+              'Monthly Stock',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 30.sp,
@@ -59,7 +58,7 @@ class _EmpMeeting extends State<EmpMeeting>{
           SizedBox(height: 20.h,),
          Container(
            color: Colors.white,
-           child:  listMeeting.length>0?
+           child:
            Table(
              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
              children: [
@@ -73,30 +72,30 @@ class _EmpMeeting extends State<EmpMeeting>{
                  //       )),
                  // ),
                  children: [
-                   tableHeader("Subject"),
+                   tableHeader("Month"),
                    if (!AppResponsive.isMobile(context))
-                     tableHeader("CreateBy"),
-                   tableHeader("Meeting Link"),
-                   if (!AppResponsive.isMobile(context)) tableHeader("Time"),
+                     tableHeader("Available Stock"),
+                   tableHeader("Expiry Date"),
+                   if (!AppResponsive.isMobile(context)) tableHeader("Purchase Date"),
 
                  ],
                ),
 
                /// Table Data
 
-               for (int i=0;i<listMeeting.length;i++)  tableRow(
+               for (int i=0;i<3;i++)  tableRow(
                    context,
-                   time: listMeeting[i].date!+" "+listMeeting[i].time!,
-                   guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
+                   month: "June",
+                   availableStock: "39",
 
                    image: "assets/user1.jpg",
-                   meetinglink: listMeeting[i].meetingLink,
-                   title: listMeeting[i].title,
+                   expiryDate: "20/02/2027",
+                   purchaseDate: "01/10/2023",
                    index: i
                ),
 
              ],
-           ):Center(child: Text("No Any Meeting Found")),
+           ),
          )
 
         ],
@@ -107,7 +106,7 @@ class _EmpMeeting extends State<EmpMeeting>{
     );
   }
 
-  TableRow tableRow(context, {title, image, guest, meetinglink, time, index}) {
+  TableRow tableRow(context, {month, image, availableStock, expiryDate, purchaseDate, index}) {
     return TableRow(
         decoration: BoxDecoration(
           border: Border(
@@ -127,17 +126,17 @@ class _EmpMeeting extends State<EmpMeeting>{
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  getImage(image,height: 30.h,width: 30.w),
+                //  getImage(image,height: 30.h,width: 30.w),
                   SizedBox(
                     width: 10,
                   ),
-                  Text(title)
+                  Text(month)
                 ],
               ),
             ),
           ),
           // Designation
-          if (!AppResponsive.isMobile(context)) Text(guest),
+          if (!AppResponsive.isMobile(context)) Text(availableStock),
           Row(
             children: [
               Container(
@@ -151,12 +150,12 @@ class _EmpMeeting extends State<EmpMeeting>{
               SizedBox(
                 width: 10,
               ),
-              Text(meetinglink),
+              Text(expiryDate),
             ],
           ),
 
           if (!AppResponsive.isMobile(context))
-            Text(time)
+            Text(purchaseDate)
         ]);
   }
 
@@ -172,13 +171,7 @@ class _EmpMeeting extends State<EmpMeeting>{
     );
   }
   getMeetingData()async {
-    var response= await ApiHelper().apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(widget.id));
-    if(response.status==200){
-      MeetingList meetingList=MeetingList.fromJson(response.response);
-      listMeeting.addAll(meetingList.data!);
-      setState(() {
+   // var response= await ApiHelper().apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(widget.id));
 
-      });
-    }
   }
 }

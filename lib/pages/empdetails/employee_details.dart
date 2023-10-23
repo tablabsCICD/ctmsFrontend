@@ -10,6 +10,7 @@ import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,11 +29,12 @@ class EmpDashboard extends StatefulWidget {
 
 class _EmpDashboard extends State<EmpDashboard> {
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _lastnameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _addLeadController = TextEditingController();
-TextEditingController _passwordController = TextEditingController();
+  TextEditingController _inStockController = TextEditingController();
+  TextEditingController _costPriceController = TextEditingController();
+  TextEditingController _sellingPriceController = TextEditingController();
+  TextEditingController _notesController = TextEditingController();
+TextEditingController _vendorController = TextEditingController();
+  TextEditingController _lowStockController = TextEditingController();
 
 
   List<EmpData>emData=[];
@@ -58,13 +60,13 @@ TextEditingController _passwordController = TextEditingController();
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(title: "Employee Data"),
+          HeaderWidget(title: "Medical Stock"),
          Container(
            margin: EdgeInsets.all(30),
            child: Row(
              children: [
                Text(
-                 'Employee Data',
+                 'Medical Stock',
                  style: TextStyle(
                    color: Colors.black,
                    fontSize: 30.sp,
@@ -74,8 +76,31 @@ TextEditingController _passwordController = TextEditingController();
                  ),
                ),
                Spacer(),
-               filterIconButton(),
-               SizedBox(width: 18,)
+               SizedBox(
+                 height: 58.h,
+                 width: 180.w,
+                 child: ElevatedButton(
+                     onPressed: (){
+                       _showAlertDialog();
+                     },
+                     style: ElevatedButton.styleFrom(
+                         primary: ThemeColor.red,
+                         onPrimary: Colors.white
+                     ),
+                     child: Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Icon(Icons.add_circle,size:18,),
+                         SizedBox(width: 6.w,),
+                         TextView(
+                           title: "Add Products",
+                           fontSize: 16.sp,
+                           fontWeight: FontWeight.w400, color: Colors.white,
+                         ),
+                       ],
+                     )),
+               ),
+               SizedBox(width: 18.w,)
              ],
            ),
          ),
@@ -84,11 +109,11 @@ TextEditingController _passwordController = TextEditingController();
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("${emData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
+                empCounts("${emData.length}","Out of stock product",Icons.medical_information,Color(0xFFEAF8F4)),
                 SizedBox(width: 38.w,),
-                empCounts("0","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
+                empCounts("10","Product on low stock",Icons.medical_information,Color(0xFFFFEDF9)),
                 SizedBox(width: 38.w,),
-                empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                empCounts("16","Number of products to be arrived",Icons.medical_information,Color(0xFFFEF0E5)),
               ],
             ),
           ),
@@ -148,7 +173,7 @@ TextEditingController _passwordController = TextEditingController();
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(30),
             child: Text(
-              "Employee List",
+              "Product List",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColor.black,
@@ -168,240 +193,105 @@ TextEditingController _passwordController = TextEditingController();
   List<String> _locations = ['A', 'B', 'C', 'D']; // Option 2
   late String? _selectedLocation;
 
-  addemp() {
-    return  Container(
-      decoration: BoxDecoration(
-          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(child: Text(
-            "Add New Employee",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColor.black,
-              fontSize: 22,
-            ),
-          )),
-          SizedBox(height: 16),
-          _buildTextField('Frist Name', _nameController),
-          SizedBox(height: 16),
-          _buildTextField('Last Name', _lastnameController),
-          SizedBox(height: 16),
-          _buildTextField('Email', _emailController),
-          SizedBox(height: 16),
-          _buildTextField('Phone', _phoneController),
-          /*Row(
-            children: [
-              Expanded(
-                child: _buildTextField('Email', _emailController),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: _buildTextField('Phone', _phoneController),
-              ),
-            ],
-          ),*/
-          SizedBox(height: 16),
-          _buildTextField('Address', _addLeadController),
-          SizedBox(height: 16),
-          _buildTextField('Password', _passwordController),
-          SizedBox(height: 16),
-          _buildText(selectedRole),
-          SizedBox(height: 16),
 
-          InkWell(
-            onTap: _submitForm,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColor.yellow,
-                  borderRadius: BorderRadius.circular(100)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.black),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: label,
-            labelStyle: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildText(String label) {
-    return InkWell(
-      onTap: (){
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Select Role'),
-                content: setupAlertDialoadContainer(),
-              );
-            });
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 60,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Center(
-            child: Text(
-              label
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _submitForm() async{
-    String name = _nameController.text.toString();
-    String email = _emailController.text.toString();
-    String phone = _phoneController.text.toString();
-    String addLead = _addLeadController.text.toString();
-    String lastName=_lastnameController.text.toString();
-    SaveEmploye saveEmploye=SaveEmploye();
-    saveEmploye.firstName=name;
-    saveEmploye.lastName=lastName;
-    saveEmploye.os="Web";
-    saveEmploye.emailId=email;
-    saveEmploye.address=addLead;
-    saveEmploye.mobileNumber=phone;
-    saveEmploye.role=selectRole;
-    saveEmploye.password=_passwordController.text;
-
-    Dio dio=Dio();
-    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()));
-    if(response.statusCode==200){
-     setState(() {
-       ApiGetData("");
-     });
-    }else{
-      ToastMessage.show(context, "Not Added Sucessfully");
-    }
-
-  }
   empdeatils(){
     return isLoad?Center(child: CircularProgressIndicator(),) :Container(
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(5)),
      // padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //
-          //     Container(
-          //       decoration: BoxDecoration(
-          //           color: AppColor.yellow,
-          //           borderRadius: BorderRadius.circular(100)),
-          //       padding: EdgeInsets.symmetric(
-          //         vertical: 10,
-          //         horizontal: 20,
-          //       ),
-          //       child: Text(
-          //         "View All",
-          //         style: TextStyle(
-          //             fontWeight: FontWeight.bold, color: AppColor.black),
-          //       ),
-          //     )
-          //   ],
-          // ),
-          // Divider(
-          //   thickness: 0.5,
-          //   color: Colors.grey,
-          // ),
-          Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              /// Table Header
-              TableRow(
-                // decoration: BoxDecoration(
-                //   border: Border(
-                //       bottom: BorderSide(
-                //         color: Colors.grey,
-                //         width: 0.5,
-                //       )),
-                // ),
-                children: [
-                  tableHeader("Name"),
-                  if (!AppResponsive.isMobile(context))
-                    tableHeader("Designation"),
-                  tableHeader("Mail"),
-                  tableHeader("Contact"),
-                  if (!AppResponsive.isMobile(context)) tableHeader(""),
-                ],
-              ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //
+            //     Container(
+            //       decoration: BoxDecoration(
+            //           color: AppColor.yellow,
+            //           borderRadius: BorderRadius.circular(100)),
+            //       padding: EdgeInsets.symmetric(
+            //         vertical: 10,
+            //         horizontal: 20,
+            //       ),
+            //       child: Text(
+            //         "View All",
+            //         style: TextStyle(
+            //             fontWeight: FontWeight.bold, color: AppColor.black),
+            //       ),
+            //     )
+            //   ],
+            // ),
+            // Divider(
+            //   thickness: 0.5,
+            //   color: Colors.grey,
+            // ),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              columnWidths: {
+                0: FlexColumnWidth(50),
+                1: FlexColumnWidth(30),
+                2: FlexColumnWidth(30),
+                3: FlexColumnWidth(30),
+                4: FlexColumnWidth(60),
+                5: FlexColumnWidth(20),
+              },
+              children: [
+                /// Table Header
+                TableRow(
+                  // decoration: BoxDecoration(
+                  //   border: Border(
+                  //       bottom: BorderSide(
+                  //         color: Colors.grey,
+                  //         width: 0.5,
+                  //       )),
+                  // ),
+                  children: [
+                    tableHeader("Name"),
+                    tableHeader("In Stock"),
+                    if (!AppResponsive.isMobile(context))  tableHeader("Cost Price"),
+                    if (!AppResponsive.isMobile(context)) tableHeader("Selling Price"),
+                    if (!AppResponsive.isMobile(context)) tableHeader("Notes"),
+                    tableHeader(""),
+                  ],
+                ),
 
-              /// Table Data
+                /// Table Data
 
-              for (int i=0;i<emData.length;i++)  tableRow(
-                context,
-                name: emData[i].firstName!+" "+emData[i].lastName!,
-                color: Colors.blue,
-                image: emData[i].image,
-                designation: emData[i].firstName,
-                status: emData[i].mobileNumber,
-                index: i,
-                email: emData[i].emailId
-              ),
+                for (int i=0;i<5;i++)  tableRow(
+                  context,
+                  name: "Azithromycin 250 mg",
+                  image: '',
+                  inStock:'45',
+                  costPrice: '1135',
+                  sellingPrice: '1250',
+                  index: i,
+                  notes: 'Azithromycin is used to treat certain bacterial infections.'
+                ),
 
-            ],
-          ),
-          // Container(
-          //   margin: EdgeInsets.symmetric(vertical: 10),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text("Showing ${emData.length} out of ${emData.length} Results"),
-          //       Text(
-          //         "View All",
-          //         style: TextStyle(fontWeight: FontWeight.bold),
-          //       ),
-          //     ],
-          //   ),
-          // )
-        ],
+              ],
+            ),
+            // Container(
+            //   margin: EdgeInsets.symmetric(vertical: 10),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text("Showing ${emData.length} out of ${emData.length} Results"),
+            //       Text(
+            //         "View All",
+            //         style: TextStyle(fontWeight: FontWeight.bold),
+            //       ),
+            //     ],
+            //   ),
+            // )
+          ],
+        ),
       ),
     );
   }
 
 
-  TableRow tableRow(context, {name, image, designation, status, color,index,email}) {
+  TableRow tableRow(context, {name, image, inStock, costPrice, sellingPrice,index,notes}) {
     return TableRow(
 
         children: [
@@ -419,7 +309,10 @@ TextEditingController _passwordController = TextEditingController();
                   SizedBox(
                     width: 35.w,
                   ),
-                  getImage(image,height: 30.h,width: 30.w),
+                 // getImage('assets/azi.jpeg',height: 30.h,width: 30.w),
+                  CircleAvatar(
+                      radius: 20.r,
+                      backgroundImage: AssetImage('assets/azi2.jpeg',)),
                   SizedBox(
                     width: 10.w,
                   ),
@@ -429,32 +322,11 @@ TextEditingController _passwordController = TextEditingController();
             ),
           ),
           // Designation
-          if (!AppResponsive.isMobile(context)) Center(child: Text(designation,style: tableRowStyle(),)),
-          if (!AppResponsive.isMobile(context)) Center(child: Text(email,style: tableRowStyle())),
-          Center(child: Text(status,style: tableRowStyle())),
-          // Menu icon
-            Row(
-              children: [
-
-                InkWell(
-                  onTap: (){
-                    editEmp(index);
-
-                  },
-                  child: Icon(Icons.edit,size: 20,color: Colors.grey,),
-                ),
-                SizedBox(width: 7,),
-                InkWell(
-                  onTap: (){
-
-                    showAlertDialog(context,index);
-                  },
-                  child: Icon(Icons.delete,size: 20,color: Colors.red,),
-                ),
-
-
-              ],
-            )
+          Center(child: Text(inStock,style: tableRowStyle(),)),
+          if (!AppResponsive.isMobile(context)) Center(child: Text(costPrice,style: tableRowStyle(),)),
+          if (!AppResponsive.isMobile(context)) Center(child: Text(sellingPrice,style: tableRowStyle())),
+          if (!AppResponsive.isMobile(context)) Text(notes,style: tableRowStyle(),),
+          Center(child: Icon(Icons.more_vert)),
         ]);
   }
 
@@ -603,7 +475,7 @@ TextEditingController _passwordController = TextEditingController();
   }
 
 
-  empCounts(String totCount,String name,String image,Color color){
+  empCounts(String totCount,String name,IconData image,Color color){
     return Container(
       width: 329.w,
       height: 166.h,
@@ -615,43 +487,46 @@ TextEditingController _passwordController = TextEditingController();
 
         ),
       ),
-      child: Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: 108.w,
-              height: 110.h,
-              decoration: ShapeDecoration(
-                color: color,//Color(0xFFEAF8F4)
-                shape: CircleBorder(),
 
-              ),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SvgPicture.asset(image,height: 10.h,width: 10.w,),
-            ),
-            ),
+          Text(
+              name,
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w300,
+              )
           ),
-          Column(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 75.w,
+                  height: 75.h,
+                  decoration: ShapeDecoration(
+                    color: color,//Color(0xFFEAF8F4)
+                    shape: CircleBorder(),
+
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                 //   child: SvgPicture.asset(image,height: 10.h,width: 10.w,),
+                    child: Icon(image,size: 25,color: Colors.grey,),
+                  ),
+                ),
+              ),
               Text(
                 totCount,
-                  style: TextStyle(
-                    fontSize: 35.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                style: TextStyle(
+                  fontSize: 35.sp,
+                  fontWeight: FontWeight.w600,
+                ),
 
 
               ),
-              Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w300,
-                  )
-              )
             ],
           )
         ],
@@ -716,4 +591,211 @@ TextEditingController _passwordController = TextEditingController();
     });
 
   }
+
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.transparent,// <-- SEE HERE
+          scrollable: true,
+          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+            return Container(
+                color: Colors.transparent,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: addProduct(setState),
+                    )
+                  ],
+                )
+            );
+          }),
+        );
+      },
+    );
+
+
+  }
+
+  addProduct(StateSetter setState) {
+    return Container(
+      width: 450.w,
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(Icons.arrow_back_ios,size: 16,)),
+              SizedBox(width: 5.w,
+              ),
+              Text(
+                "Back",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ],
+          ),
+          Center(
+            child: Text(
+              "Add Product",
+              style: TextStyle(
+                fontFamily:
+                GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w500,
+                color: AppColor.black,
+                fontSize: 25.sp,
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Center(
+            child: CircleAvatar(
+                radius: 100.r,
+                backgroundImage: AssetImage('assets/azi2.jpeg',)),
+          ),
+          SizedBox(height: 16.h,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              _buildTextField('Name','', _nameController),
+              SizedBox(height: 16.h),
+              _buildTextField('Quantity In stock','1200', _inStockController),
+              SizedBox(height: 16.h),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width:200.w,child: _buildTextField('Low stock warning','100', _lowStockController),),
+                  SizedBox(width:200.w,child: _buildTextField('Expiry Date','10/10/2025', _lowStockController),),
+
+                ],
+              ),
+
+              SizedBox(height: 16.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(width:200.w,child: _buildTextField('Cost Price(1 item)','1134', _costPriceController)),
+                  SizedBox(width:200.w,child: _buildTextField('Selling Price(1 item)','1250', _sellingPriceController)),
+
+                ],
+              ),
+              _buildTextField('Preferred Vendor', 'Please select',_vendorController),
+
+              SizedBox(height: 16.h),
+              _buildTextField('Notes',"Enter additional notes" ,_notesController),
+             /* ElevatedButton(
+                onPressed: _submitForm,
+                child: Center(child: Text('Submit')),
+              ),*/
+              SizedBox(height: 16.h),
+              InkWell(
+               // onTap: _submitForm,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: ThemeColor.red,
+                      borderRadius: BorderRadius.circular(5)),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
+                  ),
+                  margin: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Add Product",
+                      style: TextStyle(fontSize: 20.sp,fontFamily:
+                      GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500, color: AppColor.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildText(String label, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        height: 60.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+        ),
+        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 }

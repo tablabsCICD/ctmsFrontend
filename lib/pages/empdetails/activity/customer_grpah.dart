@@ -6,14 +6,18 @@ class CustomerGrpah extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child:  Column(
+      child:  Row(
         children: [
-        Text("Performance",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-        SizedBox(height: 30,),
-        barChart(),
+          Column(
+            children: [
+            Text("Performance",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+            SizedBox(height: 30,),
+            barChart(),
 
-        ]
+            ]
     ),
+        ],
+      ),
     );
   }
 

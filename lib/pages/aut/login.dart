@@ -387,8 +387,8 @@ class _LoginScreen extends State<LoginScreen> {
                   fontWeight: FontWeight.w600,
                 ),
                 onClick: () {
-                  //Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  _submitForm();
+                  Navigator.pushReplacementNamed(context, AppRoutes.crm);
+                 // _submitForm();
                 }),
           ),
           Textview(

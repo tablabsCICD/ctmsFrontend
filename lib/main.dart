@@ -45,14 +45,14 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context , child) {
         return MaterialApp(
-              title: 'TKD CRM',
+              title: 'ERP',
               debugShowCheckedModeBanner: false,
               scrollBehavior: MyCustomScrollBehavior(),
               theme: ThemeData(
                 primarySwatch: Colors.blue,
                 fontFamily: GoogleFonts.poppins().fontFamily
               ),
-              initialRoute: AppRoutes.entry,
+              initialRoute: AppRoutes.login,
               onGenerateRoute: RouteGenerator.generateRoute,
           builder: EasyLoading.init(),
             );

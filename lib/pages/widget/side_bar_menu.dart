@@ -33,12 +33,12 @@ class _SideBarState extends State<SideBar> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 47.h,),
-            Container(
+           /* Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
             ),
 
-            SizedBox(height: 47.h,),
+            SizedBox(height: 47.h,),*/
             DrawerListTile(
               isSelect: isDashbord,
               title: "Dashboard",
