@@ -13,9 +13,9 @@ import '../../../constant/images.dart';
 class ProfileCardWidget extends StatelessWidget {
 
   LocalSharePreferences localSharePreferences = LocalSharePreferences();
-  LoginDeatils? loginDeatils;
+ // LoginDeatils? loginDeatils;
   getLoginData() async {
-    loginDeatils = await localSharePreferences.getLoginData();
+   // loginDeatils = await localSharePreferences.getLoginData();
 
   }
   @override

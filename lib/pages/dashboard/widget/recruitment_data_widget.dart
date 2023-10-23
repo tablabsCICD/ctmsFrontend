@@ -108,7 +108,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
                    name: emData[i].firstName!+" "+emData[i].lastName!,
                    color: Colors.blue,
                    image: emData[i].image,
-                   designation: emData[i].firstName,
+                   designation: emData[i].role!.name!,
                    contact:emData[i].mobileNumber,
                    gmail:emData[i].emailId,
                    status: emData[i].status,
@@ -223,18 +223,20 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
     // setState(() {
     //
     // });
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
-    print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      //emData=employeeList.data!;
-      emData.addAll(employeeList.data!);
-      print('this is ${emData.length}');
-      setState(() {
+    // final dio = Dio();
+    // final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
+    // print(response.data);
+    // if(response.statusCode==200){
+    //   EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+    //   //emData=employeeList.data!;
+    //   emData.addAll(employeeList.data!);
+    //   print('this is ${emData.length}');
+    //   setState(() {
+    //
+    //   });
+    // }
 
-      });
-    }
+    emData.add(EmpData(id:1,firstName: "Vinit",lastName: "Jamgaonkar",emailId: 'vinit@tblabs.com',mobileNumber: "8888888888",address: "Pune",employeeId: 12,role: Role(id: 1,name: "Director",isActive: 1),isActive:1,otp: "123",image: "xyx",isSelected: true));
    // EmployeeList.fromJson(jsonDecode(response.data));
    // progressDailog.progressDailog(context, false);
     //return response.statusCode!;

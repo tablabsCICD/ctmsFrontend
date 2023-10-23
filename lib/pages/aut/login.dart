@@ -266,7 +266,7 @@ class _LoginScreen extends State<LoginScreen> {
               right: 79.w,
               child: getRightWidget(),
             ),
-            Positioned(bottom: -25.h, left: -60.w, child: getBottomWidget()),
+            Positioned(bottom: -25.h, left: -60.w, child: Container()),
           ],
         ),
       ),
@@ -706,11 +706,11 @@ class _LoginScreen extends State<LoginScreen> {
         children: [
           Column(
             children: [
-              SvgPicture.asset(
-                Images.logo,
-                height: 66.h,
-                width: 114.w,
-              ),
+              // SvgPicture.asset(
+              //   Images.logo,
+              //   height: 66.h,
+              //   width: 114.w,
+              // ),
               Textview(
                   TextStyle(
                     color: Colors.white,
@@ -718,7 +718,7 @@ class _LoginScreen extends State<LoginScreen> {
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w500,
                   ),
-                  title: 'TKD Connect'),
+                  title: 'CTMS'),
             ],
           ),
           // Padding(
@@ -862,31 +862,31 @@ class _LoginScreen extends State<LoginScreen> {
 
       });
 
+      Navigator.pushReplacementNamed(context, AppRoutes.crm);
 
-
-      EasyLoading.show(status: "Loading");
-      Dio dio=Dio();
-      var response= await dio.post(ApiConstant.LOGIN_DATA+"/emailId",data:formData);
-      EasyLoading.dismiss();
-      if(response.statusCode==200){
-        print('the body is ${response.data}');
-        LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
-
-        if(loginDeatils.data!=null){
-          String response=jsonEncode(loginDeatils);
-          LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
-          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
-
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-
-        }else{
-          ToastMessage.show(context, loginDeatils!.message!);
-        }
-      }else{
-        ToastMessage.show(context, "Try Again");
-      }
-    }else{
-      ToastMessage.show(context, "Please fill correct email and password");
-    }
+    //   EasyLoading.show(status: "Loading");
+    //   Dio dio=Dio();
+    //   var response= await dio.post(ApiConstant.LOGIN_DATA+"/emailId",data:formData);
+    //   EasyLoading.dismiss();
+    //   if(response.statusCode==200){
+    //     print('the body is ${response.data}');
+    //     LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
+    //
+    //     if(loginDeatils.data!=null){
+    //       String response=jsonEncode(loginDeatils);
+    //       LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
+    //       LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
+    //
+    //       Navigator.pushReplacementNamed(context, AppRoutes.home);
+    //
+    //     }else{
+    //       ToastMessage.show(context, loginDeatils!.message!);
+    //     }
+    //   }else{
+    //     ToastMessage.show(context, "Try Again");
+    //   }
+    // }else{
+    //   ToastMessage.show(context, "Please fill correct email and password");
+     }
   }
 }

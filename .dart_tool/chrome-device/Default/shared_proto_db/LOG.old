@@ -1,15 +1,25 @@
-2023/10/02-13:10:29.163 b503 Reusing MANIFEST /private/var/folders/64/dz4mhwb55tq9mwhdsbgrctnw0000gn/T/flutter_tools.vxzYXf/flutter_tools_chrome_device.HFOUVF/Default/shared_proto_db/MANIFEST-000001
-2023/10/02-13:10:29.164 b503 Recovering log #26
-2023/10/02-13:10:29.165 b503 Reusing old log /private/var/folders/64/dz4mhwb55tq9mwhdsbgrctnw0000gn/T/flutter_tools.vxzYXf/flutter_tools_chrome_device.HFOUVF/Default/shared_proto_db/000026.log 
-2023/10/02-13:10:29.166 b503 Delete type=0 #13
-2023/10/02-13:10:29.166 b503 Delete type=0 #7
-2023/10/02-13:10:29.166 b503 Delete type=0 #4
-2023/10/02-13:10:29.166 b503 Delete type=0 #10
-2023/10/02-13:10:29.166 b503 Delete type=0 #16
-2023/10/02-13:10:29.166 b503 Delete type=0 #3
-2023/10/02-13:10:29.166 b503 Delete type=2 #14
-2023/10/02-13:10:29.166 b503 Delete type=2 #17
-2023/10/02-13:10:29.166 b503 Delete type=2 #11
-2023/10/02-13:10:29.166 b503 Delete type=2 #8
-2023/10/02-13:10:29.166 b503 Delete type=0 #19
-2023/10/02-13:10:29.166 b503 Delete type=0 #23
+2023/10/23-10:18:56.557 f303 Reusing MANIFEST /private/var/folders/64/dz4mhwb55tq9mwhdsbgrctnw0000gn/T/flutter_tools.6vp9Pa/flutter_tools_chrome_device.bPr8DY/Default/shared_proto_db/MANIFEST-000001
+2023/10/23-10:18:56.557 f303 Recovering log #36
+2023/10/23-10:18:56.559 f303 Reusing old log /private/var/folders/64/dz4mhwb55tq9mwhdsbgrctnw0000gn/T/flutter_tools.6vp9Pa/flutter_tools_chrome_device.bPr8DY/Default/shared_proto_db/000036.log 
+2023/10/23-10:18:56.560 f303 Delete type=0 #13
+2023/10/23-10:18:56.560 f303 Delete type=0 #7
+2023/10/23-10:18:56.560 f303 Delete type=0 #4
+2023/10/23-10:18:56.560 f303 Delete type=0 #10
+2023/10/23-10:18:56.560 f303 Delete type=0 #29
+2023/10/23-10:18:56.560 f303 Delete type=0 #16
+2023/10/23-10:18:56.560 f303 Delete type=0 #3
+2023/10/23-10:18:56.560 f303 Delete type=2 #14
+2023/10/23-10:18:56.560 f303 Delete type=2 #17
+2023/10/23-10:18:56.560 f303 Delete type=2 #11
+2023/10/23-10:18:56.560 f303 Delete type=2 #8
+2023/10/23-10:18:56.560 f303 Delete type=2 #21
+2023/10/23-10:18:56.560 f303 Delete type=2 #27
+2023/10/23-10:18:56.560 f303 Delete type=2 #24
+2023/10/23-10:18:56.560 f303 Delete type=2 #30
+2023/10/23-10:18:56.560 f303 Delete type=0 #32
+2023/10/23-10:18:56.560 f303 Delete type=0 #26
+2023/10/23-10:18:56.560 f303 Delete type=0 #19
+2023/10/23-10:18:56.560 f303 Delete type=0 #23
+2023/10/23-10:19:15.250 a807 Level-0 table #40: started
+2023/10/23-10:19:15.266 a807 Level-0 table #40: 131123 bytes OK
+2023/10/23-10:19:15.271 a807 Delete type=0 #36

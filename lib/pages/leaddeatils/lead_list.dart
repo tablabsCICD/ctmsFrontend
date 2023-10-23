@@ -22,7 +22,7 @@ import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
 import '../../model/response/lead_list.dart';
 import '../../utils/constant.dart';
-import '../../utils/image_upload.dart';
+
 import '../../utils/sharepreferences.dart';
 import '../dashboard/widget/header_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -123,7 +123,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             child: Row(
               children: [
                 Text(
-                  'Lead Data',
+                  'Vendor Data',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.sp,
@@ -154,7 +154,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                               Icon(Icons.add_circle,size:18,),
                               SizedBox(width: 6.w,),
                               TextView(
-                               title: "Add Lead",
+                               title: "Add Vendor",
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w400, color: Colors.white,
                               ),
@@ -170,13 +170,13 @@ class _LeadDashboard extends State<LeadDashboard> {
             margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Lead','${emData.length}','',true,Colors.green.shade50),
+                leadCountCard('Total Vendor','${emData.length}','',true,Colors.green.shade50),
                 SizedBox(width: 32.w,),
-                leadCountCard('Converted','300','',false,Colors.red.shade50),
-                SizedBox(width: 32.w,),
-                leadCountCard('Rejected','200','',false,Colors.orange.shade50),
-                SizedBox(width: 32.w,),
-                leadCountCard('Pending','200','',false,Colors.blue.shade50),
+                // leadCountCard('Converted','300','',false,Colors.red.shade50),
+                // SizedBox(width: 32.w,),
+                // leadCountCard('Rejected','200','',false,Colors.orange.shade50),
+                // SizedBox(width: 32.w,),
+                // leadCountCard('Pending','200','',false,Colors.blue.shade50),
               ],
             ),
           ),
@@ -265,7 +265,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           ),
           Center(
             child: Text(
-              "Add Lead",
+              "Add Vendor",
               style: TextStyle(
                 fontFamily:
                 GoogleFonts.poppins().fontFamily,
@@ -460,7 +460,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextView(
-               title: "All Leads",
+               title: "All Vendor",
                   fontWeight: FontWeight.w600,
                   color: AppColor.black,
                   fontSize: 30.sp,

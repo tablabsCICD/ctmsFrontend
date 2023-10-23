@@ -60,7 +60,7 @@ class _SideBarState extends State<SideBar> {
             ),
             DrawerListTile(
               isSelect: isEmp,
-              title: "Employee",
+              title: "Inventory",
               icon: "assets/menu/emp_menu.svg",
               press: () {
                 isDashbord=false;
@@ -78,7 +78,7 @@ class _SideBarState extends State<SideBar> {
             ),
             DrawerListTile(
               isSelect: isLead,
-              title: "Leads",
+              title: "Vendor",
               icon: "assets/menu/lead_menu.svg",
               press: () {
                 isDashbord=false;
@@ -95,7 +95,7 @@ class _SideBarState extends State<SideBar> {
               },
             ), DrawerListTile(
               isSelect: isMeeting,
-              title: "Meetings",
+              title: "Batch and Lot",
               icon: "assets/menu/meeting_menu.svg",
               press: () {
                 isDashbord=false;
@@ -115,7 +115,7 @@ class _SideBarState extends State<SideBar> {
             ),
             DrawerListTile(
               isSelect: isCustomer,
-              title: "Customer",
+              title: "Procurement",
               icon: "assets/menu/customer_menu.svg",
               press: () {
                 isDashbord=false;
@@ -131,6 +131,25 @@ class _SideBarState extends State<SideBar> {
 
 
                 Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isreport,
+              title: "Quality",
+              icon: "assets/menu/report_menu.svg",
+              press: () {
+                isDashbord=false;
+                isEmp=false;
+                isCustomer = false;
+                isLead=false;
+                isMeeting=false;
+                isreport=true;
+                isProfile=false;
+                setState(() {
+
+                });
+
+                Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),
             DrawerListTile(

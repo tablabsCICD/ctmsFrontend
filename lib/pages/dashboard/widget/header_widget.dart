@@ -98,7 +98,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         ),
-        child: getImage(details!.data!.image!,height: 50.h,width: 50.w),
+        child: getImage("",height: 50.h,width: 50.w),
       ),
       SizedBox(width: 18.w,),
       Text('${Constants.LOGIN_NAME}', style: TextStyle(
@@ -188,13 +188,14 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       ),
     );
   }
-  LoginDeatils? details;
+  //LoginDeatils? details;
   void getLoginDetails() async{
-  details = await LocalSharePreferences().getLoginData();
-  Constants.LOGIN_NAME=details!.data!.firstName!+" "+details!.data!.lastName!;
-  setState(() {
-
-  });
+  // details = await LocalSharePreferences().getLoginData();
+  // Constants.LOGIN_NAME=details!.data!.firstName!+" "+details!.data!.lastName!;
+  // setState(() {
+  //
+  // });
+    Constants.LOGIN_NAME="Parag"+" "+"Kumbhar";
 
   }
 }
