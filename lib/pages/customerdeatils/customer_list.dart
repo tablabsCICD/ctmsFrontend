@@ -351,7 +351,8 @@ class _LeadDashboard extends State<CustomerList> {
     Dio dio = Dio();
     //try{
     var response = await dio.post(ApiConstant.SAVE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()));
+        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+          'Authorization': 'Bearer ${ApiConstant.token}',}));
     print('the body ${response.data}');
     if (response.statusCode == 200) {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
@@ -366,7 +367,8 @@ class _LeadDashboard extends State<CustomerList> {
       };
       var para = jsonEncode(parameter);
       var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
+            'Authorization': 'Bearer ${ApiConstant.token}',}));
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
@@ -573,7 +575,8 @@ class _LeadDashboard extends State<CustomerList> {
     isLoad = true;
     setState(() {});
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER);
+    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print(response.data);
     if (response.statusCode == 200) {
       CustomerListModel employeeList =
@@ -624,7 +627,8 @@ class _LeadDashboard extends State<CustomerList> {
   void callDelete(int index) async {
     Dio dio = Dio();
     var response = await dio.delete(ApiConstant.LEAD_DELTEB,
-        queryParameters: {"id": finalCustomerList[index].id});
+        queryParameters: {"id": finalCustomerList[index].id},options: Options(headers:{ "Content-Type": "application/json",
+          'Authorization': 'Bearer ${ApiConstant.token}',}));
     if (response.statusCode == 200) {
       finalCustomerList.removeAt(index);
       setState(() {});
@@ -668,7 +672,8 @@ class _LeadDashboard extends State<CustomerList> {
 
   getAllEmployee() async {
     Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "/Employee/getAll");
+    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print(response.data);
     if (response.statusCode == 200) {
       EmployeeList employeeList =

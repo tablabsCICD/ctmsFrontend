@@ -197,14 +197,14 @@ class _LeadInfo extends State<LeadInfo> {
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w500,
                                     )),
-                                Text(widget.leadData!.lead!.leadAssignedTo!.firstName! +" "+
-                                    widget.leadData!.lead!.leadAssignedTo!.firstName!+"\n"+widget.leadData!.lead!.mobileNumber! +
+                               /* Text(widget.leadData.lead!.leadAssignedTo!.firstName! +" "+
+                                    widget.leadData.lead!.leadAssignedTo!.firstName!+"\n"+widget.leadData.lead!.mobileNumber! +
                                 "\n" +
-                                widget.leadData!.lead!.emailId!,
+                                widget.leadData.lead!.emailId!,
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w300,
-                                    ))
+                                    ))*/
                               ],
                             ),
                           ],

@@ -463,14 +463,17 @@ TextEditingController _passwordController = TextEditingController();
     setState(() {
     });
     Dio dio = Dio();
-   var roleResponse =await dio.get(ApiConstant.GET_ALL_ROLES);
+   var roleResponse =await dio.get(ApiConstant.GET_ALL_ROLES,options: Options(headers:{ "Content-Type": "application/json",
+   'Authorization': 'Bearer ${ApiConstant.token}',}));
 
     if(roleResponse.statusCode==200){
      RoleResponse role=RoleResponse.fromJson(jsonDecode(roleResponse.data));
      dataRole.addAll(role!.data!);
      print('the data is ${dataRole.length}');
     }
-    final response = await dio.get(ApiConstant.BASE_URL+"Employee/getAll");
+
+    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print(response.data);
     if(response.statusCode==200){
       EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));

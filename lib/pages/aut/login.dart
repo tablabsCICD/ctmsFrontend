@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
+import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/widget/app_bar.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
@@ -17,7 +19,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../common/app_colors.dart';
 import '../../constant/images.dart';
 import '../../utils/colors.dart';
-import '../../utils/sharepreferences.dart';
 import '../../utils/validation.dart';
 import '../widget/button.dart';
 import '../widget/editText_email.dart';
@@ -386,9 +387,74 @@ class _LoginScreen extends State<LoginScreen> {
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w600,
                 ),
-                onClick: () {
-                  //Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  _submitForm();
+                onClick: () async {
+                  String response=jsonEncode({
+                    "message" : "Current logged in Employee ",
+                    "data" : {
+                      "id" : 1,
+                      "employeeId" : "TKD-1",
+                      "firstName" : "Swati",
+                      "lastName" : "Navale",
+                      "emailId" : "swati@gmail.com",
+                      "mobileNumber" : "9809876543",
+                      "address" : "string",
+                      "image" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696782526-user.png",
+                      "designation" : "Devloper",
+                      "contact" : "7507873525",
+                      "employeeLocation" : "ONSITE",
+                      "departmentId" : 1,
+                      "boardingDeatails" : {
+                        "boardingId" : 1,
+                        "tenthDCertificate" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696820464-Final_Resume.pdf",
+                        "twelthCertificate" : "",
+                        "degreeCertificate" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696824118-Final_Resume.pdf",
+                        "aadharCard" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696828499-Final_Resume.pdf",
+                        "panCard" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696832104-Tabrez_Khaisar_Resume_BE.pdf",
+                        "experienceCertificate" : null,
+                        "active" : "true",
+                        "otherDocuments" : [ "string" ]
+                      },
+                      "active" : "true",
+                      "role" : {
+                        "id" : 1,
+                        "name" : "Developer",
+                        "isActive" : 1
+                      },
+                      "is_admin" : null,
+                      "isActive" : null,
+                      "otp" : "string",
+                      "password" : "Tkd@123",
+                      "os" : "Web",
+                      "status" : "Selected",
+                      "deviceId" : "string",
+                      "createdDate" : "string",
+                      "securityQuestion" : null,
+                      "securityAnswer" : null
+                    },
+                    "success" : true
+                  });
+          LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
+          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
+                 // String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2F0aUBnbWFpbC5jb20iLCJleHAiOjE2OTg3ODE3MDYsImlhdCI6MTY5ODc0NTcwNn0.ZPMTIIh_-8Df7zBL89r0frmz_FoE7HANmDw3AgYGQ4M';
+                 // LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                //  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                //  _submitForm();
+                 /* var request = http.Request('POST', Uri.parse('http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/api/Login/emailId/jwt?emailId=swati@gmail.com&password=Tkd@123'));
+
+
+                  http.StreamedResponse response = await request.send();
+
+                  if (response.statusCode == 200) {
+                  //  var res = json.decode(response.body);
+                    print(await response.stream.bytesToString());
+                    String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2F0aUBnbWFpbC5jb20iLCJleHAiOjE2OTg3ODE3MDYsImlhdCI6MTY5ODc0NTcwNn0.ZPMTIIh_-8Df7zBL89r0frmz_FoE7HANmDw3AgYGQ4M';
+                    LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
+                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                  }
+                  else {
+                  print(response.reasonPhrase);
+                  }*/
                 }),
           ),
           Textview(
@@ -855,34 +921,47 @@ class _LoginScreen extends State<LoginScreen> {
 
     String email = _emailController.text;
     String password = _passwordController.text;
+
+    String myUrl = ApiConstant.LOGIN_DATA+"/emailId/jwt";
+    debugPrint(myUrl);
+
+    /* Uri uri = Uri.parse(myUrl);
+      Map<String, dynamic> data = {
+        'emailId': email,
+        'password': password,
+      };
+
+      var body = json.encode(data);
+      print(data);
+      var createResponse = await http.post(uri,
+          headers: {"Content-Type": "application/json"}, body: body);
+      print("${createResponse.statusCode}" + " --- " + createResponse.body.toString());
+*/
     if(Validation().isValidEmail(email) && password.isNotEmpty){
       var formData = FormData.fromMap({
         'emailId': email,
         'password': password,
-
       });
-
-
 
       EasyLoading.show(status: "Loading");
       Dio dio=Dio();
-      print(ApiConstant.LOGIN_DATA+"/emailId");
-      var response= await dio.post(ApiConstant.LOGIN_DATA+"/emailId",data:formData);
+      var response= await dio.post("http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/api/Login/emailId/jwt?emailId=swati@gmail.com&password=Tkd@123");
       EasyLoading.dismiss();
       print('the body is ${response.data}');
       if(response.statusCode==200){
         print('the body is ${response.data}');
-        LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
-
+      //  LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
+        JWTLoginData loginDeatils=JWTLoginData.fromJson(jsonDecode(response.data));
         if(loginDeatils.data!=null){
-          String response=jsonEncode(loginDeatils);
+          /*String response=jsonEncode(loginDeatils);
           LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
-          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
-
+          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);*/
+          String token = loginDeatils.data!;
+         // LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
           Navigator.pushReplacementNamed(context, AppRoutes.home);
 
         }else{
-          ToastMessage.show(context, loginDeatils!.message!);
+          ToastMessage.show(context, loginDeatils.message!);
         }
       }else{
         ToastMessage.show(context, "Try Again");

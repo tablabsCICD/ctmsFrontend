@@ -338,7 +338,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                           height: 202.h, width: 202.w))),
           SizedBox(height: 16.h),
           _buildTextField(
-              'Company Name', 'Please Comapny name', _nameController),
+              'Company Name', 'Please Company name', _nameController),
           SizedBox(height: 16.h),
           _buildText(
               '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
@@ -528,7 +528,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     Dio dio = Dio();
     //try{
     var response = await dio.post(ApiConstant.SAVE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()));
+        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+          'Authorization': 'Bearer ${ApiConstant.token}',}));
     print('the body ${response.data}');
     if (response.statusCode == 200) {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
@@ -543,7 +544,8 @@ class _LeadDashboard extends State<LeadDashboard> {
       };
       var para = jsonEncode(parameter);
       var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
+            'Authorization': 'Bearer ${ApiConstant.token}',}));
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
@@ -663,14 +665,16 @@ class _LeadDashboard extends State<LeadDashboard> {
 
                       for (int i = 0; i < finalLeadData.length; i++)
                         tableRow(context,
+                            finalLeadData[i],
                             name: finalLeadData[i].lead!.companyName,
                             color: Colors.blue,
-                            image: "leadData[i].lead!.addLogo",
+                            image: leadData[i].lead!.addLogo,
                             client: finalLeadData[i].lead!.companyName,
                             project: finalLeadData[i].lead!.typeOfBusiness,
                             contact: finalLeadData[i].lead!.mobileNumber,
                             // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
                             status: finalLeadData[i].status,
+
                             index: i),
                     ],
                   ),
@@ -680,7 +684,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           );
   }
 
-  TableRow tableRow(context,
+  TableRow tableRow(context, LeadData leadData,
       {name, image, client, project, status, color, index, String? contact}) {
     return TableRow(
         decoration: BoxDecoration(
@@ -697,7 +701,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => LeadInfo(
-                        leadData: leadData[index],
+                        leadData: finalLeadData[index],
                       )));
             },
             child: Container(
@@ -812,7 +816,7 @@ class _LeadDashboard extends State<LeadDashboard> {
               ),
               InkWell(
                   onTap: () {
-                    editleadDilaog(leadData[index]);
+                    editleadDilaog(leadData);
                   },
                   child: Icon(Icons.edit, color: Colors.grey)),
             ],
@@ -835,7 +839,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     isLoad = true;
     setState(() {});
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD);
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print(response.data);
     if (response.statusCode == 200) {
       LeadList leadList = LeadList.fromJson(jsonDecode(response.data));
@@ -896,7 +901,8 @@ class _LeadDashboard extends State<LeadDashboard> {
   void callDelete(int index) async {
     Dio dio = Dio();
     var response = await dio.delete(ApiConstant.LEAD_DELTEB,
-        queryParameters: {"id": finalLeadData[index].lead!.id!});
+        queryParameters: {"id": finalLeadData[index].lead!.id!},options: Options(headers:{ "Content-Type": "application/json",
+          'Authorization': 'Bearer ${ApiConstant.token}',}));
     if (response.statusCode == 200) {
       finalLeadData.removeAt(index);
       setState(() {});
@@ -940,7 +946,8 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   getAllEmployee() async {
     Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "/Employee/getAll");
+    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print(response.data);
     if (response.statusCode == 200) {
       EmployeeList employeeList =
@@ -1250,7 +1257,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     Dio dio = Dio();
     //try{
     var response = await dio.put(ApiConstant.UPDATE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()));
+        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+        'Authorization': 'Bearer ${ApiConstant.token}',}));
     print('the body ${response.data}');
     if (response.statusCode == 200) {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
@@ -1265,7 +1273,8 @@ class _LeadDashboard extends State<LeadDashboard> {
       };
       var para = jsonEncode(parameter);
       var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para);
+          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
+            'Authorization': 'Bearer ${ApiConstant.token}',}));
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
@@ -1298,7 +1307,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     print(parameter);
     var data = jsonEncode(parameter);
     Dio dio = Dio();
-    var response = await dio.put(ApiConstant.UPDATE_LEAD_STATUS, data: data);
+    var response = await dio.put(ApiConstant.UPDATE_LEAD_STATUS, data: data,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {

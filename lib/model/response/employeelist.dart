@@ -83,7 +83,7 @@ class EmpData {
 
   EmpData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    employeeId = json['employeeId']??1;
+    employeeId = json['employeeId']??'';
     firstName = json['firstName']??'';
     lastName = json['lastName']??'';
     emailId = json['emailId']??"";
@@ -93,7 +93,7 @@ class EmpData {
     designation = json['designation']??'';
     contact = json['contact']??'';
     employeeLocation = json['employeeLocation']??"";
-    departmentId = json['departmentId']??'';
+    departmentId = json['departmentId']??1;
     boardingDeatails = json['boardingDeatails'] != null
         ? new BoardingDeatails.fromJson(json['boardingDeatails'])
         : null;
@@ -154,7 +154,7 @@ class BoardingDeatails {
   String? panCard;
   String? experienceCertificate;
   String? active;
-  List<String>? otherDocuments;
+  List<dynamic>? otherDocuments;
 
   BoardingDeatails(
       {this.boardingId,
@@ -176,7 +176,7 @@ class BoardingDeatails {
     panCard = json['panCard'];
     experienceCertificate = json['experienceCertificate'];
     active = json['active'];
-    otherDocuments = json['otherDocuments'].cast<String>();
+    otherDocuments = json['otherDocuments']??[];
   }
 
   Map<String, dynamic> toJson() {

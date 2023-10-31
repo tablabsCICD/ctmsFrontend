@@ -575,7 +575,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     var data= jsonEncode(parameter);
 
     Dio dio=Dio();
-    var response=await dio.put(ApiConstant.EDIT_MEETING,data: data);
+    var response=await dio.put(ApiConstant.EDIT_MEETING,data: data,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     print('the response is ${response}');
     if (response.statusCode == 200) {
       ToastMessage.show(context, "Meeting Edit Success");

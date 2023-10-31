@@ -1,10 +1,12 @@
 
 
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -77,8 +79,17 @@ class _HomePageState extends State<HomePage> {
     //
     final dio = Dio();
     print("Api get All Emp : ${ApiConstant.GET_ALL_EMPLOYEE}");
-    final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
-     print(response.data);
-    return response.statusCode!;
+    //final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
+    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getAll"),headers: { "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',});
+    var response = json.decode(req.body);
+     print(response);
+    if(req.statusCode==200){
+      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(req.body));
+
+      print('this is ${employeeList.data!.length}');
+      setState(() {
+      });}
+    return response;
   }
 }

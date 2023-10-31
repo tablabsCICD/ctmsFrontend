@@ -19,7 +19,7 @@ import 'widget/header_widget.dart';
 import 'widget/notification_card_widget.dart';
 import 'widget/profile_card_widget.dart';
 import 'widget/recruitment_data_widget.dart';
-
+import 'package:http/http.dart' as http;
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
@@ -143,28 +143,22 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> ApiGetData(String URL) async{
-    // ProgressDailog progressDailog=ProgressDailog();
-    // progressDailog.progressDailog(context, true);
-    // setState(() {
-    //
-    // });
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
-    print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      //emData=employeeList.data!;
+    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getAll"),headers: { "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',});
+    var response = json.decode(req.body);
+   /* final dio = Dio();
+    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));*/
+     print(response);
+    if(req.statusCode==200){
+      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(req.body));
       emData.addAll(employeeList.data!);
       finalEmpData.addAll(employeeList.data!);
       print('this is ${emData.length}');
       setState(() {
-
       });
     }
-    // EmployeeList.fromJson(jsonDecode(response.data));
-    // progressDailog.progressDailog(context, false);
-    //return response.statusCode!;
-  }
+ }
 
 
   getHeader(){

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_hr_management/utils/constant.dart';
 
+import '';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,26 +14,30 @@ class ApiHelper{
 
   Future<ApiResponse> apiGet(String URL) async{
     EasyLoading.show(status: "Loading");
-    var request = await dio.get(URL);
+    var request = await dio.get(URL,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     EasyLoading.dismiss(animation: true);
     return apiResponseHelper;
   }
 
   Future<ApiResponse>  apiPost(String URL) async{
-    var request = await dio.post(URL);
+    var request = await dio.post(URL,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     return apiResponseHelper;
   }
   Future<ApiResponse>  apiPut(String URL,Map<String,dynamic>data) async{
     var body = json.encode(data);
-    var request = await dio.put(URL,data: body);
+    var request = await dio.put(URL,data: body,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     return apiResponseHelper;
   }
 
   Future<ApiResponse> ApiDeleteData(String URL) async{
-    var request = await dio.delete(URL);
+    var request = await dio.delete(URL,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     return apiResponseHelper;
   }
@@ -40,7 +46,8 @@ class ApiHelper{
   Future<ApiResponse> postParameter(String url,Map<String,dynamic>data) async{
     EasyLoading.show(status: "Loading");
     var body = json.encode(data);
-    final request = await dio.post(url,data: body);
+    final request = await dio.post(url,data: body,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     EasyLoading.dismiss();
     return apiResponseHelper;
@@ -63,10 +70,11 @@ class ApiHelper{
     EasyLoading.show(status: "Uploading");
     String fileName = file.path.split('/').last;
     FormData formData = FormData.fromMap({
-      "profilePicture":
+      "image1":
       await MultipartFile.fromFile(file.path, filename:fileName),
     });
-    var response = await dio.post("http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/tkdmain/api/UploadImage1", data: formData);
+    var response = await dio.post("http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/tkdmain/api/UploadImage1", data: formData,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${ApiConstant.token}',}));
     EasyLoading.dismiss();
     return response.data;
   }
