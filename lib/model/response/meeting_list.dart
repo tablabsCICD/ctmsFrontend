@@ -275,7 +275,7 @@ class BoardingDeatails {
   String? degreeCertificate;
   String? aadharCard;
   String? panCard;
-  Null? experienceCertificate;
+  String? experienceCertificate;
   String? active;
   List<String>? otherDocuments;
 
@@ -297,7 +297,7 @@ class BoardingDeatails {
     degreeCertificate = json['degreeCertificate'];
     aadharCard = json['aadharCard'];
     panCard = json['panCard'];
-    experienceCertificate = json['experienceCertificate'];
+    experienceCertificate = json['experienceCertificate']??'';
     active = json['active'];
     otherDocuments = json['otherDocuments'].cast<String>();
   }

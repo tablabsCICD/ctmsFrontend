@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/request/create_meeting.dart';
@@ -56,11 +57,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   List<int> selectedEmpList = [];
   List<int> selectedLead = [];
 
-
   List<int> editSelectedEmpList = [];
   List<int> editSelectLead = [];
   ScrollController _scrollController = ScrollController();
-
 
   bool isLoad = false;
   List<MeetingData> meetingList = [];
@@ -81,7 +80,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     filteredMeetingList.clear();
     debugPrint('Total leads : ${meetingList.length}');
     meetingList.forEach((element) {
-      if(element.title!.contains(query) || element.date!.contains(query)){
+      if (element.title!.contains(query) || element.date!.contains(query)) {
         filteredMeetingList.add(element);
       }
     });
@@ -91,9 +90,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   LocalSharePreferences localSharePreferences = LocalSharePreferences();
   LoginDeatils? loginDetails;
+
   getLoginDetail() async {
-  loginDetails = await localSharePreferences.getLoginData();
-}
+    loginDetails = await localSharePreferences.getLoginData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -102,12 +103,16 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         child: Column(
           children: [
             /// Header Part
-            HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
+            HeaderWidget(
+              onSearchTap: (value) {
+                filterSearchResults(value);
+              },
+            ),
             SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 30,vertical: 20),
+                    margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                     child: Row(
                       children: [
                         Text(
@@ -166,23 +171,31 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
                     child: Row(
                       children: [
-                        meetingCard('Schedule', '${meetingList.length}', 'assets/schedule.svg', true,
-                            Colors.green.shade50),
+                        meetingCard('Schedule', '${meetingList.length}',
+                            'assets/schedule.svg', true, Colors.green.shade50),
                         SizedBox(
                           width: 32.w,
                         ),
                         meetingCard(
-                            'Reschedule', '${meetingList.length}', 'assets/re_schedule.svg', false, Colors.red.shade50),
+                            'Reschedule',
+                            '${meetingList.length}',
+                            'assets/re_schedule.svg',
+                            false,
+                            Colors.red.shade50),
                         SizedBox(
                           width: 32.w,
                         ),
-                        meetingCard('Cancelled', '${meetingList.length}', 'assets/canceled.svg', false,
+                        meetingCard(
+                            'Cancelled',
+                            '${meetingList.length}',
+                            'assets/canceled.svg',
+                            false,
                             Colors.orange.shade50),
                       ],
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
+                    margin: EdgeInsets.symmetric(horizontal: 33, vertical: 10),
                     child: Row(
                       children: [
                         Text(
@@ -200,24 +213,26 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       ],
                     ),
                   ),
-              Container(
-                  margin: EdgeInsets.symmetric(horizontal: 33,vertical: 10),
-                  child: StaggeredGridView.countBuilder(
-                      controller: _scrollController,
-                      physics: ScrollPhysics(),
-                      staggeredTileBuilder: (int index) =>
-                          StaggeredTile.fit(1),
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 12,
-                      itemCount: filteredMeetingList.length,///meetingList.length,
-                      itemBuilder: (context, index) {
-                        return meetingDetailCard(filteredMeetingList[index]);
-                      }
-                  )
-              )
-                 // empdeatils()
+                  Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 33, vertical: 10),
+                      child: StaggeredGridView.countBuilder(
+                          controller: _scrollController,
+                          physics: ScrollPhysics(),
+                          staggeredTileBuilder: (int index) =>
+                              StaggeredTile.fit(1),
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 12,
+                          itemCount: filteredMeetingList.length,
+
+                          ///meetingList.length,
+                          itemBuilder: (context, index) {
+                            return meetingDetailCard(
+                                filteredMeetingList[index]);
+                          }))
+                  // empdeatils()
                 ],
               ),
             ),
@@ -229,22 +244,28 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   addMeeting(StateSetter setState) {
     return Container(
-       decoration: BoxDecoration(
+      width: 408.w,
+      decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 5.h,),
+          SizedBox(
+            height: 5.h,
+          ),
           Row(
             children: [
-
               InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -267,11 +288,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             ),
           ),
           SizedBox(height: 20.h),
-          _buildTextField('Title', 'Title',_meetingTitleController),
+          _buildTextField('Title', 'Title', _meetingTitleController),
           SizedBox(height: 16),
-          _buildTextField('Description','Description' ,_meetingDecController),
+          _buildTextField('Description', 'Description', _meetingDecController),
           SizedBox(height: 16),
-          _buildTextField('Link','Link' ,_meetingLinkController),
+          _buildTextField('Link', 'Link', _meetingLinkController),
           SizedBox(height: 16),
           _buildText(selectDate, () async {
             selectDate = await DateTimePickerDialog().pickDateDialog(context);
@@ -289,7 +310,10 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText(selectedEmpList.length==0?'Select Employee':'selected emp is ${selectedEmpList.length}', () async {
+          _buildText(
+              selectedEmpList.length == 0
+                  ? 'Select Employee'
+                  : 'selected emp is ${selectedEmpList.length}', () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -298,11 +322,15 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             print('the list is ${list}');
             selectedEmpList = list;
             setState(() {
-              selectedEmpList=list;
+              selectedEmpList = list;
             });
           }),
           SizedBox(height: 16),
-          _buildText(selectedLead.length==0?"Select Lead":'selected lead count ${selectedLead.length.toString()}', () async {
+          _buildText(
+              selectedLead.length == 0
+                  ? "Select Lead"
+                  : 'selected lead count ${selectedLead.length.toString()}',
+              () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -311,7 +339,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             print('the list is ${list}');
             selectedLead = list;
             setState(() {
-              selectedLead=list;
+              selectedLead = list;
             });
           }),
           SizedBox(height: 16),
@@ -339,26 +367,30 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  editMeeting(MeetingData meetingData,StateSetter setState) {
-
-
+  editMeeting(MeetingData meetingData, StateSetter setState) {
     return Container(
+      width: 408.w,
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10.h,),
+          SizedBox(
+            height: 10.h,
+          ),
           Row(
             children: [
-
               InkWell(
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -381,14 +413,16 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             ),
           ),
           SizedBox(height: 20.h),
-          _buildTextField('Title', 'Title',_editmeetingTitleController),
+          _buildTextField('Title', 'Title', _editmeetingTitleController),
           SizedBox(height: 16),
-          _buildTextField('Description','Description' ,_editmeetingDecController),
+          _buildTextField(
+              'Description', 'Description', _editmeetingDecController),
           SizedBox(height: 16),
-          _buildTextField('Link','Link' ,_editmeetingLinkController),
+          _buildTextField('Link', 'Link', _editmeetingLinkController),
           SizedBox(height: 16),
           _buildText(editSelectDate, () async {
-            editSelectDate = await DateTimePickerDialog().pickDateDialog(context);
+            editSelectDate =
+                await DateTimePickerDialog().pickDateDialog(context);
             if (editSelectDate == null) {
               editSelectDate = "Select Date";
             }
@@ -403,7 +437,10 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText(editSelectedEmpList.length==0?'Select Employee':'selected emp is ${editSelectedEmpList.length}', () async {
+          _buildText(
+              editSelectedEmpList.length == 0
+                  ? 'Select Employee'
+                  : 'selected emp is ${editSelectedEmpList.length}', () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -414,7 +451,10 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText(editSelectLead.length==0?"Select Lead":'selected le${editSelectLead.length.toString()}', () async {
+          _buildText(
+              editSelectLead.length == 0
+                  ? "Select Lead"
+                  : 'selected le${editSelectLead.length.toString()}', () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -426,7 +466,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           }),
           SizedBox(height: 16),
           InkWell(
-            onTap: (){_editSubmitForm(meetingData);},
+            onTap: () {
+              _editSubmitForm(meetingData);
+            },
             child: Container(
               decoration: BoxDecoration(
                   color: ThemeColor.theme_blue,
@@ -449,28 +491,45 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 10.h,
+        ),
         SizedBox(
           height: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
               controller: controller,
-              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 hintText: hint,
-                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+                hintStyle: TextStyle(
+                    color: Color(0xffcccccc),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
               ),
             ),
           ),
@@ -489,9 +548,18 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-            child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
           ),
-          SizedBox(height: 10.h,),
+          SizedBox(
+            height: 10.h,
+          ),
           Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(horizontal: 10),
@@ -533,8 +601,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.meetingLink = link;
     createMeeting.active = true;
     createMeeting.createdMettingBy = deatils.data!.id;
-    createMeeting.leadId = 1;
-    createMeeting.employeeId = [deatils.data!.id!];
+    createMeeting.leadId = selectedLead[0];
+    createMeeting.employeeId = selectedEmpList;
     var response = await ApiHelper()
         .postParameter(ApiConstant.CREATE_MEETING, createMeeting.toJson());
     print('the response is ${response.response}');
@@ -544,7 +612,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     }
   }
 
-   void _editSubmitForm(MeetingData meetingData) async {
+  void _editSubmitForm(MeetingData meetingData) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     LocalSharePreferences localSharePreferences = LocalSharePreferences();
     LoginDeatils deatils = await localSharePreferences.getLoginData();
 
@@ -562,7 +632,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = 1;
     createMeeting.employeeId = editSelectedEmpList!;
-    Map<String,dynamic> parameter={
+    Map<String, dynamic> parameter = {
       "active": true,
       "date": editSelectDate,
       "description": dec,
@@ -572,11 +642,15 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       "title": title
     };
     print(parameter);
-    var data= jsonEncode(parameter);
+    var data = jsonEncode(parameter);
 
-    Dio dio=Dio();
-    var response=await dio.put(ApiConstant.EDIT_MEETING,data: data,options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',}));
+    Dio dio = Dio();
+    var response = await dio.put(ApiConstant.EDIT_MEETING,
+        data: data,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print('the response is ${response}');
     if (response.statusCode == 200) {
       ToastMessage.show(context, "Meeting Edit Success");
@@ -615,23 +689,41 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                IconButton(onPressed: (){},
-                                    icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                                Text("Showing ${filteredMeetingList.length} out of ${meetingList.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                                GoogleFonts.poppins().fontFamily),),
-                                IconButton(onPressed: (){},
-                                    icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
+                                      size: 16,
+                                    )),
+                                Text(
+                                  "Showing ${filteredMeetingList.length} out of ${meetingList.length} Results",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily),
+                                ),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                    ))
                               ],
                             ),
                           ),
-                          SizedBox(width: 20.w,),
+                          SizedBox(
+                            width: 20.w,
+                          ),
                           SvgPicture.asset('assets/more_icon.svg')
                         ],
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 25.h,),
+                SizedBox(
+                  height: 25.h,
+                ),
                 // isLoad && meetingList.length > 0
                 //     ? Table(
                 //         defaultVerticalAlignment:
@@ -673,47 +765,57 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 //       ),
                 Container(
                   decoration: BoxDecoration(
-                      color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                      color: AppColor.white,
+                      borderRadius: BorderRadius.circular(5)),
                   padding: EdgeInsets.all(20),
-                  child:  filteredMeetingList.isEmpty
+                  child: filteredMeetingList.isEmpty
                       ? Expanded(
-                      child: Container(
-                          height:
-                          MediaQuery.of(context).size.height - 400,
-                          child: Center(
-                              child: TextView(
-                                  title: "No Record Found",
-                                  fontSize: 16.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w900))))
+                          child: Container(
+                              height: MediaQuery.of(context).size.height - 400,
+                              child: Center(
+                                  child: TextView(
+                                      title: "No Record Found",
+                                      fontSize: 16.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900))))
                       : Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: [
-                      /// Table Header
-                      TableRow(
-                        children: [
-                          tableHeader("Subject"),
-                          if (!AppResponsive.isMobile(context))
-                            tableHeader("Create By"),
-                          tableHeader("Meeting Link"),
-                          if (!AppResponsive.isMobile(context))
-                            tableHeader("Time"),
-                        ],
-                      ),
-                      /// Table Data
-                      for (int i = 0; i < filteredMeetingList.length; i++)
-                        tableRow(context,
-                            time:
-                            filteredMeetingList[i].date! + " " + filteredMeetingList[i].time!,
-                            guest: filteredMeetingList[i].createdMettingBy!.firstName! +
-                                " " +
-                                filteredMeetingList[i].createdMettingBy!.lastName!,
-                            image: filteredMeetingList[i].createdMettingBy!.image,
-                            meetinglink: filteredMeetingList[i].meetingLink,
-                            title: filteredMeetingList[i].title,
-                            index: i),
-                    ],
-                  ),
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            /// Table Header
+                            TableRow(
+                              children: [
+                                tableHeader("Subject"),
+                                if (!AppResponsive.isMobile(context))
+                                  tableHeader("Create By"),
+                                tableHeader("Meeting Link"),
+                                if (!AppResponsive.isMobile(context))
+                                  tableHeader("Time"),
+                              ],
+                            ),
+
+                            /// Table Data
+                            for (int i = 0; i < filteredMeetingList.length; i++)
+                              tableRow(context,
+                                  time: filteredMeetingList[i].date! +
+                                      " " +
+                                      filteredMeetingList[i].time!,
+                                  guest: filteredMeetingList[i]
+                                          .createdMettingBy!
+                                          .firstName! +
+                                      " " +
+                                      filteredMeetingList[i]
+                                          .createdMettingBy!
+                                          .lastName!,
+                                  image: filteredMeetingList[i]
+                                      .createdMettingBy!
+                                      .image,
+                                  meetinglink:
+                                      filteredMeetingList[i].meetingLink,
+                                  title: filteredMeetingList[i].title,
+                                  index: i),
+                          ],
+                        ),
                 ),
               ],
             ),
@@ -722,15 +824,13 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   bool isJoin = true;
 
-  meetingDetailCard(MeetingData meetingData){
+  meetingDetailCard(MeetingData meetingData) {
     return Container(
       height: 451.h,
       width: 330.w,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        color: Colors.white
-      ),
-     // padding: EdgeInsets.all(14),
+          borderRadius: BorderRadius.circular(10.r), color: Colors.white),
+      // padding: EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -738,8 +838,12 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 14.0.h,right: 14.w),
-                child: SvgPicture.asset('assets/more_icon.svg',height: 14.h,width: 34.w,),
+                padding: EdgeInsets.only(top: 14.0.h, right: 14.w),
+                child: SvgPicture.asset(
+                  'assets/more_icon.svg',
+                  height: 14.h,
+                  width: 34.w,
+                ),
               ),
             ],
           ),
@@ -748,169 +852,265 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                getImage(meetingData.createdMettingBy!.image!,height: 35.h,width: 35.w),
-                SizedBox(width: 23.w,),
-                Text(meetingData.title.toString()??'',
-                 // "Document Update",
-                  style: TextStyle(color: Colors.black,
+                getImage(meetingData.createdMettingBy!.image!,
+                    height: 35.h, width: 35.w),
+                SizedBox(
+                  width: 23.w,
+                ),
+                Text(
+                  meetingData.title.toString() ?? '',
+                  // "Document Update",
+                  style: TextStyle(
+                    color: Colors.black,
                     fontSize: 20.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w400,),
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 10.h,),
+          SizedBox(
+            height: 10.h,
+          ),
           Divider(),
-          SizedBox(height: 2.h,),
+          SizedBox(
+            height: 2.h,
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0,vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Meeting Link",
-                  style: TextStyle(color: Colors.black,
+                  style: TextStyle(
+                    color: Colors.black,
                     fontSize: 17.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,),
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-                SizedBox(height: 5.h,),
+                SizedBox(
+                  height: 5.h,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(meetingData.meetingLink.toString()??'',
-                     // "https:www.googlemeetjk75",
-                      style: TextStyle(color: Colors.blue,
-                        fontSize: 15.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w300,),
+                    InkWell(
+                      onTap: () {
+                        _launchUrl(meetingData.meetingLink!);
+                      },
+                      child: Text(
+                        meetingData.meetingLink.toString() ?? '',
+                        // "https:www.googlemeetjk75",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 15.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
                     ),
-                    SvgPicture.asset('assets/images/share_icon.svg',width: 30.w,height: 30.h,)
+                    SvgPicture.asset(
+                      'assets/images/share_icon.svg',
+                      width: 30.w,
+                      height: 30.h,
+                    )
                   ],
                 ),
-                SizedBox(height: 20.h,),
+                SizedBox(
+                  height: 20.h,
+                ),
                 Text(
-                  "Company Name ${meetingData.lead!.companyName}",
-                  style: TextStyle(color: Colors.black,
+                  "${meetingData.lead!.companyName}",
+                  style: TextStyle(
+                    color: Colors.black,
                     fontSize: 17.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,),
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-                SizedBox(height:5.h),
-                getImage('',height: 20.h,width: 20.w),
-                SizedBox(height: 34.h,),
+                SizedBox(height: 5.h),
+                SizedBox(
+                  height: 30.h,
+                  child: Stack(
+                    children: [
+                      for (int i = 1; i <= 4; i++)
+                        i <= 3
+                            ? Positioned(
+                                left: i * 12,
+                                child: Container(
+                                    decoration: ShapeDecoration(
+                                      color: Colors.blue,
+                                      shape: CircleBorder(),
+                                    ),
+                                    height: 30.h,
+                                    width: 30.w,
+                                    child: getImage("meetingData.lead!.addLogo!",
+                                        height: 25.h, width: 25.w)),
+                              )
+                            : i>=meetingData.employeeId!.length?Positioned(left:i*12,child: SizedBox.shrink()):Positioned(
+                                left: i * 12,
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFFC3262C),
+                                    shape: CircleBorder(),
+                                  ),
+                                  height: 30.h,
+                                  width: 30.w,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "+${meetingData.employeeId!.length - 3}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17.sp,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 34.h,
+                ),
                 Row(
                   children: [
-                    SvgPicture.asset('assets/time.svg',width: 16.w,height: 19.h,),
-                    SizedBox(width: 20.w,),
-                    Text("${meetingData.date.toString()??''} "+meetingData.time.toString()??'',
-                     // "Time : 11:00 AM",
-                      style: TextStyle(color: Colors.black,
+                    SvgPicture.asset(
+                      'assets/time.svg',
+                      width: 16.w,
+                      height: 19.h,
+                    ),
+                    SizedBox(
+                      width: 20.w,
+                    ),
+                    Text(
+                      "${meetingData.date.toString() ?? ''} " +
+                              meetingData.time.toString() ??
+                          '',
+                      // "Time : 11:00 AM",
+                      style: TextStyle(
+                        color: Colors.black,
                         fontSize: 15.sp,
                         fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w300,),
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(height: 34.h,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                loginDetails!.data!.id! == meetingData.createdMettingBy!.id ?SizedBox(
-                  width: 134.w ,
-                  height: 45 .h,
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                      MaterialStateProperty.resolveWith<Color?>(
+                SizedBox(
+                  height: 34.h,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    loginDetails!.data!.id! == meetingData.createdMettingBy!.id
+                        ? SizedBox(
+                            width: 134.w,
+                            height: 45.h,
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                                    if (states.contains(MaterialState.hovered))
+                                      return ThemeColor
+                                          .theme_blue; //<-- SEE HERE
+                                    return isJoin
+                                        ? ThemeColor.theme_blue
+                                        : ThemeColor
+                                            .theme_blue; // Defer to the widget's default.
+                                  },
+                                ),
+                                backgroundColor:
+                                    MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                                    if (states.contains(MaterialState.hovered))
+                                      return ThemeColor.white; //<-- SEE HERE
+                                    return isJoin
+                                        ? ThemeColor.white
+                                        : ThemeColor
+                                            .white; // Defer to the widget's default.
+                                  },
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (loginDetails!.data!.id! ==
+                                    meetingData.createdMettingBy!.id) {
+                                  _showEditAlertDialog(meetingData);
+                                }
+                                setState(() {
+                                  isJoin = false;
+                                });
+                              },
+                              child: Textview(
+                                  TextStyle(
+                                    fontSize: 16.sp,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  title: 'Reschedule'),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    SizedBox(
+                      width: 23.w,
+                    ),
+                    SizedBox(
+                      width: 134.w,
+                      height: 45.h,
+                      child: OutlinedButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered))
-                            return ThemeColor.theme_blue; //<-- SEE HERE
-                         return isJoin?ThemeColor.theme_blue:ThemeColor.theme_blue; // Defer to the widget's default.
-                        },
-                      ),
-                      backgroundColor:
-                      MaterialStateProperty.resolveWith<Color?>(
+                              if (states.contains(MaterialState.hovered))
+                                return ThemeColor.white; //<-- SEE HERE
+                              return isJoin
+                                  ? ThemeColor.white
+                                  : ThemeColor
+                                      .white; // Defer to the widget's default.
+                            },
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered))
-                            return ThemeColor.white; //<-- SEE HERE
-                          return isJoin?ThemeColor.white:ThemeColor
-                              .white; // Defer to the widget's default.
+                              if (states.contains(MaterialState.hovered))
+                                return ThemeColor.theme_blue; //<-- SEE HERE
+                              return isJoin
+                                  ? ThemeColor.theme_blue
+                                  : ThemeColor
+                                      .theme_blue; // Defer to the widget's default.
+                            },
+                          ),
+                        ),
+                        onPressed: () {
+                          _launchUrl(meetingData.meetingLink!);
+
+                          setState(() {
+                            isJoin = true;
+                          });
                         },
+                        child: Textview(
+                            TextStyle(
+                              fontSize: 16.sp,
+                              fontFamily: GoogleFonts.poppins().fontFamily,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            title: 'Join'),
                       ),
                     ),
-                    onPressed: () async {
-
-                      if(loginDetails!.data!.id! == meetingData.createdMettingBy!.id){
-                      _showEditAlertDialog(meetingData);}
-                      setState(() {
-                        isJoin = false;
-                      });
-                    },
-                    child: Textview(
-                        TextStyle(
-                          fontSize: 16.sp ,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        title: 'Reschedule'),
-                  ),
-                ):SizedBox.shrink(),
-                SizedBox(
-                  width: 23.w,
-                ),
-                SizedBox(
-                  width: 134.w ,
-                  height: 45 .h,
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-
-                      foregroundColor:
-                      MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered))
-                            return ThemeColor.white; //<-- SEE HERE
-                          return isJoin?ThemeColor.white:ThemeColor.white; // Defer to the widget's default.
-                        },
-                      ),
-                      backgroundColor:
-                      MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered))
-                            return ThemeColor.theme_blue; //<-- SEE HERE
-                          return isJoin?ThemeColor.theme_blue:ThemeColor
-                              .theme_blue; // Defer to the widget's default.
-                        },
-                      ),
-                    ),
-                    onPressed: () {
-                      _launchUrl(meetingData.meetingLink!);
-
-                      setState(() {
-                        isJoin = true;
-                      });
-
-
-                    },
-                    child: Textview(
-                        TextStyle(
-                          fontSize: 16.sp ,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        title: 'Join'),
-                  ),
-                ),
-              ],
-            )
-
-
+                  ],
+                )
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -918,67 +1118,91 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   Future<void> _launchUrl(String url) async {
     Uri _url = Uri.parse(url);
-    await launchUrl(_url,mode: LaunchMode.externalApplication,);
+    await launchUrl(
+      _url,
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   TableRow tableRow(context, {title, image, guest, meetinglink, time, index}) {
-    return TableRow(
-        children: [
-          InkWell(
-            onTap: () {},
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 15),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(1000),
-                    child: Image.asset(
-                      image,
-                      width: 30,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  TextView(title: title, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
-                ],
-              ),
-            ),
-          ),
-          // Designation
-          if (!AppResponsive.isMobile(context)) TextView(title: guest, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
-          Row(
+    return TableRow(children: [
+      InkWell(
+        onTap: () {},
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 15),
+          child: Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(1000),
+                child: Image.asset(
+                  image,
+                  width: 30,
                 ),
-                height: 10,
-                width: 10,
               ),
               SizedBox(
                 width: 10,
               ),
-              TextView(title: meetinglink, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
+              TextView(
+                  title: title,
+                  fontSize: 16.sp,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300)
             ],
           ),
+        ),
+      ),
+      // Designation
+      if (!AppResponsive.isMobile(context))
+        TextView(
+            title: guest,
+            fontSize: 16.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.w300),
+      Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black,
+            ),
+            height: 10,
+            width: 10,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          TextView(
+              title: meetinglink,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300)
+        ],
+      ),
 
-          if (!AppResponsive.isMobile(context)) TextView(title: time, fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300)
-        ]);
+      if (!AppResponsive.isMobile(context))
+        TextView(
+            title: time,
+            fontSize: 16.sp,
+            color: Colors.black,
+            fontWeight: FontWeight.w300)
+    ]);
   }
 
   Widget tableHeader(text) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
-      child: TextView(title: text, fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w900),
+      child: TextView(
+          title: text,
+          fontSize: 18.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w900),
     );
   }
 
   Future<void> ApiGetMeeting() async {
     LocalSharePreferences localSharePreferences = LocalSharePreferences();
     LoginDeatils deatils = await localSharePreferences.getLoginData();
-    print("EmpId::"+deatils.data!.id!.toString());
+    print("EmpId::" + deatils.data!.id!.toString());
     isLoad = true;
     meetingList.clear();
     filteredMeetingList.clear();
@@ -991,19 +1215,17 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       meetingList.addAll(role.data!);
       meetingList.forEach((element) {
         filteredMeetingList.add(element);
-          if(checkDateExpiry(element.date)){
-            pastMeetingList.add(element);
-          }else{
-            upcomingMeetingList.add(element);
-          }
+        if (checkDateExpiry(element.date)) {
+          pastMeetingList.add(element);
+        } else {
+          upcomingMeetingList.add(element);
+        }
       });
-      print("PastMEETING lIST : "+pastMeetingList.length.toString());
-      print("upcomingMEETING lIST : "+upcomingMeetingList.length.toString());
-      setState(() {
-
-      });
+      print("PastMEETING lIST : " + pastMeetingList.length.toString());
+      print("upcomingMEETING lIST : " + upcomingMeetingList.length.toString());
+      setState(() {});
     }
-    print('meetingList Length :'+meetingList.length.toString());
+    print('meetingList Length :' + meetingList.length.toString());
 
     isLoad = false;
     setState(() {});
@@ -1014,32 +1236,17 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
-          title: const Text(''),
-          content:StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  height: 1024.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          child: addMeeting(stateSetter),
-                        ),
-                      )
-                    ],
-                  )
-              ),
-            );
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return addMeeting(setState);
           }),
-        );;
+        );
       },
     );
 
@@ -1070,39 +1277,26 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     _editmeetingLinkController.text = meetingData.meetingLink!;
     editSelectDate = meetingData.date!;
     editSelectTime = meetingData.time!;
-    editSelectLead = [meetingData.lead!.id==null?0:meetingData.lead!.id!];
-    editSelectedEmpList = [meetingData.lead!.id==null?0:meetingData.lead!.id!];
+    editSelectLead = [meetingData.lead!.id == null ? 0 : meetingData.lead!.id!];
+    editSelectedEmpList = [
+      meetingData.lead!.id == null ? 0 : meetingData.lead!.id!
+    ];
 
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
-          title: const Text(''),
-          content:StatefulBuilder(builder: (BuildContext context, StateSetter stateSetter) {
-
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  height: 1024.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          child: editMeeting(meetingData,stateSetter),
-                        ),
-                      )
-                    ],
-                  )
-              ),
-            );
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return editMeeting(meetingData, setState);
           }),
-        );;
+        );
       },
     );
 
@@ -1201,35 +1395,35 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     return isExpired;
   }
 
-  // Future<void> _showEditAlertDialog() async {
-  //   return showDialog<void>(
-  //     context: context,
-  //     barrierDismissible: false, // user must tap button!
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         backgroundColor: Colors.transparent,// <-- SEE HERE
-  //         title: const Text(''),
-  //         content: SingleChildScrollView(
-  //           child: Container(
-  //               color: Colors.transparent,
-  //               height: 1024.h,
-  //               width: MediaQuery.of(context).size.width,
-  //               child: Stack(
-  //                 children: [
-  //                   Align(
-  //                     alignment: Alignment.centerRight,
-  //                     child: Container(
-  //                       color: Colors.transparent,
-  //                       width: 408.w,
-  //                       child: addMeeting(),
-  //                     ),
-  //                   )
-  //                 ],
-  //               )
-  //           ),
-  //         ),
-  //       );;
-  //     },
-  //   );
-  // }
+// Future<void> _showEditAlertDialog() async {
+//   return showDialog<void>(
+//     context: context,
+//     barrierDismissible: false, // user must tap button!
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         backgroundColor: Colors.transparent,// <-- SEE HERE
+//         title: const Text(''),
+//         content: SingleChildScrollView(
+//           child: Container(
+//               color: Colors.transparent,
+//               height: 1024.h,
+//               width: MediaQuery.of(context).size.width,
+//               child: Stack(
+//                 children: [
+//                   Align(
+//                     alignment: Alignment.centerRight,
+//                     child: Container(
+//                       color: Colors.transparent,
+//                       width: 408.w,
+//                       child: addMeeting(),
+//                     ),
+//                   )
+//                 ],
+//               )
+//           ),
+//         ),
+//       );;
+//     },
+//   );
+// }
 }

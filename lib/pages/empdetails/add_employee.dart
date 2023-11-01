@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/request/save_emp.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -157,6 +159,8 @@ class _AddEmployeeState extends State<AddEmployee> {
   // }
 
   void _submitForm() async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
@@ -175,7 +179,8 @@ class _AddEmployeeState extends State<AddEmployee> {
     //saveEmploye.=widget.empData.role!.id!;
 
     Dio dio=Dio();
-    var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()));
+    var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
     if(response.statusCode==200){
       ToastMessage.show(context, "Emp Edit Success");
       Navigator.pop(context);

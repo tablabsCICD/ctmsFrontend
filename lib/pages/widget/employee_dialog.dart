@@ -76,13 +76,13 @@ class _EmpDialog extends State<EmpDialog>{
                           child: InkWell(
                             onTap: (){
                               if(emData[index].isSelected!){
-                                selectedEmp.add(1);
                                 emData[index].isSelected=false;
                               }else{
                                // selectedEmp.remove(emData[index].id!);
                                 emData[index].isSelected=true;
+                                selectedEmp.add(emData[index].id!);
                               }
-                              selectedEmp.add(1);
+
                               setState(() {
 
                               });

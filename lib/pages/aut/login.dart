@@ -25,6 +25,7 @@ import '../widget/editText_email.dart';
 import '../widget/employee_dialog.dart';
 import '../widget/textviewone.dart';
 import '../widget/toast.dart';
+
 // class Login extends StatefulWidget {
 //   @override
 //   _LeadListScreen createState() => _LeadListScreen();
@@ -204,10 +205,6 @@ import '../widget/toast.dart';
 //
 // }
 
-
-
-
-
 class Onboarding {
   String? img, title, description;
 
@@ -235,6 +232,7 @@ class _LoginScreen extends State<LoginScreen> {
   bool isSignIn = true;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return _buildPage(context);
@@ -293,7 +291,7 @@ class _LoginScreen extends State<LoginScreen> {
             width: 32.w,
           ),
           SizedBox(
-            width: 28.w ,
+            width: 28.w,
           ),
           SvgPicture.asset(
             Images.fb_logo,
@@ -305,13 +303,11 @@ class _LoginScreen extends State<LoginScreen> {
     );
   }
 
-
-
   getLoginWidget() {
     return Container(
       width: 463.w,
       height: 708.h,
-      padding: EdgeInsets.symmetric(horizontal: 60.w ),
+      padding: EdgeInsets.symmetric(horizontal: 60.w),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20.r)),
       child: Column(
@@ -363,7 +359,7 @@ class _LoginScreen extends State<LoginScreen> {
               EditTextEmail(
                 width: 327.w,
                 height: 52.h,
-                isPassword:true,
+                isPassword: true,
                 keybordType: TextInputType.visiblePassword,
                 hint: "Please enter your password",
                 prefixIcon: Icons.lock_outline,
@@ -388,73 +384,58 @@ class _LoginScreen extends State<LoginScreen> {
                   fontWeight: FontWeight.w600,
                 ),
                 onClick: () async {
-                  String response=jsonEncode({
-                    "message" : "Current logged in Employee ",
-                    "data" : {
-                      "id" : 1,
-                      "employeeId" : "TKD-1",
-                      "firstName" : "Swati",
-                      "lastName" : "Navale",
-                      "emailId" : "swati@gmail.com",
-                      "mobileNumber" : "9809876543",
-                      "address" : "string",
-                      "image" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696782526-user.png",
-                      "designation" : "Devloper",
-                      "contact" : "7507873525",
-                      "employeeLocation" : "ONSITE",
-                      "departmentId" : 1,
-                      "boardingDeatails" : {
-                        "boardingId" : 1,
-                        "tenthDCertificate" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696820464-Final_Resume.pdf",
-                        "twelthCertificate" : "",
-                        "degreeCertificate" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696824118-Final_Resume.pdf",
-                        "aadharCard" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696828499-Final_Resume.pdf",
-                        "panCard" : "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696832104-Tabrez_Khaisar_Resume_BE.pdf",
-                        "experienceCertificate" : null,
-                        "active" : "true",
-                        "otherDocuments" : [ "string" ]
+                 /*String response = jsonEncode({
+                    "message": "Current logged in Employee ",
+                    "data": {
+                      "id": 1,
+                      "employeeId": "TKD-1",
+                      "firstName": "Swati",
+                      "lastName": "Navale",
+                      "emailId": "swati@gmail.com",
+                      "mobileNumber": "9809876543",
+                      "address": "string",
+                      "image":
+                          "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696782526-user.png",
+                      "designation": "Devloper",
+                      "contact": "7507873525",
+                      "employeeLocation": "ONSITE",
+                      "departmentId": 1,
+                      "boardingDeatails": {
+                        "boardingId": 1,
+                        "tenthDCertificate":
+                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696820464-Final_Resume.pdf",
+                        "twelthCertificate": "",
+                        "degreeCertificate":
+                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696824118-Final_Resume.pdf",
+                        "aadharCard":
+                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696828499-Final_Resume.pdf",
+                        "panCard":
+                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696832104-Tabrez_Khaisar_Resume_BE.pdf",
+                        "experienceCertificate": null,
+                        "active": "true",
+                        "otherDocuments": ["string"]
                       },
-                      "active" : "true",
-                      "role" : {
-                        "id" : 1,
-                        "name" : "Developer",
-                        "isActive" : 1
-                      },
-                      "is_admin" : null,
-                      "isActive" : null,
-                      "otp" : "string",
-                      "password" : "Tkd@123",
-                      "os" : "Web",
-                      "status" : "Selected",
-                      "deviceId" : "string",
-                      "createdDate" : "string",
-                      "securityQuestion" : null,
-                      "securityAnswer" : null
+                      "active": "true",
+                      "role": {"id": 1, "name": "Developer", "isActive": 1},
+                      "is_admin": null,
+                      "isActive": null,
+                      "otp": "string",
+                      "password": "Tkd@123",
+                      "os": "Web",
+                      "status": "Selected",
+                      "deviceId": "string",
+                      "createdDate": "string",
+                      "securityQuestion": null,
+                      "securityAnswer": null
                     },
-                    "success" : true
+                    "success": true
                   });
-          LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
-          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
-                 // String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2F0aUBnbWFpbC5jb20iLCJleHAiOjE2OTg3ODE3MDYsImlhdCI6MTY5ODc0NTcwNn0.ZPMTIIh_-8Df7zBL89r0frmz_FoE7HANmDw3AgYGQ4M';
-                 // LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                //  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                //  _submitForm();
-                 /* var request = http.Request('POST', Uri.parse('http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/api/Login/emailId/jwt?emailId=swati@gmail.com&password=Tkd@123'));
-
-
-                  http.StreamedResponse response = await request.send();
-
-                  if (response.statusCode == 200) {
-                  //  var res = json.decode(response.body);
-                    print(await response.stream.bytesToString());
-                    String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2F0aUBnbWFpbC5jb20iLCJleHAiOjE2OTg3ODE3MDYsImlhdCI6MTY5ODc0NTcwNn0.ZPMTIIh_-8Df7zBL89r0frmz_FoE7HANmDw3AgYGQ4M';
-                    LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  }
-                  else {
-                  print(response.reasonPhrase);
-                  }*/
+                  LocalSharePreferences()
+                      .setString(SharedPreferencesConstant.LoginKey, response);
+                  LocalSharePreferences()
+                      .setBool(SharedPreferencesConstant.LoginKeyBool, true);
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);*/
+                  _submitForm();
                 }),
           ),
           Textview(
@@ -465,7 +446,7 @@ class _LoginScreen extends State<LoginScreen> {
                   color: Colors.black),
               title: "OR"),
           SizedBox(
-            height: 28.h ,
+            height: 28.h,
           ),
           socialLogin(),
           SizedBox(
@@ -481,7 +462,7 @@ class _LoginScreen extends State<LoginScreen> {
                       color: Colors.black),
                   title: "Don't have an Account? "),
               InkWell(
-                onTap:(){
+                onTap: () {
                   setState(() {
                     isSignIn = false;
                   });
@@ -505,7 +486,7 @@ class _LoginScreen extends State<LoginScreen> {
     return Container(
       width: 463.w,
       height: 708.h,
-      padding: EdgeInsets.symmetric(horizontal: 60.w ),
+      padding: EdgeInsets.symmetric(horizontal: 60.w),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(
@@ -564,23 +545,22 @@ class _LoginScreen extends State<LoginScreen> {
             ],
           ),
           SizedBox(
-            height: 40.h ,
+            height: 40.h,
           ),
-
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Textview(
                   TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 22.sp ,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w400,
                       color: Colors.black),
                   title: "Password"),
               EditTextEmail(
-                width: 327.w ,
-                height: 52.h ,
-                isPassword:true,
+                width: 327.w,
+                height: 52.h,
+                isPassword: true,
                 keybordType: TextInputType.visiblePassword,
                 hint: "Please enter your password",
                 prefixIcon: Icons.lock_outline,
@@ -590,17 +570,17 @@ class _LoginScreen extends State<LoginScreen> {
             ],
           ),
           SizedBox(
-            height: 40 .h,
+            height: 40.h,
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 40.h ),
+            padding: EdgeInsets.only(bottom: 40.h),
             child: Button(
                 width: MediaQuery.of(context).size.width,
-                height: 75.h ,
+                height: 75.h,
                 title: "Sign Up",
                 textStyle: TextStyle(
                   color: Colors.white,
-                  fontSize: 25.sp ,
+                  fontSize: 25.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w600,
                 ),
@@ -613,12 +593,12 @@ class _LoginScreen extends State<LoginScreen> {
               Textview(
                   TextStyle(
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 20.sp ,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
                       color: Colors.black),
                   title: "Already have an Account? "),
               InkWell(
-                onTap: (){
+                onTap: () {
                   setState(() {
                     isSignIn = true;
                   });
@@ -626,7 +606,7 @@ class _LoginScreen extends State<LoginScreen> {
                 child: Textview(
                     TextStyle(
                         fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontSize: 20.sp ,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w400,
                         color: ThemeColor.theme_blue),
                     title: "Sign In"),
@@ -651,13 +631,13 @@ class _LoginScreen extends State<LoginScreen> {
                   children: [
                     SvgPicture.asset(
                       "${imageList[i].img}",
-                      width: 540.73.w ,
-                      height: 379 .h,
+                      width: 540.73.w,
+                      height: 379.h,
                     ),
                     Textview(
                         TextStyle(
                           color: Colors.white,
-                          fontSize: 35.sp ,
+                          fontSize: 35.sp,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w600,
                         ),
@@ -665,7 +645,7 @@ class _LoginScreen extends State<LoginScreen> {
                     Textview(
                         TextStyle(
                           color: Color(0xffCBCBCB),
-                          fontSize: 23 .sp,
+                          fontSize: 23.sp,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w300,
                         ),
@@ -675,7 +655,7 @@ class _LoginScreen extends State<LoginScreen> {
             ],
             carouselController: _controller,
             options: CarouselOptions(
-                height: 550.h ,
+                height: 550.h,
                 autoPlay: true,
                 enlargeCenterPage: true,
                 viewportFraction: 1,
@@ -692,8 +672,8 @@ class _LoginScreen extends State<LoginScreen> {
               return GestureDetector(
                 onTap: () => _controller.animateToPage(entry.key),
                 child: Container(
-                  width: _current == entry.key ? 44.w  : 12.0 .w,
-                  height: 12.0 ,
+                  width: _current == entry.key ? 44.w : 12.0.w,
+                  height: 12.0,
                   margin: EdgeInsets.only(top: 8.0.h, left: 4.0.w, right: 4.w),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
@@ -764,209 +744,104 @@ class _LoginScreen extends State<LoginScreen> {
   getTopWidget() {
     return Container(
       height: 110,
-      padding: const EdgeInsets.only(left: 16.0, top: 10,),
+      padding: const EdgeInsets.only(
+        left: 16.0,
+        top: 10,
+      ),
       alignment: Alignment.center,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              SvgPicture.asset(
-                Images.logo,
-                height: 66.h,
-                width: 114.w,
-              ),
-              Textview(
-                  TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  title: 'TKD Connect'),
-            ],
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 71.0,vertical: 20),
-          //   child: Row(
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       SizedBox(
-          //         width: 164.w ,
-          //         height: 50 .h,
-          //         child: ElevatedButton(
-          //           style: ButtonStyle(
-          //
-          //             foregroundColor:
-          //             MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.black; //<-- SEE HERE
-          //                 return isSignIn?Colors.black:Colors.white; // Defer to the widget's default.
-          //               },
-          //             ),
-          //             backgroundColor:
-          //             MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.white; //<-- SEE HERE
-          //                 return isSignIn?Colors.white:Colors
-          //                     .transparent; // Defer to the widget's default.
-          //               },
-          //             ),
-          //             overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.white; //<-- SEE HERE
-          //                 return Colors
-          //                     .transparent; // Defer to the widget's default.
-          //               },
-          //             ),
-          //           ),
-          //           onPressed: () {
-          //             setState(() {
-          //               isSignIn = true;
-          //             });
-          //
-          //           },
-          //           child: Textview(
-          //               TextStyle(
-          //                 fontSize: 22.sp ,
-          //                 fontFamily: GoogleFonts.poppins().fontFamily,
-          //                 fontWeight: FontWeight.w400,
-          //               ),
-          //               title: 'Sign In'),
-          //         ),
-          //       ),
-          //       SizedBox(
-          //         width: 51.w,
-          //       ),
-          //       SizedBox(
-          //         width: 164 .w,
-          //         height: 57 .h,
-          //         child: ElevatedButton(
-          //           style: ButtonStyle(
-          //
-          //             foregroundColor:
-          //             MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.black; //<-- SEE HERE
-          //                 return isSignIn?Colors.white:Colors.black; // Defer to the widget's default.
-          //               },
-          //             ),
-          //             backgroundColor:
-          //             MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.white; //<-- SEE HERE
-          //                 return isSignIn?Colors.transparent:Colors
-          //                     .white; // Defer to the widget's default.
-          //               },
-          //             ),
-          //             overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          //                   (Set<MaterialState> states) {
-          //                 if (states.contains(MaterialState.hovered))
-          //                   return Colors.white; //<-- SEE HERE
-          //                 return Colors
-          //                     .transparent; // Defer to the widget's default.
-          //               },
-          //             ),
-          //           ),
-          //           onPressed: () {
-          //             setState(() {
-          //               isSignIn = false;
-          //             });
-          //           },
-          //           child: Textview(
-          //               TextStyle(
-          //                 fontSize: 22.sp ,
-          //                 fontFamily: GoogleFonts.poppins().fontFamily,
-          //                 fontWeight: FontWeight.w400,
-          //               ),
-          //               title: 'Sign Up'),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // )
-        ],
-      ),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                SvgPicture.asset(
+                  Images.logo,
+                  height: 66.h,
+                  width: 114.w,
+                ),
+                Textview(
+                    TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    title: 'TKD Connect'),
+              ],
+            ),
+          ]),
     );
   }
 
-
-
   getRightWidget() {
-    return isSignIn?getLoginWidget():getSignUpWidget();
+    return isSignIn ? getLoginWidget() : getSignUpWidget();
   }
 
-
-  void _submitForm() async{
-
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => EmpDialog()),);
-
-    // var list=await showDialog(context: context, builder: (BuildContext context) {
-    //   return EmpDialog();
-    //
-    // });
-    // print('the list is ${list}');
-
-
-
+  void _submitForm() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    String myUrl = ApiConstant.LOGIN_DATA+"/emailId/jwt";
-    debugPrint(myUrl);
-
-    /* Uri uri = Uri.parse(myUrl);
-      Map<String, dynamic> data = {
-        'emailId': email,
-        'password': password,
-      };
-
-      var body = json.encode(data);
-      print(data);
-      var createResponse = await http.post(uri,
-          headers: {"Content-Type": "application/json"}, body: body);
-      print("${createResponse.statusCode}" + " --- " + createResponse.body.toString());
-*/
-    if(Validation().isValidEmail(email) && password.isNotEmpty){
-      var formData = FormData.fromMap({
-        'emailId': email,
-        'password': password,
-      });
+    if (Validation().isValidEmail(email) && password.isNotEmpty) {
+      String myUrl = ApiConstant.BASE_URL +
+          "api/Login/emailId/jwt?emailId=${email}&password=${password}";
+      debugPrint("Login Url:" + myUrl);
 
       EasyLoading.show(status: "Loading");
-      Dio dio=Dio();
-      var response= await dio.post("http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/api/Login/emailId/jwt?emailId=swati@gmail.com&password=Tkd@123");
-      EasyLoading.dismiss();
-      print('the body is ${response.data}');
-      if(response.statusCode==200){
-        print('the body is ${response.data}');
-      //  LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
-        JWTLoginData loginDeatils=JWTLoginData.fromJson(jsonDecode(response.data));
-        if(loginDeatils.data!=null){
-          /*String response=jsonEncode(loginDeatils);
-          LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
-          LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);*/
-          String token = loginDeatils.data!;
-         // LocalSharePreferences().setString(SharedPreferencesConstant.AuthToken, token);
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-
-        }else{
-          ToastMessage.show(context, loginDeatils.message!);
+      Dio dio = Dio();
+      final req = await http.post(Uri.parse(myUrl));
+      print('the body is ${req.body}');
+      if (req.statusCode == 200) {
+        var jwtResponse = json.decode(req.body);
+        print('the response is ${jwtResponse}');
+        JWTLoginData jwtLoginData =
+            JWTLoginData.fromJson(jwtResponse);
+        if (jwtLoginData.data != null) {
+          String token = jwtLoginData.data!;
+          /*ApiConstant.token = token;
+          print("LoginToken ::" + token);*/
+          LocalSharePreferences()
+              .setString(SharedPreferencesConstant.AuthToken, token);
+          String finalToken = await LocalSharePreferences()
+              .getString(SharedPreferencesConstant.AuthToken);
+          print("Final Token ::"+finalToken);
+        } else {
+          ToastMessage.show(context, jwtLoginData.message!);
         }
-      }else{
+
+        String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
+        debugPrint("Get Current User Url:" + loginUrl);
+
+        String token = await LocalSharePreferences()
+            .getString(SharedPreferencesConstant.AuthToken);
+        final loginResponse =
+            await dio.get(loginUrl,
+                options: Options(headers: {
+                  "Content-Type": "application/json",
+                  'Authorization': 'Bearer ${token}',
+                }));
+        print(loginResponse.data);
+        EasyLoading.dismiss();
+        if (loginResponse.statusCode == 200) {
+          LoginDeatils loginDeatils = LoginDeatils.fromJson(jsonDecode(loginResponse.data));
+          if (loginDeatils.data != null) {
+            String response = jsonEncode(loginDeatils);
+            LocalSharePreferences()
+                .setString(SharedPreferencesConstant.LoginKey, response);
+            LocalSharePreferences()
+                .setBool(SharedPreferencesConstant.LoginKeyBool, true);
+
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+          } else {
+            ToastMessage.show(context, loginDeatils.message!);
+          }
+        } else {
+          ToastMessage.show(context, "Try Again");
+        }
+      } else {
         ToastMessage.show(context, "Try Again");
       }
-    }else{
+    } else {
       ToastMessage.show(context, "Please fill correct email and password");
     }
   }

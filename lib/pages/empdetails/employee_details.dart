@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,7 +35,7 @@ class _EmpDashboard extends State<EmpDashboard> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addLeadController = TextEditingController();
-TextEditingController _passwordController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
 
   List<EmpData>finalEmData=[];
@@ -52,26 +54,13 @@ TextEditingController _passwordController = TextEditingController();
     super.initState();
   }
 
-  void filterSearchResults(String query) {
-    debugPrint('Query : $query \n Total leads : ${empData.length}');
-    finalEmData.clear();
-    debugPrint('Total leads : ${empData.length}');
-    empData.forEach((element) {
-      if(element.firstName!.contains(query) || element.mobileNumber!.contains(query)){
-        finalEmData.add(element);
-      }
-    });
-    debugPrint('Final Leads : ${finalEmData.length}');
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       color: ThemeColor.baground,
       child: Column(
         children: [
-          HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
+         HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
          Container(
            margin: EdgeInsets.all(30),
            child: Row(
@@ -96,11 +85,11 @@ TextEditingController _passwordController = TextEditingController();
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("${empData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4)),
+                empCounts("${empData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
                 SizedBox(width: 38.w,),
-                empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9)),
+                empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9),false),
                 SizedBox(width: 38.w,),
-                empCounts("${inActiveEmpData.length}","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                empCounts("${inActiveEmpData.length}","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5),false),
               ],
             ),
           ),
@@ -108,7 +97,7 @@ TextEditingController _passwordController = TextEditingController();
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(30),
             child: Text(
-              "Employee List",
+              selectedEmpList=="Total"?"Employee List":selectedEmpList=="Active"?"Active Employees":"InActive Employees",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColor.black,
@@ -117,62 +106,141 @@ TextEditingController _passwordController = TextEditingController();
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 30,right: 38),
-            child: isLoad?Center(child: CircularProgressIndicator(),) :Container(
-              decoration: BoxDecoration(
-                  color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-              child: Column(
-                children: [
-                  finalEmData.isEmpty
-                      ? Expanded(
-                      child: Container(
-                          height:
-                          MediaQuery.of(context).size.height - 400,
-                          child: Center(
-                              child: TextView(
-                                  title: "No Record Found",
-                                  fontSize: 16.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w900))))
-                      : Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 30,right: 38),
+              child: isLoad?Center(child: CircularProgressIndicator(),) :Container(
+               // height: 350,
+                decoration: BoxDecoration(
+                    color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      /// Table Header
-                      TableRow(
+                      finalEmData.isEmpty
+                          ? Expanded(
+                          child: Container(
+                              height:
+                              MediaQuery.of(context).size.height - 400,
+                              child: Center(
+                                  child: TextView(
+                                      title: "No Record Found",
+                                      fontSize: 16.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900))))
+                          : Table(
+                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
-                          tableHeader("Name"),
-                          if (!AppResponsive.isMobile(context))
-                            tableHeader("Designation"),
-                          tableHeader("Mail"),
-                          tableHeader("Contact"),
-                          if (!AppResponsive.isMobile(context)) tableHeader(""),
+                          /// Table Header
+                          TableRow(
+                            children: [
+                              tableHeader("Name"),
+                              if (!AppResponsive.isMobile(context))
+                                tableHeader("Designation"),
+                              tableHeader("Mail"),
+                              tableHeader("Contact"),
+                              if (!AppResponsive.isMobile(context)) tableHeader(""),
+                            ],
+                          ),
+                          for (int i=0;i<finalEmData.length;i++)  tableRow(
+                              context,
+                              name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
+                              color: Colors.blue,
+                              image: finalEmData[i].image,
+                              designation: finalEmData[i].designation,
+                              status: finalEmData[i].mobileNumber,
+                              index: i,
+                              email: finalEmData[i].emailId
+                          ),
                         ],
                       ),
-                      for (int i=0;i<finalEmData.length;i++)  tableRow(
-                          context,
-                          name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
-                          color: Colors.blue,
-                          image: finalEmData[i].image,
-                          designation: finalEmData[i].designation,
-                          status: finalEmData[i].mobileNumber,
-                          index: i,
-                          email: finalEmData[i].emailId
-                      ),
-
                     ],
                   ),
-
-                ],
-              ),
-            )),
+                ),
+              )),
+          ),
         ],
       ),
     );
   }
 
-  List<String> _locations = ['A', 'B', 'C', 'D']; // Option 2
-  late String? _selectedLocation;
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total leads : ${empData.length}');
+    finalEmData.clear();
+    debugPrint('Total leads : ${empData.length}');
+    empData.forEach((element) {
+      if(element.firstName!.contains(query) || element.mobileNumber!.contains(query)){
+        finalEmData.add(element);
+      }
+    });
+    debugPrint('Final Leads : ${finalEmData.length}');
+    setState(() {});
+  }
+
+  Future<void> ApiGetData(String URL) async{
+    isLoad=true;
+    setState(() {
+    });
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    final dio = Dio();
+    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    print(response.data);
+    if(response.statusCode==200){
+      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+      finalEmData.clear();
+      finalEmData.addAll(employeeList.data!);
+      empData.clear();
+      empData.addAll(employeeList.data!);
+      isLoad=false;
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> ApiGetDataDashbord(String URL) async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    isLoad=true;
+    setState(() {
+    });
+    Dio dio = Dio();
+    var roleResponse =await dio.get(ApiConstant.GET_ALL_ROLES,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+
+    if(roleResponse.statusCode==200){
+      RoleResponse role=RoleResponse.fromJson(jsonDecode(roleResponse.data));
+      dataRole.addAll(role!.data!);
+      print('the data is ${dataRole.length}');
+    }
+
+    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    print(response.data);
+    if(response.statusCode==200){
+      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+      finalEmData.clear();
+      activeEmpData.clear();
+      inActiveEmpData.clear();
+      finalEmData.addAll(employeeList.data!);
+      //print('this is ${emData.length}');
+      empData.clear();
+      empData.addAll(employeeList.data!);
+      empData.forEach((element) {
+        if (element.isActive == 1) {
+          activeEmpData.add(element);
+        } else {
+          inActiveEmpData.add(element);
+
+        }
+      });
+      Constants.allEmployee.clear();
+      Constants.allEmployee.addAll(employeeList.data!);
+      isLoad=false;
+      setState(() {
+      });
+    }
+  }
 
   addemp() {
     return  Container(
@@ -239,7 +307,6 @@ TextEditingController _passwordController = TextEditingController();
         ],
       ),
     );
-
   }
 
   Widget _buildTextField(String label, TextEditingController controller) {
@@ -294,6 +361,8 @@ TextEditingController _passwordController = TextEditingController();
   }
 
   void _submitForm() async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
@@ -308,9 +377,9 @@ TextEditingController _passwordController = TextEditingController();
     saveEmploye.mobileNumber=phone;
     saveEmploye.role=selectRole;
     saveEmploye.password=_passwordController.text;
-
     Dio dio=Dio();
-    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()));
+    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+    'Authorization': 'Bearer ${token}',}));
     if(response.statusCode==200){
      setState(() {
        ApiGetData("");
@@ -318,8 +387,8 @@ TextEditingController _passwordController = TextEditingController();
     }else{
       ToastMessage.show(context, "Not Added Sucessfully");
     }
-
   }
+
   empdeatils(){
     return isLoad?Center(child: CircularProgressIndicator(),) :Container(
       decoration: BoxDecoration(
@@ -358,7 +427,6 @@ TextEditingController _passwordController = TextEditingController();
       ),
     );
   }
-
 
   TableRow tableRow(context, {name, image, designation, status, color,index,email}) {
     return TableRow(
@@ -439,65 +507,6 @@ TextEditingController _passwordController = TextEditingController();
     );
   }
 
-  Future<void> ApiGetData(String URL) async{
-    isLoad=true;
-    setState(() {
-    });
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
-    print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      finalEmData.clear();
-      finalEmData.addAll(employeeList.data!);
-      empData.clear();
-      empData.addAll(employeeList.data!);
-      isLoad=false;
-      setState(() {
-      });
-    }
-  }
-
-  Future<void> ApiGetDataDashbord(String URL) async{
-    isLoad=true;
-    setState(() {
-    });
-    Dio dio = Dio();
-   var roleResponse =await dio.get(ApiConstant.GET_ALL_ROLES,options: Options(headers:{ "Content-Type": "application/json",
-   'Authorization': 'Bearer ${ApiConstant.token}',}));
-
-    if(roleResponse.statusCode==200){
-     RoleResponse role=RoleResponse.fromJson(jsonDecode(roleResponse.data));
-     dataRole.addAll(role!.data!);
-     print('the data is ${dataRole.length}');
-    }
-
-    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',}));
-    print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      finalEmData.clear();
-      finalEmData.addAll(employeeList.data!);
-      //print('this is ${emData.length}');
-      empData.clear();
-      empData.addAll(employeeList.data!);
-      empData.forEach((element) {
-        if (element.isActive == 1) {
-          activeEmpData.add(element);
-        } else {
-            inActiveEmpData.add(element);
-
-        }
-      });
-      Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!);
-      isLoad=false;
-      setState(() {
-      });
-    }
-  }
-
   showAlertDialog(BuildContext context,int index) {
     // set up the button
     Widget okButton = TextButton(
@@ -534,20 +543,23 @@ TextEditingController _passwordController = TextEditingController();
       },
     );
   }
+
   void callDelete(int index) async{
     Dio dio=Dio();
-    var response=await dio.delete(ApiConstant.LEAD_DELTEB,queryParameters: {
-      "id":finalEmData[index].id
-    });
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var response=await dio.delete(ApiConstant.EMP_DELTEB,queryParameters: {"id":finalEmData[index].id},options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
     if(response.statusCode==200){
       finalEmData.removeAt(index);
+      empData.remove(index);
       setState(() {
       });
+      ApiGetDataDashbord("");
     }else{
       ToastMessage.show(context, "Please try Again");
     }
   }
-
 
   Widget setupAlertDialoadContainer() {
     return Container(
@@ -574,18 +586,23 @@ TextEditingController _passwordController = TextEditingController();
     );
   }
 
-  empCounts(String totCount,String name,String image,Color color){
+  String selectedEmpList = "Total";
+
+  empCounts(String totCount,String name,String image,Color color, bool isSelected){
     return InkWell(
       onTap: (){
         if(name=="Active Employee"){
           finalEmData.clear();
           finalEmData.addAll(activeEmpData);
+          selectedEmpList = "Active";
         }else if(name=="Inactive Employee"){
           finalEmData.clear();
           finalEmData.addAll(inActiveEmpData);
+          selectedEmpList = "InActive";
         }else{
           finalEmData.clear();
           finalEmData.addAll(empData);
+          selectedEmpList = "Total";
         }
         setState(() {
         });
@@ -646,37 +663,21 @@ TextEditingController _passwordController = TextEditingController();
     );
   }
 
-
   editEmp(int index) async{
     await showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
-          title: const Text(''),
-          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  height: 1024.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          child: AddEmployee(empData: finalEmData[index],),
-                        ),
-                      )
-                    ],
-                  )
-              ),
-            );
-          }),
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return AddEmployee(empData: finalEmData[index]);
+              }),
         );
       },
     );
@@ -684,23 +685,8 @@ TextEditingController _passwordController = TextEditingController();
   }
 
   void onFilter(String value) {
-    // if(value.length>2){
-    //   emData.clear();
-    //   for(int i=0;i<temEmData.length;i++){
-    //     if(temEmData[i].firstName!.contains(value)==0){
-    //       emData.add(temEmData[i]);
-    //     }
-    //   }
-    // }else{
-    //   emData.clear();
-    //   emData.addAll(temEmData);
-    // }
-
     finalEmData.addAll(empData);
-
     setState(() {
-
     });
-
   }
 }

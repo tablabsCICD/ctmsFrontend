@@ -42,6 +42,11 @@ class LocalSharePreferences{
    return datas;
   }
 
+  Future<String> getLoginToken() async{
+    String token  = await getString(SharedPreferencesConstant.AuthToken);
+    return token;
+  }
+
   Future<bool> logOut()async{
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.clear();

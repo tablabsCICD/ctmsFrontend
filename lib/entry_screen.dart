@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 
@@ -44,11 +46,21 @@ class EntryState extends State<EntryScreen>{
 
   void checkIsLoggedIn()async {
     bool isLogin =await LocalSharePreferences().getBool(SharedPreferencesConstant.LoginKeyBool);
-    if(isLogin!=null && isLogin==true){
+    if(isLogin==true){
+     // getToken();
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }else{
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
+
+ /* Future<void> getToken() async {
+    String finalToken = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    print('Final Token::::::'+finalToken);
+    ApiConstant.token=finalToken;
+    setState(() {
+    });
+  }*/
 
 }

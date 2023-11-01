@@ -1,16 +1,18 @@
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
+
 class ApiConstant {
  /* static String BASE_URL =
       "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/crm/";*/
   static String BASE_URL = 'http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/';
   static String SAVE_EMP = BASE_URL + "Employee/save";
-  static String EDIT_EMP = BASE_URL + "Employee/update";
+  static String EDIT_EMP = BASE_URL + "api/Employee/update";
   static String GET_ALL_LEAD = BASE_URL + "api/Lead/getAll";
   static String GET_ALL_CUSTMER = BASE_URL + "Customer/getAll";
   static String SAVE_LEAD = BASE_URL + "api/Lead/save";
   static String UPDATE_LEAD = BASE_URL + "api/Lead/update";
   static String LOGIN_DATA = BASE_URL + "Login";
-  static String LEAD_DELTEB = BASE_URL + "api/Lead/deleteById";
-  static String EMP_DELTEB = BASE_URL + "Employee/deleteById";
+  static String LEAD_DELTEB = BASE_URL + "api/Lead/deleteById?";
+  static String EMP_DELTEB = BASE_URL + "api/Employee/deleteById?";
   static String GET_ALL_REPORT = BASE_URL + "CountAll/AllCountReport";
   static String GET_ALL_ROLES = BASE_URL + "api/Role/getAll";
 
@@ -36,6 +38,9 @@ class ApiConstant {
       BASE_URL + "api/Lead/getByleadAssignedToId?leadAssignedTo=$id";
 
   static String CREATE_MAIL = BASE_URL + "Employee/SendEmail";
+//  static String token = '';
+ // static String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmdAZ21haWwuY29tIiwiZXhwIjoxNjk4ODc2MjQ5LCJpYXQiOjE2OTg4NDAyNDl9.VgbYGJ0Dgj3kwHXLxuWo_zZeJcxTs9R3I9zg-nhpnN8';
 
-  static String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzd2F0aUBnbWFpbC5jb20iLCJleHAiOjE2OTg3ODE3MDYsImlhdCI6MTY5ODc0NTcwNn0.ZPMTIIh_-8Df7zBL89r0frmz_FoE7HANmDw3AgYGQ4M';
+
+
 }

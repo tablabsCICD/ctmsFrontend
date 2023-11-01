@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
 import 'package:flutter_hr_management/organization/company/company_menu_page.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_hr_management/organization/model/organization_model.dart
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -24,6 +27,13 @@ class HomeOrganizationScreen extends StatefulWidget{
 }
 class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
   final orgProvider = locator<OrgProvider>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
    return Scaffold(

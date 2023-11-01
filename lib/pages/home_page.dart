@@ -1,17 +1,17 @@
 
 
-import 'dart:convert';
 import 'dart:core';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:provider/provider.dart';
 
 import '../common/app_colors.dart';
@@ -30,8 +30,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ApiGetData("http://ec2-43-205-143-58.ap-south-1.compute.amazonaws.com:8080/crm/Employee/getAll");
+   // ApiGetData("http://ec2-43-205-143-58.ap-south-1.compute.amazonaws.com:8080/crm/Employee/getAll");
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,34 +65,11 @@ class _HomePageState extends State<HomePage> {
 
 
   Future<int> ApiGetData(String URL) async{
-    print('theval');
-    // var request =  await http.get(Uri.parse(URL), headers: {
-    //       'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YWJsYWJzQDEyMyIsImV4cCI6MTY5MTU5OTI0NiwiaWF0IjoxNjkxNTYzMjQ2fQ.RYhFDDK038BFC4p3vns3B-8qgbyYTkmVPp1S6HOEmNU',
-    //     'Content-Type': 'application/json',
-    //     "Access-Control-Allow-Origin": "*", // Required for CORS support to work
-    //    "Access-Control-Allow-Credentials": 'true', // Required for cookies, authorization headers with HTTPS
-    //    "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-    //   "Access-Control-Allow-Methods": "GET, HEAD"
-    //   },
-    // );
-    // print('the val is $request');
-
-
-
-    //
     final dio = Dio();
-    print("Api get All Emp : ${ApiConstant.GET_ALL_EMPLOYEE}");
-    //final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
-    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getAll"),headers: { "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',});
-    var response = json.decode(req.body);
-     print(response);
-    if(req.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(req.body));
-
-      print('this is ${employeeList.data!.length}');
-      setState(() {
-      });}
-    return response;
+    final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
+     print(response.data);
+    return response.statusCode!;
   }
+
+
 }

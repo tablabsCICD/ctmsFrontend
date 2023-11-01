@@ -123,7 +123,7 @@ class _LeadInfo extends State<LeadInfo> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            getImage('image',height: 50.h,width: 50.w),
+                            getImage(widget.leadData.lead!.addLogo??'',height: 50.h,width: 50.w),
                             SizedBox(
                               width: 32.w,
                             ),

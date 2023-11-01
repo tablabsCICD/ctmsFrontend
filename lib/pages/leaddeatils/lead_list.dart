@@ -72,61 +72,12 @@ class _LeadDashboard extends State<LeadDashboard> {
   int selectedEmp = 0;
   int editselectedEmp = 0;
 
-  Future<void> _showAlertDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent, // <-- SEE HERE
-          title: const Text(''),
-          content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          height: MediaQuery.of(context).size.height,
-                          child: addLead(setState),
-                        ),
-                      )
-                    ],
-                  )),
-            );
-          }),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     ApiGetData("");
     getAllEmployee();
     super.initState();
-  }
-
-  void filterSearchResults(String query) {
-    debugPrint('Query : $query \n Total leads : ${leadData.length}');
-    finalLeadData.clear();
-    debugPrint('Total leads : ${leadData.length}');
-    leadData.forEach((element) {
-      if (element.lead!.companyName!.contains(query) ||
-          element.lead!.mobileNumber!.contains(query)) {
-        finalLeadData.add(element);
-      }
-    });
-    debugPrint('Final Leads : ${finalLeadData.length}');
-    setState(() {});
   }
 
   @override
@@ -269,10 +220,101 @@ class _LeadDashboard extends State<LeadDashboard> {
                     ),
                 ],
               ),*/
-                     leadList(context)),
+                    leadList(context)),
           ),
         ],
       ),
+    );
+  }
+
+  void filterSearchResults(String query) {
+    debugPrint('Query : $query \n Total leads : ${leadData.length}');
+    finalLeadData.clear();
+    debugPrint('Total leads : ${leadData.length}');
+    leadData.forEach((element) {
+      if (element.lead!.companyName!.contains(query) ||
+          element.lead!.mobileNumber!.contains(query)) {
+        finalLeadData.add(element);
+      }
+    });
+    debugPrint('Final Leads : ${finalLeadData.length}');
+    setState(() {});
+  }
+
+  Future<void> ApiGetData(String URL) async {
+    isLoad = true;
+    setState(() {});
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    final dio = Dio();
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      LeadList leadList = LeadList.fromJson(jsonDecode(response.data));
+      leadData.clear();
+      finalLeadData.clear();
+      convertedLead.clear();
+      pendingLead.clear();
+      rejectedLead.clear();
+      leadData.addAll(leadList.data! as Iterable<LeadData>);
+      leadData.forEach((element) {
+        if (element.status == null) element.status = "pending";
+        finalLeadData.add(element);
+        if (element.status!.toLowerCase() == "converted") {
+          convertedLead.add(element);
+        } else {
+          if (element.status!.toLowerCase() == "pending") {
+            pendingLead.add(element);
+          } else if (element.status!.toLowerCase() == "rejected") {
+            rejectedLead.add(element);
+          }
+        }
+      });
+      print('this is ${leadData.length}');
+      isLoad = false;
+      setState(() {});
+    }
+  }
+
+  getAllEmployee() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    Dio dio = Dio();
+    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      EmployeeList employeeList =
+          EmployeeList.fromJson(jsonDecode(response.data));
+      Constants.allEmployee.clear();
+      Constants.allEmployee.addAll(employeeList.data!);
+    }
+  }
+
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return addLead(setState);
+          }),
+        );
+      },
     );
   }
 
@@ -282,122 +324,117 @@ class _LeadDashboard extends State<LeadDashboard> {
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 16,
-                  )),
-              SizedBox(
-                width: 5.w,
-              ),
-              Text(
-                "Back",
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                    )),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: Text(
+                "Add Lead",
                 style: TextStyle(
+                  fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w500,
                   color: AppColor.black,
-                  fontSize: 16.sp,
+                  fontSize: 25.sp,
                 ),
               ),
-            ],
-          ),
-          Center(
-            child: Text(
-              "Add Lead",
-              style: TextStyle(
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w500,
-                color: AppColor.black,
-                fontSize: 25.sp,
-              ),
             ),
-          ),
-          SizedBox(height: 20.h),
-          Center(
-              child: InkWell(
-                  onTap: () async {
-                    pickFile();
-                  },
-                  child: imgPath == ''
-                      ? Container(
-                          height: 200.h,
-                          width: 408.w,
-                          alignment: Alignment.center,
-                          child: Image.network(
-                            imgPath,
-                            width: 202.w,
-                          ))
-                      : SvgPicture.asset('assets/upload_profile.svg',
-                          height: 202.h, width: 202.w))),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Company Name', 'Please Company name', _nameController),
-          SizedBox(height: 16.h),
-          _buildText(
-              '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
-              () async {
-            int list = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return EmpDialogOne();
-                });
-            // print('the list is ${list}');
-            selectedEmp = list;
-            print('the list is$selectedEmp');
-            stateSetter(() {
+            SizedBox(height: 20.h),
+            Center(
+                child: InkWell(
+                    onTap: () async {
+                      pickFile(stateSetter);
+                    },
+                    child: imgPath == ''
+                        ? SvgPicture.asset('assets/upload_profile.svg',
+                            height: 202.h, width: 202.w)
+                        : Container(
+                            height: 200.h,
+                            width: 408.w,
+                            alignment: Alignment.center,
+                            child: Image.network(
+                              imgPath,
+                              width: 202.w,
+                            )))),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Company Name', 'Please Company name', _nameController),
+            SizedBox(height: 16.h),
+            _buildText(
+                '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+                () async {
+              int list = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return EmpDialogOne();
+                  });
+              // print('the list is ${list}');
               selectedEmp = list;
-            });
-          }),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Email', 'Please enter your email ID', _emailController),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Phone', 'Please enter your phone number', _phoneController),
-          SizedBox(height: 16.h),
-          // _buildTextField('Name Coordinator', _coordinatorController),
-          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
-          _buildTextField(
-              'Source Of Lead', 'Please select', _sourceofleadController),
-
-          SizedBox(height: 16.h),
-          _buildTextField('typeOfBusiness', "Enter type of business",
-              _typeOfBusinessController),
-          /*ElevatedButton(
-            onPressed: _submitForm,
-            child: Center(child: Text('Submit')),
-          ),*/
-          SizedBox(height: 16.h),
-          InkWell(
-            onTap: _submitForm,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: ThemeColor.theme_blue,
-                  borderRadius: BorderRadius.circular(5)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontSize: 20.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.white),
+              print('the list is$selectedEmp');
+              stateSetter(() {
+                selectedEmp = list;
+              });
+            }),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Email', 'Please enter your email ID', _emailController),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Phone', 'Please enter your phone number', _phoneController),
+            SizedBox(height: 16.h),
+            _buildDropdownField('Source Of Lead', 'Please select',
+                _sourceofleadController, stateSetter),
+            SizedBox(height: 16.h),
+            _buildTextField('typeOfBusiness', "Enter type of business",
+                _typeOfBusinessController),
+            SizedBox(height: 16.h),
+            InkWell(
+              onTap: _submitForm,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Center(
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.white),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -497,7 +534,92 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
+  String dropdownvalue = 'Social Media';
+  var items = [
+    'Social Media',
+    'Referral',
+    'Events',
+    'Paid Ads'
+        'Email Marketing',
+    'SEO',
+    'Content',
+    'Other',
+  ];
+
+  Widget _buildDropdownField(String label, String hint,
+      TextEditingController controller, StateSetter stateSetter) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.7),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: DropdownButton(
+                value: dropdownvalue,
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down),
+                borderRadius: BorderRadius.circular(5.0),
+                underline: SizedBox.shrink(),
+                hint: Text(
+                  "Source of Lead",
+                  style: TextStyle(
+                    color: Color(0xff1B1B1B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(
+                        color: Color(0xff1B1B1B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  stateSetter(() {
+                    dropdownvalue = newValue!;
+                    _sourceofleadController.text = dropdownvalue;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _submitForm() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     LoginDeatils loginDeatils =
         await LocalSharePreferences.localSharePreferences.getLoginData();
     String name = _nameController.text.toString();
@@ -508,7 +630,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     print(finalDate);
 
     SaveLeadRequest saveEmploye = SaveLeadRequest();
-    saveEmploye.id = 0;
+  _addressController.text = "pune";
     saveEmploye.addLogo = imgPath;
     saveEmploye.address = _addressController.text;
     saveEmploye.city = _addressController.text;
@@ -528,24 +650,33 @@ class _LeadDashboard extends State<LeadDashboard> {
     Dio dio = Dio();
     //try{
     var response = await dio.post(ApiConstant.SAVE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
-          'Authorization': 'Bearer ${ApiConstant.token}',}));
-    print('the body ${response.data}');
+        data: jsonEncode(saveEmploye.toJson()),
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print('Save Lead Response is: ${response.data}');
     if (response.statusCode == 200) {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
       Map<String, dynamic> parameter = {
         "date": GetDateFormat.getCurrentDate(),
+        "description": "Lead Created",
+        "isActive": true,
         "lead": postLead.data!.id,
         "nextFollowUpBy": empData.id,
-        "potential": "10",
-        "status": "Pending",
+        "nextFollowupDate": "11/11/2023",
+        "potential": 0,
+        "status": "converted",
         "updatedByUser": loginDeatils.data!.id,
-        "description": " Lead Created "
       };
       var para = jsonEncode(parameter);
-      var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
-            'Authorization': 'Bearer ${ApiConstant.token}',}));
+      var leadResponse = await dio.post(ApiConstant.SAVE_LEAD_UPDATe,
+          data: para,
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ${token}',
+          }));
+      print("Lead Update Response" + leadResponse.data);
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
@@ -575,7 +706,13 @@ class _LeadDashboard extends State<LeadDashboard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextView(
-                      title: "All Leads",
+                      title: selectedLeadType == 'total'
+                          ? "All Leads"
+                          : selectedLeadType == 'pending'
+                              ? "Pending Leads"
+                              : selectedLeadType == 'converted'
+                                  ? "Converted Leads"
+                                  : "Rejected Leads",
                       fontWeight: FontWeight.w600,
                       color: AppColor.black,
                       fontSize: 30.sp,
@@ -597,8 +734,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                             style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.w300,
-                                fontFamily:
-                                    GoogleFonts.poppins().fontFamily),
+                                fontFamily: GoogleFonts.poppins().fontFamily),
                           ),
                           IconButton(
                               onPressed: () {},
@@ -625,59 +761,58 @@ class _LeadDashboard extends State<LeadDashboard> {
                   padding: EdgeInsets.all(20),
                   child: finalLeadData.isEmpty
                       ? Expanded(
-                      child: Container(
-                          height:
-                          MediaQuery.of(context).size.height - 400,
-                          child: Center(
-                              child: TextView(
-                                  title: "No Record Found",
-                                  fontSize: 16.sp,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w900))))
-                      :Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: [
-                      /// Table Header
-                      TableRow(
-                        /*decoration: BoxDecoration(
+                          child: Container(
+                              height: MediaQuery.of(context).size.height - 400,
+                              child: Center(
+                                  child: TextView(
+                                      title: "No Record Found",
+                                      fontSize: 16.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900))))
+                      : Table(
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            /// Table Header
+                            TableRow(
+                              /*decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
                           color: Colors.grey,
                           width: 0.5,
                         )),
                   ),*/
-                        children: [
-                          tableHeader("Name"),
-                          tableHeader("Client"),
-                          tableHeader("Project"),
-                          tableHeader("Contact"),
-                          tableHeader("Status"),
-                          tableHeader(""),
+                              children: [
+                                tableHeader("Name"),
+                                tableHeader("Client"),
+                                tableHeader("Project"),
+                                tableHeader("Contact"),
+                                tableHeader("Status"),
+                                tableHeader(""),
 
-                          /*if (!AppResponsive.isMobile(context))
+                                /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
                     if (!AppResponsive.isMobile(context)) tableHeader(""),*/
-                        ],
-                      ),
+                              ],
+                            ),
 
-                      /// Table Data
+                            /// Table Data
 
-                      for (int i = 0; i < finalLeadData.length; i++)
-                        tableRow(context,
-                            finalLeadData[i],
-                            name: finalLeadData[i].lead!.companyName,
-                            color: Colors.blue,
-                            image: leadData[i].lead!.addLogo,
-                            client: finalLeadData[i].lead!.companyName,
-                            project: finalLeadData[i].lead!.typeOfBusiness,
-                            contact: finalLeadData[i].lead!.mobileNumber,
-                            // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                            status: finalLeadData[i].status,
-
-                            index: i),
-                    ],
-                  ),
+                            for (int i = 0; i < finalLeadData.length; i++)
+                              tableRow(context, finalLeadData[i],
+                                  name: finalLeadData[i].lead!.companyName,
+                                  color: Colors.blue,
+                                  image: leadData[i].lead!.addLogo,
+                                  client: finalLeadData[i].lead!.companyName,
+                                  project:
+                                      finalLeadData[i].lead!.typeOfBusiness,
+                                  contact: finalLeadData[i].lead!.mobileNumber,
+                                  // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                                  status: finalLeadData[i].status,
+                                  index: i),
+                          ],
+                        ),
                 ),
               ],
             ),
@@ -708,7 +843,7 @@ class _LeadDashboard extends State<LeadDashboard> {
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  getImage('image', height: 30.h, width: 30.w),
+                  getImage(image ?? '', height: 30.h, width: 30.w),
                   SizedBox(
                     width: 10,
                   ),
@@ -835,36 +970,6 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  Future<void> ApiGetData(String URL) async {
-    isLoad = true;
-    setState(() {});
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD,options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',}));
-    print(response.data);
-    if (response.statusCode == 200) {
-      LeadList leadList = LeadList.fromJson(jsonDecode(response.data));
-      leadData.clear();
-      finalLeadData.clear();
-      leadData.addAll(leadList.data! as Iterable<LeadData>);
-      leadData.forEach((element) {
-        finalLeadData.add(element);
-       if (element.status!.toLowerCase() == "converted") {
-          convertedLead.add(element);
-        } else {
-          if (element.status!.toLowerCase() == "pending") {
-            pendingLead.add(element);
-          } else if (element.status!.toLowerCase() == "rejected") {
-            rejectedLead.add(element);
-          }
-        }
-      });
-      print('this is ${leadData.length}');
-      isLoad = false;
-      setState(() {});
-    }
-  }
-
   showAlertDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
@@ -899,10 +1004,15 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   void callDelete(int index) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     Dio dio = Dio();
     var response = await dio.delete(ApiConstant.LEAD_DELTEB,
-        queryParameters: {"id": finalLeadData[index].lead!.id!},options: Options(headers:{ "Content-Type": "application/json",
-          'Authorization': 'Bearer ${ApiConstant.token}',}));
+        queryParameters: {"id": finalLeadData[index].lead!.id!},
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     if (response.statusCode == 200) {
       finalLeadData.removeAt(index);
       setState(() {});
@@ -944,19 +1054,6 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  getAllEmployee() async {
-    Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',}));
-    print(response.data);
-    if (response.statusCode == 200) {
-      EmployeeList employeeList =
-          EmployeeList.fromJson(jsonDecode(response.data));
-      Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!);
-    }
-  }
-
   Widget setupAlertDialoadContainer() {
     return Container(
       height: 300.0, // Change as per your requirement
@@ -984,6 +1081,8 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
+  String selectedLeadType = "total";
+
   leadCountCard(
     String title,
     String count,
@@ -992,19 +1091,23 @@ class _LeadDashboard extends State<LeadDashboard> {
     Color bgColor,
   ) {
     return InkWell(
-      onTap: (){
-        if(title=="Pending"){
+      onTap: () {
+        if (title == "Pending") {
           finalLeadData.clear();
           finalLeadData.addAll(pendingLead);
-        }else if(title=="Converted"){
+          selectedLeadType = "pending";
+        } else if (title == "Converted") {
           finalLeadData.clear();
           finalLeadData.addAll(convertedLead);
-        }else if(title=="Rejected"){
+          selectedLeadType = "converted";
+        } else if (title == "Rejected") {
           finalLeadData.clear();
           finalLeadData.addAll(rejectedLead);
-        }else{
+          selectedLeadType = "rejected";
+        } else {
           finalLeadData.clear();
           finalLeadData.addAll(leadData);
+          selectedLeadType = "total";
         }
         setState(() {
           isSelected = true;
@@ -1078,29 +1181,15 @@ class _LeadDashboard extends State<LeadDashboard> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent, // <-- SEE HERE
-          title: const Text(''),
-          content: StatefulBuilder(
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  height: 1024.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          child: EditLeadLead(leadData, setState),
-                        ),
-                      )
-                    ],
-                  )),
-            );
+            return EditLeadLead(leadData, setState);
           }),
         );
       },
@@ -1154,19 +1243,19 @@ class _LeadDashboard extends State<LeadDashboard> {
           Center(
               child: InkWell(
                   onTap: () async {
-                    pickFile();
+                    pickFile(stateSetter);
                   },
                   child: imgPath == ''
-                      ? Container(
-                      height: 200.h,
-                      width: 408.w,
-                      alignment: Alignment.center,
-                      child: Image.network(
-                        imgPath,
-                        width: 202.w,
-                      ))
-                      : SvgPicture.asset('assets/upload_profile.svg',
-                      height: 202.h, width: 202.w))),
+                      ? SvgPicture.asset('assets/upload_profile.svg',
+                          height: 202.h, width: 202.w)
+                      : Container(
+                          height: 200.h,
+                          width: 408.w,
+                          alignment: Alignment.center,
+                          child: Image.network(
+                            imgPath,
+                            width: 202.w,
+                          )))),
           SizedBox(height: 16.h),
           _buildTextField(
               'Company Name', 'Please Comapny name', _editnameController),
@@ -1193,12 +1282,8 @@ class _LeadDashboard extends State<LeadDashboard> {
           _buildTextField(
               'Phone', 'Please enter your phone number', _editphoneController),
           SizedBox(height: 16.h),
-          // _buildTextField('Name Coordinator', _coordinatorController),
-          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Source Of Lead', 'Please select', _editsourceofleadController),
-
+          _buildDropdownField('Source Of Lead', 'Please select',
+              _sourceofleadController, stateSetter),
           SizedBox(height: 16.h),
           _buildTextField('typeOfBusiness', "Enter type of business",
               _edittypeOfBusinessController),
@@ -1237,6 +1322,8 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   void submitEditForm(LeadData leadData) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     LoginDeatils loginDeatils =
         await LocalSharePreferences.localSharePreferences.getLoginData();
     String name = _editnameController.text.toString();
@@ -1257,8 +1344,11 @@ class _LeadDashboard extends State<LeadDashboard> {
     Dio dio = Dio();
     //try{
     var response = await dio.put(ApiConstant.UPDATE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
-        'Authorization': 'Bearer ${ApiConstant.token}',}));
+        data: jsonEncode(saveEmploye.toJson()),
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print('the body ${response.data}');
     if (response.statusCode == 200) {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
@@ -1272,9 +1362,12 @@ class _LeadDashboard extends State<LeadDashboard> {
         "description": " Lead Created "
       };
       var para = jsonEncode(parameter);
-      var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
-            'Authorization': 'Bearer ${ApiConstant.token}',}));
+      var leadResponse = await dio.post(ApiConstant.SAVE_LEAD_UPDATe,
+          data: para,
+          options: Options(headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ${token}',
+          }));
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
@@ -1298,6 +1391,8 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   Future<void> callChangeStatusApi(LeadData leadData, Object? value) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     EasyLoading.show(status: "Loading");
     print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
     Map<String, dynamic> parameter = {
@@ -1307,8 +1402,12 @@ class _LeadDashboard extends State<LeadDashboard> {
     print(parameter);
     var data = jsonEncode(parameter);
     Dio dio = Dio();
-    var response = await dio.put(ApiConstant.UPDATE_LEAD_STATUS, data: data,options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${ApiConstant.token}',}));
+    var response = await dio.put(ApiConstant.UPDATE_LEAD_STATUS,
+        data: data,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
@@ -1323,13 +1422,15 @@ class _LeadDashboard extends State<LeadDashboard> {
   Uint8List? imageBytes;
   String? fileName;
 
-  pickFile() async {
+  pickFile(StateSetter stateSetter) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     var result = await FilePicker.platform.pickFiles(
       withReadStream:
           true, // this will return PlatformFile object with read stream
     );
     if (result != null) {
-      setState(() {
+      stateSetter(() {
         objFile = result.files.single;
       });
       try {
@@ -1341,7 +1442,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
         var request = new http.MultipartRequest("POST", postUri);
 
-        Map<String, String> headers = {"Content-Type": "multipart/form-data"};
+        Map<String, String> headers = {"Content-Type": "multipart/form-data",'Authorization': 'Bearer ${token}'};
         request.files.add(new http.MultipartFile(
             "image1", objFile!.readStream!, objFile!.size,
             filename: objFile!.name));
@@ -1356,8 +1457,8 @@ class _LeadDashboard extends State<LeadDashboard> {
           ImgUploadResponse imgUploadResponse =
               ImgUploadResponse.fromJson(jsonData);
           imgPath = imgUploadResponse.data!;
-          print(imgPath);
-          setState(() {});
+          print("Uploaded Img Path From s3 bucket::" + imgPath);
+          stateSetter(() {});
         });
         print('the response is ${response}');
 

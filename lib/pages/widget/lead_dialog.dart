@@ -48,14 +48,14 @@ class _LeadDialog extends State<LeadDialog>{
               children: [
                 Padding(
                     padding: EdgeInsets.only(top: 20),
-                    child: Text("Find the Employee",style: TextStyle(fontSize: 20),)),
+                    child: Text("Find the Lead",style: TextStyle(fontSize: 20),)),
 
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
                     width: 600.w,
                     child: SearchBar(
-                      hintText: "Enter Employee name",
+                      hintText: "Enter Company name",
                       leading: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image.asset("assets/search.png",height: 20,width: 20,),
@@ -77,16 +77,18 @@ class _LeadDialog extends State<LeadDialog>{
                           padding: const EdgeInsets.all(8.0),
                           child: InkWell(
                             onTap: (){
-                              if(emData[index].lead!.isSelected!){
-                                selectedEmp.add(1);
+                             /* if(emData[index].lead!.isSelected!){
+                                selectedEmp.add(emData[index].lead!.id!);
                                 emData[index].lead!.isSelected=false;
                               }else{
                                 // selectedEmp.remove(emData[index].id!);
                                 emData[index].lead!.isSelected=true;
-                              }
-                              selectedEmp.add(1);
+                              }*/
+                              emData.forEach((element) {element.lead!.isSelected!=false; });
+                              emData[index].lead!.isSelected=true;
+                              selectedEmp.add(emData[index].lead!.id!);
+                              print(selectedEmp);
                               setState(() {
-
                               });
                             },
                             child: ListTile(
