@@ -51,7 +51,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
                   ),
                   child: Column(
                     children: [
-                      Text("Head Count Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+                      Text("Employee Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
                       SizedBox(height: 30,),
                       barChart(),
                     ],
@@ -67,7 +67,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
                   ),
                   child: Column(
                     children: [
-                      Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+                      Text("Customer Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
                       SizedBox(height: 30,),
                       pieChart(),
                     ],
@@ -79,7 +79,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
               children: [
                 Column(
                   children: [
-                    Text("Head Count Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
+                    Text("Employee Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
                     SizedBox(height: 30,),
                     barChart(),
                   ],
@@ -87,7 +87,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
 
                 Column(
                   children: [
-                    Text("Recruiting Reort",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
+                    Text("Customer Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
                     SizedBox(height: 30.h,),
                     pieChart(),
                   ],
@@ -98,7 +98,7 @@ class _ReportDataScreen extends State<ReportDataScreen>{
             SizedBox(height: 30.h,),
             Padding(
               padding: EdgeInsets.only(left: 20.0.w),
-              child: Text("Performance Mangment Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
+              child: Text("Lead Management Report",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 25.sp),),
             ),
             SizedBox(height: 20,),
             linerChart()
@@ -127,19 +127,19 @@ class _ReportDataScreen extends State<ReportDataScreen>{
           // add bars
           barGroups: [
             BarChartGroupData(x: 1, barRods: [
-              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse("30.0"), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 2, barRods: [
-              BarChartRodData(toY: double.parse(reportData!.lead![0].count.toString()), width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse("22"), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 3, barRods: [
-              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse("12"), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 4, barRods: [
-              BarChartRodData(toY: double.parse(reportData!.lead![0].count.toString()), width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse("5"), width: 15, color: Colors.amber),
             ]),
             BarChartGroupData(x: 5, barRods: [
-              BarChartRodData(toY: double.parse(reportData!.employee![0].count.toString()), width: 15, color: Colors.amber),
+              BarChartRodData(toY: double.parse('45'), width: 15, color: Colors.amber),
             ]),
 
           ])),

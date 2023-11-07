@@ -6,6 +6,7 @@ class CreateMeeting {
   List<int>? employeeId;
   int? leadId;
   String? meetingLink;
+  String? status;
   String? time;
   String? title;
   int? id;
@@ -20,6 +21,7 @@ class CreateMeeting {
         this.employeeId,
         this.leadId,
         this.meetingLink,
+        this.status,
         this.time,
         this.title});
 
@@ -32,6 +34,7 @@ class CreateMeeting {
     employeeId = json['employeeId'].cast<int>();
     leadId = json['leadId'];
     meetingLink = json['meetingLink'];
+    status = json['status'];
     time = json['time'];
     title = json['title'];
   }
@@ -46,6 +49,7 @@ class CreateMeeting {
     data['employeeId'] = this.employeeId;
     data['leadId'] = this.leadId;
     data['meetingLink'] = this.meetingLink;
+    data['status'] = this.status;
     data['time'] = this.time;
     data['title'] = this.title;
     return data;

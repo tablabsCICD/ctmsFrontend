@@ -4,10 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/response/lead_assign.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -79,16 +81,16 @@ class _AssignProject extends State<AssignProject>{
     return Container(
       width: 1362.w,
       height: 125.h,
+      padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(0.r),
         ),
       ),
 
       child: Center(
         child: ListTile(
-
           leading: getImage('${listLeadActivityData[index].addLogo}',height: 30.h,width: 30.w),
           title: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -137,12 +139,17 @@ class _AssignProject extends State<AssignProject>{
 
   void callGetApi()async {
     try{
+      String token = await LocalSharePreferences()
+          .getString(SharedPreferencesConstant.AuthToken);
       Dio dio=Dio();
       EasyLoading.show(status: "Loading");
-      var response=await dio.get(ApiConstant.ASSIGN_PROJECT(widget.id));
+      var response=await dio.get(ApiConstant.ASSIGN_PROJECT(widget.id),options: Options(headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ${token}',
+      }));
       print('the lead is ${response.data}');
       if(response.statusCode==200){
-        LeadAssign leadActivity =LeadAssign.fromJson(jsonDecode(response.data));
+        LeadAssignModel leadActivity =LeadAssignModel.fromJson(jsonDecode(response.data));
         listLeadActivityData.addAll(leadActivity.data!);
         setState(() {
 

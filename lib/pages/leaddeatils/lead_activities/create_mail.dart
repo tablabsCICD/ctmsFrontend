@@ -4,10 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/calender_widget.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,6 +17,10 @@ import '../../../common/app_colors.dart';
 import '../../../utils/constant.dart';
 
 class CreateMail extends StatefulWidget {
+  bool onlyMail;
+
+
+  CreateMail({Key? key, required this.onlyMail}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _CreateMail();
@@ -32,11 +38,12 @@ class _CreateMail extends State<CreateMail>{
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: widget.onlyMail==true?570.w: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+         widget.onlyMail==true?SizedBox.shrink() :Container(
             height: 848.h,
             width: 361.w,
             decoration: BoxDecoration(
@@ -90,7 +97,7 @@ class _CreateMail extends State<CreateMail>{
               ],
             ),
           ),
-          SizedBox(width: 48.w,),
+          widget.onlyMail==true?SizedBox.shrink() : SizedBox(width: 48.w,),
           Column(
             children: [
               Container(
@@ -109,6 +116,7 @@ class _CreateMail extends State<CreateMail>{
 
                 child: Row(
                   children: [
+                    widget.onlyMail==true?IconButton(onPressed: (){Navigator.of(context).pop();}, icon: Icon(Icons.arrow_back,color: Colors.white,)):SizedBox.shrink(),
                     Text(
                       'Create email',
                       style: TextStyle(
@@ -139,8 +147,8 @@ class _CreateMail extends State<CreateMail>{
               )
             ],
           ),
-          SizedBox(width: 60.w,),
-          Container(
+          widget.onlyMail==true?SizedBox.shrink() : SizedBox(width: 60.w,),
+          widget.onlyMail==true?SizedBox.shrink() : Container(
               height: 439.h,
               width: 382.w,
               child: CalendarWidget()),
@@ -231,7 +239,8 @@ class _CreateMail extends State<CreateMail>{
   }
 
   void callAPI() async{
-
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     EasyLoading.show(status: "Loading");
     Map<String,dynamic> parameter={
       "emailId": toNameController.text,
@@ -242,7 +251,11 @@ class _CreateMail extends State<CreateMail>{
     var data= jsonEncode(parameter);
     Dio dio=Dio();
     print(ApiConstant.CREATE_MAIL);
-    var response=await dio.post(ApiConstant.CREATE_MAIL+"?emailId=${toNameController.text}&subject=${subjectController.text}&message=${mailController.text}");
+    var response=await dio.post(ApiConstant.CREATE_MAIL+"?emailId=${toNameController.text}&subject=${subjectController.text}&message=${mailController.text}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
@@ -251,7 +264,6 @@ class _CreateMail extends State<CreateMail>{
       mailController.clear();
       subjectController.clear();
       setState(() {
-
       });
     }
 

@@ -21,7 +21,7 @@ class LeadProvider extends BaseProvider{
     final response = await dio.get(ApiConstant.GET_ALL_LEAD);
     print(response.data);
     if(response.statusCode==200){
-      LeadList employeeList =LeadList.fromJson(jsonDecode(response.data));
+      LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));
       emData.addAll(employeeList.data! as Iterable<LeadData>);
     }else{
       ToastMessage.show(context,"Please Try Again");

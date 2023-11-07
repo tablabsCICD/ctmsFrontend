@@ -76,265 +76,267 @@ class _BuySellListState extends State<BuySellList> {
       body: Consumer<OrgProvider>(
           builder: (context, model, child) => Padding(
             padding: EdgeInsets.symmetric(horizontal: 29.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 60,
-                      child: Padding(
-                        padding: ResponsiveWidget.isDesktop(context)
-                            ? EdgeInsets.symmetric(horizontal: 0, vertical: 10)
-                            : EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                        child: Row(
-                          children: [
-                            getCircularContainer(
-                                "Buy Vehicles", (selectedTab == "Buy Vehicles"), 0),
-                            getCircularContainer(
-                                "Sell Vehicles", (selectedTab == "Sell Vehicles"), 1),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 60,
+                        child: Padding(
+                          padding: ResponsiveWidget.isDesktop(context)
+                              ? EdgeInsets.symmetric(horizontal: 0, vertical: 10)
+                              : EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                          child: Row(
+                            children: [
+                              getCircularContainer(
+                                  "Buy Vehicles", (selectedTab == "Buy Vehicles"), 0),
+                              getCircularContainer(
+                                  "Sell Vehicles", (selectedTab == "Sell Vehicles"), 1),
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                  ],
-                ),
-                SizedBox(height:10.h),
-                Container(
-                  height: 513.h,
-                  width: 1052.w,
-                  padding: EdgeInsets.all(29),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                    color: Colors.white
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset('assets/org/logo_iveco.png',height: 24.h,width: 126.w,),
-                              TextView(
-                                title: 'Truck_80E190',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                                fontSize: 25.sp,
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              InkWell(onTap: (
-
-
-                                  ){
-                              },child: getIconData('assets/call.svg','Phone',onTap:(){
-
-                              }),),
-                              getIconData('assets/mail.svg','Email',onTap:(){
-
-                              }),
-                              SizedBox(width: 5.w,),
-                              SizedBox(
-                                width: 119.w,
-                                height: 40.h,
-                                child: ElevatedButton(
-                                  onPressed: (){
-
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    primary: ThemeColor.theme_blue,
-                                    onPrimary: Colors.white,
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
-                                  ),
-                                  child: TextView(
-                                    title: "Buy Now",
-                                    fontSize:15.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xffffffff),
-                                  ),
-                                ),
-                              ),
-                              getIconData('assets/more_icon.svg','more',onTap:(){
-
-                              }),
-                            ],
-                          )
-                        ],
-                      ),
-                      SizedBox(height:10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width:120.w,
-                            height: 250.h,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                getCard('Engine Power','254 kW'),
-                                SizedBox(height: 17.h,),
-                                getCard('Transmission','Manual'),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 18.w,),
-                          SizedBox(
-                            width:120.w,
-                            height: 250.h,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                getCard('Drive Type','6 X4'),
-                                SizedBox(height: 17.h,),
-                                getCard('Weight','8t'),
-                              ],
-                            ),
-                          ),
-                          Image.asset('assets/org/cargo_truck.png',height: 286.h,width: 720.w,),
-                        ],
-                      )
                     ],
                   ),
-                ),
-                SizedBox(height:34.h),
-                Row(
-                  mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextView(
-                      title:'All Trucks',
-        color: Colors.black,
-        fontSize: 22.sp,
-        fontWeight: FontWeight.w600,
-                    ) ,
-                     Row(
-                       children: [
-                         filterIconButton(),
-                         SizedBox(width: 10.w,),
-                         TextView(
-                           title:'View All',
-                           color: ThemeColor.theme_blue,
-                           fontSize: 18.sp,
-                           fontWeight: FontWeight.w400,
-                         ) ,
-                       ],
-                     )
-                  ],
-                ),
-               SizedBox(height:10.h),
-               model.orgBuySellList.isEmpty && model.isLoading == false
-                    ? Expanded(
-                    child: Container(
-                        height: MediaQuery.of(context).size.height - 200,
-                        child: Center(
-                            child: Text(
-                              "No Record Found",
-                              style: Style.heading,
-                            ))))
-                    : Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 39.w, vertical: 31.h),
-                    child: StaggeredGridView.countBuilder(
-                      controller: _scrollController,
-                      physics: ScrollPhysics(),
-                      crossAxisCount: ResponsiveWidget.isDesktop(context)
-                          ? 2
-                          : ResponsiveWidget.isMobile(context)
-                          ? 1
-                          : 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 12,
-                      itemCount: 2,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
+                  SizedBox(height:10.h),
+                  Container(
+                    height: 513.h,
+                    width: 1052.w,
+                    padding: EdgeInsets.all(29),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: Colors.white
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset('assets/org/logo_iveco.png',height: 24.h,width: 126.w,),
+                                TextView(
+                                  title: 'Truck_80E190',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 25.sp,
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                InkWell(onTap: (
 
-                          },
-                          child: Card(
-                            elevation: 5,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
+
+                                    ){
+                                },child: getIconData('assets/call.svg','Phone',onTap:(){
+
+                                }),),
+                                getIconData('assets/mail.svg','Email',onTap:(){
+
+                                }),
+                                SizedBox(width: 5.w,),
+                                SizedBox(
+                                  width: 119.w,
+                                  height: 40.h,
+                                  child: ElevatedButton(
+                                    onPressed: (){
+
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: ThemeColor.theme_blue,
+                                      onPrimary: Colors.white,
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
+                                    ),
+                                    child: TextView(
+                                      title: "Buy Now",
+                                      fontSize:15.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xffffffff),
+                                    ),
+                                  ),
+                                ),
+                                getIconData('assets/more_icon.svg','more',onTap:(){
+
+                                }),
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(height:10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width:120.w,
+                              height: 250.h,
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Image.asset('assets/org/cargo_truck.png',height: 129.h,width: 335.w,),
-                                      Text(
-                                        'Iveco 80E190',
-                                        style:TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20.sp,
-                                          fontFamily: GoogleFonts.poppins().fontFamily,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        'KA-05-AH-5390 | 25.0 Tonnes',
-                                        style:TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15.sp,
-                                          fontFamily: GoogleFonts.poppins().fontFamily,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Current Location',
-                                        style:TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15.sp,
-                                          fontFamily: GoogleFonts.poppins().fontFamily,
-                                          fontWeight: FontWeight.w300,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.location_on_outlined,size: 16,),
-                                          Text(
-                                            'Bangalore, KA',
-                                            style:TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15.sp,
-                                              fontFamily: GoogleFonts.poppins().fontFamily,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-
-
+                                  getCard('Engine Power','254 kW'),
+                                  SizedBox(height: 17.h,),
+                                  getCard('Transmission','Manual'),
                                 ],
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      //  physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                            SizedBox(width: 18.w,),
+                            SizedBox(
+                              width:120.w,
+                              height: 250.h,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  getCard('Drive Type','6 X4'),
+                                  SizedBox(height: 17.h,),
+                                  getCard('Weight','8t'),
+                                ],
+                              ),
+                            ),
+                            Image.asset('assets/org/cargo_truck.png',height: 286.h,width: 720.w,),
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                ),
-                getLoader(model.isLoading)
-              ],
+                  SizedBox(height:34.h),
+                  Row(
+                    mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextView(
+                        title:'All Trucks',
+        color: Colors.black,
+        fontSize: 22.sp,
+        fontWeight: FontWeight.w600,
+                      ) ,
+                       Row(
+                         children: [
+                           filterIconButton(),
+                           SizedBox(width: 10.w,),
+                           TextView(
+                             title:'View All',
+                             color: ThemeColor.theme_blue,
+                             fontSize: 18.sp,
+                             fontWeight: FontWeight.w400,
+                           ) ,
+                         ],
+                       )
+                    ],
+                  ),
+                 SizedBox(height:10.h),
+                 /*model.orgBuySellList.isEmpty && model.isLoading == false
+                      ? Expanded(
+                      child: Container(
+                          height: MediaQuery.of(context).size.height - 200,
+                          child: Center(
+                              child: Text(
+                                "No Record Found",
+                                style: Style.heading,
+                              ))))
+                      : */Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 39.w, vertical: 31.h),
+                      child: StaggeredGridView.countBuilder(
+                        controller: _scrollController,
+                        physics: ScrollPhysics(),
+                        crossAxisCount: ResponsiveWidget.isDesktop(context)
+                            ? 2
+                            : ResponsiveWidget.isMobile(context)
+                            ? 1
+                            : 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 12,
+                        itemCount: 2,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+
+                            },
+                            child: Card(
+                              elevation: 5,
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Image.asset('assets/org/cargo_truck.png',height: 129.h,width: 335.w,),
+                                        Text(
+                                          'Iveco 80E190',
+                                          style:TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20.sp,
+                                            fontFamily: GoogleFonts.poppins().fontFamily,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          'KA-05-AH-5390 | 25.0 Tonnes',
+                                          style:TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15.sp,
+                                            fontFamily: GoogleFonts.poppins().fontFamily,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Current Location',
+                                          style:TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15.sp,
+                                            fontFamily: GoogleFonts.poppins().fontFamily,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.location_on_outlined,size: 16,),
+                                            Text(
+                                              'Bangalore, KA',
+                                              style:TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15.sp,
+                                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        //  physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                      ),
+                    ),
+                  ),
+                  //getLoader(model.isLoading)
+                ],
+              ),
             ),
           )),
     );

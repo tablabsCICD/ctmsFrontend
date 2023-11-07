@@ -122,7 +122,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
               //  Navigator.restorablePushReplacementNamed(context,AppRoutes.meeting);
               },
             ),
-            DrawerListTile(
+            /*DrawerListTile(
               isSelect: isDiscussion,
               title: "Discussion",
               icon: "assets/org/discussion.svg",
@@ -138,10 +138,10 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 Navigator.of(context).restorablePush((context, arguments) => MaterialPageRoute(builder: (builder)=>CompDiscussionScreen(organization[0])));
                // Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
               },
-            ),
+            ),*/
             DrawerListTile(
               isSelect: isBid,
-              title: "Bid",
+              title: "Quote",
               icon: "assets/org/bid.svg",
               press: () {
                 isDashbord=false;

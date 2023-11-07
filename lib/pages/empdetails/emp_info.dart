@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/create_mail.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -92,7 +93,7 @@ class _EmpInfo extends State<EmpInfo> {
               Container(
                 padding: EdgeInsets.all(30.r),
                 width: 1362.w,
-                height: 320.h,
+                height: 350.h,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white),
@@ -130,9 +131,45 @@ class _EmpInfo extends State<EmpInfo> {
                         Spacer(),
                         icons(Images.add_circle),
                         SizedBox(width: 19.w,),
-                        icons(Images.call),
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => new CupertinoAlertDialog(
+                                  title: Text(
+                                      'Contact Number : ${widget.empData.mobileNumber}',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.all(10.0),
+                                        child: Text('Ok',
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 18)),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ));
+                          },
+                          child:
+                          icons(Images.call),
+                        ),
                         SizedBox(width: 19.w,),
-                        icons(Images.mail_black),
+                        InkWell(
+                          onTap: () {
+                            _showMailAlertDialog();
+                          },
+                          child:
+                          icons(Images.mail_black),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -230,7 +267,7 @@ class _EmpInfo extends State<EmpInfo> {
                         },
                         child: tab(isActivity, "Assign Lead")),
                     Container(
-                      transform: Matrix4.translationValues(-80.w, 0, 0.0),
+                      //transform: Matrix4.translationValues(-80.w, 0, 0.0),
                       child: InkWell(
                           onTap: () {
                             isActivity = false;
@@ -243,7 +280,7 @@ class _EmpInfo extends State<EmpInfo> {
                           child: tab(isCreateMail, "Customer Acquisition")),
                     ),
                     Container(
-                      transform: Matrix4.translationValues(-160.w, 0, 0.0),
+                     // transform: Matrix4.translationValues(-160.w, 0, 0.0),
                       child: InkWell(
                           onTap: () {
                             isActivity = false;
@@ -274,33 +311,57 @@ class _EmpInfo extends State<EmpInfo> {
     );
   }
 
+  Future<void> _showMailAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.center,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return CreateMail(
+                  onlyMail: true,
+                );
+              }),
+        );
+      },
+    );
+  }
   tab(bool isSelect, String title) {
     return Container(
-      width: 450.w,
+      width: 350.w,
       height: 90.h,
       child: Stack(
         children: <Widget>[
           SvgPicture.asset(
             Images.red_arrow,
             alignment: Alignment.center,
-            width: 450.w,
+            width: 350.w,
             height: 90.h,
             color: isSelect ? Color(0xffC3262C) : Colors.white,
           ),
           // Container(
           //     transform: Matrix4.translationValues(-24.w, 0, 0.0),
           //     child: SvgPicture.asset("assets/back_arrow.svg")),
-          Container(
-            transform: Matrix4.translationValues(-30.w, 0, 0.0),
-            height: 78.h,
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: isSelect ? Colors.white : Colors.black,
-                  fontSize: 20.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w500,
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              transform: Matrix4.translationValues(-30.w, 0, 0.0),
+              height: 78.h,
+              child: Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: isSelect ? Colors.white : Colors.black,
+                    fontSize: 20.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),

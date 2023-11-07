@@ -166,12 +166,12 @@ class _LeadDialog extends State<LeadDialog>{
 
   Future<void> ApiGetData() async{
 
-    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD);
+    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD+"?page=0&size=10&sortBy=id&sortDir=asc");
     if(response.status==200){
-      LeadList employeeList =LeadList.fromJson(response.response);
+      LeadListResponse employeeList =LeadListResponse.fromJson(response.response);
       //emData=employeeList.data!;
-      emData.addAll(employeeList.data! as Iterable<LeadData>);
-      temData.addAll(employeeList.data! as Iterable<LeadData>);
+      emData.addAll(employeeList.data!.detailsWithPage!);
+      temData.addAll(employeeList.data!.detailsWithPage!);
 
       setState(() {
 

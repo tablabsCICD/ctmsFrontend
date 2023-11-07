@@ -23,7 +23,7 @@ class CustomerListData extends StatefulWidget {
 class _LeadListData extends State<CustomerListData> {
 
   List<int>video=[];
-  final List<LeadData>emData=[];
+  final List<LeadData>leadData=[];
   bool isLoad=false;
 
 
@@ -98,13 +98,13 @@ class _LeadListData extends State<CustomerListData> {
 
               /// Table Data
 
-              for (int i=0;i<emData.length;i++)  tableRow(
+              for (int i=0;i<leadData.length;i++)  tableRow(
                 context,
-                name: emData[i].lead!.companyName,
+                name: leadData[i].lead!.companyName,
                 color: Colors.blue,
                 image: "assets/user1.jpg",
-                designation: emData[i].lead!.emailId,
-                status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                designation: leadData[i].lead!.emailId,
+                status: leadData[i].status,
                 ),
 
             ],
@@ -114,7 +114,7 @@ class _LeadListData extends State<CustomerListData> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Showing ${emData.length} out of ${emData.length} Results"),
+                Text("Showing ${leadData.length} out of ${leadData.length} Results"),
                 Text(
                   "View All",
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -206,9 +206,9 @@ class _LeadListData extends State<CustomerListData> {
     final response = await dio.get(ApiConstant.GET_ALL_LEAD);
     print(response.data);
     if(response.statusCode==200){
-      LeadList employeeList =LeadList.fromJson(jsonDecode(response.data));
-      emData.addAll(employeeList.data! as Iterable<LeadData>);
-      print('this is ${emData.length}');
+      LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));
+      leadData.addAll(employeeList.data! as Iterable<LeadData>);
+      print('this is ${leadData.length}');
       isLoad=false;
       setState(() {
 

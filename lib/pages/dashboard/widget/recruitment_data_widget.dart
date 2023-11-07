@@ -234,12 +234,12 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
     //
     // });
     final dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll");
+    final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getByPages?page=0&size=10");
     print(response.data);
     if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+      EmployeeListResponse employeeList =EmployeeListResponse.fromJson(jsonDecode(response.data));
       //emData=employeeList.data!;
-      emData.addAll(employeeList.data!);
+      emData.addAll(employeeList.data!.content!);
       print('this is ${emData.length}');
       setState(() {
 

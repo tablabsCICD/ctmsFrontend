@@ -15,16 +15,16 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../common/app_colors.dart';
 import '../../model/request/update_emp.dart';
 
-class AddEmployee extends StatefulWidget {
+class EditEmployee extends StatefulWidget {
   final EmpData empData;
 
-  const AddEmployee({Key? key, required this.empData}) : super(key: key);
+  const EditEmployee({Key? key, required this.empData}) : super(key: key);
 
   @override
-  _AddEmployeeState createState() => _AddEmployeeState();
+  _EditEmployeeState createState() => _EditEmployeeState();
 }
 
-class _AddEmployeeState extends State<AddEmployee> {
+class _EditEmployeeState extends State<EditEmployee> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -53,6 +53,7 @@ class _AddEmployeeState extends State<AddEmployee> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 400.w,
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
@@ -167,20 +168,17 @@ class _AddEmployeeState extends State<AddEmployee> {
     String addLead = _addLeadController.text.toString();
     String lastName=_lastnameController.text.toString();
     UpdateEMP saveEmploye=UpdateEMP();
-    saveEmploye.image = widget.empData.image;
     saveEmploye.firstName=name;
-    saveEmploye.isActive=widget.empData.isActive;
     saveEmploye.lastName=lastName;
-    saveEmploye.os="Web";
     saveEmploye.emailId=email;
     saveEmploye.address=addLead;
     saveEmploye.mobileNumber=phone;
     saveEmploye.id=widget.empData.id;
-    //saveEmploye.=widget.empData.role!.id!;
-
+    print(saveEmploye.toJson());
     Dio dio=Dio();
     var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
+    print(response);
     if(response.statusCode==200){
       ToastMessage.show(context, "Emp Edit Success");
       Navigator.pop(context);

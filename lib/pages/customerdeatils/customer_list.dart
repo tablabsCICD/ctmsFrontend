@@ -8,7 +8,6 @@ import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/post_lead.dart';
-import 'package:flutter_hr_management/pages/customerdeatils/customer_info.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
@@ -113,7 +112,7 @@ class _LeadDashboard extends State<CustomerList> {
                 Spacer(),
                 Row(
                   children: [
-                    filterIconButton(),
+                    filterIcon(),
                     SizedBox(
                       width: 27.w,
                     ),
@@ -579,16 +578,16 @@ class _LeadDashboard extends State<CustomerList> {
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER,options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?page=0&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if (response.statusCode == 200) {
-      CustomerListModel employeeList =
-          CustomerListModel.fromJson(jsonDecode(response.data));
+      CustomerListResponse employeeList =
+          CustomerListResponse.fromJson(jsonDecode(response.data));
       customerList.clear();
       finalCustomerList.clear();
-      customerList.addAll(employeeList.data!);
-      finalCustomerList.addAll(employeeList.data!);
+      customerList.addAll(employeeList.data!.content!);
+      finalCustomerList.addAll(employeeList.data!.content!);
       print('this is ${finalCustomerList.length}');
       isLoad = false;
       setState(() {});
@@ -676,6 +675,68 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
+  filterIcon() {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('Sort By Name A to Z',0),
+                  _buildPopupMenu('Sort By Name Z to A',1),
+                ],
+              ),
+              Text(
+                "Filter",
+                style:TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title, int? id,
+      ) {
+    return PopupMenuItem(
+      child: Text(title),
+      onTap: (){
+        if(id==0) {
+          finalCustomerList.sort((b, a) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        }else{
+          finalCustomerList.sort((a, b) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        }
+      },
+    );
+  }
+
   getAllEmployee() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
@@ -684,10 +745,10 @@ class _LeadDashboard extends State<CustomerList> {
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if (response.statusCode == 200) {
-      EmployeeList employeeList =
-          EmployeeList.fromJson(jsonDecode(response.data));
+      EmployeeListResponse employeeList =
+          EmployeeListResponse.fromJson(jsonDecode(response.data));
       Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!);
+      Constants.allEmployee.addAll(employeeList.data!.content!);
     }
   }
 

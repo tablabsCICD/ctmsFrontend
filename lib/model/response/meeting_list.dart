@@ -1,11 +1,11 @@
-class MeetingList {
+class MeetingListResponse {
   String? message;
   List<MeetingData>? data;
   bool? success;
 
-  MeetingList({this.message, this.data, this.success});
+  MeetingListResponse({this.message, this.data, this.success});
 
-  MeetingList.fromJson(Map<String, dynamic> json) {
+  MeetingListResponse.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['data'] != null) {
       data = <MeetingData>[];
@@ -34,6 +34,7 @@ class MeetingData {
   String? meetingLink;
   String? date;
   String? time;
+  String? status;
   String? description;
   String? employeeId;
   bool? active;
@@ -46,6 +47,7 @@ class MeetingData {
         this.meetingLink,
         this.date,
         this.time,
+        this.status,
         this.description,
         this.employeeId,
         this.active,
@@ -58,6 +60,7 @@ class MeetingData {
     meetingLink = json['meetingLink'];
     date = json['date'];
     time = json['time'];
+    status = json['status'];
     description = json['description'];
     employeeId = json['employeeId'];
     active = json['active'];
@@ -76,6 +79,7 @@ class MeetingData {
     data['meetingLink'] = this.meetingLink;
     data['date'] = this.date;
     data['time'] = this.time;
+    data['status'] = this.status;
     data['description'] = this.description;
     data['employeeId'] = this.employeeId;
     data['active'] = this.active;

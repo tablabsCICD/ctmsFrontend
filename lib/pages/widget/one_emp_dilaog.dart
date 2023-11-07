@@ -102,7 +102,7 @@ class _EmpDialogOne extends State<EmpDialogOne>{
                                 children: [
                                   CircleAvatar(
                                       radius: 30.r,
-                                      backgroundImage: NetworkImage(emData[index].image!)
+                                      backgroundImage: NetworkImage(emData[index].image==''?'https://tablabs-images.s3.ap-south-1.amazonaws.com/1699264942004-profile.png':emData[index].image=="string"?'https://tablabs-images.s3.ap-south-1.amazonaws.com/1699264942004-profile.png':emData[index].image!)
                                   ),
                                   SizedBox(width: 10,),
                                   Text(emData[index].firstName!+" "+emData[index].lastName!,style: TextStyle(color: Colors.black),),
@@ -172,12 +172,12 @@ class _EmpDialogOne extends State<EmpDialogOne>{
 
   Future<void> ApiGetData() async{
 
-    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_EMPLOYEE);
+    var response = await ApiHelper().apiGet(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10");
     if(response.status==200){
-      EmployeeList employeeList =EmployeeList.fromJson(response.response);
+      EmployeeListResponse employeeList =EmployeeListResponse.fromJson(response.response);
       //emData=employeeList.data!;
-      emData.addAll(employeeList.data!);
-      temData.addAll(employeeList.data!);
+      emData.addAll(employeeList.data!.content!);
+      temData.addAll(employeeList.data!.content!);
 
       setState(() {
 

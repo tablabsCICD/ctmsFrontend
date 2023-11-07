@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
@@ -302,20 +304,24 @@ class _DashboardState extends State<Dashboard> {
 
 
   Future<void> ApiGetData(String URL) async{
+    EasyLoading.show(status: "Loading");
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getAll"),headers: { "Content-Type": "application/json",
+    print("Token:"+token);
+    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10"),headers: { "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',});
     var response = json.decode(req.body);
     /* final dio = Dio();
     final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${ApiConstant.token}',}));*/
     print(response);
+    EasyLoading.dismiss();
     if(req.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(req.body));
-      emData.addAll(employeeList.data!);
-      finalEmpData.addAll(employeeList.data!);
+      EmployeeListResponse employeeList =EmployeeListResponse.fromJson(jsonDecode(req.body));
+      emData.addAll(employeeList.data!.content!);
+      finalEmpData.addAll(employeeList.data!.content!);
       print('this is ${emData.length}');
+
       setState(() {
       });
     }
@@ -363,12 +369,21 @@ class _DashboardState extends State<Dashboard> {
         child: Center(
           child: Row(
             children: [
-              SvgPicture.asset(
-                Images.filter,
-                height: 19.h,
-                width: 20.w,
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenuItem('Sort By Name A to Z',0),
+                  _buildPopupMenuItem('Sort By Name Z to A',1),
+                ],
               ),
-              SizedBox(width: 8.w,),
               Text(
                 "Filter",
                 style:TextStyle(
@@ -384,4 +399,22 @@ class _DashboardState extends State<Dashboard> {
         ));
   }
 
+  PopupMenuItem _buildPopupMenuItem(
+      String title, int? id,
+      ) {
+    return PopupMenuItem(
+      child: Text(title),
+      onTap: (){
+        if(id==0) {
+          finalEmpData.sort((b, a) => b.firstName!.compareTo(a.firstName!));
+          print('Sort by Name: ' + finalEmpData.toString());
+          setState(() {});
+        }else{
+          finalEmpData.sort((a, b) => b.firstName!.compareTo(a.firstName!));
+          print('Sort by Name: ' + finalEmpData.toString());
+          setState(() {});
+        }
+      },
+    );
+  }
 }

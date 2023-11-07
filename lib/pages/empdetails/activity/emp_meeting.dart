@@ -58,6 +58,7 @@ class _EmpMeeting extends State<EmpMeeting>{
           ),
           SizedBox(height: 20.h,),
          Container(
+           padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
            color: Colors.white,
            child:  listMeeting.length>0?
            Table(
@@ -89,7 +90,7 @@ class _EmpMeeting extends State<EmpMeeting>{
                    time: listMeeting[i].date!+" "+listMeeting[i].time!,
                    guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
 
-                   image: "assets/user1.jpg",
+                   image: listMeeting[i].createdMettingBy!.image,
                    meetinglink: listMeeting[i].meetingLink,
                    title: listMeeting[i].title,
                    index: i
@@ -174,7 +175,7 @@ class _EmpMeeting extends State<EmpMeeting>{
   getMeetingData()async {
     var response= await ApiHelper().apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(widget.id));
     if(response.status==200){
-      MeetingList meetingList=MeetingList.fromJson(response.response);
+      MeetingListResponse meetingList=MeetingListResponse.fromJson(response.response);
       listMeeting.addAll(meetingList.data!);
       setState(() {
 

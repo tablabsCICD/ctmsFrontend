@@ -199,12 +199,12 @@ class _EmpListData extends State<EmpListData> {
 
     });
     final dio = Dio();
-    final response = await dio.get("http://ec2-43-205-143-58.ap-south-1.compute.amazonaws.com:8080/crm/Employee/getAll");
+    final response = await dio.get("http://ec2-43-205-143-58.ap-south-1.compute.amazonaws.com:8080/crm/Employee/getByPages?page=0&size=10");
     print(response.data);
     if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+      EmployeeListResponse employeeList =EmployeeListResponse.fromJson(jsonDecode(response.data));
       //emData=employeeList.data!;
-      emData.addAll(employeeList.data!);
+      emData.addAll(employeeList.data!.content!);
       print('this is ${emData.length}');
       isLoad=false;
       setState(() {

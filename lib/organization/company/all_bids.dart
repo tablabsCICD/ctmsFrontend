@@ -51,7 +51,7 @@ class _BidListState extends State<BidList> {
               mainAxisAlignment:MainAxisAlignment.spaceBetween,
               children: [
                 TextView(
-                  title:'Total Bids : 54',
+                  title:'Total Quote : 2',
                   color: Colors.black,
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w600,
@@ -101,7 +101,7 @@ class _BidListState extends State<BidList> {
                       tableHeader("Material"),
                       tableHeader("Routes"),
                       tableHeader("Km"),
-                      tableHeader("Total Bids"),
+                      tableHeader("Total Quotes"),
                       tableHeader("Best Match"),
                       tableHeader("End Time"),
                       tableHeader("Status"),
@@ -112,14 +112,14 @@ class _BidListState extends State<BidList> {
                   for (int i=0;i<2/*model.orgBigingList.length*/;i++)  tableRow(
                       context,
                       material: 'test',//model.orgBigingList[i].companyName,
-                      route1: 'test',//model.orgBigingList[i].source,
-                      route2: 'test',//model.orgBigingList[i].destination,
-                      km: 'test',//model.orgBigingList[i].mobileNumber,
-                      totalBids: 'test',//model.orgBigingList[i].bidingId,
+                      route1: 'pune',//model.orgBigingList[i].source,
+                      route2: 'nagar',//model.orgBigingList[i].destination,
+                      km: '247',//model.orgBigingList[i].mobileNumber,
+                      totalBids: '4',//model.orgBigingList[i].bidingId,
                       bestMatch:'test',//model.orgBigingList[i].companyName,
                       endtime:'test',//model.orgBigingList[i].postingTime,
-                      status: 'test',//model.orgBigingList[i].description,
-                      price: 'test',//model.orgBigingList[i].amount
+                      status: 'complete',//model.orgBigingList[i].description,
+                      price: '35000',//model.orgBigingList[i].amount
                   ),
 
                 ],
@@ -238,7 +238,7 @@ class _BidListState extends State<BidList> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
               ),
               child: TextView(
-                title: "Bid Now",
+                title: "Quote Now",
                 fontSize:15.sp,
                 fontWeight: FontWeight.w400,
                 color: Color(0xffffffff),

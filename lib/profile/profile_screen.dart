@@ -1,8 +1,21 @@
+import 'dart:convert';
+import 'dart:js';
+import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/model/request/update_emp.dart';
+import 'package:flutter_hr_management/pages/widget/toast.dart';
+import 'package:http/http.dart' as http;
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/create_mail.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,7 +66,38 @@ class _ProfileInfoState extends State<ProfileInfo> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        getImage(loginDeatils.data!.image!,height: 200.h,width: 200.w),
+                        Column(
+                          children: [
+                           // getImage(loginDeatils.data!.image!,height: 200.h,width: 200.w),
+                            CircleAvatar(
+                              radius: 80.0,
+                              backgroundImage:
+                              NetworkImage(imgPath==''?loginDeatils.data!.image.toString():imgPath),
+                              backgroundColor: Colors.transparent,
+                            ),
+                            SizedBox(height: 10.h,),
+                            InkWell(
+                              onTap: (){
+                                pickFile(context,setState);
+                                setState(() {
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(Icons.camera_alt,size: 20,color: Colors.blue,),
+                                  SizedBox(width: 5.w,),
+                                  Text(
+                                    "Edit Profile Image",
+                                    style: TextStyle(color: Colors.blue,
+                                      fontSize: 16.sp,
+                                      fontFamily: GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w500,),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                         SizedBox(
                           width: 20.w,
                         ),
@@ -93,12 +137,44 @@ class _ProfileInfoState extends State<ProfileInfo> {
                     ),
                     Row(
                       children: [
-                        getIconData('assets/call.svg',onTap:(){
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => new CupertinoAlertDialog(
+                                  title: Text(
+                                      'Contact Number : ${loginDeatils.data!.mobileNumber}',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.all(10.0),
+                                        child: Text('Ok',
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 18)),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ));
+                          },
+                          child:
+                          getIconData('assets/call.svg', onTap: () {}),
+                        ),
+                        InkWell(
+                          onTap: (){_showMailAlertDialog(context);},
+                          child:getIconData('assets/mail.svg',onTap:(){
 
-                        }),
-                        getIconData('assets/mail.svg',onTap:(){
+                          }),
+                        )
 
-                        }),
                        /* getIconData('assets/more_icon.svg',onTap:(){
 
                         }),*/
@@ -224,6 +300,84 @@ class _ProfileInfoState extends State<ProfileInfo> {
     );
   }
 
+  String imgPath = '';
+  String documentPath = '';
+  PlatformFile? objFile;
+  Uint8List? imageBytes;
+  String? fileName;
+
+  pickFile(BuildContext context,StateSetter stateSetter) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var result = await FilePicker.platform.pickFiles(
+      withReadStream:
+      true, // this will return PlatformFile object with read stream
+    );
+    if (result != null) {
+      stateSetter(() {
+        objFile = result.files.single;
+      });
+      try {
+        fileName = result.files.first.name;
+        print(result.files.first.toString());
+        imageBytes = result.files.first.bytes;
+        print(fileName);
+        print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
+        var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
+        var request = new http.MultipartRequest("POST", postUri);
+
+        Map<String, String> headers = {"Content-Type": "multipart/form-data",'Authorization': 'Bearer ${token}'};
+        request.files.add(new http.MultipartFile(
+            "image1", objFile!.readStream!, objFile!.size,
+            filename: objFile!.name));
+        request.headers.addAll(headers);
+        var response = await request.send();
+         print(response.statusCode);
+        response.stream.transform(utf8.decoder).listen((value) async {
+          print(value);
+          var jsonData = jsonDecode(value);
+          ImgUploadResponse imgUploadResponse =
+          ImgUploadResponse.fromJson(jsonData);
+          imgPath = imgUploadResponse.data!;
+          await editEmgProfile(context);
+          print("Uploaded Img Path From s3 bucket::" + imgPath);
+          setState(() {
+
+          });
+        });
+        print('the response is ${response}');
+
+        EasyLoading.dismiss();
+        if (response.statusCode == 200) {
+          ToastMessage.show(context, "Image uploaded");
+        }
+      } catch (ex) {
+        throw Exception("Exception Occurred ${ex.toString()}");
+      }
+    }
+  }
+
+  editEmgProfile(BuildContext context) async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    UpdateEMP saveEmploye=UpdateEMP();
+    saveEmploye.firstName=loginDeatils.data!.firstName;
+    saveEmploye.lastName=loginDeatils.data!.lastName;
+    saveEmploye.image = imgPath;
+    saveEmploye.emailId=loginDeatils.data!.emailId;
+    saveEmploye.address=loginDeatils.data!.address;
+    saveEmploye.mobileNumber=loginDeatils.data!.mobileNumber;
+    saveEmploye.id=loginDeatils.data!.id;
+    print(saveEmploye.toJson());
+    Dio dio=Dio();
+    var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    print(response);
+    if(response.statusCode==200){
+      ToastMessage.show(context, "Emp Edit Success");
+    }
+
+  }
   getIconData(String icon, {required  Function() onTap}) {
     return Container(
       height: 54.h,
@@ -235,6 +389,26 @@ class _ProfileInfoState extends State<ProfileInfo> {
           border: icon=="assets/more_icon.svg"?Border(top: BorderSide.none,bottom: BorderSide.none,left: BorderSide.none,right: BorderSide.none):Border.all(color: Colors.black)
       ),
       child: SvgPicture.asset(icon,height: 30.h,width: 30.h,),
+    );
+  }
+
+  Future<void> _showMailAlertDialog(context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.center,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return CreateMail(onlyMail: true,);
+              }),
+        );
+      },
     );
   }
 

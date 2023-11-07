@@ -35,9 +35,9 @@ class RoleData {
   RoleData({this.id, this.name, this.isActive});
 
   RoleData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    isActive = json['isActive'];
+    id = json['id']??0;
+    name = json['name']??'';
+    isActive = json['isActive']??0;
   }
 
   Map<String, dynamic> toJson() {

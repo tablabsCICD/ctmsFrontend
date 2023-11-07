@@ -1,14 +1,20 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/response/img_upload_response.dart';
+import 'package:flutter_hr_management/model/response/lead_activity.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,6 +31,7 @@ import 'lead_activities/create_mail.dart';
 import 'lead_activities/create_reminder.dart';
 import 'lead_activities/lead_activity_list.dart';
 import 'lead_activities/lead_reminder.dart';
+import 'package:http/http.dart' as http;
 
 class LeadInfo extends StatefulWidget {
   LeadData leadData;
@@ -44,6 +51,13 @@ class _LeadInfo extends State<LeadInfo> {
   bool isMeeting = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    callGetApi();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -53,7 +67,9 @@ class _LeadInfo extends State<LeadInfo> {
           child: Column(
             children: [
               HeaderWidget(),
-              SizedBox(height: 26.h,),
+              SizedBox(
+                height: 26.h,
+              ),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),
@@ -81,13 +97,13 @@ class _LeadInfo extends State<LeadInfo> {
                           height: 0,
                         ),
                       ),
-
-
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 25.h,),
+              SizedBox(
+                height: 25.h,
+              ),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 40.h),
@@ -113,7 +129,6 @@ class _LeadInfo extends State<LeadInfo> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white),
                 child: Column(
-
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +138,8 @@ class _LeadInfo extends State<LeadInfo> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            getImage(widget.leadData.lead!.addLogo??'',height: 50.h,width: 50.w),
+                            getImage(widget.leadData.lead!.addLogo ?? '',
+                                height: 57.h, width: 57.w),
                             SizedBox(
                               width: 32.w,
                             ),
@@ -142,28 +158,59 @@ class _LeadInfo extends State<LeadInfo> {
                                     ))
                               ],
                             ),
-
                           ],
                         ),
                         Row(
                           children: [
-                            InkWell(onTap: (
+                            InkWell(
+                              onTap: () {
+                                _showAlertDialog();
+                              },
+                              child:
+                                  getIconData('assets/add.svg', onTap: () {}),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => new CupertinoAlertDialog(
+                                          title: Text(
+                                              'Contact Number : ${widget.leadData.lead!.mobileNumber}',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold)),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Text('Ok',
+                                                    style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 18)),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ));
+                              },
+                              child:
+                                  getIconData('assets/call.svg', onTap: () {}),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _showMailAlertDialog();
+                              },
+                              child:
+                                  getIconData('assets/mail.svg', onTap: () {}),
+                            ),
 
+                            /* getIconData('assets/more_icon.svg',onTap:(){
 
-                                ){
-                              _showAlertDialog();
-                            },child: getIconData('assets/add.svg',onTap:(){
-
-                            }),),
-                            getIconData('assets/call.svg',onTap:(){
-
-                            }),
-                            getIconData('assets/mail.svg',onTap:(){
-
-                            }),
-                            getIconData('assets/more_icon.svg',onTap:(){
-
-                            }),
+                            }),*/
                           ],
                         )
                       ],
@@ -186,9 +233,15 @@ class _LeadInfo extends State<LeadInfo> {
                                 color: Color(0xffEFEFEF),
                                 shape: CircleBorder(),
                               ),
-                              child: SvgPicture.asset(Images.emp_tot,height: 30.h,width: 30.w,),
+                              child: SvgPicture.asset(
+                                Images.emp_tot,
+                                height: 30.h,
+                                width: 30.w,
+                              ),
                             ),
-                            SizedBox(width: 23.w,),
+                            SizedBox(
+                              width: 23.w,
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -197,14 +250,16 @@ class _LeadInfo extends State<LeadInfo> {
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w500,
                                     )),
-                               /* Text(widget.leadData.lead!.leadAssignedTo!.firstName! +" "+
-                                    widget.leadData.lead!.leadAssignedTo!.firstName!+"\n"+widget.leadData.lead!.mobileNumber! +
-                                "\n" +
-                                widget.leadData.lead!.emailId!,
+                                Text(
+                                    widget.leadData.lead!.companyName! +
+                                        "\n" +
+                                        widget.leadData.lead!.mobileNumber! +
+                                        "\n" +
+                                        widget.leadData.lead!.emailId!,
                                     style: TextStyle(
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.w300,
-                                    ))*/
+                                    ))
                               ],
                             ),
                           ],
@@ -225,9 +280,15 @@ class _LeadInfo extends State<LeadInfo> {
                                 color: Color(0xffEFEFEF),
                                 shape: CircleBorder(),
                               ),
-                              child: SvgPicture.asset(Images.location,height: 30.h,width: 30.w,),
+                              child: SvgPicture.asset(
+                                Images.location,
+                                height: 30.h,
+                                width: 30.w,
+                              ),
                             ),
-                            SizedBox(width: 23.w,),
+                            SizedBox(
+                              width: 23.w,
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -262,29 +323,34 @@ class _LeadInfo extends State<LeadInfo> {
                                     color: Color(0xffEFEFEF),
                                     shape: CircleBorder(),
                                   ),
-                                  child: SvgPicture.asset("assets/lead_status.svg",height: 30.h,width: 30.w,),
+                                  child: SvgPicture.asset(
+                                    "assets/lead_status.svg",
+                                    height: 30.h,
+                                    width: 30.w,
+                                  ),
                                 ),
-                                SizedBox(width: 23.w,),
-                                Text("Lead Status",
+                                SizedBox(
+                                  width: 23.w,
+                                ),
+                                Text("Current Lead Status:${widget.leadData.status}",
                                     style: TextStyle(
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w500,
                                     )),
                               ],
                             ),
-
+                            SizedBox(height: 16.h,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Column(
                                   children: [
-                                    Text("10",
+                                    Text("${convertedLeadActivity.length}",
                                         style: TextStyle(
                                             fontSize: 30.sp,
                                             fontWeight: FontWeight.w600,
-                                            color: ThemeColor.red
-                                        )),
+                                            color: ThemeColor.red)),
                                     Text("Converted",
                                         style: TextStyle(
                                           fontSize: 18.sp,
@@ -292,15 +358,16 @@ class _LeadInfo extends State<LeadInfo> {
                                         )),
                                   ],
                                 ),
-                                SizedBox(width: 60.w,),
+                                SizedBox(
+                                  width: 60.w,
+                                ),
                                 Column(
                                   children: [
-                                    Text("25",
+                                    Text("${rejectedLeadActivity.length}",
                                         style: TextStyle(
-                                          fontSize: 30.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: ThemeColor.green
-                                        )),
+                                            fontSize: 30.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: ThemeColor.green)),
                                     Text("Rejected",
                                         style: TextStyle(
                                           fontSize: 18.sp,
@@ -308,15 +375,16 @@ class _LeadInfo extends State<LeadInfo> {
                                         )),
                                   ],
                                 ),
-                                SizedBox(width: 60.w,),
+                                SizedBox(
+                                  width: 60.w,
+                                ),
                                 Column(
                                   children: [
-                                    Text("15",
+                                    Text("${pendingLeadActivity.length}",
                                         style: TextStyle(
                                             fontSize: 30.sp,
                                             fontWeight: FontWeight.w600,
-                                            color: Colors.orange
-                                        )),
+                                            color: Colors.orange)),
                                     Text("Pending",
                                         style: TextStyle(
                                           fontSize: 18.sp,
@@ -328,7 +396,6 @@ class _LeadInfo extends State<LeadInfo> {
                             ),
                           ],
                         ),
-
                       ],
                     )
                   ],
@@ -340,7 +407,7 @@ class _LeadInfo extends State<LeadInfo> {
               ),
 
               Container(
-                padding: EdgeInsets.all(30),
+                padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
                 child: Row(
                   children: [
                     InkWell(
@@ -351,7 +418,7 @@ class _LeadInfo extends State<LeadInfo> {
                           isMeeting = false;
                           setState(() {});
                         },
-                         child: tab(isActivity, "Activities")),
+                        child: tab(isActivity, "Activities")),
                     // InkWell(
                     //     onTap: () {
                     //       isActivity = false;
@@ -384,7 +451,7 @@ class _LeadInfo extends State<LeadInfo> {
                 ),
               ),
               SizedBox(
-                height: 20.h,
+                height: 0.h,
               ),
 
               Visibility(
@@ -394,7 +461,11 @@ class _LeadInfo extends State<LeadInfo> {
                   )),
               Visibility(visible: isReminder, child: LeadReminder()),
               //Visibility(visible:isCreateMail ,child:CreateReminder()),
-              Visibility(visible: isCreateMail, child: CreateMail()),
+              Visibility(
+                  visible: isCreateMail,
+                  child: CreateMail(
+                    onlyMail: false,
+                  )),
               Visibility(
                   visible: isMeeting,
                   child: ListMeeting(
@@ -405,6 +476,54 @@ class _LeadInfo extends State<LeadInfo> {
         ),
       ),
     );
+  }
+
+  List<LeadUpdateData> totalLeadActivity = [];
+  List<LeadUpdateData> convertedLeadActivity = [];
+  List<LeadUpdateData> rejectedLeadActivity = [];
+  List<LeadUpdateData> pendingLeadActivity = [];
+  void callGetApi()async {
+    print("In get activity function");
+    try{
+      Dio dio=Dio();
+      String token = await LocalSharePreferences()
+          .getString(SharedPreferencesConstant.AuthToken);
+      EasyLoading.show(status: "Loading");
+      var response=await dio.get(ApiConstant.GET_ACTIVITY(widget.leadData.lead!.id!),options: Options(headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ${token}',
+      }));
+      print('the activity is ${response.data}');
+      if(response.statusCode==200){
+        LeadActivityModel leadActivity =LeadActivityModel.fromJson(jsonDecode(response.data));
+        totalLeadActivity.addAll(leadActivity.data!);
+        totalLeadActivity.forEach((element) {
+          if (element.status == null) element.status = "pending";
+          totalLeadActivity.add(element);
+          if (element.status!.toLowerCase() == "converted") {
+            convertedLeadActivity.add(element);
+          } else {
+            if (element.status!.toLowerCase() == "pending") {
+              pendingLeadActivity.add(element);
+            } else if (element.status!.toLowerCase() == "rejected") {
+              rejectedLeadActivity.add(element);
+            }
+          }
+        });
+        setState(() {
+
+        });
+
+      }else{
+        ToastMessage.show(context, "Refresh page");
+      }
+
+      EasyLoading.dismiss();
+    }catch(e){
+      EasyLoading.dismiss();
+      print(e);
+    }
+
   }
 
   tab(bool isSelect, String title) {
@@ -420,7 +539,6 @@ class _LeadInfo extends State<LeadInfo> {
             height: 100.h,
             color: isSelect ? Color(0xffC3262C) : Colors.white,
           ),
-
           Container(
             transform: Matrix4.translationValues(-30.w, 0, 0.0),
             height: 100.h,
@@ -438,7 +556,7 @@ class _LeadInfo extends State<LeadInfo> {
           ),
         ],
       ),
-    );/*Container(
+    ); /*Container(
       width: 220.w,
       height: 78.h,
       child: Stack(
@@ -473,64 +591,79 @@ class _LeadInfo extends State<LeadInfo> {
     );*/
   }
 
-  getIconData(String icon, {required  Function() onTap}) {
+  getIconData(String icon, {required Function() onTap}) {
     return Container(
       height: 54.h,
       width: 48.w,
       padding: EdgeInsets.all(7),
       margin: EdgeInsets.all(4),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: icon=="assets/more_icon.svg"?Border(top: BorderSide.none,bottom: BorderSide.none,left: BorderSide.none,right: BorderSide.none):Border.all(color: Colors.black)
+          borderRadius: BorderRadius.circular(10),
+          border: icon == "assets/more_icon.svg"
+              ? Border(
+                  top: BorderSide.none,
+                  bottom: BorderSide.none,
+                  left: BorderSide.none,
+                  right: BorderSide.none)
+              : Border.all(color: Colors.black)),
+      child: SvgPicture.asset(
+        icon,
+        height: 30.h,
+        width: 30.h,
       ),
-      child: SvgPicture.asset(icon,height: 30.h,width: 30.h,),
     );
   }
 
-
+  Future<void> _showMailAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.center,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return CreateMail(
+              onlyMail: true,
+            );
+          }),
+        );
+      },
+    );
+  }
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.transparent,// <-- SEE HERE
-          title: const Text(''),
-          content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-
-            return SingleChildScrollView(
-              child: Container(
-                  color: Colors.transparent,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: Colors.transparent,
-                          width: 408.w,
-                          child: addLead(setState),
-                        ),
-                      )
-                    ],
-                  )
-              ),
-            );
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return addActivity(setState);
           }),
         );
       },
     );
-
-
   }
-  TextEditingController _nameController=TextEditingController();
-  TextEditingController _sourceofleadController=TextEditingController();
-  String selectDate="";
-  int selectedEmp=0;
-  String selectedStatus="Select Status";
-  addLead(StateSetter stateSetter){
+
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _sourceofleadController = TextEditingController();
+  String selectDate = "";
+  int selectedEmp = 0;
+  String selectedStatus = "Select Status";
+
+  String? uploadedLeadDocument;
+  addActivity(StateSetter stateSetter) {
     return Container(
       width: 408.w,
       decoration: BoxDecoration(
@@ -545,8 +678,12 @@ class _LeadInfo extends State<LeadInfo> {
                   onTap: () {
                     Navigator.of(context).pop();
                   },
-                  child: Icon(Icons.arrow_back_ios,size: 16,)),
-              SizedBox(width: 5.w,
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 16,
+                  )),
+              SizedBox(
+                width: 5.w,
               ),
               Text(
                 "Back",
@@ -562,8 +699,7 @@ class _LeadInfo extends State<LeadInfo> {
             child: Text(
               "Fllow Up Lead",
               style: TextStyle(
-                fontFamily:
-                GoogleFonts.poppins().fontFamily,
+                fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,
                 color: AppColor.black,
                 fontSize: 25.sp,
@@ -572,43 +708,49 @@ class _LeadInfo extends State<LeadInfo> {
           ),
           SizedBox(height: 20.h),
           SizedBox(height: 16.h),
-          _buildTextField('Description ','Please Description', _nameController),
+          _buildTextField(
+              'Description ', 'Please Description', _descriptionController),
           SizedBox(height: 16.h),
-
+          _buildText(
+              '${uploadedLeadDocument == null ? "Click here to select Photo" : uploadedLeadDocument}',
+                  () async {
+                pickFile(stateSetter,false);
+              }),
           SizedBox(height: 16.h),
-          _buildText(selectDate.length==0?'Next Followup Date':selectDate,()async{
+          _buildText(selectDate.length == 0 ? 'Next Followup Date' : selectDate,
+              () async {
             selectDate = await DateTimePickerDialog().pickDateDialog(context);
             if (selectDate == null) {
               selectDate = "Next Followup Date";
             }
-            stateSetter(() {
-
-            });
+            stateSetter(() {});
           }),
           SizedBox(height: 16.h),
-          _buildText(selectedEmp==0?'Next Followup By':"Selected one employee", ()async{
-
+          _buildText(
+              selectedEmp == 0 ? 'Next Followup By' : "Selected one employee",
+              () async {
             int list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return EmpDialogOne();
                 });
             // print('the list is ${list}');
-            selectedEmp=list;
+            selectedEmp = list;
             print('the list is$selectedEmp');
             stateSetter(() {
-              selectedEmp=list;
+              selectedEmp = list;
             });
-
           }),
           SizedBox(height: 16.h),
           // _buildTextField('Name Coordinator', _coordinatorController),
           //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
           SizedBox(height: 16.h),
-          _buildTextField('Potential', 'Please Enter potential',_sourceofleadController),
+          _buildTextField(
+              'Potential', 'Please Enter potential', _sourceofleadController),
 
           SizedBox(height: 16.h),
-          Container(
+          _buildDropdownField('Source Of Lead', 'Please select', stateSetter),
+          /* Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(horizontal: 10),
             height: 60.h,
@@ -633,7 +775,7 @@ class _LeadInfo extends State<LeadInfo> {
 
               },
             ),
-          ),
+          ),*/
 
           SizedBox(height: 16.h),
           InkWell(
@@ -649,9 +791,11 @@ class _LeadInfo extends State<LeadInfo> {
               child: Center(
                 child: Text(
                   "Submit",
-                  style: TextStyle(fontSize: 20.sp,fontFamily:
-                  GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500, color: AppColor.white),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.white),
                 ),
               ),
             ),
@@ -661,8 +805,83 @@ class _LeadInfo extends State<LeadInfo> {
     );
   }
 
+  String dropdownvalue = 'Converted';
+  var items = [
+    'Converted',
+    'Pending',
+    'Rejected',
+  ];
 
-
+  Widget _buildDropdownField(
+      String label, String hint, StateSetter stateSetter) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.7),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: DropdownButton(
+                value: dropdownvalue,
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down),
+                borderRadius: BorderRadius.circular(5.0),
+                underline: SizedBox.shrink(),
+                hint: Text(
+                  "Source of Lead",
+                  style: TextStyle(
+                    color: Color(0xff1B1B1B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(
+                        color: Color(0xff1B1B1B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  stateSetter(() {
+                    dropdownvalue = newValue!;
+                    selectedStatus = dropdownvalue;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildText(String label, Function onClick) {
     return InkWell(
@@ -712,28 +931,45 @@ class _LeadInfo extends State<LeadInfo> {
     );
   }
 
-  Widget _buildTextField(String label, String hint,TextEditingController controller) {
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-          child: Text(label,style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300,),),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 10.h,
+        ),
         SizedBox(
           height: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
               controller: controller,
-              style: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w500,),
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 hintText: hint,
-                hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),
+                hintStyle: TextStyle(
+                    color: Color(0xffcccccc),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
               ),
             ),
           ),
@@ -742,37 +978,104 @@ class _LeadInfo extends State<LeadInfo> {
     );
   }
 
-  void _submitForm() async{
+  String imgPath = '';
+  String documentPath = '';
+  PlatformFile? objFile;
+  Uint8List? imageBytes;
+  String? fileName;
 
-    LoginDeatils loginDeatils= await LocalSharePreferences.localSharePreferences.getLoginData();
+  pickFile(StateSetter stateSetter,bool isImg) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var result = await FilePicker.platform.pickFiles(
+      withReadStream:
+      true, // this will return PlatformFile object with read stream
+    );
+    if (result != null) {
+      stateSetter(() {
+        objFile = result.files.single;
+      });
+      try {
+        fileName = result.files.first.name;
+        print(result.files.first.toString());
+        imageBytes = result.files.first.bytes;
+        print(fileName);
+        uploadedLeadDocument = isImg?null:fileName;
+        print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
+        var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
+        var request = new http.MultipartRequest("POST", postUri);
 
-    Dio dio=Dio();
-    Map<String,dynamic> parameter={
-      "date":selectDate,
-      "lead":widget.leadData.lead!.id!,
-      "nextFollowUpBy":selectedEmp,
-      "potential":_sourceofleadController.text,
-      "status":selectedStatus,
-      "updatedByUser":loginDeatils.data!.id,
-      "description":_nameController.text
+        Map<String, String> headers = {"Content-Type": "multipart/form-data",'Authorization': 'Bearer ${token}'};
+        request.files.add(new http.MultipartFile(
+            "image1", objFile!.readStream!, objFile!.size,
+            filename: objFile!.name));
+        /* request.files.add(new http.MultipartFile(
+        "imageFile",filename: objectFile.name));*/
+        request.headers.addAll(headers);
+        var response = await request.send();
+        print(response.statusCode);
+        response.stream.transform(utf8.decoder).listen((value) {
+          print(value);
+          var jsonData = jsonDecode(value);
+          ImgUploadResponse imgUploadResponse =
+          ImgUploadResponse.fromJson(jsonData);
+          if(isImg){
+            imgPath = imgUploadResponse.data!;}else{
+            documentPath = imgUploadResponse.data!;}
+          print("Uploaded Img Path From s3 bucket::" + imgPath+"\ndocumentPath"+documentPath);
+          stateSetter(() {});
+        });
+        print('the response is ${response}');
+
+        EasyLoading.dismiss();
+        if (response.statusCode == 200) {
+          ToastMessage.show(context, "Image uploaded");
+        }
+      } catch (ex) {
+        throw Exception("Exception Occurred ${ex.toString()}");
+      }
+    }
+  }
+
+  void _submitForm() async {
+    LoginDeatils loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    Dio dio = Dio();
+    Map<String, dynamic> parameter = {
+      "date": GetDateFormat.getCurrentDate(),
+      "description": _descriptionController.text,
+      "document": documentPath,
+      "isActive": true,
+      "lead": widget.leadData.lead!.id!,
+      "nextFollowUpBy": selectedEmp,
+      "nextFollowupDate": selectDate,
+      "potential": 0,
+      "status": selectedStatus,
+      "updatedByUser": loginDeatils.data!.id,
     };
-    var para= jsonEncode(parameter);
-    var leadResponse=await dio.post(ApiConstant.SAVE_LEAD_UPDATe,data:para );
-    if(leadResponse.statusCode==200){
+    print(parameter);
+    var para = jsonEncode(parameter);
+    print(para);
+    var leadResponse = await dio.post(ApiConstant.SAVE_LEAD_UPDATe,
+        data: para,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print("Lead Update Response" + leadResponse.data);
+    if (leadResponse.statusCode == 200) {
       print('done is done ');
-      _nameController=TextEditingController();
-      _sourceofleadController=TextEditingController();
-       selectDate="";
-       selectedEmp=0;
-       selectedStatus="Select Status";
+      _descriptionController = TextEditingController();
+      _sourceofleadController = TextEditingController();
+      selectDate = "";
+      selectedEmp = 0;
+      selectedStatus = "Select Status";
       Navigator.pop(context);
-
-    }else{
+    } else {
       ToastMessage.show(context, "Please try Again");
     }
     EasyLoading.dismiss();
-
-
-
   }
 }

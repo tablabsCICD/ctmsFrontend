@@ -76,7 +76,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                  ),
                ),
                Spacer(),
-               filterIconButton(),
+               filterIcon(),
                SizedBox(width: 18,)
              ],
            ),
@@ -85,7 +85,7 @@ class _EmpDashboard extends State<EmpDashboard> {
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("${empData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
+                empCounts("${finalEmData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
                 SizedBox(width: 38.w,),
                 empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9),false),
                 SizedBox(width: 38.w,),
@@ -120,7 +120,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                           ? Expanded(
                           child: Container(
                               height:
-                              MediaQuery.of(context).size.height - 400,
+                              MediaQuery.of(context).size.height - 600,
                               child: Center(
                                   child: TextView(
                                       title: "No Record Found",
@@ -176,28 +176,8 @@ class _EmpDashboard extends State<EmpDashboard> {
     setState(() {});
   }
 
-  Future<void> ApiGetData(String URL) async{
-    isLoad=true;
-    setState(() {
-    });
-    String token = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.AuthToken);
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
-    print(response.data);
-    if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
-      finalEmData.clear();
-      finalEmData.addAll(employeeList.data!);
-      empData.clear();
-      empData.addAll(employeeList.data!);
-      isLoad=false;
-      setState(() {
-      });
-    }
-  }
 
+  EmployeeListResponse? employeeListResponse;
   Future<void> ApiGetDataDashbord(String URL) async{
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
@@ -214,18 +194,18 @@ class _EmpDashboard extends State<EmpDashboard> {
       print('the data is ${dataRole.length}');
     }
 
-    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if(response.statusCode==200){
-      EmployeeList employeeList =EmployeeList.fromJson(jsonDecode(response.data));
+      employeeListResponse =EmployeeListResponse.fromJson(jsonDecode(response.data));
       finalEmData.clear();
       activeEmpData.clear();
       inActiveEmpData.clear();
-      finalEmData.addAll(employeeList.data!);
+      finalEmData.addAll(employeeListResponse!.data!.content!);
       //print('this is ${emData.length}');
       empData.clear();
-      empData.addAll(employeeList.data!);
+      empData.addAll(employeeListResponse!.data!.content!);
       empData.forEach((element) {
         if (element.isActive == 1) {
           activeEmpData.add(element);
@@ -235,11 +215,73 @@ class _EmpDashboard extends State<EmpDashboard> {
         }
       });
       Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!);
+      Constants.allEmployee.addAll(employeeListResponse!.data!.content!);
       isLoad=false;
       setState(() {
       });
     }
+  }
+
+  filterIcon() {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenuItem('Sort By Name A to Z',0),
+                  _buildPopupMenuItem('Sort By Name Z to A',1),
+                ],
+              ),
+              Text(
+                "Filter",
+                style:TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenuItem(
+      String title, int? id,
+      ) {
+    return PopupMenuItem(
+      child: Text(title),
+      onTap: (){
+        if(id==0) {
+          finalEmData.sort((b, a) => b.firstName!.compareTo(a.firstName!));
+          setState(() {});
+        }else{
+          finalEmData.sort((a, b) => b.firstName!.compareTo(a.firstName!));
+          setState(() {});
+        }
+      },
+    );
   }
 
   addemp() {
@@ -382,7 +424,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     'Authorization': 'Bearer ${token}',}));
     if(response.statusCode==200){
      setState(() {
-       ApiGetData("");
+       ApiGetDataDashbord("");
      });
     }else{
       ToastMessage.show(context, "Not Added Sucessfully");
@@ -676,12 +718,12 @@ class _EmpDashboard extends State<EmpDashboard> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return AddEmployee(empData: finalEmData[index]);
+                return EditEmployee(empData: finalEmData[index]);
               }),
         );
       },
     );
-    ApiGetData("");
+    ApiGetDataDashbord("");
   }
 
   void onFilter(String value) {

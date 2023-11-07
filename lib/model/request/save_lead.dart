@@ -7,6 +7,7 @@ class SaveLeadRequest {
   String? date;
   String? emailId;
   String? addLogo;
+  String? document;
   int? isEnquiry;
   int? leadAddedBy;
   int? leadAssignedTo;
@@ -23,6 +24,7 @@ class SaveLeadRequest {
         this.date,
         this.emailId,
         this.addLogo,
+        this.document,
         this.isEnquiry,
         this.leadAddedBy,
         this.leadAssignedTo,
@@ -38,6 +40,7 @@ class SaveLeadRequest {
     coordinator = json['coordinator'];
     date = json['date'];
     addLogo = json['addLogo'];
+    document = json['document'];
     emailId = json['emailId'];
     isEnquiry = json['isEnquiry'];
     leadAddedBy = json['leadAddedBy'];
@@ -57,6 +60,7 @@ class SaveLeadRequest {
     data['coordinator'] = this.coordinator;
     data['date'] = this.date;
     data['addLogo'] = this.addLogo;
+    data['document'] = this.document;
     data['emailId'] = this.emailId;
     data['isEnquiry'] = this.isEnquiry;
     data['leadAddedBy'] = this.leadAddedBy;

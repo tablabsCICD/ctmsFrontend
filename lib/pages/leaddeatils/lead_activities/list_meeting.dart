@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/model/response/meeting_by_lead.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
@@ -28,7 +29,7 @@ class ListMeeting extends StatefulWidget{
 
 class _ListMeeting extends State<ListMeeting>{
 
-  List<MeetingData>listMeeting=[];
+  List<MeetingObject>listMeeting=[];
 
   @override
   void initState() {
@@ -92,7 +93,7 @@ class _ListMeeting extends State<ListMeeting>{
                     time: listMeeting[i].date!+" "+listMeeting[i].time!,
                     guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
 
-                    image: "assets/user1.jpg",
+                    image: listMeeting[i].lead!.addLogo,
                     meetinglink: listMeeting[i].meetingLink,
                     title: listMeeting[i].title,
                     index: i
@@ -173,8 +174,8 @@ class _ListMeeting extends State<ListMeeting>{
    getMeetingData()async {
     var response= await ApiHelper().apiGet(ApiConstant.GET_LEAD_METTING(widget.id));
     if(response.status==200){
-      MeetingList meetingList=MeetingList.fromJson(response.response);
-      listMeeting.addAll(meetingList.data!);
+      MeetingListByLead meetingList=MeetingListByLead.fromJson(response.response);
+      listMeeting.addAll(meetingList.data!.content!);
       setState(() {
 
       });

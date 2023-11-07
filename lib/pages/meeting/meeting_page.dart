@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
@@ -65,6 +66,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   List<MeetingData> meetingList = [];
   List<MeetingData> filteredMeetingList = [];
   List<MeetingData> upcomingMeetingList = [];
+  List<MeetingData> todayMeetingList = [];
+  List<MeetingData> rescheduleMeetingList = [];
+  List<MeetingData> inActiveMeetingList = [];
   List<MeetingData> pastMeetingList = [];
 
   @override
@@ -128,7 +132,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         Spacer(),
                         Row(
                           children: [
-                            filterIconButton(),
+                            filterIcon(),
                             SizedBox(
                               width: 27.w,
                             ),
@@ -178,7 +182,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         ),
                         meetingCard(
                             'Reschedule',
-                            '${meetingList.length}',
+                            '${rescheduleMeetingList.length}',
                             'assets/re_schedule.svg',
                             false,
                             Colors.red.shade50),
@@ -187,7 +191,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         ),
                         meetingCard(
                             'Cancelled',
-                            '${meetingList.length}',
+                            '${inActiveMeetingList.length}',
                             'assets/canceled.svg',
                             false,
                             Colors.orange.shade50),
@@ -199,7 +203,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                     child: Row(
                       children: [
                         Text(
-                          'Your Meeting',
+                          selectedMeetingType.toString(),
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 30.sp,
@@ -209,7 +213,34 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           ),
                         ),
                         Spacer(),
-                        filterIconButton(),
+                        InkWell(
+                          onTap: (){
+                            ApiGetMeeting();
+                          },
+                          child: Container(
+                            width: 101.w,
+                            height: 43.h,
+                          //  padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            alignment: Alignment.center,
+                            decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                            ),
+                            child: Text(
+                              "View All",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17.sp,
+                                fontFamily: GoogleFonts.poppins().fontFamily,
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -600,6 +631,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.description = dec;
     createMeeting.meetingLink = link;
     createMeeting.active = true;
+    createMeeting.status =  'schedule';
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = selectedLead[0];
     createMeeting.employeeId = selectedEmpList;
@@ -638,6 +670,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       "description": dec,
       "id": meetingData.id,
       "meetingLink": link,
+      "status": "reschedule",
       "time": editSelectTime,
       "title": title
     };
@@ -945,12 +978,12 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                       color: Colors.blue,
                                       shape: CircleBorder(),
                                     ),
-                                    height: 30.h,
-                                    width: 30.w,
-                                    child: getImage("meetingData.lead!.addLogo!",
+                                    height: 35.h,
+                                    width: 35.w,
+                                    child: getImage("",
                                         height: 25.h, width: 25.w)),
                               )
-                            : i>=meetingData.employeeId!.length?Positioned(left:i*12,child: SizedBox.shrink()):Positioned(
+                            : i>=(meetingData.employeeId!.length/2)+1?Positioned(left:i*12,child: SizedBox.shrink()):Positioned(
                                 left: i * 12,
                                 child: Container(
                                   decoration: ShapeDecoration(
@@ -961,7 +994,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                   width: 30.w,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "+${meetingData.employeeId!.length - 3}",
+                                    "+${(meetingData.employeeId!.length/2)+1 - 3}",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17.sp,
@@ -1007,63 +1040,106 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     loginDetails!.data!.id! == meetingData.createdMettingBy!.id
                         ? SizedBox(
-                            width: 134.w,
+                           // width: 164.w,
                             height: 45.h,
-                            child: OutlinedButton(
-                              style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                                    if (states.contains(MaterialState.hovered))
-                                      return ThemeColor
-                                          .theme_blue; //<-- SEE HERE
-                                    return isJoin
-                                        ? ThemeColor.theme_blue
-                                        : ThemeColor
-                                            .theme_blue; // Defer to the widget's default.
-                                  },
-                                ),
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                                    if (states.contains(MaterialState.hovered))
-                                      return ThemeColor.white; //<-- SEE HERE
-                                    return isJoin
-                                        ? ThemeColor.white
-                                        : ThemeColor
-                                            .white; // Defer to the widget's default.
-                                  },
-                                ),
-                              ),
-                              onPressed: () async {
-                                if (loginDetails!.data!.id! ==
-                                    meetingData.createdMettingBy!.id) {
-                                  _showEditAlertDialog(meetingData);
-                                }
-                                setState(() {
-                                  isJoin = false;
-                                });
-                              },
-                              child: Textview(
-                                  TextStyle(
-                                    fontSize: 16.sp,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w400,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                OutlinedButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                        MaterialStateProperty.resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered))
+                                          return ThemeColor
+                                              .theme_blue; //<-- SEE HERE
+                                        return isJoin
+                                            ? ThemeColor.theme_blue
+                                            : ThemeColor
+                                                .theme_blue; // Defer to the widget's default.
+                                      },
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered))
+                                          return ThemeColor.white; //<-- SEE HERE
+                                        return isJoin
+                                            ? ThemeColor.white
+                                            : ThemeColor
+                                                .white; // Defer to the widget's default.
+                                      },
+                                    ),
                                   ),
-                                  title: 'Reschedule'),
+                                  onPressed: () async {
+                                    if (loginDetails!.data!.id! ==
+                                        meetingData.createdMettingBy!.id) {
+                                      _showEditAlertDialog(meetingData);
+                                    }
+                                    setState(() {
+                                      isJoin = false;
+                                    });
+                                  },
+                                  child: Textview(
+                                      TextStyle(
+                                        fontSize: 16.sp,
+                                        fontFamily:
+                                            GoogleFonts.poppins().fontFamily,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      title: 'Reschedule'),
+                                ),
+                                SizedBox(width: 10.w,),
+                                meetingData.active==true?OutlinedButton(
+                                  style: ButtonStyle(
+                                    foregroundColor:
+                                    MaterialStateProperty.resolveWith<Color?>(
+                                          (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered))
+                                          return ThemeColor
+                                              .theme_blue; //<-- SEE HERE
+                                        return  ThemeColor
+                                            .theme_blue; // Defer to the widget's default.
+                                      },
+                                    ),
+                                    backgroundColor:
+                                    MaterialStateProperty.resolveWith<Color?>(
+                                          (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered))
+                                          return ThemeColor.white; //<-- SEE HERE
+                                        return  ThemeColor
+                                            .white; // Defer to the widget's default.
+                                      },
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    cancelMeetingg(meetingData.id);
+                                    setState(() {
+                                    });
+                                  },
+                                  child: Textview(
+                                      TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16.sp,
+                                        fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      title: 'Cancel'),
+                                ): SizedBox.shrink(),
+                              ],
                             ),
                           )
                         : SizedBox.shrink(),
-                    SizedBox(
+                  /*  SizedBox(
                       width: 23.w,
-                    ),
-                    SizedBox(
-                      width: 134.w,
+                    ),*/
+                   meetingData.active==true? SizedBox(
+                      width: 100.w,
                       height: 45.h,
                       child: OutlinedButton(
                         style: ButtonStyle(
@@ -1105,7 +1181,15 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                             ),
                             title: 'Join'),
                       ),
-                    ),
+                    ): Textview(
+                       TextStyle(
+                         color: Colors.red,
+                         fontSize: 16.sp,
+                         fontFamily:
+                         GoogleFonts.poppins().fontFamily,
+                         fontWeight: FontWeight.w400,
+                       ),
+                       title: 'InActive Meeting'),
                   ],
                 )
               ],
@@ -1115,6 +1199,116 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       ),
     );
   }
+
+  filterIcon() {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenuItem('Sort By Name A to Z',0),
+                  _buildPopupMenuItem('Sort By Name Z to A',1),
+                  _buildPopupMenuItem("Today's Meeting",4),
+                  _buildPopupMenuItem('Upcoming Meetings',2),
+                  _buildPopupMenuItem('All Meetings',3),
+                ],
+              ),
+              Text(
+                "Filter",
+                style:TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  final _currentDate = DateTime.now();
+
+  final upcomingDates  = <Widget>[];
+  PopupMenuItem _buildPopupMenuItem(
+      String title, int? id,
+      ) {
+    return PopupMenuItem(
+      child: Text(title),
+      onTap: (){
+       // ApiGetMeeting();
+        if(id==0) {
+         /* filteredMeetingList.sort((a, b){ //sorting in descending order
+            return DateTime.parse(b).compareTo(DateTime.parse(a));*/
+          filteredMeetingList.sort((b, a) => b.date!.compareTo(a.date!));
+          setState(() {});
+        }
+        else if(id==1) {
+          filteredMeetingList.sort((a, b) => b.date!.compareTo(a.date!));
+          setState(() {});
+        }
+        else if(id==2) {
+          upcomingMeetingList.clear();
+          for (int i = 0; i < 7; i++) {
+            final date = _currentDate.add(Duration(days: i));
+            String formattedDate = DateFormat('dd/MM/yyyy').format(date);
+            print("FormattedDate is :${formattedDate}");
+            filteredMeetingList.forEach((element) {
+              print("actual date is :${element.date}");
+              if(element.date==formattedDate.toString()){
+                upcomingMeetingList.add(element);
+              }
+            });
+          }
+          setState(() {
+            filteredMeetingList.clear();
+            filteredMeetingList.addAll(upcomingMeetingList);
+          });
+        }
+        else if(id==4) {
+          todayMeetingList.clear();
+            final date = _currentDate;
+            String formattedDate = DateFormat('dd/MM/yyyy').format(date);
+            print("FormattedDate is :${formattedDate}");
+            filteredMeetingList.forEach((element) {
+              print("actual date is :${element.date}");
+              if(element.date==formattedDate.toString()){
+                todayMeetingList.add(element);
+              }
+            });
+            setState(() {
+            filteredMeetingList.clear();
+            filteredMeetingList.addAll(todayMeetingList);
+          });
+        }
+        else{
+          ApiGetMeeting();
+        }
+      },
+    );
+  }
+
 
   Future<void> _launchUrl(String url) async {
     Uri _url = Uri.parse(url);
@@ -1211,10 +1405,20 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
     print('the data us ${roleResponse.response}');
     if (roleResponse.status == 200) {
-      MeetingList role = MeetingList.fromJson(roleResponse.response);
-      meetingList.addAll(role.data!);
+      MeetingListResponse meetingResponse = MeetingListResponse.fromJson(roleResponse.response);
+      meetingList.addAll(meetingResponse.data!);
+      filteredMeetingList.clear();
+      pastMeetingList.clear();
+      rescheduleMeetingList.clear();
+      inActiveMeetingList.clear();
       meetingList.forEach((element) {
         filteredMeetingList.add(element);
+        if(element.status=="reschedule"){
+          rescheduleMeetingList.add(element);
+        }
+        if(element.active==false){
+          inActiveMeetingList.add(element);
+        }
         if (checkDateExpiry(element.date)) {
           pastMeetingList.add(element);
         } else {
@@ -1321,6 +1525,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     //           )
   }
 
+  String? selectedMeetingType = "Your Meetings";
   meetingCard(
     String title,
     String count,
@@ -1330,6 +1535,22 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   ) {
     return InkWell(
       onTap: () {
+       /* if (title == "Schedule") {
+          filteredMeetingList.clear();
+          filteredMeetingList.addAll(filteredMeetingList);
+          selectedMeetingType = title;
+        } else*/ if (title == "Reschedule") {
+          filteredMeetingList.clear();
+          filteredMeetingList.addAll(rescheduleMeetingList);
+          selectedMeetingType = title;
+        } else if (title == "Cancelled") {
+          filteredMeetingList.clear();
+          filteredMeetingList.addAll(inActiveMeetingList);
+          selectedMeetingType = title;
+        } else {
+          ApiGetMeeting();
+          selectedMeetingType = "Your Meetings";
+        }
         setState(() {
           isSelected = true;
         });
@@ -1342,7 +1563,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           shape: RoundedRectangleBorder(
             side: BorderSide(
                 width: 0.50,
-                color: isSelected ? Color(0xFFC3262C) : Colors.white),
+                color: isSelected ? Color(0xFFC3262C) : Color(0xFFC3262C)),
             borderRadius: BorderRadius.circular(10),
           ),
         ),
@@ -1393,6 +1614,27 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     final expirationDate = DateTime.now();
     final bool isExpired = expirationDate.isBefore(tempDate);
     return isExpired;
+  }
+
+  Future<void> cancelMeetingg(int? id) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    EasyLoading.show(status: "Loading");
+    print('the url is ${ApiConstant.BASE_URL}api/Meetings2/cancle?active=false&id=${id}');
+
+    Dio dio = Dio();
+    var response = await dio.put(ApiConstant.BASE_URL+"api/Meetings2/cancle?active=false&id=${id}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print('the response is ${response}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      ToastMessage.show(context, "Meeting Cancelled");
+      ApiGetMeeting();
+      // Navigator.of(context).pop();
+    }
   }
 
 // Future<void> _showEditAlertDialog() async {

@@ -1,15 +1,13 @@
-class LeadList {
+class LeadListResponse {
   String? message;
-  List<LeadData>? data;
+  PaginationData? data;
   bool? success;
 
-  LeadList({this.message, this.data, this.success});
+  LeadListResponse({this.message, this.data, this.success});
 
-  LeadList.fromJson(Map<String, dynamic> json) {
+  LeadListResponse.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    if (json['data'] != null) {
-      data = List.from(json['data']).map((e)=>LeadData.fromJson(e)).toList();
-    }
+    data = json['data'] != null ? new PaginationData.fromJson(json['data']) : null;
     success = json['success'];
   }
 
@@ -17,72 +15,101 @@ class LeadList {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
     if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+      data['data'] = this.data!.toJson();
     }
     data['success'] = this.success;
     return data;
   }
 }
 
-class LeadData {
-  int? id;
-  Lead? lead;
-  UpdatedByUser? updatedByUser;
-  String? date;
-  String? status;
-  NextFollowUpBy? nextFollowUpBy;
-  int? potential;
-  String? description;
-  String? nextFollowupDate;
-  bool? isActive;
+class PaginationData {
+  List<LeadData>? detailsWithPage;
+  int? pageNumber;
+  int? pageSize;
+  int? totalElements;
+  int? totalPages;
+  bool? lastPage;
 
-  LeadData(
-      {this.id,
-        this.lead,
-        this.updatedByUser,
-        this.date,
-        this.status,
-        this.nextFollowUpBy,
-        this.potential,
-        this.description,
-        this.nextFollowupDate,
-        this.isActive});
+  PaginationData(
+      {this.detailsWithPage,
+        this.pageNumber,
+        this.pageSize,
+        this.totalElements,
+        this.totalPages,
+        this.lastPage});
 
-  LeadData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    lead = json['lead'] != null ? new Lead.fromJson(json['lead']) : null;
-    updatedByUser = json['updatedByUser'] != null
-        ? new UpdatedByUser.fromJson(json['updatedByUser'])
-        : null;
-    date = json['date'];
-    status = json['status'];
-    nextFollowUpBy = json['nextFollowUpBy'] != null
-        ? new NextFollowUpBy.fromJson(json['nextFollowUpBy'])
-        : null;
-    potential = json['potential']??0;
-    description = json['description']??'';
-    nextFollowupDate = json['nextFollowupDate']??'';
-    isActive = json['isActive']??true;
+  PaginationData.fromJson(Map<String, dynamic> json) {
+    if (json['detailsWithPage'] != null) {
+      detailsWithPage = <LeadData>[];
+      json['detailsWithPage'].forEach((v) {
+        detailsWithPage!.add(new LeadData.fromJson(v));
+      });
+    }
+    pageNumber = json['pageNumber'];
+    pageSize = json['pageSize'];
+    totalElements = json['totalElements'];
+    totalPages = json['totalPages'];
+    lastPage = json['lastPage'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
+    if (this.detailsWithPage != null) {
+      data['detailsWithPage'] =
+          this.detailsWithPage!.map((v) => v.toJson()).toList();
+    }
+    data['pageNumber'] = this.pageNumber;
+    data['pageSize'] = this.pageSize;
+    data['totalElements'] = this.totalElements;
+    data['totalPages'] = this.totalPages;
+    data['lastPage'] = this.lastPage;
+    return data;
+  }
+}
+
+
+
+
+
+
+
+class LeadData {
+  String? status;
+  Lead? lead;
+  List<LeadUpdates>? leadUpdates;
+  List<String>? trackings;
+
+  LeadData({this.status, this.lead, this.leadUpdates, this.trackings});
+
+  LeadData.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    lead = json['lead'] != null ? new Lead.fromJson(json['lead']) : null;
+    if (json['leadUpdates'] != null) {
+      leadUpdates = <LeadUpdates>[];
+      json['leadUpdates'].forEach((v) {
+        leadUpdates!.add(new LeadUpdates.fromJson(v));
+      });
+    }
+    if (json['trackings'] != null) {
+      trackings = <String>[];
+      json['trackings'].forEach((v) {
+        trackings!.add((v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
     if (this.lead != null) {
       data['lead'] = this.lead!.toJson();
     }
-    if (this.updatedByUser != null) {
-      data['updatedByUser'] = this.updatedByUser!.toJson();
+    if (this.leadUpdates != null) {
+      data['leadUpdates'] = this.leadUpdates!.map((v) => v.toJson()).toList();
     }
-    data['date'] = this.date;
-    data['status'] = this.status;
-    if (this.nextFollowUpBy != null) {
-      data['nextFollowUpBy'] = this.nextFollowUpBy!.toJson();
+    if (this.trackings != null) {
+      data['trackings'] = this.trackings!.map((v) => v).toList();
     }
-    data['potential'] = this.potential;
-    data['description'] = this.description;
-    data['nextFollowupDate'] = this.nextFollowupDate;
-    data['isActive'] = this.isActive;
     return data;
   }
 }
@@ -99,10 +126,10 @@ class Lead {
   String? address;
   String? typeOfBusiness;
   String? date;
-  LeadAddedBy? leadAddedBy;
-  LeadAssignedTo? leadAssignedTo;
   int? isEnquiry;
+  bool? isRoundRobin;
   String? addLogo;
+  String? document;
   bool? isRobinRound;
   bool? isSelected;
 
@@ -118,33 +145,28 @@ class Lead {
         this.address,
         this.typeOfBusiness,
         this.date,
-        this.leadAddedBy,
-        this.leadAssignedTo,
         this.isEnquiry,
+        this.isRoundRobin,
         this.addLogo,
-        this.isRobinRound,this.isSelected});
+        this.document,
+        this.isSelected});
 
   Lead.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     companyName = json['companyName']??'';
-    coordinator = json['coordinator']??'';
-    mobileNumber = json['mobileNumber']??'';
-    emailId = json['emailId']??'';
+    coordinator = json['coordinator']??"";
+    mobileNumber = json['mobileNumber']??"";
+    emailId = json['emailId']??"";
     sourceOfLead = json['sourceOfLead']??'';
     pinCode = json['pinCode']??'';
     city = json['city']??'';
     address = json['address']??'';
     typeOfBusiness = json['typeOfBusiness']??'';
     date = json['date']??'';
-    leadAddedBy = json['leadAddedBy'] != null
-        ? new LeadAddedBy.fromJson(json['leadAddedBy'])
-        : null;
-    leadAssignedTo = json['leadAssignedTo'] != null
-        ? new LeadAssignedTo.fromJson(json['leadAssignedTo'])
-        : null;
     isEnquiry = json['isEnquiry']??0;
-    addLogo = json['addLogo']??'';
-    isRobinRound = json['isRobinRound']??false;
+    isRoundRobin = json['isRoundRobin']??false;
+    addLogo = json['addLogo']??"";
+    document = json['document']??"";
     isSelected=false;
   }
 
@@ -161,15 +183,78 @@ class Lead {
     data['address'] = this.address;
     data['typeOfBusiness'] = this.typeOfBusiness;
     data['date'] = this.date;
-    if (this.leadAddedBy != null) {
-      data['leadAddedBy'] = this.leadAddedBy!.toJson();
-    }
-    if (this.leadAssignedTo != null) {
-      data['leadAssignedTo'] = this.leadAssignedTo!.toJson();
-    }
     data['isEnquiry'] = this.isEnquiry;
     data['addLogo'] = this.addLogo;
+    data['document'] = this.document;
     data['isRobinRound'] = this.isRobinRound;
+    return data;
+  }
+}
+
+class LeadUpdates {
+  int? id;
+  int? lead;
+  UpdatedByUser? updatedByUser;
+  String? date;
+  String? status;
+  UpdatedByUser? nextFollowUpBy;
+  int? potential;
+  String? description;
+  String? document;
+  List<String>? comment;
+
+  LeadUpdates(
+      {this.id,
+        this.lead,
+        this.updatedByUser,
+        this.date,
+        this.status,
+        this.nextFollowUpBy,
+        this.potential,
+        this.description,
+        this.document,
+        this.comment});
+
+  LeadUpdates.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    lead = json['lead'];
+    updatedByUser = json['updatedByUser'] != null
+        ? new UpdatedByUser.fromJson(json['updatedByUser'])
+        : null;
+    date = json['date'];
+    status = json['status'];
+    nextFollowUpBy = json['nextFollowUpBy'] != null
+        ? new UpdatedByUser.fromJson(json['nextFollowUpBy'])
+        : null;
+    potential = json['potential'];
+    description = json['description'];
+    document = json['document'];
+    if (json['comment'] != null) {
+      comment = <String>[];
+      json['comment'].forEach((v) {
+        comment!.add((v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lead'] = this.lead;
+    if (this.updatedByUser != null) {
+      data['updatedByUser'] = this.updatedByUser!.toJson();
+    }
+    data['date'] = this.date;
+    data['status'] = this.status;
+    if (this.nextFollowUpBy != null) {
+      data['nextFollowUpBy'] = this.nextFollowUpBy!.toJson();
+    }
+    data['potential'] = this.potential;
+    data['description'] = this.description;
+    data['document'] = this.document;
+    if (this.comment != null) {
+      data['comment'] = this.comment!.map((v) => v).toList();
+    }
     return data;
   }
 }

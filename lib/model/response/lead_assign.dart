@@ -1,11 +1,11 @@
-class LeadAssign {
+class LeadAssignModel {
   String? message;
   List<LeadAssignedData>? data;
   bool? success;
 
-  LeadAssign({this.message, this.data, this.success});
+  LeadAssignModel({this.message, this.data, this.success});
 
-  LeadAssign.fromJson(Map<String, dynamic> json) {
+  LeadAssignModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['data'] != null) {
       data = <LeadAssignedData>[];
@@ -41,7 +41,7 @@ class LeadAssignedData {
   String? date;
   LeadAddedBy? leadAddedBy;
   LeadAddedBy? leadAssignedTo;
-  String? isEnquiry;
+  int? isEnquiry;
   String? addLogo;
   bool? isRobinRound;
 
@@ -81,9 +81,9 @@ class LeadAssignedData {
     leadAssignedTo = json['leadAssignedTo'] != null
         ? new LeadAddedBy.fromJson(json['leadAssignedTo'])
         : null;
-    isEnquiry = json['isEnquiry'];
-    addLogo = json['addLogo'];
-    isRobinRound = json['isRobinRound'];
+    // isEnquiry = json['isEnquiry'];
+    // addLogo = json['addLogo'];
+    isRobinRound = json['isRobinR0ound'];
   }
 
   Map<String, dynamic> toJson() {
