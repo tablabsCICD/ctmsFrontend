@@ -66,7 +66,7 @@ class _LeadDashboard extends State<CustomerList> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData("");
+    ApiGetData("",selectedPageNumber);
     getAllEmployee();
     super.initState();
   }
@@ -373,7 +373,7 @@ class _LeadDashboard extends State<CustomerList> {
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
-      ApiGetData("");
+      ApiGetData("",selectedPageNumber);
     } else {
       ToastMessage.show(context, "Please try Again");
     }
@@ -405,31 +405,26 @@ class _LeadDashboard extends State<CustomerList> {
                       fontSize: 30.sp,
                     ),
                     Container(
-                      width: 270.w,
+                      width: 250.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.arrow_back_ios,
-                                size: 16,
-                              )),
-                          Text(
-                            "Showing ${finalCustomerList.length} out of ${customerList.length} Results",
-                            style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: GoogleFonts.poppins().fontFamily),
-                          ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              ))
-                        ],
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(onPressed: (){
+                              getPrevPage(selectedPageNumber);
+                            },
+                                icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                            Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                            GoogleFonts.poppins().fontFamily),),
+                            IconButton(onPressed: (){
+                              getNextPage(selectedPageNumber);
+                            },
+                                icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -572,13 +567,13 @@ class _LeadDashboard extends State<CustomerList> {
     );
   }
 
-  Future<void> ApiGetData(String URL) async {
+  Future<void> ApiGetData(String URL,int pno) async {
     isLoad = true;
     setState(() {});
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?page=0&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?page=${pno}&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if (response.statusCode == 200) {
@@ -589,6 +584,9 @@ class _LeadDashboard extends State<CustomerList> {
       customerList.addAll(employeeList.data!.content!);
       finalCustomerList.addAll(employeeList.data!.content!);
       print('this is ${finalCustomerList.length}');
+      totalPages = employeeList.data!.totalPages!;
+      totalElements = employeeList.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
       isLoad = false;
       setState(() {});
     }
@@ -845,4 +843,26 @@ class _LeadDashboard extends State<CustomerList> {
       ),
     );
   }
+
+  int selectedPageNumber = 0;
+  int totalPages = 0;
+  int totalElements = 0;
+  void getPrevPage(selectedPageNumer) {
+    if(selectedPageNumber==0){
+      ApiGetData("", selectedPageNumber);
+    }else
+    if(selectedPageNumber>0) {
+      selectedPageNumber--;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+  void getNextPage(selectedPageNumer) {
+    if(selectedPageNumber<totalPages-1) {
+      selectedPageNumber++;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+
 }

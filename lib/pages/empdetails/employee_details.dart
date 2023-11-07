@@ -50,7 +50,7 @@ class _EmpDashboard extends State<EmpDashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetDataDashbord("");
+    ApiGetDataDashbord("",selectedPageNumber);
     super.initState();
   }
 
@@ -85,7 +85,7 @@ class _EmpDashboard extends State<EmpDashboard> {
             child: Row(
               children: [
                 SizedBox(width: 38.w,),
-                empCounts("${finalEmData.length}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
+                empCounts("${totalElements}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
                 SizedBox(width: 38.w,),
                 empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9),false),
                 SizedBox(width: 38.w,),
@@ -96,14 +96,43 @@ class _EmpDashboard extends State<EmpDashboard> {
           Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.all(30),
-            child: Text(
-              selectedEmpList=="Total"?"Employee List":selectedEmpList=="Active"?"Active Employees":"InActive Employees",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColor.black,
-                fontSize: 30.sp,
-                fontFamily:GoogleFonts.poppins().fontFamily,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  selectedEmpList=="Total"?"Employee List":selectedEmpList=="Active"?"Active Employees":"InActive Employees",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.black,
+                    fontSize: 30.sp,
+                    fontFamily:GoogleFonts.poppins().fontFamily,
+                  ),
+                ),
+                Container(
+                  width: 250.w,
+                  height: 50.h,
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(onPressed: (){
+                          getPrevPage(selectedPageNumber);
+                        },
+                            icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                        Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                        GoogleFonts.poppins().fontFamily),),
+                        IconButton(onPressed: (){
+                          getNextPage(selectedPageNumber);
+                        },
+                            icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -178,7 +207,7 @@ class _EmpDashboard extends State<EmpDashboard> {
 
 
   EmployeeListResponse? employeeListResponse;
-  Future<void> ApiGetDataDashbord(String URL) async{
+  Future<void> ApiGetDataDashbord(String URL,int pNo) async{
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     isLoad=true;
@@ -194,7 +223,7 @@ class _EmpDashboard extends State<EmpDashboard> {
       print('the data is ${dataRole.length}');
     }
 
-    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10",options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getByPages?page=${pNo}&size=10",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if(response.statusCode==200){
@@ -202,6 +231,9 @@ class _EmpDashboard extends State<EmpDashboard> {
       finalEmData.clear();
       activeEmpData.clear();
       inActiveEmpData.clear();
+      totalPages = employeeListResponse!.data!.totalPages!;
+      totalElements = employeeListResponse!.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
       finalEmData.addAll(employeeListResponse!.data!.content!);
       //print('this is ${emData.length}');
       empData.clear();
@@ -424,7 +456,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     'Authorization': 'Bearer ${token}',}));
     if(response.statusCode==200){
      setState(() {
-       ApiGetDataDashbord("");
+       ApiGetDataDashbord("",selectedPageNumber);
      });
     }else{
       ToastMessage.show(context, "Not Added Sucessfully");
@@ -597,7 +629,7 @@ class _EmpDashboard extends State<EmpDashboard> {
       empData.remove(index);
       setState(() {
       });
-      ApiGetDataDashbord("");
+      ApiGetDataDashbord("",selectedPageNumber);
     }else{
       ToastMessage.show(context, "Please try Again");
     }
@@ -723,12 +755,27 @@ class _EmpDashboard extends State<EmpDashboard> {
         );
       },
     );
-    ApiGetDataDashbord("");
+    ApiGetDataDashbord("",selectedPageNumber);
   }
 
-  void onFilter(String value) {
-    finalEmData.addAll(empData);
-    setState(() {
-    });
+  int selectedPageNumber = 0;
+  int totalPages = 0;
+  int totalElements = 0;
+  void getPrevPage(selectedPageNumer) {
+    if(selectedPageNumber==0){
+      ApiGetDataDashbord("", selectedPageNumber);
+    }else
+    if(selectedPageNumber>0) {
+      selectedPageNumber--;
+      ApiGetDataDashbord("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+  void getNextPage(selectedPageNumer) {
+    if(selectedPageNumber<totalPages-1) {
+      selectedPageNumber++;
+      ApiGetDataDashbord("", selectedPageNumber);
+      setState(() {});
+    }
   }
 }

@@ -38,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData("");
+    ApiGetData('',selectedPageNumber);
     super.initState();
   }
 
@@ -93,7 +93,7 @@ class _DashboardState extends State<Dashboard> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Container(
-                                      width: 300.w,
+                                      width: 250.w,
                                       margin: EdgeInsets.symmetric(vertical: 10),
                                       alignment: Alignment.centerRight,
                                       child: Container(
@@ -101,11 +101,15 @@ class _DashboardState extends State<Dashboard> {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            IconButton(onPressed: (){},
+                                            IconButton(onPressed: (){
+                                              getPrevPage(selectedPageNumber);
+                                            },
                                                 icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                                            Text("Showing ${finalEmpData.length} out of ${emData.length} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                                            Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
                                             GoogleFonts.poppins().fontFamily),),
-                                            IconButton(onPressed: (){},
+                                            IconButton(onPressed: (){
+                                              getNextPage(selectedPageNumber);
+                                            },
                                                 icon: Icon(Icons.arrow_forward_ios,size: 16,))
                                           ],
                                         ),
@@ -303,12 +307,13 @@ class _DashboardState extends State<Dashboard> {
   }
 
 
-  Future<void> ApiGetData(String URL) async{
+
+  Future<void> ApiGetData(String URL,int selectedPage) async{
     EasyLoading.show(status: "Loading");
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     print("Token:"+token);
-    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10"),headers: { "Content-Type": "application/json",
+    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getByPages?page=${selectedPage}&size=10"),headers: { "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',});
     var response = json.decode(req.body);
     /* final dio = Dio();
@@ -317,11 +322,15 @@ class _DashboardState extends State<Dashboard> {
     print(response);
     EasyLoading.dismiss();
     if(req.statusCode==200){
+      emData.clear();
+      finalEmpData.clear();
       EmployeeListResponse employeeList =EmployeeListResponse.fromJson(jsonDecode(req.body));
       emData.addAll(employeeList.data!.content!);
       finalEmpData.addAll(employeeList.data!.content!);
       print('this is ${emData.length}');
-
+      totalPages = employeeList.data!.totalPages!;
+      totalElements = employeeList.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
       setState(() {
       });
     }
@@ -416,5 +425,26 @@ class _DashboardState extends State<Dashboard> {
         }
       },
     );
+  }
+
+  int selectedPageNumber = 0;
+  int totalPages = 0;
+  int totalElements = 0;
+  void getPrevPage(selectedPageNumer) {
+    if(selectedPageNumber==0){
+      ApiGetData("", selectedPageNumber);
+    }else
+    if(selectedPageNumber>0) {
+      selectedPageNumber--;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+  void getNextPage(selectedPageNumer) {
+    if(selectedPageNumber<totalPages-1) {
+      selectedPageNumber++;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
   }
 }

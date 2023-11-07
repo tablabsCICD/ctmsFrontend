@@ -75,7 +75,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData("");
+    ApiGetData("",selectedPageNumber);
     getAllEmployee();
     super.initState();
   }
@@ -197,13 +197,13 @@ class _LeadDashboard extends State<LeadDashboard> {
     setState(() {});
   }
 
-  Future<void> ApiGetData(String URL) async {
+  Future<void> ApiGetData(String URL,int pageNo) async {
     isLoad = true;
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?page=0&size=10&sortBy=id&sortDir=asc",
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?page=${pageNo}&size=10&sortBy=id&sortDir=asc",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -217,6 +217,9 @@ class _LeadDashboard extends State<LeadDashboard> {
       pendingLead.clear();
       rejectedLead.clear();
       leadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
+      totalPages = leadList.data!.totalPages!;
+      totalElements = leadList.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
       leadData.forEach((element) {
         if (element.status == null) element.status = "pending";
         finalLeadData.add(element);
@@ -234,6 +237,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         });
       });
       print('this is ${leadData.length}');
+
       isLoad = false;
     }
   }
@@ -712,7 +716,7 @@ class _LeadDashboard extends State<LeadDashboard> {
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
-      ApiGetData("");
+      ApiGetData("",selectedPageNumber);
       Navigator.of(context).pop();
     } else {
       ToastMessage.show(context, "Please try Again");
@@ -747,31 +751,26 @@ class _LeadDashboard extends State<LeadDashboard> {
                       fontSize: 30.sp,
                     ),
                     Container(
-                      width: 300.w,
+                      width: 250.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.arrow_back_ios,
-                                size: 16,
-                              )),
-                          Text(
-                            "Showing ${finalLeadData.length} out of ${leadData.length} Results",
-                            style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: GoogleFonts.poppins().fontFamily),
-                          ),
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              ))
-                        ],
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(onPressed: (){
+                              getPrevPage(selectedPageNumber);
+                            },
+                                icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                            Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
+                            GoogleFonts.poppins().fontFamily),),
+                            IconButton(onPressed: (){
+                              getNextPage(selectedPageNumber);
+                            },
+                                icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -1408,7 +1407,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         print('done is done ');
       }
       Navigator.pop(context);
-      ApiGetData("");
+      ApiGetData("",selectedPageNumber);
     } else {
       ToastMessage.show(context, "Please try Again");
     }
@@ -1459,7 +1458,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
       ToastMessage.show(context, "Status updated");
-      ApiGetData('');
+      ApiGetData('',selectedPageNumber);
      // Navigator.of(context).pop();
     }
   }
@@ -1522,4 +1521,26 @@ class _LeadDashboard extends State<LeadDashboard> {
       }
     }
   }
+
+  int selectedPageNumber = 0;
+  int totalPages = 0;
+  int totalElements = 0;
+  void getPrevPage(selectedPageNumer) {
+    if(selectedPageNumber==0){
+      ApiGetData("", selectedPageNumber);
+    }else
+    if(selectedPageNumber>0) {
+      selectedPageNumber--;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+  void getNextPage(selectedPageNumer) {
+    if(selectedPageNumber<totalPages-1) {
+      selectedPageNumber++;
+      ApiGetData("", selectedPageNumber);
+      setState(() {});
+    }
+  }
+
 }
