@@ -12,6 +12,7 @@ import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/app_colors.dart';
 import '../../common/app_responsive.dart';
@@ -64,7 +65,8 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
                      children: [
                        SizedBox(width: 38.w,),
                    InkWell(onTap: () async {
-                     List<Organization> organization = await orgProvider.getCompanyDetails(26);
+                     List<Organization> organization = await orgProvider.getCompanyDetails(3);
+                     print(organization[0].companyName);
                      Navigator.pushReplacement(
                          context,
                          MaterialPageRoute(
@@ -91,7 +93,15 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
                        SizedBox(width: 38.w,),
                        empCounts("0","E-Invoices",Images.invoice,Color(0xFFEAF8F4)),
                        SizedBox(width: 38.w,),
-                       empCounts("0","E-Bilty",Images.bilty,Color(0xFFFFEDF9)),
+                       InkWell(
+                         onTap: () async {
+                           final url =Uri.parse("http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading");
+                           if (!await launchUrl(url,)) {
+                             throw Exception('Could not launch $url');
+                           }
+                         },
+                         child:
+                       empCounts("0","E-Bilty",Images.bilty,Color(0xFFFFEDF9)),),
                        SizedBox(width: 38.w,),
                       // empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
                      ],

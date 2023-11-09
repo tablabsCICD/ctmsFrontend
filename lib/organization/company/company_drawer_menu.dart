@@ -14,8 +14,8 @@ const All_Users = 'All Users';
 const Full_Load = 'Full Load';
 const CPool_Purchase = 'Pool Purchase';
 const Buy_Sell = 'Buy Sell Vehicles';
-const Bids = 'Bids';
-const Chat = 'Chats';
+const Bids = 'Quote';
+const Chat = 'Chat';
 
 // ignore: must_be_immutable
 class CompanyDrawerMenu extends StatefulWidget {

@@ -26,7 +26,6 @@ import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:universal_html/html.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';

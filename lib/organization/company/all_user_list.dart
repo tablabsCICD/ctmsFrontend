@@ -152,13 +152,13 @@ class _AllUsersListState extends State<AllUsersList> {
                                                     ),
                                                   )
                                                 : SizedBox.shrink(),
-                                            leading: Stack(
+                                            /*leading: Stack(
                                               children: [
                                                 getImage(model.userList[index]
                                                     .profilePicture
                                                     .toString()),
                                               ],
-                                            ),
+                                            ),*/
                                             trailing: Container(
                                               width: 100,
                                               child: Row(

@@ -14,7 +14,7 @@ class OrgFullLoadModel {
   int? reminderUserName;
   String? sharableLink;
   String? deviceId;
-  int? ratings;
+  double? ratings;
   int? mobileNumber;
   String? source;
   String? destination;
@@ -86,7 +86,7 @@ class OrgFullLoadModel {
     reminderUserName = json['reminderUserName']??0;
     sharableLink = json['sharableLink']??"";
     deviceId = json['deviceId']??"";
-    ratings = json['ratings']??0;
+    ratings = json['ratings']??0.0;
     mobileNumber = json['mobileNumber']??0;
     source = json['source']??"";
     destination = json['destination']??"";

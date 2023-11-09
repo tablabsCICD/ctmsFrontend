@@ -24,14 +24,14 @@ class AuthApi {
     if (json['content'] != null) {
       content = List.from(json['content']).map((e)=>User.fromJson(e)).toList();
     }
-    totalPages = json['totalPages'];
-    totalElements = json['totalElements'];
+    totalPages = json['totalPages']??0;
+    totalElements = json['totalElements']??0;
     last = json['last'];
-    size = json['size'];
-    number = json['number'];
+    size = json['size']??0;
+    number = json['number']??0;
     sort = json['sort']?? '';
     first = json['first'];
-    numberOfElements = json['numberOfElements'];
+    numberOfElements = json['numberOfElements']??0;
   }
 
   Map<String, dynamic> toJson() {

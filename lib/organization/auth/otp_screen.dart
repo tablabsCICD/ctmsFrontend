@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'dart:ui';
-import 'dart:html' as html;
+//import 'dart:html' as html;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -295,7 +295,7 @@ class OTP_ScreenState extends State<OTP_Screen> {
                             model.setCompanyVisitingFlag(true);
                            /* print(result);
                             print(result[0].id);*/
-                            model.setCompanyOrgId(result.id!);
+                            model.setCompanyOrgId(3/*result.id!*/);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>CompanyMenuPage(result)));
                           }else
                             print(result);

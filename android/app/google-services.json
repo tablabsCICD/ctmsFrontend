@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "965421302526",
+    "project_id": "tkdost-6f621",
+    "storage_bucket": "tkdost-6f621.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965421302526:android:2868e1995a1b215c675baf",
+        "android_client_info": {
+          "package_name": "com.devsnik.flutter_hr_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw8h2DX0e3wYOWxEkIGAmXUEbiHhFPlFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

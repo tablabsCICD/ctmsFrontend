@@ -107,7 +107,7 @@ class ListOfUsers {
   late final String? companyLogo;
   late final String? aadharCard;
   late final String? otp;
-  late final int? ratings;
+  late final double? ratings;
   late final int? numberOfTimesRating;
   late final String? password;
   late final String? deviceId;
@@ -147,7 +147,7 @@ class ListOfUsers {
     aadharCard = json['aadharCard']??'';
     otp = json['otp']??
     '';
-    ratings = json['ratings']??0;
+    ratings = json['ratings']??0.0;
     numberOfTimesRating = json['numberOfTimesRating']??0;
     password = json['password']??'';
     deviceId = json['deviceId']??'';

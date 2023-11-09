@@ -104,7 +104,7 @@ class _BuySellListState extends State<BuySellList> {
                   ),
                   SizedBox(height:10.h),
                   Container(
-                    height: 513.h,
+                    height: 423.h,
                     width: 1052.w,
                     padding: EdgeInsets.all(29),
                     decoration: BoxDecoration(
@@ -224,6 +224,7 @@ class _BuySellListState extends State<BuySellList> {
                              fontSize: 18.sp,
                              fontWeight: FontWeight.w400,
                            ) ,
+                           SizedBox(width: 20.w,),
                          ],
                        )
                     ],
@@ -238,102 +239,101 @@ class _BuySellListState extends State<BuySellList> {
                                 "No Record Found",
                                 style: Style.heading,
                               ))))
-                      : */Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 39.w, vertical: 31.h),
-                      child: StaggeredGridView.countBuilder(
-                        controller: _scrollController,
-                        physics: ScrollPhysics(),
-                        crossAxisCount: ResponsiveWidget.isDesktop(context)
-                            ? 2
-                            : ResponsiveWidget.isMobile(context)
-                            ? 1
-                            : 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 12,
-                        itemCount: 2,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
 
-                            },
-                            child: Card(
-                              elevation: 5,
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Image.asset('assets/org/cargo_truck.png',height: 129.h,width: 335.w,),
-                                        Text(
-                                          'Iveco 80E190',
-                                          style:TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20.sp,
-                                            fontFamily: GoogleFonts.poppins().fontFamily,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          'KA-05-AH-5390 | 25.0 Tonnes',
-                                          style:TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15.sp,
-                                            fontFamily: GoogleFonts.poppins().fontFamily,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Current Location',
-                                          style:TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15.sp,
-                                            fontFamily: GoogleFonts.poppins().fontFamily,
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.location_on_outlined,size: 16,),
-                                            Text(
-                                              'Bangalore, KA',
-                                              style:TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 15.sp,
-                                                fontFamily: GoogleFonts.poppins().fontFamily,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                      : */Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 39.w, vertical: 31.h),
+                        child: StaggeredGridView.countBuilder(
+                          controller: _scrollController,
+                          physics: ScrollPhysics(),
+                          crossAxisCount: ResponsiveWidget.isDesktop(context)
+                              ? 2
+                              : ResponsiveWidget.isMobile(context)
+                              ? 1
+                              : 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 12,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+
+                              },
+                              child: Card(
+                                elevation: 5,
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Image.asset('assets/org/cargo_truck.png',height: 129.h,width: 335.w,),
+                                          Text(
+                                            'Iveco 80E190',
+                                            style:TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20.sp,
+                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                              fontWeight: FontWeight.w600,
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
+                                          ),
+                                          Text(
+                                            'KA-05-AH-5390 | 25.0 Tonnes',
+                                            style:TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15.sp,
+                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Current Location',
+                                            style:TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15.sp,
+                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.location_on_outlined,size: 16,),
+                                              Text(
+                                                'Bangalore, KA',
+                                                style:TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15.sp,
+                                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
 
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        //  physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                            );
+                          },
+                          //  physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                        ),
                       ),
-                    ),
-                  ),
                   //getLoader(model.isLoading)
                 ],
               ),

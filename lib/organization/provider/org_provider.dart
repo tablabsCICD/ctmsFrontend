@@ -155,7 +155,7 @@ class OrgProvider extends ChangeNotifier{
 
   getCompanyDetails(int id) async {
     String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
-    print(myUrl);
+    print("GetOrg Details:"+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
     var list = OrganizationModel.fromJson(response);
@@ -166,7 +166,7 @@ class OrgProvider extends ChangeNotifier{
 
   getUsersByCompanyId(int id) async {
     String myUrl = AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
-    print(myUrl);
+    print("All users by company::"+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
     var list = AuthApi.fromJson(response);
@@ -247,8 +247,8 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"/getStastitcs?organizationId=${id}";
-    print("GET COUNT URL : "+myUrl);
+    String myUrl = AppConstants.BASE_URL+"getStastitcs?organizationId=${id}";
+    print("GET Statistics URL : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     var response = json.decode(req.body);
@@ -315,7 +315,6 @@ class OrgProvider extends ChangeNotifier{
     String myUrl = AppConstants.BASE_URL+"getFullLoad/ForOrganisation?organizationId=${id}";
     print(myUrl);
     var req = await http.get(Uri.parse(myUrl));
-    isLoading = false;
     if(req.statusCode == 200) {
       final response = json.decode(req.body);
       orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
@@ -337,8 +336,11 @@ class OrgProvider extends ChangeNotifier{
           orgPLRList.add(element);
         }
       });
+
       notifyListeners();
     }
+    isLoading = false;
+
   }
 
   getFilterFullLoadList(String title){

@@ -279,224 +279,232 @@ class _LoadListState extends State<LoadList> {
 
   getPostList(BuildContext context) {
     return Consumer<OrgProvider>(
-      builder: (context, model, child) => model.orgAllFullLoadList.isEmpty
+      builder: (context, model, child) =>/* model.isLoading==true?Expanded(
+          child: Container(
+              height:
+              MediaQuery.of(context).size.height - 400,
+              child: Center(
+                  child: CircularProgressIndicator()))):*/
+      model.orgAllFullLoadList.isEmpty
           ? Expanded(
           child: Container(
               height:
               MediaQuery.of(context).size.height - 400,
               child: Center(
-                  child: TextView(
+                  child: CircularProgressIndicator()/*TextView(
                       title: "No Record Found",
                       fontSize: 16.sp,
                       color: Colors.black,
-                      fontWeight: FontWeight.w900))))
-          :StaggeredGridView.countBuilder(
-          controller: _scrollController,
-          physics: ScrollPhysics(),
+                      fontWeight: FontWeight.w900)*/)))
+          :Expanded(
+            child: StaggeredGridView.countBuilder(
+            controller: _scrollController,
+            physics: ScrollPhysics(),
       staggeredTileBuilder: (int index) =>
       StaggeredTile.fit(1),
       shrinkWrap: true,
       crossAxisCount: ResponsiveWidget.isDesktop(context)
       ? 2
-          : ResponsiveWidget.isMobile(context)
+            : ResponsiveWidget.isMobile(context)
       ? 1
-          : 2,
+            : 2,
       crossAxisSpacing: 10,
       mainAxisSpacing: 12,
       itemCount: model.orgFullLoadList.length,
       itemBuilder: (context, index) {
        return InkWell(
-          onTap: () {},
-          child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(10.0.r),
-              ),
-              elevation: 1,
-              child: Container(
-                height: 218.h,
-                width: 510.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r)
+            onTap: () {},
+            child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.circular(10.0.r),
                 ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 174.w,
-                      child: Column(
-                        children: [
-                          Image.asset('assets/org/container.png',height: 162.h,width: 174.w,),
-                          TextView(
-                            title: 'Plywood',
-                            // title: "${model.orgFullLoadList[index].modelName}",
-                            fontSize:15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff000000),
-                          ),
-                          TextView(
-                            title: "${model.orgFullLoadList[index].vehicleSize}",
-                            fontSize:15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff000000),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 17.w),
-                    SizedBox(
-                      width: 174.w,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 140,
-                            height: 20,
-                            alignment: Alignment.center,
-                            decoration: new BoxDecoration(
-                                color: model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Full load required"
-                                    ? ColorResources
-                                    .FULL_LOAD_REQUIRED
-                                    : model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Part load required"
-                                    ? ColorResources
-                                    .PART_LOAD_REQUIRED
-                                    : model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Full load available"
-                                    ? ColorResources
-                                    .FULL_LOAD_AVAILABLE
-                                    : ColorResources
-                                    .PART_LOAD_AVAILABLE,
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft:
-                                    Radius.circular(5),
-                                    bottomRight:
-                                    Radius.circular(5))),
-                            child: TextView(
-                              title: "${model.orgFullLoadList[index].mainTag}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Full load required"
-                                    ? ColorResources
-                                    .FLR_TEXT
-                                    : model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Part load required"
-                                    ? ColorResources
-                                    .PLR_TEXT
-                                    : model
-                                    .orgFullLoadList[
-                                index]
-                                    .mainTag ==
-                                    "Full load available"
-                                    ? ColorResources
-                                    .FLA_TEXT
-                                    : ColorResources
-                                    .PLA_TEXT)),
-                          SizedBox(height: 30.h,),
-                          TextView(
-                            title: "${model.orgFullLoadList[index].source}",
-                            fontSize:15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff000000),
-                          ),
-                          Container(color: Colors.black,width: 1.w,height: 48.h,),
-                          TextView(
-                            title: "${model.orgFullLoadList[index].destination}",
-                            fontSize:15.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xff000000),
-                          ),
-                          SizedBox(height: 20.h,),
-                          TextView(
-                            title: "Expire : 19 Sept, 2023",
-                            fontSize:15.sp,
-                            fontWeight: FontWeight.w300,
-                            color: Color(0xff000000),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 20.w,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 10.h,),
-                        Container(
-                          width: 130.w,
-                            alignment: Alignment.centerRight,
-                            child: InkWell(onTap: (){}, child: SvgPicture.asset('assets/delete.svg',height: 20.h,width: 20.w,))),
-                        SizedBox(height: 20.h,),
-                        Row(
-                          children: [
-                            getImage('',height: 30.h),
-                            SizedBox(width: 10.w,),
-                            TextView(
-                               title: "${model.orgFullLoadList[index].nameOfPerson}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff000000),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5.h,),
-                        Row(
-                          children: [
-                            SizedBox(width: 15.w,),
-                            SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
-                            SizedBox(width: 20.w,),
-                            TextView(
-                              title: "${model.orgFullLoadList[index].type}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff000000),
-                            ),
-                          ],
-                        ),
-                SizedBox(height: 30.h,),
-                SizedBox(
-                  width: 121.w,
-                  height: 40.h,
-                  child: ElevatedButton(
-                    onPressed: (){
-
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: ThemeColor.theme_blue,
-                      onPrimary: Colors.white,
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
-                    ),
-                    child: TextView(
-                      title: "Contact",
-                      fontSize:15.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xffffffff),
-                    ),
+                elevation: 1,
+                child: Container(
+                  height: 218.h,
+                  width: 510.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.r)
                   ),
-                )
-                      ],
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 174.w,
+                        child: Column(
+                          children: [
+                            Image.asset('assets/org/container.png',height: 162.h,width: 174.w,),
+                            TextView(
+                              title: 'Plywood',
+                              // title: "${model.orgFullLoadList[index].modelName}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff000000),
+                            ),
+                            TextView(
+                              title: "${model.orgFullLoadList[index].vehicleSize}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff000000),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 17.w),
+                      SizedBox(
+                        width: 174.w,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 140,
+                              height: 20,
+                              alignment: Alignment.center,
+                              decoration: new BoxDecoration(
+                                  color: model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Full load required"
+                                      ? ColorResources
+                                      .FULL_LOAD_REQUIRED
+                                      : model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Part load required"
+                                      ? ColorResources
+                                      .PART_LOAD_REQUIRED
+                                      : model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Full load available"
+                                      ? ColorResources
+                                      .FULL_LOAD_AVAILABLE
+                                      : ColorResources
+                                      .PART_LOAD_AVAILABLE,
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft:
+                                      Radius.circular(5),
+                                      bottomRight:
+                                      Radius.circular(5))),
+                              child: TextView(
+                                title: "${model.orgFullLoadList[index].mainTag}",
+                                fontSize:15.sp,
+                                fontWeight: FontWeight.w600,
+                                color: model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Full load required"
+                                      ? ColorResources
+                                      .FLR_TEXT
+                                      : model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Part load required"
+                                      ? ColorResources
+                                      .PLR_TEXT
+                                      : model
+                                      .orgFullLoadList[
+                                  index]
+                                      .mainTag ==
+                                      "Full load available"
+                                      ? ColorResources
+                                      .FLA_TEXT
+                                      : ColorResources
+                                      .PLA_TEXT)),
+                            SizedBox(height: 30.h,),
+                            TextView(
+                              title: "${model.orgFullLoadList[index].source}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff000000),
+                            ),
+                            Container(color: Colors.black,width: 1.w,height: 48.h,),
+                            TextView(
+                              title: "${model.orgFullLoadList[index].destination}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff000000),
+                            ),
+                            SizedBox(height: 20.h,),
+                            TextView(
+                              title: "Expire : 19 Sept, 2023",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w300,
+                              color: Color(0xff000000),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 20.w,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10.h,),
+                          Container(
+                            width: 130.w,
+                              alignment: Alignment.centerRight,
+                              child: InkWell(onTap: (){}, child: SvgPicture.asset('assets/delete.svg',height: 20.h,width: 20.w,))),
+                          SizedBox(height: 20.h,),
+                          Row(
+                            children: [
+                              getImage('',height: 30.h),
+                              SizedBox(width: 10.w,),
+                              TextView(
+                                 title: "${model.orgFullLoadList[index].nameOfPerson}",
+                                fontSize:15.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xff000000),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.h,),
+                          Row(
+                            children: [
+                              SizedBox(width: 15.w,),
+                              SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
+                              SizedBox(width: 20.w,),
+                              TextView(
+                                title: "${model.orgFullLoadList[index].type}",
+                                fontSize:15.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xff000000),
+                              ),
+                            ],
+                          ),
+                  SizedBox(height: 30.h,),
+                  SizedBox(
+                    width: 121.w,
+                    height: 40.h,
+                    child: ElevatedButton(
+                      onPressed: (){
+
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: ThemeColor.theme_blue,
+                        onPrimary: Colors.white,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
+                      ),
+                      child: TextView(
+                        title: "Contact",
+                        fontSize:15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xffffffff),
+                      ),
                     ),
-                  ],
-                ),
-              )),
+                  )
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
         );
       }
       ),
+          ),
     );
   }
   getContainer(String title, int value,String count, Color bgColor, String img) {

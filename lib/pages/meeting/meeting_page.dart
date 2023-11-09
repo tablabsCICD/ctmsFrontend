@@ -1138,7 +1138,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   /*  SizedBox(
                       width: 23.w,
                     ),*/
-                   meetingData.active==true? SizedBox(
+                   meetingData.active==true? checkDateExpiry(meetingData.date)==true?SizedBox(
                       width: 100.w,
                       height: 45.h,
                       child: OutlinedButton(
@@ -1158,20 +1158,13 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                               MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.hovered))
-                                return ThemeColor.theme_blue; //<-- SEE HERE
-                              return isJoin
-                                  ? ThemeColor.theme_blue
-                                  : ThemeColor
-                                      .theme_blue; // Defer to the widget's default.
+                                return ThemeColor.redShade; //<-- SEE HERE
+                              return ThemeColor.redShade; // Defer to the widget's default.
                             },
                           ),
                         ),
                         onPressed: () {
-                          _launchUrl(meetingData.meetingLink!);
 
-                          setState(() {
-                            isJoin = true;
-                          });
                         },
                         child: Textview(
                             TextStyle(
@@ -1179,9 +1172,52 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                               fontFamily: GoogleFonts.poppins().fontFamily,
                               fontWeight: FontWeight.w400,
                             ),
-                            title: 'Join'),
+                            title: 'Completed'),
                       ),
-                    ): Textview(
+                    ):SizedBox(
+                     width: 100.w,
+                     height: 45.h,
+                     child: OutlinedButton(
+                       style: ButtonStyle(
+                         foregroundColor:
+                         MaterialStateProperty.resolveWith<Color?>(
+                               (Set<MaterialState> states) {
+                             if (states.contains(MaterialState.hovered))
+                               return ThemeColor.white; //<-- SEE HERE
+                             return isJoin
+                                 ? ThemeColor.white
+                                 : ThemeColor
+                                 .white; // Defer to the widget's default.
+                           },
+                         ),
+                         backgroundColor:
+                         MaterialStateProperty.resolveWith<Color?>(
+                               (Set<MaterialState> states) {
+                             if (states.contains(MaterialState.hovered))
+                               return ThemeColor.theme_blue; //<-- SEE HERE
+                             return isJoin
+                                 ? ThemeColor.theme_blue
+                                 : ThemeColor
+                                 .theme_blue; // Defer to the widget's default.
+                           },
+                         ),
+                       ),
+                       onPressed: () {
+                         _launchUrl(meetingData.meetingLink!);
+
+                         setState(() {
+                           isJoin = true;
+                         });
+                       },
+                       child: Textview(
+                           TextStyle(
+                             fontSize: 16.sp,
+                             fontFamily: GoogleFonts.poppins().fontFamily,
+                             fontWeight: FontWeight.w400,
+                           ),
+                           title: 'Join'),
+                     ),
+                   ): Textview(
                        TextStyle(
                          color: Colors.red,
                          fontSize: 16.sp,
@@ -1230,6 +1266,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   _buildPopupMenuItem('Sort By Name Z to A',1),
                   _buildPopupMenuItem("Today's Meeting",4),
                   _buildPopupMenuItem('Upcoming Meetings',2),
+                  _buildPopupMenuItem("Completed Meeting",5),
                   _buildPopupMenuItem('All Meetings',3),
                 ],
               ),
@@ -1300,6 +1337,12 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {
             filteredMeetingList.clear();
             filteredMeetingList.addAll(todayMeetingList);
+          });
+        }
+        else if(id==5) {
+          setState(() {
+            filteredMeetingList.clear();
+            filteredMeetingList.addAll(pastMeetingList);
           });
         }
         else{
@@ -1610,10 +1653,16 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   }
 
   bool checkDateExpiry(String? date) {
-    DateTime tempDate = new DateFormat("dd/mm/yyyy").parse(date!);
+    DateTime tempDate = new DateFormat("dd/MM/yyyy").parse(date!);
     final expirationDate = DateTime.now();
-    final bool isExpired = expirationDate.isBefore(tempDate);
-    return isExpired;
+    debugPrint("Current Date ::${expirationDate} and MeetingDate ::${tempDate}");
+  //  final bool isExpired = expirationDate.isBefore(tempDate);
+    if(tempDate.compareTo(expirationDate) < 0){
+      print("DT1 is before DT2");
+      return true;
+    }else {
+      return false;
+    }
   }
 
   Future<void> cancelMeetingg(int? id) async {
