@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_controller.dart';
@@ -248,7 +249,7 @@ class _LoginScreen extends State<LoginScreen> {
             color: ThemeColor.theme_blue,
             borderRadius: BorderRadius.circular(20.r)),
         margin: EdgeInsets.all(27),
-        child: Stack(
+        child: AppResponsive.isMobile(context)?getRightWidget():Stack(
           fit: StackFit.expand,
           children: [
             Align(
@@ -334,7 +335,7 @@ class _LoginScreen extends State<LoginScreen> {
                       color: Colors.black),
                   title: "Email"),
               EditTextEmail(
-                width: 327.w,
+                width: AppResponsive.isMobile(context)?327:327.w,
                 height: 52.h,
                 keybordType: TextInputType.emailAddress,
                 hint: "Please enter your email ID",
@@ -357,7 +358,7 @@ class _LoginScreen extends State<LoginScreen> {
                       color: Colors.black),
                   title: "Password"),
               EditTextEmail(
-                width: 327.w,
+                width: AppResponsive.isMobile(context)?327:327.w,
                 height: 52.h,
                 isPassword: true,
                 keybordType: TextInputType.visiblePassword,

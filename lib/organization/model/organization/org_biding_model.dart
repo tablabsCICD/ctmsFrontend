@@ -14,13 +14,13 @@ class OrgBidingModel {
   int? reminderUserName;
   String? sharableLink;
   String? deviceId;
-  int? ratings;
+  double? ratings;
   int? mobileNumber;
   String? source;
   String? destination;
   String? mainTag;
   int? privatePost;
-  String? amount;
+  int? amount;
   String? description;
   int? bidingId;
 
@@ -66,13 +66,13 @@ class OrgBidingModel {
     reminderUserName = json['reminderUserName']??0;
     sharableLink = json['sharableLink']??"";
     deviceId = json['deviceId']??"";
-    ratings = json['ratings']??0;
+    ratings = json['ratings']??0.0;
     mobileNumber = json['mobileNumber']??0;
     source = json['source']??"";
     destination = json['destination']??"";
     mainTag = json['mainTag']??"";
     privatePost = json['privatePost']??0;
-    amount = json['amount']??"";
+    amount = json['amount']??0;
     description = json['description']??"";
     bidingId = json['bidingId']??0;
   }

@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomerGrpah extends StatelessWidget {
   @override
@@ -10,13 +11,46 @@ class CustomerGrpah extends StatelessWidget {
         children: [
         Text("Performance",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
         SizedBox(height: 30,),
-        barChart(),
+        pieChart(),
 
         ]
     ),
     );
   }
 
+
+  List<PieChartSectionData> pieChartSectionData = [
+    PieChartSectionData(
+      value: 86,
+      title: '86',
+      color: Color(0xff46e8fd),
+    ),
+    PieChartSectionData(
+      value: 44,
+      title: '44',
+      color: Color(0xff2dee20),
+    ),
+    PieChartSectionData(
+      value: 12,
+      title: '12',
+      color: Color(0xffee2e2e),
+    ),
+    PieChartSectionData(
+      value: 30,
+      title: '30',
+      color: Color(0xfffdb01f),
+    ),
+  ];
+
+  pieChart(){
+    return Container(
+      height: 200.h,
+      width: 500.w,
+      child: PieChart(PieChartData(
+          sections: pieChartSectionData
+      )),
+    );
+  }
   barChart(){
 
     return Container(

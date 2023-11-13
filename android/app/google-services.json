@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "965421302526",
-    "project_id": "tkdost-6f621",
-    "storage_bucket": "tkdost-6f621.appspot.com"
+    "project_number": "906632873854",
+    "project_id": "tkd-crm",
+    "storage_bucket": "tkd-crm.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:965421302526:android:2868e1995a1b215c675baf",
+        "mobilesdk_app_id": "1:906632873854:android:d8b4e1b813a0bf77e0952f",
         "android_client_info": {
           "package_name": "com.devsnik.flutter_hr_management"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCw8h2DX0e3wYOWxEkIGAmXUEbiHhFPlFw"
+          "current_key": "AIzaSyBAZPEcy8z3dMlMFXW-Pv9PL6lqATULLZM"
         }
       ],
       "services": {

@@ -569,7 +569,7 @@ class ListOfBiding {
   late final String? userName;
   late final String? type;
   late final int? idOfPost;
-  late final String? amount;
+  late final int? amount;
   late final String? description;
   late final String? bidderUserName;
   late final int? mobileNumber;
@@ -582,7 +582,7 @@ class ListOfBiding {
     userName = json['userName']??"";
     type = json['type']??"";
     idOfPost = json['idOfPost']??0;
-    amount = json['amount']??"";
+    amount = json['amount']??0;
     description = json['description']??"";
     bidderUserName = json['bidderUserName']??"";
     mobileNumber = json['mobileNumber']??0;

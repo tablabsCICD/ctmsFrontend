@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/firebase_api.dart';
@@ -21,11 +24,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await FirebaseApi().initNotifications();
+  if (kIsWeb) {
+    // running on the web!
+  } else {
+    // NOT running on the web! You can check for additional platforms here.
+    await Firebase.initializeApp(options: FirebaseOptions(
+        apiKey: "AIzaSyAY2xu3o1I0Ody0D3KTkMXHfpk6wpFAe-k",
+        authDomain: "tkd-crm.firebaseapp.com",
+        projectId: "tkd-crm",
+        storageBucket: "tkd-crm.appspot.com",
+        messagingSenderId: "906632873854",
+        appId: "1:906632873854:web:0f4fc50be1f8de4de0952f",
+        measurementId: "G-HT44YEF6PL"
+
+    ));
+    await FirebaseApi().initNotifications();
+  }
+
   await setupLocator();
   runApp(
       OverlaySupport.global(

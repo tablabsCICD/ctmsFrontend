@@ -81,7 +81,14 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
                          Navigator.pushNamed(context, AppRoutes.crm);
                        },child: empCounts("0","CRM",Images.crm,Color(0xFFFFEDF9)),),
                        SizedBox(width: 38.w,),
-                       empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
+                      // http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee
+                       InkWell(onTap: () async {
+                         final url =Uri.parse("http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee");
+                         if (!await launchUrl(url,)) {
+                         throw Exception('Could not launch $url');
+                         }
+                       },child: empCounts("0","HRM",Images.crm,Color(0xFFFFEDF9)),),
+                      // empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
                      ],
                    ),
                  ),

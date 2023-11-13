@@ -109,17 +109,17 @@ class _BidListState extends State<BidList> {
                       tableHeader("Action"),
                     ],
                   ),
-                  for (int i=0;i<2/*model.orgBigingList.length*/;i++)  tableRow(
+                  for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
                       context,
-                      material: 'test',//model.orgBigingList[i].companyName,
-                      route1: 'pune',//model.orgBigingList[i].source,
-                      route2: 'nagar',//model.orgBigingList[i].destination,
-                      km: '247',//model.orgBigingList[i].mobileNumber,
-                      totalBids: '4',//model.orgBigingList[i].bidingId,
+                      material: model.orgBigingList[i].companyName,
+                      route1: model.orgBigingList[i].source,
+                      route2: model.orgBigingList[i].destination,
+                      km: model.orgBigingList[i].mobileNumber,
+                      totalBids: model.orgBigingList[i].bidingId,
                       bestMatch:'test',//model.orgBigingList[i].companyName,
                       endtime:'test',//model.orgBigingList[i].postingTime,
                       status: 'complete',//model.orgBigingList[i].description,
-                      price: '35000',//model.orgBigingList[i].amount
+                      price: model.orgBigingList[i].amount
                   ),
 
                 ],

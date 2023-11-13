@@ -279,8 +279,8 @@ class OrgProvider extends ChangeNotifier{
     if(req.statusCode == 200) {
       final response = json.decode(req.body);
       orgBigingList = List<OrgBidingModel>.from(response.map((json) => OrgBidingModel.fromJson(json)));
-      orgBigingList.sort((a, b) => int.parse(a.amount!).compareTo(int.parse(b.amount!)));
-      print('Low to hight in biding amount: $orgBigingList');
+     // orgBigingList.sort((a, b) => a.amount.compareTo(b.amount));
+      print('Low to high in biding amount: $orgBigingList');
       orgBigingList.forEach((element) {print("amount : "+element.amount.toString());});
       notifyListeners();
     }

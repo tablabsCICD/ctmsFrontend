@@ -346,7 +346,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                 'Company Name', 'Please Company name', _nameController),
             SizedBox(height: 16.h),
             _buildText(
-                '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+                '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}','Select Employee',
                 () async {
               int list = await showDialog(
                   context: context,
@@ -370,11 +370,11 @@ class _LeadDashboard extends State<LeadDashboard> {
             _buildDropdownField('Source Of Lead', 'Please select',
                 _sourceofleadController, stateSetter),
             SizedBox(height: 16.h),
-            _buildTextField('typeOfBusiness', "Enter type of business",
+            _buildTextField('Type Of Business', "Enter type of business",
                 _typeOfBusinessController),
             SizedBox(height: 16.h),
             _buildText(
-                '${uploadedDocument == null ? "Click here to select Photo" : uploadedDocument}',
+                '${uploadedDocument == null ? "Click here to select Photo" : uploadedDocument}','Document',
                     () async {
                       pickFile(stateSetter,false);
                 }),
@@ -407,7 +407,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  Widget _buildText(String label, Function onClick) {
+  Widget _buildText(String label, String label1,Function onClick) {
     return InkWell(
       onTap: () {
         onClick();
@@ -418,7 +418,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: Text(
-              label,
+              label1,
               style: TextStyle(
                 color: Color(0xff1B1B1B),
                 fontSize: 15.sp,
@@ -1294,7 +1294,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                 'Company Name', 'Please Comapny name', _editnameController),
             SizedBox(height: 16.h),
             _buildText(
-                '${editselectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+                '${editselectedEmp == 0 ? "Select Employee " : "One Employee Selected"}','Select Employee',
                 () async {
               int list = await showDialog(
                   context: context,
