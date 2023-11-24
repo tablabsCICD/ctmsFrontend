@@ -8,9 +8,8 @@ import '../model/auth_api.dart';
 class AppConstants {
 
   static final String APP_VERSION="2.0.6";
-  static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
-  //static String BASE_URL = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Production Url
-
+  // static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
+  static String BASE_URL = "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/"; //Test Url
   //static String BASE_URL = "http://13.233.64.33:8080/tkd2/api/"; //Test Url
   static String LOGIN = BASE_URL + "authLogin/emailId";
   static String REGISTRATION = BASE_URL + "companyRegistration";
@@ -21,7 +20,7 @@ class AppConstants {
   static String POST_BUY_SELL = BASE_URL + "buySell";
   static String GET_REMINDER = BASE_URL + "getReminders/save";
   static String PUT_REMINDER = BASE_URL + "getReminders/update";
-  static String REMOVE_REMINDER = BASE_URL + "getReminders//userName/";
+  static String REMOVE_REMINDER = BASE_URL + "getReminders/userName/";
   static String LIST_REMINDER = BASE_URL + "getReminders/userName";
   static String GET_STATE = BASE_URL + "get/statesnew";
   static String GET_CITY = BASE_URL + "get/citynew";
@@ -43,7 +42,7 @@ class AppConstants {
   static String CITY_NEW_API = BASE_URL + "get/advanced/details";
   static String CITY_NEW_API_DB = BASE_URL + "/get/cities/db";
   static String SEND_MESSAGE = BASE_URL + "/sendGeneralSMS";
-
+  static String GET_ALL_USER = BASE_URL + "/companyRegistration";
 
   static String SEND_OTP_ON_MAIL = BASE_URL + "SendOTPOnEmailId";
   static String VERIFY_OTP_ON_MAIL = BASE_URL + "verifyOTPEmail";

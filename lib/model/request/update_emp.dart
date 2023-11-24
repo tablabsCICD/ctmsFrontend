@@ -66,7 +66,7 @@ class UpdateEMP {
     data['image'] = this.image;
     //data['isActive'] = this.isActive;
    // data['is_admin'] = this.isAdmin;
-   // data['lastName'] = this.lastName;
+    data['lastName'] = this.lastName;
     data['mobileNumber'] = this.mobileNumber;
    // data['os'] = this.os;
     //data['otp'] = this.otp;

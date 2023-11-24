@@ -7,11 +7,13 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/view_image-dialog.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/response/lead_activity.dart';
 
@@ -181,10 +183,14 @@ class _LeadActivity extends State<LeadActivity> {
           ),
           listLeadActivityData[index].document==''?SizedBox.shrink():InkWell(
             onTap: () async {
-              await showDialog(
+              final url =Uri.parse(listLeadActivityData[index].document.toString());
+              if (!await launchUrl(url,)) {
+                throw Exception('Could not launch $url');
+              }
+              /*await showDialog(
               context: context,
               builder: (_) => ImageDialog(
-                  listLeadActivityData[index].document!));
+                  listLeadActivityData[index].document!));*/
             },
             child: Text(
               "View Document",
@@ -220,7 +226,8 @@ class _LeadActivity extends State<LeadActivity> {
         listLeadActivityData.addAll(leadActivity.data!);
         setState(() {});
       } else {
-        ToastMessage.show(context, "Refresh page");
+       // ToastMessage.show(context, "Refresh page");
+        showCustomToast(context, "Refresh Page", Icons.check, Colors.green);
       }
 
       EasyLoading.dismiss();

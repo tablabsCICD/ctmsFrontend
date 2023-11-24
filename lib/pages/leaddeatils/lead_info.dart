@@ -13,6 +13,7 @@ import 'package:flutter_hr_management/model/response/lead_activity.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,7 +67,7 @@ class _LeadInfo extends State<LeadInfo> {
           color: Color(0xffF6F6F6),
           child: Column(
             children: [
-              HeaderWidget(),
+              HeaderWidget(isSearchVisible:true,),
               SizedBox(
                 height: 26.h,
               ),
@@ -515,7 +516,7 @@ class _LeadInfo extends State<LeadInfo> {
         });
 
       }else{
-        ToastMessage.show(context, "Refresh page");
+       // ToastMessage.show(context, "Refresh page");
       }
 
       EasyLoading.dismiss();
@@ -711,13 +712,13 @@ class _LeadInfo extends State<LeadInfo> {
           _buildTextField(
               'Description ', 'Please Description', _descriptionController),
           SizedBox(height: 16.h),
-          _buildText(
+          _buildText('Select Photo',
               '${uploadedLeadDocument == null ? "Click here to select Photo" : uploadedLeadDocument}',
                   () async {
                 pickFile(stateSetter,false);
               }),
           SizedBox(height: 16.h),
-          _buildText(selectDate.length == 0 ? 'Next Followup Date' : selectDate,
+          _buildText('Next Followup Date',selectDate.length == 0 ? 'Next Followup Date' : selectDate,
               () async {
             selectDate = await DateTimePickerDialog().pickDateDialog(context);
             if (selectDate == null) {
@@ -726,7 +727,7 @@ class _LeadInfo extends State<LeadInfo> {
             stateSetter(() {});
           }),
           SizedBox(height: 16.h),
-          _buildText(
+          _buildText('Next Followup By',
               selectedEmp == 0 ? 'Next Followup By' : "Selected one employee",
               () async {
             int list = await showDialog(
@@ -883,7 +884,7 @@ class _LeadInfo extends State<LeadInfo> {
     );
   }
 
-  Widget _buildText(String label, Function onClick) {
+  Widget _buildText(String label,String hint, Function onClick) {
     return InkWell(
       onTap: () {
         onClick();
@@ -917,7 +918,7 @@ class _LeadInfo extends State<LeadInfo> {
               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
               child: Center(
                 child: Text(
-                  label,
+                  hint,
                   style: TextStyle(
                       color: Color(0xff1B1B1B),
                       fontSize: 15.sp,
@@ -1029,7 +1030,8 @@ class _LeadInfo extends State<LeadInfo> {
 
         EasyLoading.dismiss();
         if (response.statusCode == 200) {
-          ToastMessage.show(context, "Image uploaded");
+        //  ToastMessage.show(context, "Image uploaded");
+          showCustomToast(context, "Image Uploaded", Icons.check, Colors.green);
         }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");
@@ -1074,7 +1076,8 @@ class _LeadInfo extends State<LeadInfo> {
       selectedStatus = "Select Status";
       Navigator.pop(context);
     } else {
-      ToastMessage.show(context, "Please try Again");
+     // ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     EasyLoading.dismiss();
   }

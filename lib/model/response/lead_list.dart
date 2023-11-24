@@ -405,7 +405,13 @@ class BoardingDeatails {
     panCard = json['panCard'];
     experienceCertificate = json['experienceCertificate']??'';
     active = json['active'];
-    otherDocuments = json['otherDocuments'].cast<String>();
+    if (json['otherDocuments'] != null) {
+      otherDocuments = <String>[];
+      json['otherDocuments'].forEach((v) {
+        otherDocuments!.add((v));
+      });
+    }
+   // otherDocuments = json['otherDocuments'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -552,7 +558,7 @@ class UpdatedByUser {
   BoardingDeatails? boardingDeatails;
   Role? role;
   bool? isAdmin;
-  bool? isActive;
+  int? isActive;
   String? otp;
   String? password;
   String? os;
@@ -606,7 +612,7 @@ class UpdatedByUser {
         : null;
     role = json['role'] != null ? new Role.fromJson(json['role']) : null;
     isAdmin = json['is_admin'];
-    isActive = json['isActive'];
+    isActive = json['isActive']??0;
     otp = json['otp'];
     password = json['password'];
     os = json['os'];

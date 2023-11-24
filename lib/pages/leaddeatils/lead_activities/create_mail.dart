@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/calender_widget.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -259,7 +260,8 @@ class _CreateMail extends State<CreateMail>{
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      ToastMessage.show(context, "mail send successfully");
+     // ToastMessage.show(context, "mail send successfully");
+      showCustomToast(context, "Mail Sent Successfully", Icons.check, Colors.green);
       toNameController.clear();
       mailController.clear();
       subjectController.clear();

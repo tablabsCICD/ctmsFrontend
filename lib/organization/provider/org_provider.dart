@@ -4,6 +4,9 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_hr_management/organization/company/load_list.dart';
+import 'package:flutter_hr_management/organization/model/load_model.dart';
+import 'package:flutter_hr_management/organization/model/organization/search_load_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,7 +61,7 @@ class OrgProvider extends ChangeNotifier{
   List<OrgBidingModel> orgBigingList = [];
 
   var response;
-  int userCount=0,allPostCount=0,buySellPostCount=0,poolPurchasePostCount=0,fullLoadPostCount=0,bidCont=0;
+  int userCount=0,allPostCount=0,buySellPostCount=0,poolPurchasePostCount=0,fullLoadPostCount=0,bidCont=0,fullLoadCount=0,partLoadCount=0;
 
   sendOtpByOrgId(String mobile) async {
     String myUrl = AppConstants.BASE_URL + 'sendMobileOTPForCompanyLogin?mobileNumber=${mobile}';
@@ -153,8 +156,36 @@ class OrgProvider extends ChangeNotifier{
     return id;
   }
 
+  void filterSearchResults(String query,String type) {
+    if(type=="User") {
+      userList.clear();
+      allUserList.forEach((element) {
+        if (element.firstName!.contains(query) ||
+            element.lastName!.contains(query)||
+            element.mobileNumber!.toString().contains(query)) {
+          userList.add(element);
+        }
+      });
+      debugPrint('Final Users : ${userList.length}');
+      notifyListeners();
+    }else if(type=="Load") {
+      orgFullLoadList.clear();
+      orgAllFullLoadList.forEach((element) {
+        if (element.source!.contains(query) ||
+            element.destination!.contains(query)||
+            element.mobileNumber!.toString().contains(query)) {
+          orgFullLoadList.add(element);
+        }
+      });
+      debugPrint('Final Load List : ${orgFullLoadList.length}');
+      notifyListeners();
+    }
+  }
+
   getCompanyDetails(int id) async {
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
+    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/1';
+   // String myUrl = AppConstants.BASE_URL + 'CompanyDetails';
+
     print("GetOrg Details:"+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
@@ -170,6 +201,7 @@ class OrgProvider extends ChangeNotifier{
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
     var list = AuthApi.fromJson(response);
+    userList.clear();
     userList = list.content!;
     allUserList.clear();
     allUserList.addAll(userList);
@@ -192,6 +224,7 @@ class OrgProvider extends ChangeNotifier{
 
   getUserList(String title){
     userList.clear();
+
     if(title == "All Users"){
       userList.addAll(allUserList);
       notifyListeners();}
@@ -272,8 +305,10 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
   //  String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBiding/ForOrganisation?organizationId=26";
-    String myUrl = AppConstants.BASE_URL+ "/getBiding/ForOrganisation?organizationId=${id}";
-    print(myUrl);
+  //  String myUrl = AppConstants.BASE_URL+ "getBiding/ForOrganisation?organizationId=${id}";
+    String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
+
+    print("Get Biding Data by OrgId - "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     if(req.statusCode == 200) {
@@ -290,11 +325,14 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
    // String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBuySell/ForOrganisation?organizationId=26";
-    String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
-    print(myUrl);
+   // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
+    String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
+
+    print("Get BuySell Data By OrgId - "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     final response = json.decode(req.body);
+    print(response);
     orgBuySellList = List<OrgBuySellModel>.from(response.map((json) => OrgBuySellModel.fromJson(json)));
     orgBuyList.clear();
     orgSellList.clear();
@@ -312,11 +350,14 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getFullLoad/ForOrganisation?organizationId=26";
-    String myUrl = AppConstants.BASE_URL+"getFullLoad/ForOrganisation?organizationId=${id}";
-    print(myUrl);
+   // String myUrl = AppConstants.BASE_URL+"getFullLoad/ForOrganisation?organizationId=${id}";
+    String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
+
+    print("Get All Load Truck Data - "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
+    final response = json.decode(req.body);
+    print(response);
     if(req.statusCode == 200) {
-      final response = json.decode(req.body);
       orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
       orgAllFullLoadList.clear();
       orgAllFullLoadList.addAll(orgFullLoadList);
@@ -336,7 +377,8 @@ class OrgProvider extends ChangeNotifier{
           orgPLRList.add(element);
         }
       });
-
+      fullLoadCount = orgFLRList.length+orgFLAList.length;
+      partLoadCount = orgPLRList.length+orgPLAList.length;
       notifyListeners();
     }
     isLoading = false;
@@ -347,7 +389,18 @@ class OrgProvider extends ChangeNotifier{
     orgFullLoadList.clear();
     if(title == "All Loads"){
       orgFullLoadList.addAll(orgAllFullLoadList);
-      notifyListeners();}
+      notifyListeners();
+    }
+    if(title == "Part Loads"){
+      orgFullLoadList.addAll(orgPLAList);
+      orgFullLoadList.addAll(orgPLRList);
+      notifyListeners();
+    }
+    if(title == "Full Loads"){
+      orgFullLoadList.addAll(orgFLAList);
+      orgFullLoadList.addAll(orgFLRList);
+      notifyListeners();
+    }
     if(title == "Full Load Available"){
       orgFullLoadList.addAll(orgFLAList);
       notifyListeners();}
@@ -440,7 +493,10 @@ class OrgProvider extends ChangeNotifier{
     var req = await http.get(Uri.parse(myUrl));
     isLoading == false;
     response = json.decode(req.body);
-    orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
+    print(response);
+    LoadListModel loadListModel = LoadListModel.fromJson(response);
+    orgFullLoadList = loadListModel.content!;
+   // orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
     notifyListeners();
   }
 

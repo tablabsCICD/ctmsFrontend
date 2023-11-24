@@ -15,6 +15,7 @@ import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
@@ -107,7 +108,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         child: Column(
           children: [
             /// Header Part
-            HeaderWidget(
+            HeaderWidget(isSearchVisible:true,
               onSearchTap: (value) {
                 filterSearchResults(value);
               },
@@ -247,7 +248,21 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   Container(
                       margin:
                           EdgeInsets.symmetric(horizontal: 33, vertical: 10),
-                      child: StaggeredGridView.countBuilder(
+                      child:  filteredMeetingList.isEmpty
+                          ? Expanded(
+                          child: Container(
+                              height: MediaQuery.of(context).size.height - 400,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                  child: TextView(
+                                      title: "No Record Found",
+                                      fontSize: 16.sp,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900))))
+                          : StaggeredGridView.countBuilder(
                           controller: _scrollController,
                           physics: ScrollPhysics(),
                           staggeredTileBuilder: (int index) =>
@@ -325,7 +340,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           SizedBox(height: 16),
           _buildTextField('Link', 'Link', _meetingLinkController),
           SizedBox(height: 16),
-          _buildText(selectDate, () async {
+          _buildText(selectDate, "Select Date",() async {
             selectDate = await DateTimePickerDialog().pickDateDialog(context);
             if (selectDate == null) {
               selectDate = "Select Date";
@@ -333,7 +348,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText(selectTime, () async {
+          _buildText(selectTime, "Select Time", () async {
             selectTime = await DateTimePickerDialog().selectTime(context);
             if (selectTime == null) {
               selectTime = "Select Time";
@@ -344,7 +359,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           _buildText(
               selectedEmpList.length == 0
                   ? 'Select Employee'
-                  : 'selected emp is ${selectedEmpList.length}', () async {
+                  : 'selected emp is ${selectedEmpList.length}', "Select Employee",() async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -360,7 +375,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           _buildText(
               selectedLead.length == 0
                   ? "Select Lead"
-                  : 'selected lead count ${selectedLead.length.toString()}',
+                  : 'selected lead count ${selectedLead.length.toString()}', "Select Lead",
               () async {
             var list = await showDialog(
                 context: context,
@@ -451,7 +466,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           SizedBox(height: 16),
           _buildTextField('Link', 'Link', _editmeetingLinkController),
           SizedBox(height: 16),
-          _buildText(editSelectDate, () async {
+          _buildText(editSelectDate,"Select Date", () async {
             editSelectDate =
                 await DateTimePickerDialog().pickDateDialog(context);
             if (editSelectDate == null) {
@@ -460,7 +475,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             setState(() {});
           }),
           SizedBox(height: 16),
-          _buildText(editSelectTime, () async {
+          _buildText(editSelectTime,"Select Time", () async {
             editSelectTime = await DateTimePickerDialog().selectTime(context);
             if (editSelectTime == null) {
               editSelectTime = "Select Time";
@@ -471,7 +486,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           _buildText(
               editSelectedEmpList.length == 0
                   ? 'Select Employee'
-                  : 'selected emp is ${editSelectedEmpList.length}', () async {
+                  : 'selected emp is ${editSelectedEmpList.length}', "Select Employee",() async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -485,7 +500,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           _buildText(
               editSelectLead.length == 0
                   ? "Select Lead"
-                  : 'selected le${editSelectLead.length.toString()}', () async {
+                  : 'selected lead ${editSelectLead.length.toString()}',"Select Lead", () async {
             var list = await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -569,7 +584,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  Widget _buildText(String label, Function onClick) {
+  Widget _buildText(String label, String label1,Function onClick) {
     return InkWell(
       onTap: () {
         onClick();
@@ -580,7 +595,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: Text(
-              label,
+              label1,
               style: TextStyle(
                 color: Color(0xff1B1B1B),
                 fontSize: 15.sp,
@@ -686,7 +701,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         }));
     print('the response is ${response}');
     if (response.statusCode == 200) {
-      ToastMessage.show(context, "Meeting Edit Success");
+     // ToastMessage.show(context, "Meeting Edit Success");
+      showCustomToast(context, "Meeting Updated", Icons.check, Colors.green);
       ApiGetMeeting();
       Navigator.of(context).pop();
     }
@@ -997,7 +1013,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                     "+${(meetingData.employeeId!.length/2)+1 - 3}",
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 17.sp,
+                                      fontSize: 14.sp,
                                       fontFamily:
                                           GoogleFonts.poppins().fontFamily,
                                       fontWeight: FontWeight.w300,
@@ -1086,7 +1102,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                   },
                                   child: Textview(
                                       TextStyle(
-                                        fontSize: 16.sp,
+                                        fontSize: 14.sp,
                                         fontFamily:
                                             GoogleFonts.poppins().fontFamily,
                                         fontWeight: FontWeight.w400,
@@ -1124,7 +1140,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                   child: Textview(
                                       TextStyle(
                                         color: Colors.red,
-                                        fontSize: 16.sp,
+                                        fontSize: 14.sp,
                                         fontFamily:
                                         GoogleFonts.poppins().fontFamily,
                                         fontWeight: FontWeight.w400,
@@ -1168,7 +1184,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         },
                         child: Textview(
                             TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 14.sp,
                               fontFamily: GoogleFonts.poppins().fontFamily,
                               fontWeight: FontWeight.w400,
                             ),
@@ -1211,7 +1227,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                        },
                        child: Textview(
                            TextStyle(
-                             fontSize: 16.sp,
+                             fontSize: 14.sp,
                              fontFamily: GoogleFonts.poppins().fontFamily,
                              fontWeight: FontWeight.w400,
                            ),
@@ -1220,7 +1236,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                    ): Textview(
                        TextStyle(
                          color: Colors.red,
-                         fontSize: 16.sp,
+                         fontSize: 14.sp,
                          fontFamily:
                          GoogleFonts.poppins().fontFamily,
                          fontWeight: FontWeight.w400,
@@ -1238,9 +1254,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   filterIcon() {
     return Container(
-        width: 101.w,
+        width: 120.w,
         height: 43.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -1292,7 +1308,11 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       String title, int? id,
       ) {
     return PopupMenuItem(
-      child: Text(title),
+      child: Text(title,style: TextStyle(
+      fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        fontWeight: FontWeight.w500,
+        color: Colors.black),),
       onTap: (){
        // ApiGetMeeting();
         if(id==0) {
@@ -1309,7 +1329,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           upcomingMeetingList.clear();
           for (int i = 0; i < 7; i++) {
             final date = _currentDate.add(Duration(days: i));
-            String formattedDate = DateFormat('dd/MM/yyyy').format(date);
+            String formattedDate = DateFormat('yyyy-MM-dd').format(date);
             print("FormattedDate is :${formattedDate}");
             filteredMeetingList.forEach((element) {
               print("actual date is :${element.date}");
@@ -1326,7 +1346,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         else if(id==4) {
           todayMeetingList.clear();
             final date = _currentDate;
-            String formattedDate = DateFormat('dd/MM/yyyy').format(date);
+            String formattedDate = DateFormat('yyyy-MM-dd').format(date);
             print("FormattedDate is :${formattedDate}");
             filteredMeetingList.forEach((element) {
               print("actual date is :${element.date}");
@@ -1653,7 +1673,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   }
 
   bool checkDateExpiry(String? date) {
-    DateTime tempDate = new DateFormat("dd/MM/yyyy").parse(date!);
+    DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(date!);
     final expirationDate = DateTime.now();
     debugPrint("Current Date ::${expirationDate} and MeetingDate ::${tempDate}");
   //  final bool isExpired = expirationDate.isBefore(tempDate);
@@ -1680,7 +1700,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      ToastMessage.show(context, "Meeting Cancelled");
+     // ToastMessage.show(context, "Meeting Cancelled");
+      showCustomToast(context, "Meeting Cancelled", Icons.clear, Colors.red);
       ApiGetMeeting();
       // Navigator.of(context).pop();
     }

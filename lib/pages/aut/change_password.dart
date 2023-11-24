@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import '../../common/app_colors.dart';
@@ -145,14 +146,17 @@ class _ChangePassword extends State<ChangePassword> {
             Navigator.pushReplacementNamed(context, AppRoutes.home);
 
           }else{
-            ToastMessage.show(context, loginDeatils!.message!);
+          //  ToastMessage.show(context, loginDeatils!.message!);
+            showCustomToast(context, loginDeatils.message!, Icons.clear, Colors.red);
           }
         }else{
-          ToastMessage.show(context, "Try Again");
+        //  ToastMessage.show(context, "Try Again");
+          showCustomToast(context, "Try Again", Icons.clear, Colors.red);
         }
 
       }else{
-        ToastMessage.show(context, "Password not matched");
+       // ToastMessage.show(context, "Password not matched");
+        showCustomToast(context, "Password Not Matched", Icons.clear, Colors.red);
       }
 
     }else{

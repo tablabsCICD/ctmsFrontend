@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/lead_list.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: Dashboard(),
+              child: LeadDashboard(),
             ),
           ],
         ),

@@ -16,6 +16,7 @@ import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart'
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
+import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -26,6 +27,7 @@ import 'package:flutter_hr_management/organization/company/company_menu/comp_ful
 import 'package:flutter_hr_management/organization/company/company_menu/comp_discussion_screen.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_bids.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
@@ -72,163 +74,273 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
     return Scaffold(
       backgroundColor: ThemeColor.baground,
       body: Consumer<OrgProvider>(
-          builder: (context, model, child) => Row(
-            children: [
-              if (AppResponsive.isDesktop(context))
-                Expanded(
-                  child: CompanySideBar(),
-                ),
-
-              /// Main Body Part
-              Expanded(
-                flex: 4,
-                child: Column(
+          builder: (context, model, child) => SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Stack(
+              children: [
+                Row(
                   children: [
-                    HeaderWidget(),
-                    SizedBox(height: 35.h,),
-                    Container(
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: InkWell(
-                                onTap: () {
-                                 // _showMultiSelect(context);
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomSearchCityTextField(
-                                      hintText: 'From',
-                                      controller: selectedFromCity!,
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    GetCityList())).then((value) {
-                                          if (value.toString().isNotEmpty &&
-                                              value != null) {
-                                            selectedFromCity = value[0];
-                                            setState(() {});
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 25.w,
-                                    ),
-                                    TextView(
-                                      title: "To",
-                                      fontSize:15.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff000000),
-                                    ),
-                                    SizedBox(
-                                      width: 25.w,
-                                    ),
-                                    CustomSearchCityTextField(
-                                      hintText: 'To',
-                                      controller: selectedToCity!,
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    GetCityList())).then((value) {
-                                          if (value.toString().isNotEmpty &&
-                                              value != null) {
-                                            selectedToCity = value[0];
-                                            setState(() {});
-                                          }
-                                        });
-                                      },
-                                    ),
+                    if (AppResponsive.isDesktop(context))
+                      Expanded(
+                        child: CompanySideBar(),
+                      ),
 
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            Row(
+                    /// Main Body Part
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        children: [
+                          HeaderWidget(isSearchVisible:false),
+                          SizedBox(height: 35.h,),
+                          SizedBox(
+                              height: 60,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding:
+                                    EdgeInsets.symmetric(horizontal: 25.0.w),
+                                    child: InkWell(
+                                      onTap: () {
+                                       // _showMultiSelect(context);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomSearchCityTextField(
+                                            hintText: 'From',
+                                            controller: selectedFromCity!,
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GetCityList())).then((value) {
+                                                if (value.toString().isNotEmpty &&
+                                                    value != null) {
+                                                  selectedFromCity = value[0];
+                                                  setState(() {});
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          SizedBox(
+                                            width: 25.w,
+                                          ),
+                                          TextView(
+                                            title: "To",
+                                            fontSize:15.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff000000),
+                                          ),
+                                          SizedBox(
+                                            width: 25.w,
+                                          ),
+                                          CustomSearchCityTextField(
+                                            hintText: 'To',
+                                            controller: selectedToCity!,
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GetCityList())).then((value) {
+                                                if (value.toString().isNotEmpty &&
+                                                    value != null) {
+                                                  selectedToCity = value[0];
+                                                  setState(() {});
+                                                }
+                                              });
+                                            },
+                                          ),
+                                          SizedBox(
+                                            width: 25.w,
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              model.getSearchByNameList(
+                                                  '', selectedFromCity!, selectedToCity!);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Colors.black,
+                                              onPrimary: Colors.white,
+                                              elevation: 3,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.circular(5))),
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 0),
+                                              child: CustomText("Search",
+                                                  style: Style.button),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Row(
+                                    children: [
+                                      filterIcon(model),
+                                      SizedBox(
+                                        width: 27.w,
+                                      ),
+                                     /* SvgPicture.asset('assets/more_icon.svg'),
+                                      SizedBox(
+                                        width: 27.w,
+                                      ),*/
+                                    ],
+                                  ),
+                                ],
+                              )
+                          ),
+                          SizedBox(height: 35.h,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              getContainer("Total User",0,model.allUserList.length.toString(), Color(0xffEAF8F4),'assets/org/total_users.svg'),
+                              getContainer("Load Post",1,model.fullLoadPostCount.toString(), Color(0xffFFEDF9),'assets/org/all_load.svg'),
+                              getContainer("Buy Sell",3, model.buySellPostCount.toString(), Color(0xffFEF0E5),'assets/org/buy_sell.svg'),
+                              getContainer("All Quotes",4,model.bidCont.toString(), Color(0xffEDE8FF),'assets/org/bid.svg'),
+                            ],
+                          ),
+                          SizedBox(height: 35.h,),
+                          Expanded(
+                              child: container)
+                         /* Container(
+                            height: 430,
+                            child: Stack(
                               children: [
-                                filterIconButton(),
-                                SizedBox(
-                                  width: 27.w,
+                                Container(
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                      color: ColorResources.HOME_APPBAR,
+                                    )
                                 ),
-                                SvgPicture.asset('assets/more_icon.svg'),
-                                SizedBox(
-                                  width: 27.w,
+                                Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 40),
+                                      child: getContainer("All Users", 0,model.userCount.toString(), Colors.blue[100]!,"assets/images/navigation_image/my_profile.png"),
+                                    )
+
+                                ),
+                                Positioned(
+                                  top: 225,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        getContainer("Load Post",1,model.fullLoadPostCount.toString(), Colors.pink[100]!,'assets/images/navigation_image/insurance.png'),
+                                        getContainer("Pool Purchase Post",2,model.poolPurchasePostCount.toString(), Colors.green[100]!,'assets/images/navigation_image/pool_purchase.png'),
+                                        getContainer("Buy Sell Post",3, model.buySellPostCount.toString(), Colors.deepOrange[100]!,'assets/images/navigation_image/vehicle.png'),
+                                        getContainer("All Bids",4,model.bidCont.toString(), Colors.indigo[100]!,'assets/images/bid.png'),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        )
-                    ),
-                    SizedBox(height: 35.h,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        getContainer("Total User",0,model.allUserList.length.toString(), Color(0xffEAF8F4),'assets/org/total_users.svg'),
-                        getContainer("Load Post",1,model.fullLoadPostCount.toString(), Color(0xffFFEDF9),'assets/org/all_load.svg'),
-                        getContainer("Buy Sell",3, model.buySellPostCount.toString(), Color(0xffFEF0E5),'assets/org/buy_sell.svg'),
-                        getContainer("All Bids",4,model.bidCont.toString(), Color(0xffEDE8FF),'assets/org/bid.svg'),
-                      ],
-                    ),
-                    SizedBox(height: 35.h,),
-                    Expanded(
-                        child: container)
-                   /* Container(
-                      height: 430,
-                      child: Stack(
-                        children: [
+                          ),
                           Container(
-                              height: 300,
-                              decoration: BoxDecoration(
-                                color: ColorResources.HOME_APPBAR,
-                              )
-                          ),
-                          Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 40),
-                                child: getContainer("All Users", 0,model.userCount.toString(), Colors.blue[100]!,"assets/images/navigation_image/my_profile.png"),
-                              )
-
-                          ),
-                          Positioned(
-                            top: 225,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  getContainer("Load Post",1,model.fullLoadPostCount.toString(), Colors.pink[100]!,'assets/images/navigation_image/insurance.png'),
-                                  getContainer("Pool Purchase Post",2,model.poolPurchasePostCount.toString(), Colors.green[100]!,'assets/images/navigation_image/pool_purchase.png'),
-                                  getContainer("Buy Sell Post",3, model.buySellPostCount.toString(), Colors.deepOrange[100]!,'assets/images/navigation_image/vehicle.png'),
-                                  getContainer("All Bids",4,model.bidCont.toString(), Colors.indigo[100]!,'assets/images/bid.png'),
-                                ],
-                              ),
-                            ),
-                          ),
+                              height: 500,
+                              child: container)
+                          */
                         ],
                       ),
                     ),
-                    Container(
-                        height: 500,
-                        child: container)
-                    */
+
                   ],
                 ),
-              ),
-
-            ],
+                Positioned(
+                  top: 115.h,
+                  left: 265.w,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushReplacementNamed(context, AppRoutes.home);
+                    },
+                    child: SvgPicture.asset(
+                      "assets/back_button.svg",
+                      height: 66.h,
+                      width: 66.w,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )),
+    );
+  }
+
+  filterIcon(OrgProvider model) {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('All Loads',0,model),
+                  _buildPopupMenu('Full Load Available',1,model),
+                  _buildPopupMenu('Full Load Required',2,model),
+                  _buildPopupMenu('Part Load Available',3,model),
+                  _buildPopupMenu('Part Load Required',4,model),
+                ],
+              ),
+              Text(
+                "Filter",
+                style:TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title, int? id,OrgProvider model
+      ) {
+    return PopupMenuItem(
+      child: Text(title, style: TextStyle(
+      fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        fontWeight: FontWeight.w500,
+        color: Colors.black),),
+      onTap: (){
+        setState(() {
+        //  selectedTab = title;
+          model.getFilterFullLoadList(title);
+        });
+      },
     );
   }
 

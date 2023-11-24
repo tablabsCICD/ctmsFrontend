@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 
 import '../../model/response/lead_list.dart';
@@ -24,7 +26,8 @@ class LeadProvider extends BaseProvider{
       LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));
       emData.addAll(employeeList.data! as Iterable<LeadData>);
     }else{
-      ToastMessage.show(context,"Please Try Again");
+     // ToastMessage.show(context,"Please Try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     appState=Constants.stateIdeal;
   }

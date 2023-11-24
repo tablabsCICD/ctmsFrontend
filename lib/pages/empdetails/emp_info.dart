@@ -42,7 +42,7 @@ class _EmpInfo extends State<EmpInfo> {
           color: ThemeColor.baground,
           child: Column(
             children: [
-              HeaderWidget(),
+              HeaderWidget(isSearchVisible:true,),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),
@@ -303,7 +303,7 @@ class _EmpInfo extends State<EmpInfo> {
               Visibility(
                   visible: isMeeting,
                   child: EmpMeeting(id: widget.empData!.id!)),
-              Visibility(visible: isCreateMail, child: CustomerGrpah())
+              Visibility(visible: isCreateMail, child: CustomerGrpah(id:widget.empData!.id!))
             ],
           ),
         ),

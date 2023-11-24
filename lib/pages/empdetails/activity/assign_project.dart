@@ -27,7 +27,7 @@ class AssignProject extends StatefulWidget{
 }
 class _AssignProject extends State<AssignProject>{
 
-  List<LeadAssignedData>listLeadActivityData=[];
+  List<Data>listLeadActivityData=[];
 
   @override
   void initState() {
@@ -91,7 +91,7 @@ class _AssignProject extends State<AssignProject>{
 
       child: Center(
         child: ListTile(
-          leading: getImage('${listLeadActivityData[index].addLogo}',height: 30.h,width: 30.w),
+          leading: getImage('${listLeadActivityData[index].lead!.addLogo}',height: 30.h,width: 30.w),
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -99,7 +99,7 @@ class _AssignProject extends State<AssignProject>{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${listLeadActivityData[index].companyName!}",
+                  "${listLeadActivityData[index].lead!.companyName!}",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20.sp,
@@ -109,7 +109,7 @@ class _AssignProject extends State<AssignProject>{
                 ),
 
                 Text(
-                  "${listLeadActivityData[index].emailId!}",
+                  "${listLeadActivityData[index].lead!.emailId!}",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.sp,
@@ -117,14 +117,23 @@ class _AssignProject extends State<AssignProject>{
                     fontWeight: FontWeight.w400,
                   ),
                 ),
+                Text("${listLeadActivityData[index].date}",
+                  style: TextStyle(
+                    color: Color(0xFF858585),
+                    fontSize: 16.sp,
+                    fontFamily:  GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
              ],
             ),
           ),
 
+
           trailing:  Text(
-            "${listLeadActivityData[index].date}",
+            "Lead Status: ${listLeadActivityData[index].status}",
             style: TextStyle(
-              color: Color(0xFF858585),
+              color: Colors.blue,
               fontSize: 16.sp,
               fontFamily:  GoogleFonts.poppins().fontFamily,
               fontWeight: FontWeight.w300,
@@ -156,7 +165,7 @@ class _AssignProject extends State<AssignProject>{
         });
 
       }else{
-        ToastMessage.show(context, "Refresh page");
+       // ToastMessage.show(context, "Refresh page");
       }
 
       EasyLoading.dismiss();

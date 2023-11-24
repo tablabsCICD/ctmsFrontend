@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
+import 'package:flutter_hr_management/organization/model/organization_model.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/sharepreferences.dart';
 
@@ -22,6 +27,7 @@ class _SideBarOrganization extends State<SideBarOrganization> {
   static bool isMeeting=false;
   static bool isreport=false;
   static bool isProfile=false;
+  final orgProvider = locator<OrgProvider>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +59,14 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               isSelect: isEmp,
               title: "Monitoring",
               icon: Images.monitoring,
-              press: () {
-
+              press: () async {
+                List<Organization> organization = await orgProvider.getCompanyDetails(1);
+                print(organization[0].companyName);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            CompanyDashboard(organization[0])));
               },
             ),
             DrawerListTile(
@@ -62,14 +74,17 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "CRM",
               icon: Images.crm,
               press: () {
-
+                Navigator.pushNamed(context, AppRoutes.crm);
               },
             ), DrawerListTile(
               isSelect: isMeeting,
               title: "HRM",
               icon: Images.hrm,
-              press: () {
-
+              press: () async {
+                final url =Uri.parse("http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee");
+                if (!await launchUrl(url,)) {
+                throw Exception('Could not launch $url');
+                }
               },
             ),
             DrawerListTile(
@@ -84,8 +99,11 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               isSelect: isreport,
               title: "E-Bilty",
               icon: Images.bilty,
-              press: () {
-
+              press: () async {
+                final url =Uri.parse("http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading");
+                if (!await launchUrl(url,)) {
+                throw Exception('Could not launch $url');
+                }
               },
             ),
             DrawerListTile(

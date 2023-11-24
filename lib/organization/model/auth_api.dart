@@ -89,6 +89,8 @@ class User {
   int? isUserVerifiedByCompany;
   bool? isSelected;
   bool? addedIngroup;
+  String? aadharCardForVerification;
+  String? panCardForVerification;
 
   User(
       {this.addedIngroup,this.isSelected,this.id,
@@ -125,7 +127,10 @@ class User {
         this.website,
         this.alternativeNumber,
         this.companyId,
-        this.isUserVerifiedByCompany});
+        this.isUserVerifiedByCompany,
+        this.aadharCardForVerification,
+        this.panCardForVerification
+      });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id']?? 0;
@@ -163,6 +168,8 @@ class User {
     alternativeNumber = json['alternativeNumber']?? '';
     companyId = json['companyId']?? 0;
     isUserVerifiedByCompany = json['isUserVerifiedByCompany']?? 0;
+    aadharCardForVerification = json['aadharCardForVerification']?? '';
+    panCardForVerification = json['panCardForVerification']?? '';
     isSelected=false;
     addedIngroup=false;
   }
@@ -204,6 +211,8 @@ class User {
     data['alternativeNumber'] = this.alternativeNumber;
     data['companyId'] = this.companyId;
     data['isUserVerifiedByCompany'] = this.isUserVerifiedByCompany;
+    data['aadharCardForVerification'] = this.aadharCardForVerification;
+    data['panCardForVerification'] = this.panCardForVerification;
     return data;
   }
 }

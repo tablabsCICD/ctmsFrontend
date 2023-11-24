@@ -489,6 +489,7 @@ class UpdatedByUser {
   String? employeeId;
   String? firstName;
   String? lastName;
+  String? birthdate;
   String? emailId;
   String? mobileNumber;
   String? address;
@@ -500,7 +501,7 @@ class UpdatedByUser {
   BoardingDeatails? boardingDeatails;
   Role? role;
   bool? isAdmin;
-  bool? isActive;
+  int? isActive;
   String? otp;
   String? password;
   String? os;
@@ -515,6 +516,7 @@ class UpdatedByUser {
         this.employeeId,
         this.firstName,
         this.lastName,
+        this.birthdate,
         this.emailId,
         this.mobileNumber,
         this.address,
@@ -541,6 +543,7 @@ class UpdatedByUser {
     employeeId = json['employeeId']??"";
     firstName = json['firstName']??"";
     lastName = json['lastName']??"";
+    birthdate = json['birthdate']??"";
     emailId = json['emailId']??"";
     mobileNumber = json['mobileNumber']??"";
     address = json['address']??'';
@@ -555,8 +558,8 @@ class UpdatedByUser {
     role = json['role'] != null
         ? new Role.fromJson(json['role'])
         : null;
-    isAdmin = json['is_admin'];
-    isActive = json['isActive'];
+    isAdmin = json['is_admin']??false;
+    isActive = json['isActive']??0;
     otp = json['otp'];
     password = json['password']??'';
     os = json['os']??'';
@@ -573,6 +576,7 @@ class UpdatedByUser {
     data['employeeId'] = this.employeeId;
     data['firstName'] = this.firstName;
     data['lastName'] = this.lastName;
+    data['birthdate'] = this.birthdate;
     data['emailId'] = this.emailId;
     data['mobileNumber'] = this.mobileNumber;
     data['address'] = this.address;
@@ -630,7 +634,12 @@ class BoardingDeatails {
     panCard = json['panCard'];
     experienceCertificate = json['experienceCertificate'];
     active = json['active'];
-    otherDocuments = json['otherDocuments'].cast<String>();
+    if (json['otherDocuments'] != null) {
+      otherDocuments = <String>[];
+      json['otherDocuments'].forEach((v) {
+        otherDocuments!.add((v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

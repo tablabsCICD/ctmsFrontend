@@ -35,7 +35,8 @@ class ApiConstant {
       BASE_URL + "api/Meetings2/getByEmployeeId?employeeID=${id}";
 
   static String ASSIGN_PROJECT(id) =>
-      BASE_URL + "api/Lead/getByleadAssignedToId?leadAssignedTo=$id";
+    //  BASE_URL + "api/Lead/getByleadAssignedToId?leadAssignedTo=$id";
+  BASE_URL + "api/LeadUpdate/getByEmployeeFollowUpById?EmployeeName=$id";
 
   static String CREATE_MAIL = BASE_URL + "api/Employee/SendEmailRemainder";
 //  static String token = '';

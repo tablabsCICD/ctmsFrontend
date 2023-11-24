@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_slider/carousel_controller.dart';
@@ -807,7 +808,8 @@ class _LoginScreen extends State<LoginScreen> {
               .getString(SharedPreferencesConstant.AuthToken);
           print("Final Token ::"+finalToken);
         } else {
-          ToastMessage.show(context, jwtLoginData.message!);
+         // ToastMessage.show(context, jwtLoginData.message!);
+          showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
         }
 
         String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
@@ -834,16 +836,20 @@ class _LoginScreen extends State<LoginScreen> {
 
             Navigator.pushReplacementNamed(context, AppRoutes.home);
           } else {
-            ToastMessage.show(context, loginDeatils.message!);
+            //ToastMessage.show(context, loginDeatils.message!);
+            showCustomToast(context, loginDeatils.message!, Icons.clear, Colors.red);
           }
         } else {
-          ToastMessage.show(context, "Try Again");
+        //  ToastMessage.show(context, "Try Again");
+          showCustomToast(context, "Try Again", Icons.clear, Colors.red);
         }
       } else {
-        ToastMessage.show(context, "Try Again");
+       // ToastMessage.show(context, "Try Again");
+        showCustomToast(context, "Try Again", Icons.clear, Colors.red);
       }
     } else {
-      ToastMessage.show(context, "Please fill correct email and password");
+     // ToastMessage.show(context, "Please fill correct email and password");
+      showCustomToast(context, "Please fill correct email and password", Icons.clear, Colors.red);
     }
   }
 }

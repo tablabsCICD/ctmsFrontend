@@ -302,7 +302,12 @@ class BoardingDeatails {
     panCard = json['panCard'];
     experienceCertificate = json['experienceCertificate'];
     active = json['active'];
-    otherDocuments = json['otherDocuments']??[];
+    if (json['otherDocuments'] != null) {
+      otherDocuments = <String>[];
+      json['otherDocuments'].forEach((v) {
+        otherDocuments!.add((v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

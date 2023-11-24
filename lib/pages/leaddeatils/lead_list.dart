@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -26,6 +27,7 @@ import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
@@ -74,8 +76,8 @@ class _LeadDashboard extends State<LeadDashboard> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData("",selectedPageNumber);
-    getAllEmployee();
+    ApiGetData("", selectedPageNumber);
+    //  getAllEmployee();
     super.initState();
   }
 
@@ -90,6 +92,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         children: [
           /// Header Part
           HeaderWidget(
+            isSearchVisible: true,
             onSearchTap: (value) {
               filterSearchResults(value);
             },
@@ -174,8 +177,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-                child: leadList(context)),
+            child: SingleChildScrollView(child: leadList(context)),
           ),
         ],
       ),
@@ -196,20 +198,26 @@ class _LeadDashboard extends State<LeadDashboard> {
     setState(() {});
   }
 
-  Future<void> ApiGetData(String URL,int pageNo) async {
+  Future<void> ApiGetData(String URL, int pageNo) async {
     isLoad = true;
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
+    print("Get All Leads :" +
+        ApiConstant.GET_ALL_LEAD +
+        "?page=${pageNo}&size=10&sortBy=id&sortDir=asc");
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?page=${pageNo}&size=10&sortBy=id&sortDir=asc",
+    final response = await dio.get(
+        ApiConstant.GET_ALL_LEAD +
+            "?page=${pageNo}&size=10&sortBy=id&sortDir=asc",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
         }));
     print(response.data);
     if (response.statusCode == 200) {
-      LeadListResponse leadList = LeadListResponse.fromJson(jsonDecode(response.data));
+      LeadListResponse leadList =
+          LeadListResponse.fromJson(jsonDecode(response.data));
       leadData.clear();
       finalLeadData.clear();
       convertedLead.clear();
@@ -231,9 +239,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             rejectedLead.add(element);
           }
         }
-        setState(() {
-
-        });
+        setState(() {});
       });
       print('this is ${leadData.length}');
 
@@ -280,6 +286,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   String? uploadedDocument;
+
   addLead(StateSetter stateSetter) {
     return Container(
       width: 408.w,
@@ -328,26 +335,23 @@ class _LeadDashboard extends State<LeadDashboard> {
             Center(
                 child: InkWell(
                     onTap: () async {
-                      pickFile(stateSetter,true);
+                      pickFile(stateSetter, true);
                     },
                     child: imgPath == ''
                         ? SvgPicture.asset('assets/upload_profile.svg',
                             height: 202.h, width: 202.w)
                         : CircleAvatar(
-                      radius: 75.0,
-                      backgroundImage:
-                      NetworkImage(imgPath.toString()),
-                      backgroundColor: Colors.transparent,
-                    )
-                )
-            ),
+                            radius: 75.0,
+                            backgroundImage: NetworkImage(imgPath.toString()),
+                            backgroundColor: Colors.transparent,
+                          ))),
             SizedBox(height: 16.h),
             _buildTextField(
                 'Company Name', 'Please Company name', _nameController),
             SizedBox(height: 16.h),
             _buildText(
-                '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}','Select Employee',
-                () async {
+                '${selectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+                'Select Employee', () async {
               int list = await showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -374,10 +378,10 @@ class _LeadDashboard extends State<LeadDashboard> {
                 _typeOfBusinessController),
             SizedBox(height: 16.h),
             _buildText(
-                '${uploadedDocument == null ? "Click here to select Photo" : uploadedDocument}','Document',
-                    () async {
-                      pickFile(stateSetter,false);
-                }),
+                '${uploadedDocument == null ? "Click here to select Photo" : uploadedDocument}',
+                'Document', () async {
+              pickFile(stateSetter, false);
+            }),
             SizedBox(height: 16.h),
             InkWell(
               onTap: _submitForm,
@@ -407,7 +411,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     );
   }
 
-  Widget _buildText(String label, String label1,Function onClick) {
+  Widget _buildText(String label, String label1, Function onClick) {
     return InkWell(
       onTap: () {
         onClick();
@@ -587,9 +591,9 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   filterIcon() {
     return Container(
-        width: 101.w,
+        width: 120.w,
         height: 43.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -602,22 +606,20 @@ class _LeadDashboard extends State<LeadDashboard> {
             children: [
               PopupMenuButton(
                 position: PopupMenuPosition.under,
-                icon:  SvgPicture.asset(
+                icon: SvgPicture.asset(
                   Images.filter,
                   height: 19.h,
                   width: 20.w,
                 ),
-                onSelected: (value) {
-
-                },
+                onSelected: (value) {},
                 itemBuilder: (ctx) => [
-                  _buildPopupMenu('Sort By Name A to Z',0),
-                  _buildPopupMenu('Sort By Name Z to A',1),
+                  _buildPopupMenu('Sort By Name A to Z', 0),
+                  _buildPopupMenu('Sort By Name Z to A', 1),
                 ],
               ),
               Text(
                 "Filter",
-                style:TextStyle(
+                style: TextStyle(
                   color: Colors.black,
                   fontSize: 20.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
@@ -631,22 +633,31 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   PopupMenuItem _buildPopupMenu(
-      String title, int? id,
-      ) {
+    String title,
+    int? id,
+  ) {
     return PopupMenuItem(
-      child: Text(title),
-      onTap: (){
-        if(id==0) {
-          finalLeadData.sort((b, a) => b.lead!.companyName!.compareTo(a.lead!.companyName!));
+      child: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16.sp,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
+            color: Colors.black),
+      ),
+      onTap: () {
+        if (id == 0) {
+          finalLeadData.sort(
+              (b, a) => b.lead!.companyName!.compareTo(a.lead!.companyName!));
           setState(() {});
-        }else{
-          finalLeadData.sort((a, b) => b.lead!.companyName!.compareTo(a.lead!.companyName!));
+        } else {
+          finalLeadData.sort(
+              (a, b) => b.lead!.companyName!.compareTo(a.lead!.companyName!));
           setState(() {});
         }
       },
     );
   }
-
 
   void _submitForm() async {
     String token = await LocalSharePreferences()
@@ -656,19 +667,19 @@ class _LeadDashboard extends State<LeadDashboard> {
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
-    DateTime dt = DateTime.now();
-    final finalDate = '${dt.day}/${dt.month}/${dt.year}})';
+    DateTime now = DateTime.now();
+    String finalDate = DateFormat("yyyy-MM-dd").format(now);
     print(finalDate);
 
     SaveLeadRequest saveEmploye = SaveLeadRequest();
-  _addressController.text = "pune";
+    _addressController.text = "pune";
     saveEmploye.addLogo = imgPath;
     saveEmploye.document = documentPath;
     saveEmploye.address = _addressController.text;
     saveEmploye.city = _addressController.text;
     saveEmploye.companyName = name;
     saveEmploye.coordinator = loginDeatils.data!.firstName;
-    saveEmploye.date = finalDate;
+    saveEmploye.date = GetDateFormat.getCurrentDate();
     saveEmploye.emailId = email;
     saveEmploye.isEnquiry = 0;
     saveEmploye.leadAssignedTo = selectedEmp;
@@ -678,11 +689,31 @@ class _LeadDashboard extends State<LeadDashboard> {
     saveEmploye.sourceOfLead = _sourceofleadController.text;
     saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
 
+    Map<String, dynamic> requestParameter = {
+      "addLogo": imgPath,
+      "address": _addressController.text,
+      "city": _addressController.text,
+      "companyName": name,
+      "coordinator": loginDeatils.data!.firstName,
+      "date": GetDateFormat.getCurrentDate(),
+      "document": documentPath,
+      "emailId": email,
+      "isEnquiry": 0,
+      "leadAddedBy": loginDeatils.data!.id,
+      "leadAssignedTo": selectedEmp,
+      "mobileNumber": phone,
+      "pinCode": "000000",
+      "sourceOfLead": _sourceofleadController.text,
+      "typeOfBusiness": _typeOfBusinessController.text
+    };
+    print(requestParameter);
+    var reqPara = jsonEncode(requestParameter);
+    print(reqPara);
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     //try{
     var response = await dio.post(ApiConstant.SAVE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()),
+        data: reqPara,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -697,7 +728,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         "isActive": true,
         "lead": postLead.data!.id,
         "nextFollowUpBy": selectedEmp,
-        "nextFollowupDate": "11/11/2023",
+        "nextFollowupDate": GetDateFormat.getNextDateOfCurrentDate(),
         "potential": 0,
         "status": "pending",
         "updatedByUser": loginDeatils.data!.id,
@@ -715,10 +746,11 @@ class _LeadDashboard extends State<LeadDashboard> {
       if (leadResponse.statusCode == 200) {
         print('done is done ');
       }
-      ApiGetData("",selectedPageNumber);
+      ApiGetData("", selectedPageNumber);
       Navigator.of(context).pop();
     } else {
-      ToastMessage.show(context, "Please try Again");
+      // ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     EasyLoading.dismiss();
     // }catch(e){
@@ -728,122 +760,142 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   leadList(BuildContext context) {
     return Container(
-            /*decoration: BoxDecoration(
+      /*decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
-            padding: EdgeInsets.all(20),
-            margin: EdgeInsets.only(left: 15.w),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextView(
-                      title: selectedLeadType == 'total'
-                          ? "All Leads"
-                          : selectedLeadType == 'pending'
-                              ? "Pending Leads"
-                              : selectedLeadType == 'converted'
-                                  ? "Converted Leads"
-                                  : "Rejected Leads",
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.black,
-                      fontSize: 30.sp,
-                    ),
-                    Container(
-                      width: 250.w,
-                      margin: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(onPressed: (){
-                              getPrevPage(selectedPageNumber);
-                            },
-                                icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                            Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                            GoogleFonts.poppins().fontFamily),),
-                            IconButton(onPressed: (){
-                              getNextPage(selectedPageNumber);
-                            },
-                                icon: Icon(Icons.arrow_forward_ios,size: 16,))
-                          ],
-                        ),
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(left: 15.w, right: 15.w),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextView(
+                title: selectedLeadType == 'total'
+                    ? "All Leads"
+                    : selectedLeadType == 'pending'
+                        ? "Pending Leads"
+                        : selectedLeadType == 'converted'
+                            ? "Converted Leads"
+                            : "Rejected Leads",
+                fontWeight: FontWeight.w600,
+                color: AppColor.black,
+                fontSize: 30.sp,
+              ),
+              Container(
+                width: 300.w,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.centerRight,
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            getPrevPage(selectedPageNumber);
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 16,
+                          )),
+                      Text(
+                        "Showing ${selectedPageNumber + 1}-10 out of ${totalElements} Results",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
                       ),
-                    ),
-                  ],
+                      InkWell(
+                          onTap: () {
+                            getNextPage(selectedPageNumber);
+                          },
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ))
+                    ],
+                  ),
                 ),
-                /*  Divider(
+              ),
+            ],
+          ),
+          /*  Divider(
             thickness: 0.5,
             color: Colors.grey,
           ),*/
-                SizedBox(
-                  height: 25.h,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: AppColor.white,
-                      borderRadius: BorderRadius.circular(10)),
-                  padding: EdgeInsets.all(20),
-                  child: finalLeadData.isEmpty
-                      ? Expanded(
-                          child: Container(
-                              height: MediaQuery.of(context).size.height - 400,
-                              child: Center(
-                                  child: TextView(
-                                      title: "No Record Found",
-                                      fontSize: 16.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900))))
-                      : Table(
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: [
-                            /// Table Header
-                            TableRow(
-                              /*decoration: BoxDecoration(
+          SizedBox(
+            height: 25.h,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+            padding: EdgeInsets.all(20),
+            child: finalLeadData.isEmpty
+                ? Expanded(
+                    child: Container(
+                        height: MediaQuery.of(context).size.height - 400,
+                        child: Center(
+                            child: TextView(
+                                title: "No Record Found",
+                                fontSize: 16.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w900))))
+                : Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    columnWidths: {
+                      0: FlexColumnWidth(50),
+                      1: FlexColumnWidth(40),
+                      2: FlexColumnWidth(40),
+                      3: FlexColumnWidth(40),
+                      4: FlexColumnWidth(50),
+                      5: FlexColumnWidth(30),
+                    },
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        /*decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
                           color: Colors.grey,
                           width: 0.5,
                         )),
                   ),*/
-                              children: [
-                                tableHeader("Name"),
-                                tableHeader("Client"),
-                                tableHeader("Project"),
-                                tableHeader("Contact"),
-                                tableHeader("Status"),
-                                tableHeader(""),
+                        children: [
+                          tableHeader("Name"),
+                          tableHeader("Client"),
+                          tableHeader("Project"),
+                          tableHeader("Contact"),
+                          tableHeader("Status"),
+                          tableHeader(""),
 
-                                /*if (!AppResponsive.isMobile(context))
+                          /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
                     tableHeader("Assign to"),
                     if (!AppResponsive.isMobile(context)) tableHeader(""),*/
-                              ],
-                            ),
+                        ],
+                      ),
 
-                            /// Table Data
+                      /// Table Data
 
-                            for (int i = 0; i < finalLeadData.length; i++)
-                              tableRow(context, finalLeadData[i],
-                                  name: finalLeadData[i].lead!.companyName,
-                                  color: Colors.blue,
-                                  image: leadData[i].lead!.addLogo,
-                                  client: finalLeadData[i].lead!.companyName,
-                                  project:
-                                      finalLeadData[i].lead!.typeOfBusiness,
-                                  contact: finalLeadData[i].lead!.mobileNumber,
-                                  // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
-                                  status: finalLeadData[i].status==null?"":finalLeadData[i].status!.toUpperCase(),
-                                  index: i),
-                          ],
-                        ),
-                ),
-              ],
-            ),
-          );
+                      for (int i = 0; i < finalLeadData.length; i++)
+                        tableRow(context, finalLeadData[i],
+                            name: finalLeadData[i].lead!.companyName,
+                            color: Colors.blue,
+                            image: leadData[i].lead!.addLogo,
+                            client: finalLeadData[i].lead!.companyName,
+                            project: finalLeadData[i].lead!.typeOfBusiness,
+                            contact: finalLeadData[i].lead!.mobileNumber,
+                            // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
+                            status: finalLeadData[i].status == null
+                                ? ""
+                                : finalLeadData[i].status!.toUpperCase(),
+                            index: i),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
   }
 
   TableRow tableRow(context, LeadData leadData,
@@ -901,7 +953,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           // TextView(title: status.toString(), fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.w300),
           Container(
             height: 27.h,
-            width: 70.w,
+            width: 85.w,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: status == "CONVERTED"
@@ -923,7 +975,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                             ? Colors.red
                             : Colors.amber),
                 SizedBox(
-                  width: 10.w,
+                  width: 5.w,
                 ),
                 Text(
                   status,
@@ -933,7 +985,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                         : status == "REJECTED"
                             ? Colors.red
                             : Colors.amber,
-                    fontSize: 15.sp,
+                    fontSize: 14.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w300,
                   ),
@@ -952,8 +1004,9 @@ class _LeadDashboard extends State<LeadDashboard> {
                               ? Colors.red
                               : Colors.amber),
                   onSelected: (value) {
-                    print("Final Status Value:"+value.toString());
-                    int lastLeadUpdateIndex = finalLeadData[index].leadUpdates!.length-1;
+                    print("Final Status Value:" + value.toString());
+                    int lastLeadUpdateIndex =
+                        finalLeadData[index].leadUpdates!.length - 1;
                     print("lastLeadUpdateIndex is ${lastLeadUpdateIndex}");
                     callChangeStatusApi(lastLeadUpdateIndex, value);
                     setState(() {
@@ -961,15 +1014,17 @@ class _LeadDashboard extends State<LeadDashboard> {
                     });
                   },
                   itemBuilder: (ctx) => [
-                    _buildPopupMenuItem('Converted',index),
-                    _buildPopupMenuItem('Pending',index),
-                    _buildPopupMenuItem('Rejected',index),
+                    _buildPopupMenuItem('Converted', index),
+                    _buildPopupMenuItem('Pending', index),
+                    _buildPopupMenuItem('Rejected', index),
                   ],
                 )
               ],
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               InkWell(
                   onTap: () {
@@ -981,8 +1036,8 @@ class _LeadDashboard extends State<LeadDashboard> {
               ),
               InkWell(
                   onTap: () {
-                 //  _showAlertDialog();
-                   editleadDilaog(leadData);
+                    //  _showAlertDialog();
+                    editleadDilaog(leadData);
                   },
                   child: Icon(Icons.edit, color: Colors.grey)),
             ],
@@ -1049,7 +1104,8 @@ class _LeadDashboard extends State<LeadDashboard> {
       leadData.removeAt(index);
       setState(() {});
     } else {
-      ToastMessage.show(context, "Please try Again");
+      // ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
   }
 
@@ -1200,7 +1256,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   editleadDilaog(LeadData leadData) {
- //   editselectedEmp = leadData.lead!.leadAssignedTo!.id!;
+    //   editselectedEmp = leadData.lead!.leadAssignedTo!.id!;
     _editnameController.text = leadData.lead!.companyName!;
     _editemailController.text = leadData.lead!.emailId!;
     _editphoneController.text = leadData.lead!.mobileNumber!;
@@ -1221,8 +1277,8 @@ class _LeadDashboard extends State<LeadDashboard> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return EditLeadLead(leadData,setState);
-              }),
+            return EditLeadLead(leadData, setState);
+          }),
         );
       },
     );
@@ -1276,7 +1332,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             Center(
                 child: InkWell(
                     onTap: () async {
-                      pickFile(stateSetter,true);
+                      pickFile(stateSetter, true);
                     },
                     child: imgPath == ''
                         ? SvgPicture.asset('assets/upload_profile.svg',
@@ -1294,8 +1350,8 @@ class _LeadDashboard extends State<LeadDashboard> {
                 'Company Name', 'Please Comapny name', _editnameController),
             SizedBox(height: 16.h),
             _buildText(
-                '${editselectedEmp == 0 ? "Select Employee " : "One Employee Selected"}','Select Employee',
-                () async {
+                '${editselectedEmp == 0 ? "Select Employee " : "One Employee Selected"}',
+                'Select Employee', () async {
               int list = await showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -1312,8 +1368,8 @@ class _LeadDashboard extends State<LeadDashboard> {
             _buildTextField(
                 'Email', 'Please enter your email ID', _editemailController),
             SizedBox(height: 16.h),
-            _buildTextField(
-                'Phone', 'Please enter your phone number', _editphoneController),
+            _buildTextField('Phone', 'Please enter your phone number',
+                _editphoneController),
             SizedBox(height: 16.h),
             _buildDropdownField('Source Of Lead', 'Please select',
                 _sourceofleadController, stateSetter),
@@ -1366,7 +1422,7 @@ class _LeadDashboard extends State<LeadDashboard> {
     SaveLeadRequest saveEmploye = SaveLeadRequest();
     saveEmploye.id = leadData.lead!.id;
     saveEmploye.companyName = name;
-    saveEmploye.coordinator = loginDeatils.data!.firstName ;
+    saveEmploye.coordinator = loginDeatils.data!.firstName;
     saveEmploye.emailId = email;
     saveEmploye.mobileNumber = phone;
     saveEmploye.address = _editaddressController.text;
@@ -1388,12 +1444,15 @@ class _LeadDashboard extends State<LeadDashboard> {
       PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
       Map<String, dynamic> parameter = {
         "date": GetDateFormat.getCurrentDate(),
+        "description": " Lead Created ",
+        "document": documentPath,
+        "isActive": true,
         "lead": postLead.data!.id,
         "nextFollowUpBy": editselectedEmp,
-        "potential": "10",
+        "nextFollowupDate": GetDateFormat.getNextDateOfCurrentDate(),
+        "potential": 0,
         "status": "Pending",
         "updatedByUser": loginDeatils.data!.id,
-        "description": " Lead Created "
       };
       var para = jsonEncode(parameter);
       var leadResponse = await dio.post(ApiConstant.SAVE_LEAD_UPDATe,
@@ -1406,9 +1465,10 @@ class _LeadDashboard extends State<LeadDashboard> {
         print('done is done ');
       }
       Navigator.pop(context);
-      ApiGetData("",selectedPageNumber);
+      ApiGetData("", selectedPageNumber);
     } else {
-      ToastMessage.show(context, "Please try Again");
+      // ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     EasyLoading.dismiss();
     // }catch(e){
@@ -1417,20 +1477,24 @@ class _LeadDashboard extends State<LeadDashboard> {
   }
 
   String? selectedStatus;
+
   PopupMenuItem _buildPopupMenuItem(
-    String title, int? id,
+    String title,
+    int? id,
   ) {
     return PopupMenuItem(
       child: Text(title),
-      onTap: (){
-        int lastLeadUpdateIndex = finalLeadData[id!].leadUpdates!.length-1;
-        print("lastLeadUpdateIndex is ${lastLeadUpdateIndex} and value is ${finalLeadData[id].leadUpdates![lastLeadUpdateIndex].id}");
-       callChangeStatusApi(finalLeadData[id].leadUpdates![lastLeadUpdateIndex].id!, title);
-        print("Final Title Value:"+title.toString());
+      onTap: () {
+        int lastLeadUpdateIndex = finalLeadData[id!].leadUpdates!.length - 1;
+        print(
+            "lastLeadUpdateIndex is ${lastLeadUpdateIndex} and value is ${finalLeadData[id].leadUpdates![lastLeadUpdateIndex].id}");
+        callChangeStatusApi(
+            finalLeadData[id].leadUpdates![lastLeadUpdateIndex].id!, title);
+        print("Final Title Value:" + title.toString());
         setState(() {
           selectedStatus = title;
         });
-        print("Final selected Value:"+selectedStatus.toString());
+        print("Final selected Value:" + selectedStatus.toString());
       },
     );
   }
@@ -1440,10 +1504,7 @@ class _LeadDashboard extends State<LeadDashboard> {
         .getString(SharedPreferencesConstant.AuthToken);
     EasyLoading.show(status: "Loading");
     print('the url is ${ApiConstant.UPDATE_LEAD_STATUS}');
-    Map<String, dynamic> parameter = {
-      "id": id,
-      "status": value.toString()
-    };
+    Map<String, dynamic> parameter = {"id": id, "status": value.toString()};
     print(parameter);
     var data = jsonEncode(parameter);
     Dio dio = Dio();
@@ -1456,9 +1517,10 @@ class _LeadDashboard extends State<LeadDashboard> {
     print('the response is ${response}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      ToastMessage.show(context, "Status updated");
-      ApiGetData('',selectedPageNumber);
-     // Navigator.of(context).pop();
+      // ToastMessage.show(context, "Status updated");
+      showCustomToast(context, "Status Updated", Icons.check, Colors.green);
+      ApiGetData('', selectedPageNumber);
+      // Navigator.of(context).pop();
     }
   }
 
@@ -1468,7 +1530,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   Uint8List? imageBytes;
   String? fileName;
 
-  pickFile(StateSetter stateSetter,bool isImg) async {
+  pickFile(StateSetter stateSetter, bool isImg) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     var result = await FilePicker.platform.pickFiles(
@@ -1484,12 +1546,15 @@ class _LeadDashboard extends State<LeadDashboard> {
         print(result.files.first.toString());
         imageBytes = result.files.first.bytes;
         print(fileName);
-        uploadedDocument = isImg?null:fileName;
+        uploadedDocument = isImg ? null : fileName;
         print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
         var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
         var request = new http.MultipartRequest("POST", postUri);
 
-        Map<String, String> headers = {"Content-Type": "multipart/form-data",'Authorization': 'Bearer ${token}'};
+        Map<String, String> headers = {
+          "Content-Type": "multipart/form-data",
+          'Authorization': 'Bearer ${token}'
+        };
         request.files.add(new http.MultipartFile(
             "image1", objFile!.readStream!, objFile!.size,
             filename: objFile!.name));
@@ -1503,17 +1568,23 @@ class _LeadDashboard extends State<LeadDashboard> {
           var jsonData = jsonDecode(value);
           ImgUploadResponse imgUploadResponse =
               ImgUploadResponse.fromJson(jsonData);
-          if(isImg){
-          imgPath = imgUploadResponse.data!;}else{
-          documentPath = imgUploadResponse.data!;}
-          print("Uploaded Img Path From s3 bucket::" + imgPath+"\ndocumentPath"+documentPath);
+          if (isImg) {
+            imgPath = imgUploadResponse.data!;
+          } else {
+            documentPath = imgUploadResponse.data!;
+          }
+          print("Uploaded Img Path From s3 bucket::" +
+              imgPath +
+              "\ndocumentPath" +
+              documentPath);
           stateSetter(() {});
         });
         print('the response is ${response}');
 
         EasyLoading.dismiss();
         if (response.statusCode == 200) {
-          ToastMessage.show(context, "Image uploaded");
+          // ToastMessage.show(context, "Image uploaded");
+          showCustomToast(context, "Image Uploaded", Icons.check, Colors.green);
         }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");
@@ -1524,22 +1595,22 @@ class _LeadDashboard extends State<LeadDashboard> {
   int selectedPageNumber = 0;
   int totalPages = 0;
   int totalElements = 0;
+
   void getPrevPage(selectedPageNumer) {
-    if(selectedPageNumber==0){
+    if (selectedPageNumber == 0) {
       ApiGetData("", selectedPageNumber);
-    }else
-    if(selectedPageNumber>0) {
+    } else if (selectedPageNumber > 0) {
       selectedPageNumber--;
       ApiGetData("", selectedPageNumber);
       setState(() {});
     }
   }
+
   void getNextPage(selectedPageNumer) {
-    if(selectedPageNumber<totalPages-1) {
+    if (selectedPageNumber < totalPages - 1) {
       selectedPageNumber++;
       ApiGetData("", selectedPageNumber);
       setState(() {});
     }
   }
-
 }

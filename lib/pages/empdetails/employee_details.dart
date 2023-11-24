@@ -2,18 +2,23 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
+import 'package:flutter_hr_management/organization/model/all_user_model.dart';
+import 'package:flutter_hr_management/organization/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,20 +42,22 @@ class _EmpDashboard extends State<EmpDashboard> {
   TextEditingController _addLeadController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-
-  List<EmpData>finalEmData=[];
-  List<EmpData>empData=[];
-  List<EmpData>activeEmpData=[];
-  List<EmpData>inActiveEmpData=[];
-  bool isLoad=false;
-  List<RoleData>dataRole=[];
-  int selectRole=0;
-  String selectedRole="Select Role";
+  List<EmpData> finalEmData = [];
+  List<EmpData> empData = [];
+  List<EmpData> activeEmpData = [];
+  List<EmpData> inActiveEmpData = [];
+  bool isLoad = false;
+  List<RoleData> dataRole = [];
+  int selectRole = 0;
+  String selectedRole = "Select Role";
+  EmpData? selectedEmpTOAdd;
 
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetDataDashbord("",selectedPageNumber);
+    ApiGetDataDashbord("", selectedPageNumber);
+    getEmployeeName();
+    foundEmp = EmployeeList..toSet().toList();
     super.initState();
   }
 
@@ -60,36 +67,88 @@ class _EmpDashboard extends State<EmpDashboard> {
       color: ThemeColor.baground,
       child: Column(
         children: [
-         HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
-         Container(
-           margin: EdgeInsets.all(30),
-           child: Row(
-             children: [
-               Text(
-                 'Employee Data',
-                 style: TextStyle(
-                   color: Colors.black,
-                   fontSize: 30.sp,
-                   fontFamily:GoogleFonts.poppins().fontFamily,
-                   fontWeight: FontWeight.w600,
-                   height: 0,
-                 ),
-               ),
-               Spacer(),
-               filterIcon(),
-               SizedBox(width: 18,)
-             ],
-           ),
-         ),
+          HeaderWidget(
+            isSearchVisible: true,
+            onSearchTap: (value) {
+              filterSearchResults(value);
+            },
+          ),
+          Container(
+            margin: EdgeInsets.all(30),
+            child: Row(
+              children: [
+                Text(
+                  'Employee Data',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w600,
+                    height: 0,
+                  ),
+                ),
+                Spacer(),
+                Row(
+                  children: [
+                    filterIcon(),
+                    SizedBox(
+                      width: 27.w,
+                    ),
+                    SizedBox(
+                      height: 58.h,
+                      width: 180.w,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _showAlertDialog();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: ThemeColor.theme_blue,
+                              onPrimary: Colors.white),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_circle,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 6.w,
+                              ),
+                              TextView(
+                                title: "Add Employee",
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ],
+                          )),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  width: 18,
+                )
+              ],
+            ),
+          ),
           Container(
             child: Row(
               children: [
-                SizedBox(width: 38.w,),
-                empCounts("${totalElements}","Total Employee",Images.emp_tot,Color(0xFFEAF8F4),true),
-                SizedBox(width: 38.w,),
-                empCounts("${activeEmpData.length}","Active Employee",Images.emp_tot,Color(0xFFFFEDF9),false),
-                SizedBox(width: 38.w,),
-                empCounts("${inActiveEmpData.length}","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5),false),
+                SizedBox(
+                  width: 38.w,
+                ),
+                empCounts("${totalElements}", "Total Employee", Images.emp_tot,
+                    Color(0xFFEAF8F4), true),
+                SizedBox(
+                  width: 38.w,
+                ),
+                empCounts("${activeEmpData.length}", "Active Employee",
+                    Images.emp_tot, Color(0xFFFFEDF9), false),
+                SizedBox(
+                  width: 38.w,
+                ),
+                empCounts("${inActiveEmpData.length}", "Inactive Employee",
+                    Images.emp_tot, Color(0xFFFEF0E5), false),
               ],
             ),
           ),
@@ -100,16 +159,20 @@ class _EmpDashboard extends State<EmpDashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  selectedEmpList=="Total"?"Employee List":selectedEmpList=="Active"?"Active Employees":"InActive Employees",
+                  selectedEmpList == "Total"
+                      ? "Employee List"
+                      : selectedEmpList == "Active"
+                          ? "Active Employees"
+                          : "InActive Employees",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColor.black,
                     fontSize: 30.sp,
-                    fontFamily:GoogleFonts.poppins().fontFamily,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
                   ),
                 ),
                 Container(
-                  width: 250.w,
+                  width: 300.w,
                   height: 50.h,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   alignment: Alignment.centerRight,
@@ -118,16 +181,29 @@ class _EmpDashboard extends State<EmpDashboard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(onPressed: (){
-                          getPrevPage(selectedPageNumber);
-                        },
-                            icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                        Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                        GoogleFonts.poppins().fontFamily),),
-                        IconButton(onPressed: (){
-                          getNextPage(selectedPageNumber);
-                        },
-                            icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                        InkWell(
+                            onTap: () {
+                              getPrevPage(selectedPageNumber);
+                            },
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 16,
+                            )),
+                        Text(
+                          "Showing ${selectedPageNumber + 1}-10 out of ${totalElements} Results",
+                          style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: GoogleFonts.poppins().fontFamily),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              getNextPage(selectedPageNumber);
+                            },
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                            ))
                       ],
                     ),
                   ),
@@ -137,55 +213,83 @@ class _EmpDashboard extends State<EmpDashboard> {
           ),
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(left: 30,right: 38),
-              child: isLoad?Center(child: CircularProgressIndicator(),) :Container(
-               // height: 350,
-                decoration: BoxDecoration(
-                    color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      finalEmData.isEmpty
-                          ? Expanded(
-                          child: Container(
-                              height:
-                              MediaQuery.of(context).size.height - 600,
-                              child: Center(
-                                  child: TextView(
-                                      title: "No Record Found",
-                                      fontSize: 16.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900))))
-                          : Table(
-                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          /// Table Header
-                          TableRow(
+                margin: EdgeInsets.only(left: 30, right: 38),
+                child: isLoad
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(
+                        // height: 350,
+                        decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: SingleChildScrollView(
+                          child: Column(
                             children: [
-                              tableHeader("Name"),
-                              if (!AppResponsive.isMobile(context))
-                                tableHeader("Designation"),
-                              tableHeader("Mail"),
-                              tableHeader("Contact"),
-                              if (!AppResponsive.isMobile(context)) tableHeader(""),
+                              finalEmData.isEmpty
+                                  ? Expanded(
+                                      child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height -
+                                              600,
+                                          child: Center(
+                                              child: TextView(
+                                                  title: "No Record Found",
+                                                  fontSize: 16.sp,
+                                                  color: Colors.black,
+                                                  fontWeight:
+                                                      FontWeight.w900))))
+                                  : Table(
+                                      defaultVerticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      columnWidths: {
+                                        0: FlexColumnWidth(50),
+                                        1: FlexColumnWidth(40),
+                                        2: FlexColumnWidth(40),
+                                        3: FlexColumnWidth(40),
+                                        4: FlexColumnWidth(40),
+                                        5: FlexColumnWidth(40),
+                                      },
+                                      children: [
+                                        /// Table Header
+                                        TableRow(
+                                          children: [
+                                            tableHeader("Name"),
+                                            if (!AppResponsive.isMobile(
+                                                context))
+                                              tableHeader("Designation"),
+                                            if (!AppResponsive.isMobile(
+                                                context))
+                                              tableHeader("Mail"),
+                                            tableHeader("Contact"),
+                                            tableHeader("Details"),
+                                            if (!AppResponsive.isMobile(
+                                                context))
+                                              tableHeader("Action"),
+                                          ],
+                                        ),
+                                        for (int i = 0;
+                                            i < finalEmData.length;
+                                            i++)
+                                          tableRow(context,
+                                              name: finalEmData[i].firstName! +
+                                                  " " +
+                                                  finalEmData[i].lastName!,
+                                              color: Colors.blue,
+                                              image: finalEmData[i].image,
+                                              designation:
+                                                  finalEmData[i].designation,
+                                              status:
+                                                  finalEmData[i].contact,
+                                              index: i,
+                                              email: finalEmData[i].emailId),
+                                      ],
+                                    ),
                             ],
                           ),
-                          for (int i=0;i<finalEmData.length;i++)  tableRow(
-                              context,
-                              name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
-                              color: Colors.blue,
-                              image: finalEmData[i].image,
-                              designation: finalEmData[i].designation,
-                              status: finalEmData[i].mobileNumber,
-                              index: i,
-                              email: finalEmData[i].emailId
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              )),
+                        ),
+                      )),
           ),
         ],
       ),
@@ -197,7 +301,8 @@ class _EmpDashboard extends State<EmpDashboard> {
     finalEmData.clear();
     debugPrint('Total leads : ${empData.length}');
     empData.forEach((element) {
-      if(element.firstName!.contains(query) || element.mobileNumber!.contains(query)){
+      if (element.firstName!.contains(query) ||
+          element.mobileNumber!.contains(query)) {
         finalEmData.add(element);
       }
     });
@@ -205,29 +310,36 @@ class _EmpDashboard extends State<EmpDashboard> {
     setState(() {});
   }
 
-
   EmployeeListResponse? employeeListResponse;
-  Future<void> ApiGetDataDashbord(String URL,int pNo) async{
+
+  Future<void> ApiGetDataDashbord(String URL, int pNo) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    isLoad=true;
-    setState(() {
-    });
+    isLoad = true;
+    setState(() {});
     Dio dio = Dio();
-    var roleResponse =await dio.get(ApiConstant.GET_ALL_ROLES,options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
+    var roleResponse = await dio.get(ApiConstant.GET_ALL_ROLES,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
 
-    if(roleResponse.statusCode==200){
-      RoleResponse role=RoleResponse.fromJson(jsonDecode(roleResponse.data));
+    if (roleResponse.statusCode == 200) {
+      RoleResponse role = RoleResponse.fromJson(jsonDecode(roleResponse.data));
       dataRole.addAll(role!.data!);
       print('the data is ${dataRole.length}');
     }
 
-    final response = await dio.get(ApiConstant.BASE_URL+"api/Employee/getByPages?page=${pNo}&size=10",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
+    final response = await dio.get(
+        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${pNo}&size=10",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print(response.data);
-    if(response.statusCode==200){
-      employeeListResponse =EmployeeListResponse.fromJson(jsonDecode(response.data));
+    if (response.statusCode == 200) {
+      employeeListResponse =
+          EmployeeListResponse.fromJson(jsonDecode(response.data));
       finalEmData.clear();
       activeEmpData.clear();
       inActiveEmpData.clear();
@@ -243,22 +355,20 @@ class _EmpDashboard extends State<EmpDashboard> {
           activeEmpData.add(element);
         } else {
           inActiveEmpData.add(element);
-
         }
       });
       Constants.allEmployee.clear();
       Constants.allEmployee.addAll(employeeListResponse!.data!.content!);
-      isLoad=false;
-      setState(() {
-      });
+      isLoad = false;
+      setState(() {});
     }
   }
 
   filterIcon() {
     return Container(
-        width: 101.w,
+        width: 120.w,
         height: 43.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -271,22 +381,20 @@ class _EmpDashboard extends State<EmpDashboard> {
             children: [
               PopupMenuButton(
                 position: PopupMenuPosition.under,
-                icon:  SvgPicture.asset(
+                icon: SvgPicture.asset(
                   Images.filter,
                   height: 19.h,
                   width: 20.w,
                 ),
-                onSelected: (value) {
-
-                },
+                onSelected: (value) {},
                 itemBuilder: (ctx) => [
-                  _buildPopupMenuItem('Sort By Name A to Z',0),
-                  _buildPopupMenuItem('Sort By Name Z to A',1),
+                  _buildPopupMenuItem('Sort By Name A to Z', 0),
+                  _buildPopupMenuItem('Sort By Name Z to A', 1),
                 ],
               ),
               Text(
                 "Filter",
-                style:TextStyle(
+                style: TextStyle(
                   color: Colors.black,
                   fontSize: 20.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
@@ -300,15 +408,24 @@ class _EmpDashboard extends State<EmpDashboard> {
   }
 
   PopupMenuItem _buildPopupMenuItem(
-      String title, int? id,
-      ) {
+    String title,
+    int? id,
+  ) {
     return PopupMenuItem(
-      child: Text(title),
-      onTap: (){
-        if(id==0) {
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: AppColor.black,
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        ),
+      ),
+      onTap: () {
+        if (id == 0) {
           finalEmData.sort((b, a) => b.firstName!.compareTo(a.firstName!));
           setState(() {});
-        }else{
+        } else {
           finalEmData.sort((a, b) => b.firstName!.compareTo(a.firstName!));
           setState(() {});
         }
@@ -316,68 +433,143 @@ class _EmpDashboard extends State<EmpDashboard> {
     );
   }
 
-  addemp() {
-    return  Container(
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return addemp(setState);
+          }),
+        );
+      },
+    );
+  }
+
+  List<dynamic> foundEmp = [];
+  List<dynamic> uniqueFoundEmp = [];
+  List<dynamic> EmployeeList = [];
+
+  getEmployeeName() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    isLoad = true;
+    setState(() {});
+    Dio dio = Dio();
+    final response = await dio.get(
+        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${0}&size=1000",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    if (response.statusCode == 200) {
+      employeeListResponse =
+          EmployeeListResponse.fromJson(jsonDecode(response.data));
+      employeeListResponse!.data!.content!.forEach((element) {
+        EmployeeList.add(
+            element.firstName.toString() + " " + element.lastName.toString());
+      });
+      foundEmp = EmployeeList.toSet().toList();
+    }
+    setState(() {});
+  }
+
+  // This function is called whenever the text field changes
+  void _runFilter(String enteredKeyword, StateSetter stateSetter) {
+    List<dynamic> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = EmployeeList;
+    } else {
+      results = EmployeeList.where((user) =>
+          user.toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
+    }
+    stateSetter(() {
+      foundEmp = results.toSet().toList();
+    });
+  }
+
+  addemp(StateSetter stateSetter) {
+    return Container(
+      width: 350.w,
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Text(
-            "Add New Employee",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColor.black,
-              fontSize: 22,
-            ),
-          )),
-          SizedBox(height: 16),
-          _buildTextField('Frist Name', _nameController),
-          SizedBox(height: 16),
-          _buildTextField('Last Name', _lastnameController),
-          SizedBox(height: 16),
-          _buildTextField('Email', _emailController),
-          SizedBox(height: 16),
-          _buildTextField('Phone', _phoneController),
-          /*Row(
-            children: [
-              Expanded(
-                child: _buildTextField('Email', _emailController),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: _buildTextField('Phone', _phoneController),
-              ),
-            ],
-          ),*/
-          SizedBox(height: 16),
-          _buildTextField('Address', _addLeadController),
-          SizedBox(height: 16),
-          _buildTextField('Password', _passwordController),
-          SizedBox(height: 16),
-          _buildText(selectedRole),
-          SizedBox(height: 16),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.close)),
+          TextField(
+            onChanged: (value) => _runFilter(value, stateSetter),
+            decoration: const InputDecoration(
+                labelText: 'Search', suffixIcon: Icon(Icons.search)),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            height: 500,
+            width: 300,
+            child: foundEmp.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: foundEmp.length,
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        ListTile(
+                          onTap: () {
+                            empData.forEach((element) {
+                              if (foundEmp[index] ==
+                                  "${element.firstName} ${element.lastName}") {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Simple Alert"),
+                                      content:
+                                          Text("This is an alert message."),
+                                      actions: [
+                                        TextButton(
+                                          child: Text("Add"),
+                                          onPressed: () {
+                                            addToTKDConnect(element, stateSetter);
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text("Cancel"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            });
 
-          InkWell(
-            onTap: _submitForm,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColor.yellow,
-                  borderRadius: BorderRadius.circular(100)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.black),
-                ),
-              ),
-            ),
-          )
+                            // Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
+                          },
+                          title: Text(foundEmp[index]),
+                        ),
+                      ],
+                    ),
+                  )
+                : const Text(
+                    'No results found',
+                    style: TextStyle(fontSize: 18),
+                  ),
+          ),
         ],
       ),
     );
@@ -405,7 +597,7 @@ class _EmpDashboard extends State<EmpDashboard> {
 
   Widget _buildText(String label) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -425,45 +617,49 @@ class _EmpDashboard extends State<EmpDashboard> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Center(
-            child: Text(
-              label
-            ),
+            child: Text(label),
           ),
         ),
       ),
     );
   }
 
-  void _submitForm() async{
+  void _submitForm() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
     String addLead = _addLeadController.text.toString();
-    String lastName=_lastnameController.text.toString();
-    SaveEmploye saveEmploye=SaveEmploye();
-    saveEmploye.firstName=name;
-    saveEmploye.lastName=lastName;
-    saveEmploye.os="Web";
-    saveEmploye.emailId=email;
-    saveEmploye.address=addLead;
-    saveEmploye.mobileNumber=phone;
-    saveEmploye.role=selectRole;
-    saveEmploye.password=_passwordController.text;
-    Dio dio=Dio();
-    var response=await dio.post(ApiConstant.SAVE_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
-    'Authorization': 'Bearer ${token}',}));
-    if(response.statusCode==200){
-     setState(() {
-       ApiGetDataDashbord("",selectedPageNumber);
-     });
-    }else{
-      ToastMessage.show(context, "Not Added Sucessfully");
+    String lastName = _lastnameController.text.toString();
+    SaveEmploye saveEmploye = SaveEmploye();
+    saveEmploye.firstName = name;
+    saveEmploye.lastName = lastName;
+    saveEmploye.os = "Web";
+    saveEmploye.emailId = email;
+    saveEmploye.address = addLead;
+    saveEmploye.mobileNumber = phone;
+    saveEmploye.role = selectRole;
+    saveEmploye.password = _passwordController.text;
+    Dio dio = Dio();
+    var response = await dio.post(ApiConstant.SAVE_EMP,
+        data: jsonEncode(saveEmploye.toJson()),
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    if (response.statusCode == 200) {
+      setState(() {
+        ApiGetDataDashbord("", selectedPageNumber);
+      });
+    } else {
+      //  ToastMessage.show(context, "Not Added Sucessfully");
+      showCustomToast(
+          context, "Not Added Successfully", Icons.clear, Colors.red);
     }
   }
 
-  empdeatils(){
+  /* empdeatils(){
     return isLoad?Center(child: CircularProgressIndicator(),) :Container(
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(5)),
@@ -480,7 +676,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                     tableHeader("Designation"),
                   tableHeader("Mail"),
                   tableHeader("Contact"),
-                  if (!AppResponsive.isMobile(context)) tableHeader(""),
+                  if (!AppResponsive.isMobile(context)) tableHeader("Action"),
                 ],
               ),
               for (int i=0;i<finalEmData.length;i++)  tableRow(
@@ -500,66 +696,105 @@ class _EmpDashboard extends State<EmpDashboard> {
         ],
       ),
     );
-  }
+  }*/
 
-  TableRow tableRow(context, {name, image, designation, status, color,index,email}) {
-    return TableRow(
-
-        children: [
-          //Full Name
-          InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => EmpInfo(empData: finalEmData[index])));
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 15.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 35.w,
-                  ),
-                  getImage(image,height: 30.h,width: 30.w),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  Center(child: Text(name,style: tableRowStyle()))
-                ],
+  TableRow tableRow(context,
+      {name, image, designation, status, color, index, email}) {
+    return TableRow(children: [
+      //Full Name
+      InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EmpInfo(empData: finalEmData[index])));
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 15.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 35.w,
               ),
+              getImage(image, height: 30.h, width: 30.w),
+              SizedBox(
+                width: 10.w,
+              ),
+              Center(child: Text(name, style: tableRowStyle()))
+            ],
+          ),
+        ),
+      ),
+      // Designation
+      if (!AppResponsive.isMobile(context))
+        Center(
+            child: Text(
+          designation,
+          style: tableRowStyle(),
+        )),
+      if (!AppResponsive.isMobile(context))
+        Center(child: Text(email, style: tableRowStyle())),
+      Center(child: Text(status, style: tableRowStyle())),
+
+      if (!AppResponsive.isMobile(context))
+        Center(
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          EmpInfo(empData: finalEmData[index])));
+            },
+            child: Text(
+              "View",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w300,
+                  height: 0,
+                  decoration: TextDecoration.underline),
             ),
           ),
-          // Designation
-          if (!AppResponsive.isMobile(context)) Center(child: Text(designation,style: tableRowStyle(),)),
-          if (!AppResponsive.isMobile(context)) Center(child: Text(email,style: tableRowStyle())),
-          Center(child: Text(status,style: tableRowStyle())),
-          // Menu icon
-            Row(
-              children: [
-
-                InkWell(
-                  onTap: (){
-                    editEmp(index);
-
-                  },
-                  child: Icon(Icons.edit,size: 20,color: Colors.grey,),
-                ),
-                SizedBox(width: 7,),
-                InkWell(
-                  onTap: (){
-
-                    showAlertDialog(context,index);
-                  },
-                  child: Icon(Icons.delete,size: 20,color: Colors.red,),
-                ),
-
-
-              ],
-            )
-        ]);
+        ),
+      // Menu icon
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              editEmp(index);
+            },
+            child: Icon(
+              Icons.edit,
+              size: 20,
+              color: Colors.grey,
+            ),
+          ),
+          SizedBox(
+            width: 7,
+          ),
+          InkWell(
+            onTap: () {
+              showAlertDialog(context, index);
+            },
+            child: Icon(
+              Icons.delete,
+              size: 20,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      ),
+    ]);
   }
 
-  TextStyle tableRowStyle(){
+  TextStyle tableRowStyle() {
     return TextStyle(
       color: Colors.black,
       fontSize: 16.sp,
@@ -575,17 +810,21 @@ class _EmpDashboard extends State<EmpDashboard> {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 18.sp),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColor.black,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontSize: 18.sp),
         ),
       ),
     );
   }
 
-  showAlertDialog(BuildContext context,int index) {
+  showAlertDialog(BuildContext context, int index) {
     // set up the button
     Widget okButton = TextButton(
       child: Text("Ok"),
-      onPressed: () async{
+      onPressed: () async {
         callDelete(index);
         Navigator.pop(context);
       },
@@ -595,7 +834,6 @@ class _EmpDashboard extends State<EmpDashboard> {
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
-
       },
     );
 
@@ -603,10 +841,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     AlertDialog alert = AlertDialog(
       title: Text("Delete !"),
       content: Text("Do you want to delete this lead ?"),
-      actions: [
-        okButton,
-        cancelButton
-      ],
+      actions: [okButton, cancelButton],
     );
 
     // show the dialog
@@ -618,20 +853,24 @@ class _EmpDashboard extends State<EmpDashboard> {
     );
   }
 
-  void callDelete(int index) async{
-    Dio dio=Dio();
+  void callDelete(int index) async {
+    Dio dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    var response=await dio.delete(ApiConstant.EMP_DELTEB,queryParameters: {"id":finalEmData[index].id},options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
-    if(response.statusCode==200){
+    var response = await dio.delete(ApiConstant.EMP_DELTEB,
+        queryParameters: {"id": finalEmData[index].id},
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    if (response.statusCode == 200) {
       finalEmData.removeAt(index);
       empData.remove(index);
-      setState(() {
-      });
-      ApiGetDataDashbord("",selectedPageNumber);
-    }else{
-      ToastMessage.show(context, "Please try Again");
+      setState(() {});
+      ApiGetDataDashbord("", selectedPageNumber);
+    } else {
+      // ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
   }
 
@@ -644,12 +883,11 @@ class _EmpDashboard extends State<EmpDashboard> {
         itemCount: dataRole.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
-            onTap: (){
-              selectRole=dataRole[index].id!;
-              selectedRole=dataRole[index].name!;
+            onTap: () {
+              selectRole = dataRole[index].id!;
+              selectedRole = dataRole[index].name!;
               Navigator.pop(context);
-              setState(() {
-              });
+              setState(() {});
             },
             child: ListTile(
               title: Text(dataRole[index].name!),
@@ -662,24 +900,24 @@ class _EmpDashboard extends State<EmpDashboard> {
 
   String selectedEmpList = "Total";
 
-  empCounts(String totCount,String name,String image,Color color, bool isSelected){
+  empCounts(String totCount, String name, String image, Color color,
+      bool isSelected) {
     return InkWell(
-      onTap: (){
-        if(name=="Active Employee"){
+      onTap: () {
+        if (name == "Active Employee") {
           finalEmData.clear();
           finalEmData.addAll(activeEmpData);
           selectedEmpList = "Active";
-        }else if(name=="Inactive Employee"){
+        } else if (name == "Inactive Employee") {
           finalEmData.clear();
           finalEmData.addAll(inActiveEmpData);
           selectedEmpList = "InActive";
-        }else{
+        } else {
           finalEmData.clear();
           finalEmData.addAll(empData);
           selectedEmpList = "Total";
         }
-        setState(() {
-        });
+        setState(() {});
       },
       child: Container(
         width: 329.w,
@@ -689,7 +927,6 @@ class _EmpDashboard extends State<EmpDashboard> {
           shape: RoundedRectangleBorder(
             side: BorderSide(width: 0.50, color: Color(0xFFC3262C)),
             borderRadius: BorderRadius.circular(10),
-
           ),
         ),
         child: Row(
@@ -700,14 +937,17 @@ class _EmpDashboard extends State<EmpDashboard> {
                 width: 108.w,
                 height: 110.h,
                 decoration: ShapeDecoration(
-                  color: color,//Color(0xFFEAF8F4)
+                  color: color, //Color(0xFFEAF8F4)
                   shape: CircleBorder(),
-
                 ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SvgPicture.asset(image,height: 10.h,width: 10.w,),
-              ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SvgPicture.asset(
+                    image,
+                    height: 10.h,
+                    width: 10.w,
+                  ),
+                ),
               ),
             ),
             Column(
@@ -715,20 +955,16 @@ class _EmpDashboard extends State<EmpDashboard> {
               children: [
                 Text(
                   totCount,
-                    style: TextStyle(
-                      fontSize: 35.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-
-
+                  style: TextStyle(
+                    fontSize: 35.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                Text(
-                    name,
+                Text(name,
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w300,
-                    )
-                )
+                    ))
               ],
             )
           ],
@@ -737,7 +973,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     );
   }
 
-  editEmp(int index) async{
+  editEmp(int index) async {
     await showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -750,32 +986,97 @@ class _EmpDashboard extends State<EmpDashboard> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return EditEmployee(empData: finalEmData[index]);
-              }),
+            return EditEmployee(empData: finalEmData[index]);
+          }),
         );
       },
     );
-    ApiGetDataDashbord("",selectedPageNumber);
+    ApiGetDataDashbord("", selectedPageNumber);
   }
 
   int selectedPageNumber = 0;
   int totalPages = 0;
   int totalElements = 0;
+
   void getPrevPage(selectedPageNumer) {
-    if(selectedPageNumber==0){
+    if (selectedPageNumber == 0) {
       ApiGetDataDashbord("", selectedPageNumber);
-    }else
-    if(selectedPageNumber>0) {
+    } else if (selectedPageNumber > 0) {
       selectedPageNumber--;
       ApiGetDataDashbord("", selectedPageNumber);
       setState(() {});
     }
   }
+
   void getNextPage(selectedPageNumer) {
-    if(selectedPageNumber<totalPages-1) {
+    if (selectedPageNumber < totalPages - 1) {
       selectedPageNumber++;
       ApiGetDataDashbord("", selectedPageNumber);
       setState(() {});
+    }
+  }
+
+  Future<void> addToTKDConnect(
+      EmpData selectedEmp, StateSetter stateSetter) async {
+    Map<String, dynamic> requestParameter = {
+      "aadharCard": 'string',
+      "aadharCardForVerification": "string",
+      "alternativeNumber": selectedEmp.contact,
+      "city": selectedEmp.address,
+      "companyAddress": "pune",
+      "companyId": 1,
+      "companyLogo": "string",
+      "companyName": "string",
+      "country": "India",
+      "deviceId": "string",
+      "emailId": selectedEmp.emailId,
+      "firstName": selectedEmp.firstName,
+      "idOfMainBranch": 0,
+      "isPaid": 0,
+      "isUserVerifiedByCompany": 0,
+      "landlineNumber": selectedEmp.contact,
+      "lastName": selectedEmp.lastName,
+      "loggedTime": GetDateFormat.getCurrentDate(),
+      "loggedUserName": "string",
+      "mainBranch": 0,
+      "mobileNumber": selectedEmp.contact,
+      "numberOfTimesRating": 3,
+      "os": "string",
+      "otp": "string",
+      "paidStartDate": "string",
+      "panCardForVerification": "string",
+      "password": "string",
+      "preferredRouresEntered": 0,
+      "profilePicture": "string",
+      "ratings": 0,
+      "state": "Maharastra",
+      "transporterOrAgent": 0,
+      "userName": "string",
+      "validTill": "string",
+      "verified": 0,
+      "website": "string"
+    };
+    print(requestParameter);
+    var reqPara = jsonEncode(requestParameter);
+    print(reqPara);
+    EasyLoading.show(status: "Loading");
+    Dio dio = Dio();
+    print("Add User Url :" + AppConstants.REGISTRATION);
+    var response = await dio.post(
+      AppConstants.REGISTRATION,
+      data: reqPara,
+    );
+    print('Save User Response is: ${response.data}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      showCustomToast(
+          context, "Employee added successfully", Icons.check, Colors.green);
+      Navigator.of(context).pop();
+      // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
+    } else {
+      showCustomToast(
+          context, response.statusMessage.toString(), Icons.clear, Colors.red);
+      Navigator.of(context).pop();
     }
   }
 }

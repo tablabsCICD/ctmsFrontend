@@ -6,6 +6,7 @@ class AppRoutes{
   static const lead_dashbord = '/leaddash';
   static const customer="/customer";
   static const report="/report";
+  static const empReport="/employeeReport";
 
   static const profile="/profile";
   static const entry="/entryScreen";

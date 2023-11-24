@@ -25,6 +25,7 @@ import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
@@ -142,6 +143,29 @@ class _LoadListState extends State<LoadList> {
                                           });
                                         },
                                       ),
+                                      SizedBox(
+                                        width: 25.w,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          model.getSearchByNameList(
+                                              '', selectedFromCity!, selectedToCity!);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.black,
+                                          onPrimary: Colors.white,
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 0),
+                                          child: CustomText("Search",
+                                              style: Style.button),
+                                        ),
+                                      ),
                                       /*ElevatedButton(
                                   onPressed: () {
                                     model.getSearchByNameList('',
@@ -169,14 +193,14 @@ class _LoadListState extends State<LoadList> {
                               Spacer(),
                               Row(
                                 children: [
-                                  filterIconButton(),
+                                  filterIcon(model),
                                   SizedBox(
                                     width: 27.w,
                                   ),
-                                  SvgPicture.asset('assets/more_icon.svg'),
+                                 /* SvgPicture.asset('assets/more_icon.svg'),
                                   SizedBox(
                                     width: 27.w,
-                                  ),
+                                  ),*/
                                 ],
                               ),
                             ],
@@ -189,9 +213,9 @@ class _LoadListState extends State<LoadList> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          getContainer("All Loads",0,model.allUserList.length.toString(), Color(0xffEAF8F4),'assets/org/all_load.svg'),
-                          getContainer("Full Loads",1,model.fullLoadPostCount.toString(), Color(0xffFFEDF9),'assets/org/full_load.svg'),
-                          getContainer("Part Loads",3, model.buySellPostCount.toString(), Color(0xffFEF0E5),'assets/org/part_load.svg'),
+                          getContainer(model,"All Loads",0,model.fullLoadPostCount.toString(), Color(0xffEAF8F4),'assets/org/all_load.svg'),
+                          getContainer(model,"Full Loads",1,model.fullLoadCount.toString(), Color(0xffFFEDF9),'assets/org/full_load.svg'),
+                          getContainer(model,"Part Loads",3, model.partLoadCount.toString(), Color(0xffFEF0E5),'assets/org/part_load.svg'),
                         ],
                       ),
                     ),
@@ -507,9 +531,11 @@ class _LoadListState extends State<LoadList> {
           ),
     );
   }
-  getContainer(String title, int value,String count, Color bgColor, String img) {
+  getContainer(OrgProvider model,String title, int value,String count, Color bgColor, String img) {
     return InkWell(
-     onTap: (){},
+     onTap: (){
+       model.getFilterFullLoadList(title);
+     },
       child:  Container(
         width: 329.w,
         height: 162.h,
@@ -563,4 +589,71 @@ class _LoadListState extends State<LoadList> {
       ),
     );
   }
+
+  filterIcon(OrgProvider model) {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon:  SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {
+
+                },
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('All Loads',0,model),
+                  _buildPopupMenu('Full Load Available',1,model),
+                  _buildPopupMenu('Full Load Required',2,model),
+                  _buildPopupMenu('Part Load Available',3,model),
+                  _buildPopupMenu('Part Load Required',4,model),
+                ],
+              ),
+              Text(
+                "Filter",
+                style:TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title, int? id,OrgProvider model
+      ) {
+    return PopupMenuItem(
+      child: Text(title, style: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w500,
+          color: Colors.black),),
+      onTap: (){
+        setState(() {
+          selectedTab = title;
+          model.getFilterFullLoadList(title);
+        });
+      },
+    );
+  }
+
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/model/request/update_emp.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
@@ -50,7 +51,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            HeaderWidget(),
+            HeaderWidget(isSearchVisible:true,),
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 30,vertical: 30),
@@ -349,7 +350,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
 
         EasyLoading.dismiss();
         if (response.statusCode == 200) {
-          ToastMessage.show(context, "Image uploaded");
+         // ToastMessage.show(context, "Image uploaded");
+          showCustomToast(context, "Image Updated", Icons.check, Colors.green);
         }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");
@@ -374,7 +376,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
       'Authorization': 'Bearer ${token}',}));
     print(response);
     if(response.statusCode==200){
-      ToastMessage.show(context, "Emp Edit Success");
+     // ToastMessage.show(context, "Emp Edit Success");
+      showCustomToast(context, "Emp Edit Success", Icons.check, Colors.green);
     }
 
   }

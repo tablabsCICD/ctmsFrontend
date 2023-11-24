@@ -4,7 +4,10 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/organization/company/all_bids.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
+import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:number_pagination/number_pagination.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
@@ -58,25 +61,45 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ThemeColor.baground,
-        body:Row(
-            children: [
-            if (AppResponsive.isDesktop(context))
-            Expanded(
-              child: CompanySideBar(),
+        body: Stack(
+          children: [
+            Row(
+              children: [
+                if (AppResponsive.isDesktop(context))
+                  Expanded(
+                    child: CompanySideBar(),
+                  ),
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    children: [
+                      HeaderWidget(
+                        isSearchVisible: false,
+                        onSearchTap: () {},
+                      ),
+                      SizedBox(height: 16.h,),
+                      Expanded(child: BidList(widget.organization)),
+                    ],
+                  ),
+                ),
+              ],
             ),
-
-    /// Main Body Part
-            Expanded(
-              flex: 4,
-              child: Column(
-                children: [
-                  HeaderWidget(),
-                  Expanded(child: BidList(widget.organization,)),
-                ]
-              )
-            ),]
-      ),
-    );
+            Positioned(
+              top: 115.h,
+              left: 265.w,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                },
+                child: SvgPicture.asset(
+                  "assets/back_button.svg",
+                  height: 66.h,
+                  width: 66.w,
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
 

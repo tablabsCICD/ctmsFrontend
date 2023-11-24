@@ -21,24 +21,38 @@ class _SideBarState extends State<SideBar> {
  static bool isMeeting=false;
  static bool isreport=false;
  static bool isProfile=false;
+ static bool isEmpReport=false;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       elevation: 0,
       child: Container(
-
         color: AppColor.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 47.h,),
+            InkWell(
+              onTap: (){
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: /*Text("Go To Back Menu",style: TextStyle(
+                    fontSize: 20.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: GoogleFonts.poppins().fontFamily)),*/
+                SvgPicture.asset(
+                  "assets/back_button.svg",height: 66.h,width: 66.w,
+                )),
+            ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
             ),
 
-            SizedBox(height: 47.h,),
+            SizedBox(height: 30.h,),
             DrawerListTile(
               isSelect: isDashbord,
               title: "Dashboard",
@@ -51,6 +65,7 @@ class _SideBarState extends State<SideBar> {
                  isCustomer = false;
                  isreport=false;
                  isProfile=false;
+                 isEmpReport=false;
                  setState(() {
 
                  });
@@ -70,6 +85,7 @@ class _SideBarState extends State<SideBar> {
                 isMeeting=false;
                 isreport=false;
                 isProfile=false;
+                isEmpReport=false;
                 setState(() {
 
                 });
@@ -87,6 +103,7 @@ class _SideBarState extends State<SideBar> {
                 isLead=true;
                 isMeeting=false;
                 isreport=false;
+                isEmpReport=false;
                 isProfile=false;
                 setState(() {
 
@@ -104,6 +121,7 @@ class _SideBarState extends State<SideBar> {
                 isMeeting=true;
                 isCustomer = false;
                 isreport=false;
+                isEmpReport=false;
                 isProfile=false;
                 setState(() {
 
@@ -124,6 +142,7 @@ class _SideBarState extends State<SideBar> {
                 isMeeting=false;
                 isCustomer = true;
                 isreport=false;
+                isEmpReport=false;
                 isProfile=false;
                 setState(() {
 
@@ -144,12 +163,31 @@ class _SideBarState extends State<SideBar> {
                 isLead=false;
                 isMeeting=false;
                 isreport=true;
+                isEmpReport=false;
                 isProfile=false;
                 setState(() {
 
                 });
 
                 Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isEmpReport,
+              title: "Employee Reports",
+              icon: "assets/menu/report_menu.svg",
+              press: () {
+                isDashbord=false;
+                isEmp=false;
+                isCustomer = false;
+                isLead=false;
+                isMeeting=false;
+                isreport=false;
+                isEmpReport = true;
+                isProfile=false;
+                setState(() {
+                });
+                Navigator.restorablePushReplacementNamed(context, AppRoutes.empReport);
               },
             ),
             DrawerListTile(
@@ -164,6 +202,7 @@ class _SideBarState extends State<SideBar> {
                 isLead=false;
                 isMeeting=false;
                 isreport=false;
+                isEmpReport=false;
                 isProfile=true;
                 setState(() {
 

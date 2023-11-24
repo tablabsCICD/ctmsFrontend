@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
@@ -45,97 +46,168 @@ class _BidListState extends State<BidList> {
     return Container(
       margin: EdgeInsets.all(29),
       child:Consumer<OrgProvider>(
-        builder: (context, model, child) => Column(
-          children: [
-            Row(
-              mainAxisAlignment:MainAxisAlignment.spaceBetween,
-              children: [
-                TextView(
-                  title:'Total Quote : 2',
-                  color: Colors.black,
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w600,
-                ) ,
-                Row(
-                  children: [
-                    filterIconButton(),
-                    SizedBox(width: 10.w,),
-                    SvgPicture.asset('assets/more_icon.svg')
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: 32.h,),
-            Container(
-              decoration: BoxDecoration(
-                  color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-              padding: EdgeInsets.all(20),
-              child: /*model.orgBigingList.isEmpty
-                  ? Expanded(
-                  child: Container(
-                      height:
-                      MediaQuery.of(context).size.height - 400,
-                      child: Center(
-                          child: TextView(
-                              title: "No Record Found",
-                              fontSize: 16.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900))))
-                  : */Table(
-               /* columnWidths: {
-                  0: FlexColumnWidth(70),
-                  1: FlexColumnWidth(50),
-                  2: FlexColumnWidth(50),
-                  3: FlexColumnWidth(50),
-                  4: FlexColumnWidth(70),
-                  5: FlexColumnWidth(70),
-                  6: FlexColumnWidth(70),
-                  7: FlexColumnWidth(70),
-                  8: FlexColumnWidth(70),
-                },*/
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        builder: (context, model, child) => SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment:MainAxisAlignment.spaceBetween,
                 children: [
-                  /// Table Header
-                  TableRow(
+                  TextView(
+                    title:'Total Quote : ${model.orgBigingList.length}',
+                    color: Colors.black,
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w600,
+                  ) ,
+                  Row(
                     children: [
-                      tableHeader("Material"),
-                      tableHeader("Routes"),
-                      tableHeader("Km"),
-                      tableHeader("Total Quotes"),
-                      tableHeader("Best Match"),
-                      tableHeader("End Time"),
-                      tableHeader("Status"),
-                      tableHeader("Price"),
-                      tableHeader("Action"),
+                      filterIcon(model),
+                      SizedBox(width: 10.w,),
+                      SvgPicture.asset('assets/more_icon.svg')
                     ],
-                  ),
-                  for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
-                      context,
-                      material: model.orgBigingList[i].companyName,
-                      route1: model.orgBigingList[i].source,
-                      route2: model.orgBigingList[i].destination,
-                      km: model.orgBigingList[i].mobileNumber,
-                      totalBids: model.orgBigingList[i].bidingId,
-                      bestMatch:'test',//model.orgBigingList[i].companyName,
-                      endtime:'test',//model.orgBigingList[i].postingTime,
-                      status: 'complete',//model.orgBigingList[i].description,
-                      price: model.orgBigingList[i].amount
-                  ),
-
+                  )
                 ],
               ),
-            ),
+              SizedBox(height: 32.h,),
+              Container(
+                decoration: BoxDecoration(
+                    color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.all(20),
+                child: /*model.orgBigingList.isEmpty
+                    ? Expanded(
+                    child: Container(
+                        height:
+                        MediaQuery.of(context).size.height - 400,
+                        child: Center(
+                            child: TextView(
+                                title: "No Record Found",
+                                fontSize: 16.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w900))))
+                    : */Table(
+                  columnWidths: {
+                    0: FlexColumnWidth(60),
+                    1: FlexColumnWidth(40),
+                    2: FlexColumnWidth(40),
+                    3: FlexColumnWidth(40),
+                    4: FlexColumnWidth(40),
+                    5: FlexColumnWidth(40),
+                    6: FlexColumnWidth(40),
+                    7: FlexColumnWidth(40),
+                    8: FlexColumnWidth(30),
+                    9: FlexColumnWidth(70),
+                  },
+                  textBaseline: TextBaseline.ideographic,
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    /// Table Header
+                    TableRow(
+                      children: [
+                        tableHeader("Material"),
+                        tableHeader("Routes"),
+                        tableHeader("Km"),
+                        tableHeader("Total Quotes"),
+                        tableHeader("Best Match"),
+                        tableHeader("End Time"),
+                        tableHeader("Status"),
+                        tableHeader("Price"),
+                        tableHeader("Action"),
+                      ],
+                    ),
+                    for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
+                        context,
+                        material: model.orgBigingList[i].companyName,
+                        route1: model.orgBigingList[i].source,
+                        route2: model.orgBigingList[i].destination,
+                        km: '300',
+                        totalBids: model.orgBigingList[i].bidingId.toString(),
+                        bestMatch:'test',//model.orgBigingList[i].companyName,
+                        endtime:'test',//model.orgBigingList[i].postingTime,
+                        status: 'complete',//model.orgBigingList[i].description,
+                        price: '${model.orgBigingList[i].amount.toString()}'
+                    ),
+
+                  ],
+                ),
+              ),
 
 
 
-            //  getEmpTable(),
-          ],
+              //  getEmpTable(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  TableRow tableRow(context, {material, route1,route2, km, totalBids, bestMatch, endtime,status,price,action}) {
+  filterIcon(OrgProvider model) {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon: SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {},
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('Sort By Company Name A to Z', 0,model),
+                  _buildPopupMenu('Sort By Company Name Z to A', 1,model),
+                ],
+              ),
+              Text(
+                "Filter",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title,
+      int? id, OrgProvider model,
+      ) {
+    return PopupMenuItem(
+      child: Text(title,style: TextStyle(
+      fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+        fontWeight: FontWeight.w500,
+        color: Colors.black),),
+      onTap: () {
+        if (id == 0) {
+          model.orgBigingList.sort(
+                  (b, a) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        } else {
+          model.orgBigingList.sort(
+                  (a, b) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        }
+      },
+    );
+  }
+
+  TableRow tableRow(context, {String? material,String? route1,String? route2,String? km,String? totalBids,String? bestMatch,String? endtime,String?status,String?price}) {
     return TableRow(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.r),
@@ -151,7 +223,7 @@ class _BidListState extends State<BidList> {
                 width: 10,
               ),
               Text(
-                material,
+                material!,
                 style:TextStyle(
                   color: Colors.black,
                   fontSize: 15.sp,
@@ -161,8 +233,36 @@ class _BidListState extends State<BidList> {
               ),
             ],
           ),
+
+          SizedBox(
+           // height: 70.h,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  route1!,
+                  style:TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                Text(
+                  route1!,
+                  style:TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Text(
-            route1,
+            km!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -171,7 +271,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            km,
+            totalBids!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -180,7 +280,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            totalBids,
+            bestMatch!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -189,7 +289,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            bestMatch,
+            endtime!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -198,7 +298,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            endtime,
+            status!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -207,16 +307,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            status,
-            style:TextStyle(
-              color: Colors.black,
-              fontSize: 15.sp,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          Text(
-            price,
+            price!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -225,7 +316,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           SizedBox(
-            width: 93.w,
+           // width: 93.w,
             height: 26.h,
             child: ElevatedButton(
               onPressed: (){
@@ -239,7 +330,7 @@ class _BidListState extends State<BidList> {
               ),
               child: TextView(
                 title: "Quote Now",
-                fontSize:15.sp,
+                fontSize:13.sp,
                 fontWeight: FontWeight.w400,
                 color: Color(0xffffffff),
               ),

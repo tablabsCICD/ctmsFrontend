@@ -1,19 +1,26 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
 import 'package:flutter_hr_management/organization/company/company_menu_page.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:http/http.dart' as http;
 import '../../common/app_colors.dart';
 import '../../common/app_responsive.dart';
 import '../../constant/images.dart';
@@ -26,106 +33,122 @@ class HomeOrganizationScreen extends StatefulWidget{
   }
 
 }
-class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
+class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
   final orgProvider = locator<OrgProvider>();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+   getLoginDetail();
   }
 
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-    drawer: SideBarOrganization(),
-    backgroundColor: AppColor.bgColor,
-     body: SafeArea(
-       child: Row(
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-           /// Side Navigation Menu
-           /// Only show in desktop
-           if (AppResponsive.isDesktop(context))
-             Expanded(
-               child: SideBarOrganization(),
-             ),
+    return Scaffold(
+      drawer: SideBarOrganization(),
+      backgroundColor: AppColor.bgColor,
+      body: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-           /// Main Body Part
-           Expanded(
-             flex: 4,
-             child: Column(
-               children: [
-                 HeaderWidget(),
-                 SizedBox(height: 38.h,),
-                 Container(
-                   color:  AppColor.bgColor,
-                   // margin: EdgeInsets.all(10),
-                   child: Row(
-                     children: [
-                       SizedBox(width: 38.w,),
-                   InkWell(onTap: () async {
-                     List<Organization> organization = await orgProvider.getCompanyDetails(3);
-                     print(organization[0].companyName);
-                     Navigator.pushReplacement(
-                         context,
-                         MaterialPageRoute(
-                             builder: (builder) =>
-                                 CompanyDashboard(organization[0])));
-                    /* {id: 26, companyName: Skillup, companyAddress: Pune, isVerified: 0, website: www.skillup.com, landlineNumber: 020336677, companyMobileNumber: 8379939930, pointOfContact: Navale, gstNumber: 123456789, gstNumber2: 123456789, typeOfRegistration: Private Ltd., panCardNumber: CHI5789H, tanCardNumber: CHI5789H, officialEmailId: skillup@gmail.com, rating: 5, numberOfRatings: 5, city: Pune, state: Maharastra, otp: }, {id: 41, companyName: abcd, companyAddress: pune, isVerified: 0, website: www.abcd.com, landlineNumber: 123456, companyMobileNumber: 8379939930, pointOfContact: swati, gstNumber: 12345, gstNumber2: "https://s3.ap-south-1.amazonaws.com//tkd-profile/profileImages//1675949056174-aadhar.jpg", typeOfRegistration: One Person Company, panCardNumber: 123456, tanCardNumber: 123456, officialEmailId: swatibahir@gmail.com, rating: 5, numberOfRatings: 1, city: Pune, state: Maharastra, otp: null}*/
-                   //  Navigator.pushNamed(context, AppRoutes.org);
-                   },
-                      child: empCounts("0","Monitoring",Images.monitoring,Color(0xFFEAF8F4)),),
-                       SizedBox(width: 38.w,),
-                       InkWell(onTap: (){
-                         Navigator.pushNamed(context, AppRoutes.crm);
-                       },child: empCounts("0","CRM",Images.crm,Color(0xFFFFEDF9)),),
-                       SizedBox(width: 38.w,),
-                      // http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee
-                       InkWell(onTap: () async {
-                         final url =Uri.parse("http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee");
-                         if (!await launchUrl(url,)) {
-                         throw Exception('Could not launch $url');
-                         }
-                       },child: empCounts("0","HRM",Images.crm,Color(0xFFFFEDF9)),),
-                      // empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
-                     ],
-                   ),
-                 ),
-                 SizedBox(height: 38.h,),
-                 Container(
-                   // margin: EdgeInsets.all(10),
-                   child: Row(
-                     children: [
-                       SizedBox(width: 38.w,),
-                       empCounts("0","E-Invoices",Images.invoice,Color(0xFFEAF8F4)),
-                       SizedBox(width: 38.w,),
-                       InkWell(
-                         onTap: () async {
-                           final url =Uri.parse("http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading");
-                           if (!await launchUrl(url,)) {
-                             throw Exception('Could not launch $url');
-                           }
-                         },
-                         child:
-                       empCounts("0","E-Bilty",Images.bilty,Color(0xFFFFEDF9)),),
-                       SizedBox(width: 38.w,),
-                      // empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
-                     ],
-                   ),
-                 )
-               ],
-             ),
-           ),
-         ],
-       ),
-     ),
+            /// Side Navigation Menu
+            /// Only show in desktop
+            if (AppResponsive.isDesktop(context))
+              Expanded(
+                child: SideBarOrganization(),
+              ),
+
+            /// Main Body Part
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  HeaderWidget(isSearchVisible: false),
+                  SizedBox(height: 38.h,),
+                  Container(
+                    color: AppColor.bgColor,
+                    // margin: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 38.w,),
+                        InkWell(onTap: () async {
+                          List<Organization> organization = await orgProvider
+                              .getCompanyDetails(1);
+                          print(organization[0].companyName);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) =>
+                                      CompanyDashboard(organization[0])));
+                          /* {id: 26, companyName: Skillup, companyAddress: Pune, isVerified: 0, website: www.skillup.com, landlineNumber: 020336677, companyMobileNumber: 8379939930, pointOfContact: Navale, gstNumber: 123456789, gstNumber2: 123456789, typeOfRegistration: Private Ltd., panCardNumber: CHI5789H, tanCardNumber: CHI5789H, officialEmailId: skillup@gmail.com, rating: 5, numberOfRatings: 5, city: Pune, state: Maharastra, otp: }, {id: 41, companyName: abcd, companyAddress: pune, isVerified: 0, website: www.abcd.com, landlineNumber: 123456, companyMobileNumber: 8379939930, pointOfContact: swati, gstNumber: 12345, gstNumber2: "https://s3.ap-south-1.amazonaws.com//tkd-profile/profileImages//1675949056174-aadhar.jpg", typeOfRegistration: One Person Company, panCardNumber: 123456, tanCardNumber: 123456, officialEmailId: swatibahir@gmail.com, rating: 5, numberOfRatings: 1, city: Pune, state: Maharastra, otp: null}*/
+                          //  Navigator.pushNamed(context, AppRoutes.org);
+                        },
+                          child: empCounts(
+                              "0", "Monitoring", Images.monitoring, Color(
+                              0xFFEAF8F4)),),
+                        SizedBox(width: 38.w,),
+                        InkWell(onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.crm);
+                        }, child: empCounts("0", "CRM", Images.crm, Color(
+                            0xFFFFEDF9)),),
+                        SizedBox(width: 38.w,),
+                        // http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee
+                        InkWell(onTap: () async {
+                         // getEmpToken(loginDeatils!.data!.id!);
+                          final url = Uri.parse(
+                              "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}");
+                          debugPrint("Bilty Url : "+url.toString());
+                          if (!await launchUrl(url,)) {
+                            throw Exception('Could not launch $url');
+                          }
+                        }, child: empCounts("0", "HRM", Images.crm, Color(
+                            0xFFFFEDF9)),),
+                        // empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 38.h,),
+                  Container(
+                    // margin: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 38.w,),
+                        empCounts("0", "E-Invoices", Images.invoice,
+                            Color(0xFFEAF8F4)),
+                        SizedBox(width: 38.w,),
+                        InkWell(
+                          onTap: () async {
+                          //  getEmpToken(loginDeatils!.data!.id!);
+                            final url = Uri.parse(
+                                "http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading?token=${token}");
+                            debugPrint("Bilty Url : "+url.toString());
+                            if (!await launchUrl(url,)) {
+                              throw Exception('Could not launch $url');
+                            }
+                          },
+                          child:
+                          empCounts("0", "E-Bilty", Images.bilty, Color(
+                              0xFFFFEDF9)),),
+                        SizedBox(width: 38.w,),
+                        // empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
 
 
-   );
+    );
   }
 
-  empCounts(String totCount,String name,String image,Color color){
+  empCounts(String totCount, String name, String image, Color color) {
     return Container(
       width: 329.w,
       height: 166.h,
@@ -145,13 +168,14 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
               width: 108.w,
               height: 110.h,
               decoration: ShapeDecoration(
-                color: color,//Color(0xFFEAF8F4)
+                color: color, //Color(0xFFEAF8F4)
                 shape: CircleBorder(),
 
               ),
               child: Padding(
-                padding:  EdgeInsets.all(20.0),
-                child: SvgPicture.asset(image,height: 10.h,width: 10.w,color: Colors.black,),
+                padding: EdgeInsets.all(20.0),
+                child: SvgPicture.asset(
+                  image, height: 10.h, width: 10.w, color: Colors.black,),
               ),
             ),
           ),
@@ -173,4 +197,41 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen>{
     );
   }
 
+  String? token;
+
+  Future<void> getEmpToken(int empId) async {
+    String authToken = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+
+    String myUrl = ApiConstant.BASE_URL +
+        "api/getTokenByEmployeeId?employeeId=${empId}";
+    debugPrint("Get Token Url:" + myUrl);
+
+    EasyLoading.show(status: "Loading");
+    final req = await http.get(Uri.parse(myUrl), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer ${authToken}',
+    });
+    EasyLoading.dismiss();
+    print('the body is ${req.body}');
+    if (req.statusCode == 200) {
+      var jwtResponse = json.decode(req.body);
+      print('the response is ${jwtResponse}');
+      JWTLoginData jwtLoginData =
+      JWTLoginData.fromJson(jwtResponse);
+      if (jwtLoginData.data != null) {
+        token = jwtLoginData.data!;
+        print("Final Generated Token ::" + token!);
+      } else {
+        showCustomToast(
+            context, jwtLoginData.message!, Icons.clear, Colors.red);
+      }
+    }
+  }
+
+  LoginDeatils? loginDeatils;
+  Future<void> getLoginDetail() async {
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+    getEmpToken(loginDeatils!.data!.id!);
+  }
 }

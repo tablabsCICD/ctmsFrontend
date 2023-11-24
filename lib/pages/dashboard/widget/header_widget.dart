@@ -21,7 +21,8 @@ import '../../../constant/constants.dart';
 class HeaderWidget extends StatefulWidget {
 
   Function? onSearchTap;
-   HeaderWidget({Key? key, this.onSearchTap,}) : super(key: key);
+  bool? isSearchVisible;
+   HeaderWidget({Key? key, this.onSearchTap, required this.isSearchVisible}) : super(key: key);
 
   @override
   _HeaderWidgetState createState() => _HeaderWidgetState();
@@ -56,7 +57,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       },
     ),
 
-    searchBar(),
+    widget.isSearchVisible==true?searchBar():SizedBox.shrink(),
     if (!AppResponsive.isMobile(context)) ...{
     Spacer(),
     Row(
@@ -377,71 +378,71 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 ),
               ),
               Divider(),
-              ListView.builder(
-                itemCount: 3,
-                shrinkWrap: true,
-                itemBuilder: (context,index){
-                  return Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 4,
+                  shrinkWrap: true,
+                  itemBuilder: (context,index){
+                    return Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                        ListTile(
-                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                          dense: true,
-                          visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                          leading: getImage("",height: 50.h,width: 50.h),
-                          title: Text("Parag Sir",
+                          ListTile(
+                            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                            dense: true,
+                            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                            leading: getImage("",height: 50.h,width: 50.h),
+                            title: Text("Parag Sir",
+                              style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
+                            subtitle: Text("Commented in Teams",
                             style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
-                          subtitle: Text("Commented in Teams",
-                          style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 70,right: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              index==1?SizedBox.shrink():Container(
-                                height: 135.h,
-                                width: 200.w,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(height: 10.h,),
-                              Row(
-                                children: [
-                                  Container(
-                                    height: 57.h,
-                                    width: 2.w,
-                                    color: ThemeColor.red,
-                                  ),
-                                  SizedBox(width: 10.w,),
-                                  Expanded(
-                                    child: Text("dsnkdsj sdc dsfjodfjeo fdjf eofjewof skjdskjf dsk vcjdsjvcdsli dscj dsvcldsefj efoejf ",
-                                      style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
-                                  ),
-
-                                ],
-                              ),
-                              SizedBox(height: 10.h,),
-                              Text("11 min ago",
-                                style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
-                            ],
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 70,right: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                index==1?SizedBox.shrink():Container(
+                                  height: 135.h,
+                                  width: 200.w,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 10.h,),
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 57.h,
+                                      width: 2.w,
+                                      color: ThemeColor.red,
+                                    ),
+                                    SizedBox(width: 10.w,),
+                                    Expanded(
+                                      child: Text("dsnkdsj sdc dsfjodfjeo fdjf eofjewof skjdskjf dsk vcjdsjvcdsli dscj dsvcldsefj efoejf ",
+                                        style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
+                                    ),
 
-
-                        index==2?SizedBox.shrink():Divider()
-                      ],
-                    )
-                  );
-                },
+                                  ],
+                                ),
+                                SizedBox(height: 10.h,),
+                                Text("11 min ago",
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
+                              ],
+                            ),
+                          ),
+                         Divider()
+                        ],
+                      )
+                    );
+                  },
+                ),
               ),
-              Divider(),
+              /*Divider(),
               Center(
                 child: Text("See More",
                   style: TextStyle(fontWeight: FontWeight.w400, color: AppColor.black,fontFamily: GoogleFonts.poppins().fontFamily,fontSize: 14.sp),),
               ),
-
+*/
             ],
           ),
         ),

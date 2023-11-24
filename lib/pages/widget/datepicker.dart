@@ -25,10 +25,10 @@ class DateTimePickerDialog{
       DateTime? date;
         if (_datePicker.isBefore(DateTime.now())) {
           date = _datePicker;
-          selectedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+          selectedDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
         } else {
           date = _datePicker;
-          selectedDate = DateFormat('dd/MM/yyyy').format(_datePicker);           //resFromDateCnt;
+          selectedDate = DateFormat("yyyy-MM-dd").format(_datePicker);           //resFromDateCnt;
         }
     }
     return selectedDate;

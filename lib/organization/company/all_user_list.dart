@@ -1,14 +1,21 @@
+import 'dart:convert';
 import 'dart:ui';
-
+import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
+import 'package:flutter_hr_management/organization/model/auth_api.dart';
+import 'package:flutter_hr_management/organization/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -83,11 +90,39 @@ class _AllUsersListState extends State<AllUsersList> {
                       Spacer(),
                       Row(
                         children: [
-                          filterIconButton(),
+                          filterIcon(model),
                           SizedBox(
                             width: 27.w,
                           ),
-                          SvgPicture.asset('assets/more_icon.svg'),
+                          SizedBox(
+                            height: 58.h,
+                            width: 180.w,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  _showAlertDialog();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    primary: ThemeColor.theme_blue,
+                                    onPrimary: Colors.white),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_circle,
+                                      size: 18,
+                                    ),
+                                    SizedBox(
+                                      width: 6.w,
+                                    ),
+                                    TextView(
+                                      title: "Add Employee",
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                )),
+                          ),
                           SizedBox(
                             width: 27.w,
                           ),
@@ -159,7 +194,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                     .toString()),
                                               ],
                                             ),*/
-                                            trailing: Container(
+                                            trailing: model.userList[index].isUserVerifiedByCompany==1?Container(
                                               width: 100,
                                               child: Row(
                                                 crossAxisAlignment:
@@ -181,7 +216,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                   ),
                                                 ],
                                               ),
-                                            ),
+                                            ):SizedBox.shrink(),
                                           ),
                                           SizedBox(height: 10.h,),
                                           getUserDetails('Email Id','${model.userList[index].emailId}'),
@@ -193,7 +228,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                           Padding(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10.w, vertical: 10.h),
-                                            child: StarDisplay(value:int.parse('${model.userList[index].ratings}')),
+                                            child: StarDisplay(value:int.parse('${/*model.userList[index].ratings.toString()*/5}')),
                                           ),
                                         ],
                                       )),
@@ -205,9 +240,190 @@ class _AllUsersListState extends State<AllUsersList> {
                             ),
                           ),
                         ),
-                  getLoader(model.isLoading)
+                //  getLoader(model.isLoading)
                 ],
               )),
+    );
+  }
+
+  filterIcon(OrgProvider model) {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon: SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {},
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('Sort By Name A to Z', 0,model),
+                  _buildPopupMenu('Sort By Name Z to A', 1,model),
+                ],
+              ),
+              Text(
+                "Filter",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title,
+      int? id, OrgProvider model,
+      ) {
+    return PopupMenuItem(
+      child: Text(title, style: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w500,
+          color: Colors.black),),
+      onTap: () {
+        if (id == 0) {
+          model.userList.sort(
+                  (b, a) => b.firstName!.compareTo(a.firstName!));
+          setState(() {});
+        } else {
+          model.userList.sort(
+                  (a, b) => b.firstName!.compareTo(a.firstName!));
+          setState(() {});
+        }
+      },
+    );
+  }
+
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return addemp(setState);
+              }),
+        );
+      },
+    );
+  }
+
+  List<dynamic> foundEmp = [];
+  List<dynamic> uniqueFoundEmp = [];
+  List<dynamic> EmployeeList = [];
+
+  bool isLoad=false;
+  getEmployeeName() async {
+
+    isLoad = true;
+    String myUrl = AppConstants.GET_ALL_USER;
+    print(myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    isLoad = false;
+    var response = json.decode(req.body);
+    print(response);
+    var type = AuthApi.fromJson(response);
+    type.content!.forEach((element) {
+      EmployeeList.add(element.firstName.toString()+" "+element.lastName.toString());
+    });
+    foundEmp = EmployeeList.toSet().toList();
+
+
+    setState(() {
+
+    });
+  }
+
+  // This function is called whenever the text field changes
+  void _runFilter(String enteredKeyword, StateSetter stateSetter) {
+    List<dynamic> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = EmployeeList;
+    } else {
+      results = EmployeeList
+          .where((user) =>
+          user.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+    stateSetter(() {
+      foundEmp = results.toSet().toList();
+    });
+  }
+
+  addemp(StateSetter stateSetter) {
+    return  Container(
+      width: 350.w,
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.close)),
+          TextField(
+            onChanged: (value) => _runFilter(value,stateSetter),
+            decoration: const InputDecoration(
+                labelText: 'Search', suffixIcon: Icon(Icons.search)),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            height: 500,
+            width: 300,
+            child: foundEmp.isNotEmpty
+                ? ListView.builder(
+              shrinkWrap: true,
+              itemCount: foundEmp.length,
+              itemBuilder: (context, index) =>
+                  Column(
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
+                        },
+                        title: Text(foundEmp[index]),
+                      ),
+                    ],
+                  ),
+
+            )
+                : const Text(
+              'No results found',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

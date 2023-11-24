@@ -100,7 +100,7 @@ class _CompDiscussionScreenState extends State<CompDiscussionScreen> {
               flex: 4,
               child: Column(
                 children: [
-                  HeaderWidget(),
+                  HeaderWidget(isSearchVisible:true,),
                   Expanded(child: DiscussionList(widget.organization,index: 1,)),
 
                 ],

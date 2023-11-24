@@ -7,6 +7,7 @@ import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/home_orgnization.dart';
+import 'package:flutter_hr_management/pages/report/emp_report.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
 import '../pages/aut/login.dart';
 import '../pages/empdetails/employee_list_dashboard.dart';
@@ -22,11 +23,13 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.home:
         return buildRoute(HomeOrganizationScreen(), settings: settings);
-  case AppRoutes.crm:
-    return buildRoute(HomePage(), settings: settings);
+
+      case AppRoutes.crm:
+        return buildRoute(HomePage(), settings: settings);
 
       case AppRoutes.org:
-        return buildRoute(Login_Screen(), settings: settings);;
+        return buildRoute(Login_Screen(), settings: settings);
+
       case AppRoutes.login:
         return buildRoute(LoginScreen(), settings: settings);
 
@@ -36,23 +39,26 @@ class RouteGenerator {
       case AppRoutes.employee_dashbord:
         return buildRoute(EmloyeeListScreen(), settings: settings);
 
-     case AppRoutes.lead_dashbord:
+      case AppRoutes.lead_dashbord:
         return buildRoute(LeadListScreen(), settings: settings);
-  case AppRoutes.report:
+
+      case AppRoutes.empReport:
+        return buildRoute(EmployeeReport(), settings: settings);
+
+      case AppRoutes.report:
         return buildRoute(ReportDashboard(), settings: settings);
+
       case AppRoutes.customer:
         return buildRoute(CustomerDashboard(), settings: settings);
 
       case AppRoutes.profile:
         return buildRoute(ProfileDashbord(), settings: settings);
 
- case AppRoutes.meeting:
+      case AppRoutes.meeting:
         return buildRoute(CreateMeetingDashbord(), settings: settings);
 
-        default:
+      default:
         return _errorRoute();
-
-
     }
   }
 
@@ -85,7 +91,7 @@ class RouteGenerator {
                   width: 450.0,
                   //child: Lottie.asset('assets/lottie/error.json'),
                 ),
-                 Text(
+                Text(
                   'Seems the route you\'ve navigated to doesn\'t exist!!',
                   style: TextStyle(
                     fontSize: 16.0,

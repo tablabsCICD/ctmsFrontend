@@ -4,149 +4,250 @@ import 'package:dio/dio.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/response/report_list.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../common/app_colors.dart';
 import '../../common/app_responsive.dart';
 import '../dashboard/widget/header_widget.dart';
 import 'dart:math';
 
-class ReportDataScreen extends StatefulWidget{
+class ReportDataScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ReportDataScreen();
   }
-
 }
-class _ReportDataScreen extends State<ReportDataScreen>{
 
+class _ReportDataScreen extends State<ReportDataScreen> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     GetReportData();
   }
+
+  String selectedYear = '2023';
+  var items = [
+    '2010',
+    '2011',
+    '2012',
+    '2013',
+    '2014',
+    '2015',
+    '2016',
+    '2017',
+    '2018',
+    '2019',
+    '2020',
+    '2021',
+    '2022',
+    '2023',
+
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderWidget(),
-
-            AppResponsive.isDesktop(context)||AppResponsive.isTablet(context)?Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColor.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    children: [
-                      Text("Employee Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                      SizedBox(height: 30,),
-                      barChart(),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppColor.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    children: [
-                      Text("Customer Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                      SizedBox(height: 30,),
-                      pieChart(),
-                    ],
-                  ),
-                )
-
-              ],
-            ):Column(
-              children: [
-                Column(
-                  children: [
-                    Text("Employee Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20),),
-                    SizedBox(height: 30,),
-                    barChart(),
-                  ],
-                ),
-
-                Column(
-                  children: [
-                    Text("Customer Report",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 20.sp),),
-                    SizedBox(height: 30.h,),
-                    pieChart(),
-                  ],
-                )
-
-              ],
+            HeaderWidget(
+              isSearchVisible: false,
             ),
-            SizedBox(height: 30.h,),
+            SizedBox(
+              height: 20,
+            ),
             Padding(
-              padding: EdgeInsets.only(left: 20.0.w),
-              child: Text("Lead Management Report",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 25.sp),),
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Lead Management Report",
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 25.sp),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                        child: Text(
+                          "Select Year : ",
+                          style: TextStyle(
+                            color: Color(0xff1B1B1B),
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ),
+                     SizedBox(
+                        height: 52.h,
+                        width: 150.w,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 0.7),
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: DropdownButton(
+                            value: selectedYear,
+                            isExpanded: true,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            borderRadius: BorderRadius.circular(5.0),
+                            underline: SizedBox.shrink(),
+                            hint: Text(
+                              "Year",
+                              style: TextStyle(
+                                color: Color(0xff1B1B1B),
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(
+                                  items,
+                                  style: TextStyle(
+                                    color: Color(0xff1B1B1B),
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedYear = newValue!;
+                              });
+                              GetReportData();
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
-            SizedBox(height: 20,),
-            linerChart()
-
+            SizedBox(
+              height: 20,
+            ),
+            leadChart(),
+            SizedBox(
+              height: 20,
+            ),
+            AppResponsive.isDesktop(context) || AppResponsive.isTablet(context)
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColor.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Employee Report",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 20),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            empBarChart(),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColor.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Customer Report",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 20),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            pieChart(),
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "Employee Report",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          empBarChart(),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "Customer Report",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 20.sp),
+                          ),
+                          SizedBox(
+                            height: 30.h,
+                          ),
+                          pieChart(),
+                        ],
+                      )
+                    ],
+                  ),
+            SizedBox(
+              height: 30.h,
+            ),
           ],
         ),
       ),
     );
   }
 
-  barChart(){
-
+  empBarChart() {
     return Container(
       height: 200.h,
       width: 500.w,
       child: BarChart(BarChartData(
           borderData: FlBorderData(
               border: const Border(
-                top: BorderSide.none,
-                right: BorderSide.none,
-                left: BorderSide(width: 1),
-                bottom: BorderSide(width: 1),
-              )),
+            top: BorderSide.none,
+            right: BorderSide.none,
+            left: BorderSide(width: 1),
+            bottom: BorderSide(width: 1),
+          )),
           groupsSpace: 10,
-
-          // add bars
-          barGroups: [
-            BarChartGroupData(x: 1, barRods: [
-              BarChartRodData(toY: double.parse("30.0"), width: 15, color: Colors.amber),
-            ]),
-            BarChartGroupData(x: 2, barRods: [
-              BarChartRodData(toY: double.parse("22"), width: 15, color: Colors.amber),
-            ]),
-            BarChartGroupData(x: 3, barRods: [
-              BarChartRodData(toY: double.parse("12"), width: 15, color: Colors.amber),
-            ]),
-            BarChartGroupData(x: 4, barRods: [
-              BarChartRodData(toY: double.parse("5"), width: 15, color: Colors.amber),
-            ]),
-            BarChartGroupData(x: 5, barRods: [
-              BarChartRodData(toY: double.parse('45'), width: 15, color: Colors.amber),
-            ]),
-
-          ])),
+          barGroups: empBarChartList)),
     );
-
   }
-
 
   List<PieChartSectionData> pieChartSectionData = [
     PieChartSectionData(
@@ -171,86 +272,89 @@ class _ReportDataScreen extends State<ReportDataScreen>{
     ),
   ];
 
-  pieChart(){
-     return Container(
-       height: 200.h,
-       width: 500.w,
-       child: PieChart(PieChartData(
-          sections: pieChartSectionData
-    )),
-     );
+  pieChart() {
+    return Container(
+      height: 200.h,
+      width: 500.w,
+      child: PieChart(PieChartData(sections: pieChartSectionData)),
+    );
   }
 
 
-  final List<FlSpot> dummyData1 = List.generate(8, (index) {
-    return FlSpot(index.toDouble(), index * Random().nextDouble());
-  });
-
-  // This will be used to draw the orange line
-  final List<FlSpot> dummyData2 = List.generate(8, (index) {
-    return FlSpot(index.toDouble(), index * Random().nextDouble());
-  });
-
-  // This will be used to draw the blue line
-  final List<FlSpot> dummyData3 = List.generate(8, (index) {
-    return FlSpot(index.toDouble(), index * Random().nextDouble());
-  });
-
-
-  linerChart(){
+  leadChart() {
     return Container(
       margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
       width: double.infinity,
       height: 200,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r)
-      ),
-      child: LineChart(
-        LineChartData(
-          borderData: FlBorderData(show: false),
-          lineBarsData: [
-            // The red line
-            LineChartBarData(
-              spots: dummyData1,
-              isCurved: true,
-              barWidth: 3,
-              color: Colors.indigo,
-            ),
-            // The orange line
-            LineChartBarData(
-      
-              spots: dummyData2,
-              isCurved: true,
-              barWidth: 3,
-              color: Colors.red,
-            ),
-            // The blue line
-            LineChartBarData(
-              spots: dummyData3,
-              isCurved: false,
-              barWidth: 3,
-              color: Colors.blue,
-            )
-          ],
-        ),
-      ),
+          color: Colors.white, borderRadius: BorderRadius.circular(10.r)),
+      child: BarChart(BarChartData(
+          borderData: FlBorderData(
+              border: const Border(
+                top: BorderSide.none,
+                right: BorderSide.none,
+                left: BorderSide(width: 1),
+                bottom: BorderSide(width: 1),
+              )),
+          groupsSpace: 10,
+          barGroups: leadBarChartList)),
     );
-
   }
 
   ReportData? reportData;
+  List<Customer> customerList = [];
+  List<Employee> EmployeeList = [];
+  List<Lead> LeadList = [];
+  List<BarChartGroupData> empBarChartList = [];
+  List<BarChartGroupData> customerBarChartList = [];
+  List<BarChartGroupData> leadBarChartList = [];
+
   Future<void> GetReportData() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    print("Get All Reports :" + ApiConstant.GET_ALL_LEAD + "?Year=${selectedYear}");
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_REPORT);
+    final response = await dio.get(ApiConstant.GET_ALL_REPORT + "?Year=${selectedYear}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print(response.data);
     if (response.statusCode == 200) {
       ReportModel reportModel = ReportModel.fromJson(jsonDecode(response.data));
       reportData = reportModel.data;
+      customerList.clear();
+      LeadList.clear();
+      EmployeeList.clear();
+      empBarChartList.clear();
+      leadBarChartList.clear();
+      customerList.addAll(reportData!.customer!);
+      EmployeeList.addAll(reportData!.employee!);
+      LeadList.addAll(reportData!.lead!);
+      EmployeeList.forEach((element) {
+        empBarChartList.add(
+          BarChartGroupData(x: element.month!, barRods: [
+            BarChartRodData(
+                toY: double.parse('${element.count!}'),
+                width: 15,
+                color: Colors.amber),
+          ]),
+        );
+      });
+
+      LeadList.forEach((element) {
+        leadBarChartList.add(
+          BarChartGroupData(x: element.month!, barRods: [
+            BarChartRodData(
+                toY: double.parse('${element.count!}'),
+                width: 15,
+                color: Colors.amber),
+          ]),
+        );
+      });
       print('this is the report data list${reportData!.customer!.length}');
       setState(() {});
     }
   }
-
 }

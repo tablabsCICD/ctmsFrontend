@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/request/save_emp.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -180,7 +181,8 @@ class _EditEmployeeState extends State<EditEmployee> {
       'Authorization': 'Bearer ${token}',}));
     print(response);
     if(response.statusCode==200){
-      ToastMessage.show(context, "Emp Edit Success");
+    //  ToastMessage.show(context, "Emp Edit Success");
+      showCustomToast(context, "Emp Details Edit Success", Icons.check, Colors.green);
       Navigator.pop(context);
     }
 

@@ -11,6 +11,7 @@ import 'package:flutter_hr_management/model/response/post_lead.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -94,7 +95,7 @@ class _LeadDashboard extends State<CustomerList> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
+          HeaderWidget(isSearchVisible:true,onSearchTap: (value){filterSearchResults(value);},),
           Container(
             margin: EdgeInsets.all(33),
             child: Row(
@@ -375,7 +376,8 @@ class _LeadDashboard extends State<CustomerList> {
       }
       ApiGetData("",selectedPageNumber);
     } else {
-      ToastMessage.show(context, "Please try Again");
+    //  ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     EasyLoading.dismiss();
     // }catch(e){
@@ -392,7 +394,7 @@ class _LeadDashboard extends State<CustomerList> {
             /*decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
             padding: EdgeInsets.all(20),
-            margin: EdgeInsets.only(left: 15.w),
+            margin: EdgeInsets.only(left: 15.w,right: 15.w),
             child: Column(
               children: [
                 Row(
@@ -405,7 +407,7 @@ class _LeadDashboard extends State<CustomerList> {
                       fontSize: 30.sp,
                     ),
                     Container(
-                      width: 250.w,
+                      width: 300.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.centerRight,
                       child: Container(
@@ -413,16 +415,16 @@ class _LeadDashboard extends State<CustomerList> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(onPressed: (){
+                            InkWell(onTap: (){
                               getPrevPage(selectedPageNumber);
                             },
-                                icon: Icon(Icons.arrow_back_ios,size: 16,)),
+                                child: Icon(Icons.arrow_back_ios,size: 16,)),
                             Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
                             GoogleFonts.poppins().fontFamily),),
-                            IconButton(onPressed: (){
+                            InkWell(onTap: (){
                               getNextPage(selectedPageNumber);
                             },
-                                icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                                child: Icon(Icons.arrow_forward_ios,size: 16,))
                           ],
                         ),
                       ),
@@ -636,7 +638,8 @@ class _LeadDashboard extends State<CustomerList> {
       finalCustomerList.removeAt(index);
       setState(() {});
     } else {
-      ToastMessage.show(context, "Please try Again");
+    //  ToastMessage.show(context, "Please try Again");
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
   }
 
@@ -675,9 +678,9 @@ class _LeadDashboard extends State<CustomerList> {
 
   filterIcon() {
     return Container(
-        width: 101.w,
+        width: 120.w,
         height: 43.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -722,7 +725,11 @@ class _LeadDashboard extends State<CustomerList> {
       String title, int? id,
       ) {
     return PopupMenuItem(
-      child: Text(title),
+      child: Text(title, style: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w500,
+          color: Colors.black),),
       onTap: (){
         if(id==0) {
           finalCustomerList.sort((b, a) => b.companyName!.compareTo(a.companyName!));

@@ -72,7 +72,7 @@ class OrgBidingModel {
     destination = json['destination']??"";
     mainTag = json['mainTag']??"";
     privatePost = json['privatePost']??0;
-    amount = json['amount']??0;
+    amount = int.parse(json['amount']);
     description = json['description']??"";
     bidingId = json['bidingId']??0;
   }

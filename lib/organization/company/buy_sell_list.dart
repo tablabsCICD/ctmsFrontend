@@ -42,7 +42,7 @@ class BuySellList extends StatefulWidget {
   final buySellProvider = locator<OrgProvider>();
   Organization organization;
   BuySellList(this.organization,{Key? key}) : super(key: key) {
-    buySellProvider.getBuyVehicles(26);
+    buySellProvider.getBuyVehicles(organization.id!);
   }
   @override
   _BuySellListState createState() => _BuySellListState();
@@ -216,7 +216,7 @@ class _BuySellListState extends State<BuySellList> {
                       ) ,
                        Row(
                          children: [
-                           filterIconButton(),
+                           filterIcon(model),
                            SizedBox(width: 10.w,),
                            TextView(
                              title:'View All',
@@ -447,6 +447,73 @@ class _BuySellListState extends State<BuySellList> {
           )
         ],
       ),
+    );
+  }
+
+  filterIcon(OrgProvider model) {
+    return Container(
+        width: 101.w,
+        height: 43.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 0.50.w, color: Color(0x332C363F)),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              PopupMenuButton(
+                position: PopupMenuPosition.under,
+                icon: SvgPicture.asset(
+                  Images.filter,
+                  height: 19.h,
+                  width: 20.w,
+                ),
+                onSelected: (value) {},
+                itemBuilder: (ctx) => [
+                  _buildPopupMenu('Sort By Name A to Z', 0,model),
+                  _buildPopupMenu('Sort By Name Z to A', 1,model),
+                ],
+              ),
+              Text(
+                "Filter",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenu(
+      String title,
+      int? id, OrgProvider model,
+      ) {
+    return PopupMenuItem(
+      child: Text(title, style: TextStyle(
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w500,
+          color: Colors.black),),
+      onTap: () {
+        if (id == 0) {
+          model.orgBuySellList.sort(
+                  (b, a) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        } else {
+          model.orgBuySellList.sort(
+                  (a, b) => b.companyName!.compareTo(a.companyName!));
+          setState(() {});
+        }
+      },
     );
   }
 

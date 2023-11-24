@@ -9,6 +9,7 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/pages/empdetails/activity/customer_grpah.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
@@ -24,21 +25,21 @@ import 'widget/notification_card_widget.dart';
 import 'widget/profile_card_widget.dart';
 import 'widget/recruitment_data_widget.dart';
 import 'package:http/http.dart' as http;
+
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
-
-  List<int>video=[];
-  List<EmpData>finalEmpData=[];
-  List<EmpData>emData=[];
+  List<int> video = [];
+  List<EmpData> finalEmpData = [];
+  List<EmpData> emData = [];
 
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData('',selectedPageNumber);
+    ApiGetData('', selectedPageNumber);
     super.initState();
   }
 
@@ -47,7 +48,12 @@ class _DashboardState extends State<Dashboard> {
     return Container(
       child: Column(
         children: [
-          HeaderWidget(onSearchTap: (value){filterSearchResults(value);},),
+          HeaderWidget(
+            isSearchVisible: true,
+            onSearchTap: (value) {
+              filterSearchResults(value);
+            },
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Row(
@@ -58,7 +64,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Container(
                       child: Column(
                         children: [
-                         // NotificationCardWidget(),
+                          // NotificationCardWidget(),
                           SizedBox(
                             height: 20,
                           ),
@@ -68,23 +74,25 @@ class _DashboardState extends State<Dashboard> {
                               height: 20,
                             ),
                           },
-                        //  RecruitmentDataWidget(title: 'Pending Recruitment',),
+                          //  RecruitmentDataWidget(title: 'Pending Recruitment',),
                           Container(
                             child: Column(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(left: 30.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Textview(
                                           TextStyle(
                                             color: Colors.black,
                                             fontSize: 30.sp,
-                                            fontFamily: GoogleFonts.poppins().fontFamily,
+                                            fontFamily: GoogleFonts.poppins()
+                                                .fontFamily,
                                             fontWeight: FontWeight.w600,
                                           ),
-                                          title: 'Pending Recruitment'),
+                                          title: 'Employee Lead Report'),
                                       filterIcon(),
                                     ],
                                   ),
@@ -93,24 +101,44 @@ class _DashboardState extends State<Dashboard> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Container(
-                                      width: 250.w,
-                                      margin: EdgeInsets.symmetric(vertical: 10),
+                                      width: 300.w,
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
                                       alignment: Alignment.centerRight,
                                       child: Container(
-                                        margin: EdgeInsets.symmetric(vertical: 10),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 10),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            IconButton(onPressed: (){
-                                              getPrevPage(selectedPageNumber);
-                                            },
-                                                icon: Icon(Icons.arrow_back_ios,size: 16,)),
-                                            Text("Showing ${selectedPageNumber+1}-10 out of ${totalElements} Results",style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w300,fontFamily:
-                                            GoogleFonts.poppins().fontFamily),),
-                                            IconButton(onPressed: (){
-                                              getNextPage(selectedPageNumber);
-                                            },
-                                                icon: Icon(Icons.arrow_forward_ios,size: 16,))
+                                            InkWell(
+                                                onTap: () {
+                                                  getPrevPage(
+                                                      selectedPageNumber);
+                                                },
+                                                child: Icon(
+                                                  Icons.arrow_back_ios,
+                                                  size: 16,
+                                                )),
+                                            Text(
+                                              "Showing ${selectedPageNumber + 1}-10 out of ${totalElements} Results",
+                                              style: TextStyle(
+                                                  fontSize: 15.sp,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontFamily:
+                                                      GoogleFonts.poppins()
+                                                          .fontFamily),
+                                            ),
+                                            InkWell(
+                                                onTap: () {
+                                                  getNextPage(
+                                                      selectedPageNumber);
+                                                },
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 16,
+                                                ))
                                           ],
                                         ),
                                       ),
@@ -119,56 +147,68 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
-                                      color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                                      color: AppColor.white,
+                                      borderRadius: BorderRadius.circular(5)),
                                   padding: EdgeInsets.all(20),
                                   margin: EdgeInsets.only(left: 30.w),
-                                  child:  finalEmpData.isEmpty
+                                  child: finalEmpData.isEmpty
                                       ? Expanded(
-                                      child: Container(
-                                          height:
-                                          MediaQuery.of(context).size.height - 400,
-                                          child: Center(
-                                              child: TextView(
-                                                  title: "No Record Found",
-                                                  fontSize: 16.sp,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w900))))
+                                          child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height -
+                                                  400,
+                                              child: Center(
+                                                  child: TextView(
+                                                      title: "No Record Found",
+                                                      fontSize: 16.sp,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w900))))
                                       : Table(
-                                    columnWidths: {
-                                      0: FlexColumnWidth(90),
-                                      1: FlexColumnWidth(50),
-                                      2: FlexColumnWidth(70),
-                                      3: FlexColumnWidth(50),
-                                      4: FlexColumnWidth(50),
-                                    },
-                                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                                    children: [
-                                      /// Table Header
-                                      TableRow(
-                                        children: [
-                                          tableHeader("Name"),
-                                          tableHeader("Designation"),
-                                          tableHeader("Contact"),
-                                          tableHeader("Gmail"),
-                                          tableHeader("Status"),
-                                        ],
-                                      ),
-                                     for (int i=0;i<finalEmpData.length;i++)  tableRow(
-                                          context,
-                                          name: "${finalEmpData[i].firstName} ${finalEmpData[i].lastName}",
-                                          color: Colors.blue,
-                                          image: finalEmpData[i].image,
-                                          designation: finalEmpData[i].designation,
-                                          contact:finalEmpData[i].mobileNumber,
-                                          gmail:finalEmpData[i].emailId,
-                                          status: finalEmpData[i].status,
-                                          isSelected: finalEmpData[i].isSelected
-                                      ),
-
-                                    ],
-                                  ),
+                                          columnWidths: {
+                                            0: FlexColumnWidth(90),
+                                            1: FlexColumnWidth(50),
+                                            2: FlexColumnWidth(70),
+                                            3: FlexColumnWidth(50),
+                                            4: FlexColumnWidth(50),
+                                          },
+                                          defaultVerticalAlignment:
+                                              TableCellVerticalAlignment.middle,
+                                          children: [
+                                            /// Table Header
+                                            TableRow(
+                                              children: [
+                                                tableHeader("Name"),
+                                                tableHeader("Designation"),
+                                                tableHeader("Contact"),
+                                                tableHeader("Gmail"),
+                                                tableHeader("Report"),
+                                              ],
+                                            ),
+                                            for (int i = 0;
+                                                i < finalEmpData.length;
+                                                i++)
+                                              tableRow(
+                                                context,
+                                                name:
+                                                    "${finalEmpData[i].firstName} ${finalEmpData[i].lastName}",
+                                                color: Colors.blue,
+                                                image: finalEmpData[i].image,
+                                                designation:
+                                                    finalEmpData[i].designation,
+                                                contact: finalEmpData[i]
+                                                    .contact,
+                                                gmail: finalEmpData[i].emailId,
+                                                status: finalEmpData[i].status,
+                                                isSelected:
+                                                    finalEmpData[i].isSelected,
+                                                index: i,
+                                              ),
+                                          ],
+                                        ),
                                 ),
-                           //  getEmpTable(),
+                                //  getEmpTable(),
                               ],
                             ),
                           )
@@ -181,7 +221,6 @@ class _DashboardState extends State<Dashboard> {
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
-
                           children: [
                             SizedBox(
                               height: 20,
@@ -209,7 +248,9 @@ class _DashboardState extends State<Dashboard> {
     finalEmpData.clear();
     debugPrint('Total leads : ${emData.length}');
     emData.forEach((element) {
-      if(element.firstName!.contains(query) || element.mobileNumber!.contains(query) || element.lastName!.contains(query)){
+      if (element.firstName!.contains(query) ||
+          element.mobileNumber!.contains(query) ||
+          element.lastName!.contains(query)) {
         finalEmpData.add(element);
       }
     });
@@ -217,83 +258,130 @@ class _DashboardState extends State<Dashboard> {
     setState(() {});
   }
 
-  TableRow tableRow(context, {name, image, designation, status, color, contact,gmail,isSelected}) {
-    return TableRow(
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 15),
-            child: Row(
-              children: [
-                getImage(image,height: 30.h,width: 30.w),
-                SizedBox(
-                  width: 10,
+  TableRow tableRow(context,
+      {name,
+      image,
+      designation,
+      status,
+      color,
+      contact,
+      gmail,
+      isSelected,
+      required int index}) {
+    return TableRow(children: [
+      Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          children: [
+            getImage(image, height: 30.h, width: 30.w),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              name,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 15.sp,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Text(
+        designation,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 15.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+      Text(
+        gmail,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 15.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+      Text(
+        contact,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 15.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w300,
+        ),
+      ),
+      Container(
+        height: 27.h,
+        width: 83.w,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: isSelected! ? Colors.amber.shade50 : Colors.blue.shade50),
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 0.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            /* Icon(Icons.download,size: 15,color: isSelected!?Colors.amber :Colors.blue),
+                SizedBox(width: 10.w,),*/
+            InkWell(
+              onTap: () {
+                showDialog<void>(
+                  context: context,
+                  barrierDismissible: false, // user must tap button!
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      alignment: Alignment.center,
+                      backgroundColor: Colors.transparent,
+                      insetAnimationDuration: Duration(milliseconds: 200),
+                      insetAnimationCurve: Curves.easeOutExpo,
+                      // <-- SEE HERE
+                      child: StatefulBuilder(builder:
+                          (BuildContext context, StateSetter setState) {
+                        return Container(
+                          height: 500.h,
+                          width: 500.w,
+                          decoration: BoxDecoration(
+                            color: Colors.white
+                          ),
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: IconButton(
+                                    onPressed: (){
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: Icon(Icons.clear),
+                                  ),
+                                ),
+                                CustomerGrpah(id: finalEmpData[index].id!),
+                              ],
+                            ));
+                      }),
+                    );
+                  },
+                );
+              },
+              child: Text(
+                "View Report",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 15.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w300,
                 ),
-                Text(
-                  name,
-                  style:TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-          Text(
-            designation,
-            style:TextStyle(
-              color: Colors.black,
-              fontSize: 15.sp,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          Text(
-            gmail,
-            style:TextStyle(
-              color: Colors.black,
-              fontSize: 15.sp,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          Text(
-            contact,
-            style:TextStyle(
-              color: Colors.black,
-              fontSize: 15.sp,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          Container(
-            height: 27.h,
-            width: 83.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: isSelected!?Colors.amber.shade50:Colors.red.shade50
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.circle,size: 8,color: isSelected!?Colors.amber :Colors.red),
-                SizedBox(width: 10.w,),
-                Text(
-                  isSelected!?"Selected":"Pending",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ]);
+          ],
+        ),
+      )
+    ]);
   }
 
   Widget tableHeader(text) {
@@ -301,49 +389,55 @@ class _DashboardState extends State<Dashboard> {
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Text(
         text,
-        style: TextStyle(fontWeight: FontWeight.w700, color: AppColor.black,fontSize: 15.sp),
+        style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: AppColor.black,
+            fontSize: 15.sp),
       ),
     );
   }
 
-
-
-  Future<void> ApiGetData(String URL,int selectedPage) async{
+  Future<void> ApiGetData(String URL, int selectedPage) async {
     EasyLoading.show(status: "Loading");
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    print("Token:"+token);
-    var req = await http.get(Uri.parse(ApiConstant.BASE_URL+"api/Employee/getByPages?page=${selectedPage}&size=10"),headers: { "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',});
+    print("Token:" + token);
+    var req = await http.get(
+        Uri.parse(ApiConstant.BASE_URL +
+            "api/Employee/getByPages?page=${selectedPage}&size=10"),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        });
     var response = json.decode(req.body);
     /* final dio = Dio();
     final response = await dio.get(ApiConstant.BASE_URL+"/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${ApiConstant.token}',}));*/
     print(response);
     EasyLoading.dismiss();
-    if(req.statusCode==200){
+    if (req.statusCode == 200) {
       emData.clear();
       finalEmpData.clear();
-      EmployeeListResponse employeeList =EmployeeListResponse.fromJson(jsonDecode(req.body));
+      EmployeeListResponse employeeList =
+          EmployeeListResponse.fromJson(jsonDecode(req.body));
       emData.addAll(employeeList.data!.content!);
       finalEmpData.addAll(employeeList.data!.content!);
       print('this is ${emData.length}');
       totalPages = employeeList.data!.totalPages!;
       totalElements = employeeList.data!.totalElements!;
       debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
-  getHeader(){
+  getHeader() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment:MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Textview(
                   TextStyle(
@@ -356,8 +450,9 @@ class _DashboardState extends State<Dashboard> {
               //  filterIcon(),
             ],
           ),
-          SizedBox(height: 27.5.h,),
-
+          SizedBox(
+            height: 27.5.h,
+          ),
         ],
       ),
     );
@@ -365,9 +460,9 @@ class _DashboardState extends State<Dashboard> {
 
   filterIcon() {
     return Container(
-        width: 101.w,
+        width: 120.w,
         height: 43.h,
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -375,50 +470,55 @@ class _DashboardState extends State<Dashboard> {
             borderRadius: BorderRadius.circular(8.r),
           ),
         ),
-        child: Center(
-          child: Row(
-            children: [
-              PopupMenuButton(
-                position: PopupMenuPosition.under,
-                icon:  SvgPicture.asset(
-                  Images.filter,
-                  height: 19.h,
-                  width: 20.w,
-                ),
-                onSelected: (value) {
-
-                },
-                itemBuilder: (ctx) => [
-                  _buildPopupMenuItem('Sort By Name A to Z',0),
-                  _buildPopupMenuItem('Sort By Name Z to A',1),
-                ],
+        child: Row(
+          children: [
+            PopupMenuButton(
+              position: PopupMenuPosition.under,
+              icon: SvgPicture.asset(
+                Images.filter,
+                height: 19.h,
+                width: 20.w,
               ),
-              Text(
-                "Filter",
-                style:TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w400,
-                ),
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
+              onSelected: (value) {},
+              itemBuilder: (ctx) => [
+                _buildPopupMenuItem('Sort By Name A to Z', 0),
+                _buildPopupMenuItem('Sort By Name Z to A', 1),
+              ],
+            ),
+            Text(
+              "Filter",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20.sp,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+            )
+          ],
         ));
   }
 
   PopupMenuItem _buildPopupMenuItem(
-      String title, int? id,
-      ) {
+    String title,
+    int? id,
+  ) {
     return PopupMenuItem(
-      child: Text(title),
-      onTap: (){
-        if(id==0) {
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 16.sp,
+          fontFamily: GoogleFonts.poppins().fontFamily,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onTap: () {
+        if (id == 0) {
           finalEmpData.sort((b, a) => b.firstName!.compareTo(a.firstName!));
           print('Sort by Name: ' + finalEmpData.toString());
           setState(() {});
-        }else{
+        } else {
           finalEmpData.sort((a, b) => b.firstName!.compareTo(a.firstName!));
           print('Sort by Name: ' + finalEmpData.toString());
           setState(() {});
@@ -430,18 +530,19 @@ class _DashboardState extends State<Dashboard> {
   int selectedPageNumber = 0;
   int totalPages = 0;
   int totalElements = 0;
+
   void getPrevPage(selectedPageNumer) {
-    if(selectedPageNumber==0){
+    if (selectedPageNumber == 0) {
       ApiGetData("", selectedPageNumber);
-    }else
-    if(selectedPageNumber>0) {
+    } else if (selectedPageNumber > 0) {
       selectedPageNumber--;
       ApiGetData("", selectedPageNumber);
       setState(() {});
     }
   }
+
   void getNextPage(selectedPageNumer) {
-    if(selectedPageNumber<totalPages-1) {
+    if (selectedPageNumber < totalPages - 1) {
       selectedPageNumber++;
       ApiGetData("", selectedPageNumber);
       setState(() {});
