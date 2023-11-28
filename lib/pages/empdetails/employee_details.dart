@@ -8,6 +8,8 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/organization/model/all_user_model.dart';
 import 'package:flutter_hr_management/organization/util/app_constants.dart';
@@ -23,11 +25,13 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/request/save_emp.dart';
 import '../../model/response/employeelist.dart';
 import '../../utils/constant.dart';
 import '../dashboard/widget/header_widget.dart';
 import '../widget/filter_button.dart';
+import 'package:http/http.dart' as http;
 
 class EmpDashboard extends StatefulWidget {
   @override
@@ -59,6 +63,44 @@ class _EmpDashboard extends State<EmpDashboard> {
     getEmployeeName();
     foundEmp = EmployeeList..toSet().toList();
     super.initState();
+    getLoginDetail();
+  }
+
+  LoginDeatils? loginDeatils;
+  Future<void> getLoginDetail() async {
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+    getEmpToken(loginDeatils!.data!.id!);
+  }
+  String? token;
+
+  Future<void> getEmpToken(int empId) async {
+    String authToken = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+
+    String myUrl = ApiConstant.BASE_URL +
+        "api/getTokenByEmployeeId?employeeId=${empId}";
+    debugPrint("Get Token Url:" + myUrl);
+
+    EasyLoading.show(status: "Loading");
+    final req = await http.get(Uri.parse(myUrl), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer ${authToken}',
+    });
+    EasyLoading.dismiss();
+    print('the body is ${req.body}');
+    if (req.statusCode == 200) {
+      var jwtResponse = json.decode(req.body);
+      print('the response is ${jwtResponse}');
+      JWTLoginData jwtLoginData =
+      JWTLoginData.fromJson(jwtResponse);
+      if (jwtLoginData.data != null) {
+        token = jwtLoginData.data!;
+        print("Final Generated Token ::" + token!);
+      } else {
+        showCustomToast(
+            context, jwtLoginData.message!, Icons.clear, Colors.red);
+      }
+    }
   }
 
   @override
@@ -98,8 +140,13 @@ class _EmpDashboard extends State<EmpDashboard> {
                       height: 58.h,
                       width: 180.w,
                       child: ElevatedButton(
-                          onPressed: () {
-                            _showAlertDialog();
+                          onPressed: () async {
+                            final url = Uri.parse(
+                                "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}/orgId=1/type=AddEmployee");
+                            debugPrint("HRMS Url : "+url.toString());
+                            if (!await launchUrl(url,)) {
+                            throw Exception('Could not launch $url');
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                               primary: ThemeColor.theme_blue,

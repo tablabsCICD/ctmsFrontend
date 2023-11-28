@@ -1,3 +1,84 @@
+/*
+class OrgBidingModel {
+  int? id;
+  String? emailId;
+  String? userName;
+  String? type;
+  int? idOfPost;
+  String? amount;
+  String? description;
+  String? bidderUserName;
+  int? mobileNumber;
+  String? loggedUserName;
+  int? loggedTime;
+  String? km;
+  String? bestMatch;
+  String? totalBids;
+  bool? status;
+  String? endTime;
+
+  OrgBidingModel(
+      {this.id,
+        this.emailId,
+        this.userName,
+        this.type,
+        this.idOfPost,
+        this.amount,
+        this.description,
+        this.bidderUserName,
+        this.mobileNumber,
+        this.loggedUserName,
+        this.loggedTime,
+        this.km,
+        this.bestMatch,
+        this.totalBids,
+        this.status,
+        this.endTime});
+
+  OrgBidingModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    emailId = json['emailId'];
+    userName = json['userName'];
+    type = json['type'];
+    idOfPost = json['idOfPost'];
+    amount = json['amount'];
+    description = json['description'];
+    bidderUserName = json['bidderUserName'];
+    mobileNumber = json['mobileNumber'];
+    loggedUserName = json['loggedUserName'];
+    loggedTime = json['loggedTime'];
+    km = json['km'];
+    bestMatch = json['bestMatch'];
+    totalBids = json['totalBids'];
+    status = json['status'];
+    endTime = json['endTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['emailId'] = this.emailId;
+    data['userName'] = this.userName;
+    data['type'] = this.type;
+    data['idOfPost'] = this.idOfPost;
+    data['amount'] = this.amount;
+    data['description'] = this.description;
+    data['bidderUserName'] = this.bidderUserName;
+    data['mobileNumber'] = this.mobileNumber;
+    data['loggedUserName'] = this.loggedUserName;
+    data['loggedTime'] = this.loggedTime;
+    data['km'] = this.km;
+    data['bestMatch'] = this.bestMatch;
+    data['totalBids'] = this.totalBids;
+    data['status'] = this.status;
+    data['endTime'] = this.endTime;
+    return data;
+  }
+}
+*/
+
+
+
 class OrgBidingModel {
   int? id;
   int? userId;
@@ -20,7 +101,7 @@ class OrgBidingModel {
   String? destination;
   String? mainTag;
   int? privatePost;
-  int? amount;
+  String? amount;
   String? description;
   int? bidingId;
 
@@ -72,7 +153,7 @@ class OrgBidingModel {
     destination = json['destination']??"";
     mainTag = json['mainTag']??"";
     privatePost = json['privatePost']??0;
-    amount = int.parse(json['amount']);
+    amount = json['amount']??'';
     description = json['description']??"";
     bidingId = json['bidingId']??0;
   }

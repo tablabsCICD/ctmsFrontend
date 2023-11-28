@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/organization/model/language_model.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../model/auth_api.dart';
 
@@ -63,6 +64,7 @@ class AppConstants {
   static String JOBS_ALL_CARD = BASE_URL + "allCards/Jobs";
   static String BUY_SELL_ALL_CARD = BASE_URL + "allCards/buySell";
   static String LIKE_DISLIKE = BASE_URL + "discussionLikes";
+  static String? FONTFAMILY=GoogleFonts.poppins().fontFamily;
 
 
   static String GALLERY = BASE_URL + "/Gallery";

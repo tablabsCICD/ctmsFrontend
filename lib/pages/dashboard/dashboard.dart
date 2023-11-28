@@ -1,5 +1,10 @@
 import 'dart:convert';
-
+import 'package:flutter_hr_management/pages/report/customer_model.dart';
+import 'package:flutter_hr_management/pages/report/pdf_service.dart';
+import 'package:flutter_hr_management/pages/report/saveFile.dart';
+import 'package:open_filex/open_filex.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +13,10 @@ import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/response/emp_report_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/empdetails/activity/customer_grpah.dart';
+import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
@@ -18,6 +25,8 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:universal_html/html.dart';
 
 import 'widget/calender_widget.dart';
 import 'widget/header_widget.dart';
@@ -197,8 +206,8 @@ class _DashboardState extends State<Dashboard> {
                                                 image: finalEmpData[i].image,
                                                 designation:
                                                     finalEmpData[i].designation,
-                                                contact: finalEmpData[i]
-                                                    .contact,
+                                                contact:
+                                                    finalEmpData[i].contact,
                                                 gmail: finalEmpData[i].emailId,
                                                 status: finalEmpData[i].status,
                                                 isSelected:
@@ -343,26 +352,7 @@ class _DashboardState extends State<Dashboard> {
                       // <-- SEE HERE
                       child: StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
-                        return Container(
-                          height: 500.h,
-                          width: 500.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white
-                          ),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: IconButton(
-                                    onPressed: (){
-                                      Navigator.of(context).pop();
-                                    },
-                                    icon: Icon(Icons.clear),
-                                  ),
-                                ),
-                                CustomerGrpah(id: finalEmpData[index].id!),
-                              ],
-                            ));
+                        return _showDateWiseDialog(context, setState);
                       }),
                     );
                   },
@@ -547,5 +537,165 @@ class _DashboardState extends State<Dashboard> {
       ApiGetData("", selectedPageNumber);
       setState(() {});
     }
+  }
+
+  Future<void> getReportApiResponse() async {
+    EasyLoading.show(status: "Loading");
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    print("Token:" + token);
+    var req = await http.get(
+        Uri.parse(ApiConstant.BASE_URL +
+            "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=2023-11-01&endDate=2023-11-28&employeeId=1"),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        });
+    var response = json.decode(req.body);
+    print(response);
+    EasyLoading.dismiss();
+    if (req.statusCode == 200) {
+      EmpReportModel empReportModel =
+          EmpReportModel.fromJson(jsonDecode(req.body));
+
+      print('base 64 code : ${empReportModel.data!.report!}');
+
+      //PdfService().downloadPdfReport(customersList);
+
+      PdfDocument document =
+          PdfDocument.fromBase64String(empReportModel.data!.report!.toString());
+
+      List<int> byte = await document.save();
+      AnchorElement(
+          href:
+          "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(byte)}")
+        ..setAttribute("download", "report.pdf")
+        ..click();
+
+      //Dispose the document
+      document.dispose();
+
+      /*var base64 =empReportModel.data!.report!;
+        var bytes = base64Decode(base64);
+        final output = await getTemporaryDirectory();
+      debugPrint("${output.path}/example.pdf");
+        final file = File("${output.path}/example.pdf");
+        await file.writeAsBytes(bytes.buffer.asUint8List());
+        debugPrint("${output.path}/example.pdf");
+        await OpenFilex.open("${output.path}/example.pdf");*/
+    }
+
+    setState(() {});
+  }
+
+  String selectedFromDate = '';
+  String selectedToDate = '';
+
+  Widget _buildText(
+      BuildContext context, String label, String label1, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Text(
+              label1,
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter) {
+    return Container(
+      width: 350.w,
+      height: 350.h,
+      padding: EdgeInsets.all(20),
+      color: Colors.white,
+      child: Column(
+        children: [
+          SizedBox(
+            width: 200.w,
+            child: _buildText(context, selectedFromDate, "Select From Date",
+                () async {
+              selectedFromDate =
+                  await DateTimePickerDialog().pickBeforeDateDialog(context);
+              if (selectedFromDate == null) {
+                selectedFromDate = "Select From Date";
+              }
+              stateSetter(() {});
+            }),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          SizedBox(
+            width: 200.w,
+            child:
+                _buildText(context, selectedToDate, "Select To Date", () async {
+              selectedToDate =
+                  await DateTimePickerDialog().pickDateDialog(context);
+              if (selectedToDate == null) {
+                selectedToDate = "Select To Date";
+              }
+              stateSetter(() {});
+            }),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                getReportApiResponse();
+                Navigator.of(context).pop();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text(
+                  "Search",
+                  style: TextStyle(
+                      fontSize: 15.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: GoogleFonts.poppins().fontFamily),
+                ),
+              ))
+        ],
+      ),
+    );
   }
 }

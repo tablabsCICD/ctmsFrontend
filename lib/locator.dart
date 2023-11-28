@@ -1,4 +1,7 @@
 
+import 'package:flutter_hr_management/organization/model/general_post_model.dart';
+import 'package:flutter_hr_management/organization/provider/general_post_provider.dart';
+import 'package:flutter_hr_management/organization/provider/job_list_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
@@ -41,6 +44,8 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => RepeatProvider());
   locator.registerLazySingleton(() => GroupListProvider());
   locator.registerLazySingleton(() => GroupChatProvider());
+  locator.registerLazySingleton(() => JobListProvider());
+  locator.registerLazySingleton(() => GeneralPostProvider());
   locator.registerLazySingleton(() => LocalizationProvider(sharedPreferences: locator()));
 
   final sharedPreferences = await SharedPreferences.getInstance();

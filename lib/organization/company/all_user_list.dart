@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
+import 'package:flutter_hr_management/utils/date.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,6 +61,13 @@ class _AllUsersListState extends State<AllUsersList> {
   final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgProvider>();
   String selectedTab = "All Users";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getEmployeeName();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +259,7 @@ class _AllUsersListState extends State<AllUsersList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 101.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -336,7 +347,7 @@ class _AllUsersListState extends State<AllUsersList> {
   List<dynamic> foundEmp = [];
   List<dynamic> uniqueFoundEmp = [];
   List<dynamic> EmployeeList = [];
-
+  List<User> allUserList = [];
   bool isLoad=false;
   getEmployeeName() async {
 
@@ -348,6 +359,7 @@ class _AllUsersListState extends State<AllUsersList> {
     var response = json.decode(req.body);
     print(response);
     var type = AuthApi.fromJson(response);
+    allUserList.addAll(type.content as Iterable<User>);
     type.content!.forEach((element) {
       EmployeeList.add(element.firstName.toString()+" "+element.lastName.toString());
     });
@@ -409,7 +421,38 @@ class _AllUsersListState extends State<AllUsersList> {
                     children: [
                       ListTile(
                         onTap: () {
-                          Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
+                          allUserList.forEach((element) {
+                            if (foundEmp[index] ==
+                                "${element.firstName} ${element.lastName}") {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Add Employee"),
+                                    content:
+                                    Text("You want to add employee?"),
+                                    actions: [
+                                      TextButton(
+                                        child: Text("Add"),
+                                        onPressed: () {
+                                          addToTKDConnect(element, stateSetter);
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text("Cancel"),
+                                        onPressed: () {
+                                          /*showCustomToast(
+                                              context, "", Icons.clear, Colors.red);*/
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          });
+                        //  Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
                         },
                         title: Text(foundEmp[index]),
                       ),
@@ -425,6 +468,70 @@ class _AllUsersListState extends State<AllUsersList> {
         ],
       ),
     );
+  }
+
+  Future<void> addToTKDConnect(
+      User selectedEmp, StateSetter stateSetter) async {
+    Map<String, dynamic> requestParameter = {
+      "aadharCard": 'string',
+      "aadharCardForVerification": "string",
+      "alternativeNumber": selectedEmp.alternativeNumber,
+      "city": selectedEmp.city,
+      "companyAddress": "pune",
+      "companyId": 1,
+      "companyLogo": "string",
+      "companyName": "string",
+      "country": "India",
+      "deviceId": "string",
+      "emailId": selectedEmp.emailId,
+      "firstName": selectedEmp.firstName,
+      "idOfMainBranch": 0,
+      "isPaid": 0,
+      "isUserVerifiedByCompany": 0,
+      "landlineNumber": selectedEmp.mobileNumber,
+      "lastName": selectedEmp.lastName,
+      "loggedTime": GetDateFormat.getCurrentDate(),
+      "loggedUserName": "string",
+      "mainBranch": 0,
+      "mobileNumber": selectedEmp.mobileNumber,
+      "numberOfTimesRating": 3,
+      "os": "string",
+      "otp": "string",
+      "paidStartDate": "string",
+      "panCardForVerification": "string",
+      "password": "string",
+      "preferredRouresEntered": 0,
+      "profilePicture": "string",
+      "ratings": 0,
+      "state": "Maharastra",
+      "transporterOrAgent": 0,
+      "userName": "string",
+      "validTill": "string",
+      "verified": 0,
+      "website": "string"
+    };
+    print(requestParameter);
+    var reqPara = jsonEncode(requestParameter);
+    print(reqPara);
+    EasyLoading.show(status: "Loading");
+    Dio dio = Dio();
+    print("Add User Url :" + AppConstants.REGISTRATION);
+    var response = await dio.post(
+      AppConstants.REGISTRATION,
+      data: reqPara,
+    );
+    print('Save User Response is: ${response.data}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      showCustomToast(
+          context, "Employee added successfully", Icons.check, Colors.green);
+      Navigator.of(context).pop();
+      // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
+    } else {
+      showCustomToast(
+          context, response.statusMessage.toString(), Icons.clear, Colors.red);
+      Navigator.of(context).pop();
+    }
   }
 
   getCircularContainer(String title, bool isSelected, int i) {
@@ -450,7 +557,6 @@ class _AllUsersListState extends State<AllUsersList> {
               ),
 
               Container(
-                transform: Matrix4.translationValues(-30.w, 0, 0.0),
                 height: 100.h,
                 child: Center(
                   child: Text(

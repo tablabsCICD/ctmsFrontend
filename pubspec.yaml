@@ -80,6 +80,11 @@ dependencies:
   firebase_messaging: ^14.7.3
   fluttertoast:
   pie_chart: ^5.4.0
+  cached_network_image:
+  flutter_rating_bar:
+  open_filex:
+  syncfusion_flutter_pdf: ^20.3.49
+
 
 
 

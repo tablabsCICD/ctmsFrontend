@@ -305,8 +305,8 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
   //  String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBiding/ForOrganisation?organizationId=26";
-  //  String myUrl = AppConstants.BASE_URL+ "getBiding/ForOrganisation?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
+    String myUrl = /*AppConstants.BASE_URL+ */"https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";
+ //   String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
 
     print("Get Biding Data by OrgId - "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -316,6 +316,7 @@ class OrgProvider extends ChangeNotifier{
       orgBigingList = List<OrgBidingModel>.from(response.map((json) => OrgBidingModel.fromJson(json)));
      // orgBigingList.sort((a, b) => a.amount.compareTo(b.amount));
       print('Low to high in biding amount: $orgBigingList');
+      bidCont=orgBigingList.length;
       orgBigingList.forEach((element) {print("amount : "+element.amount.toString());});
       notifyListeners();
     }
@@ -336,6 +337,7 @@ class OrgProvider extends ChangeNotifier{
     orgBuySellList = List<OrgBuySellModel>.from(response.map((json) => OrgBuySellModel.fromJson(json)));
     orgBuyList.clear();
     orgSellList.clear();
+    buySellPostCount=orgBuySellList.length;
     orgBuySellList.forEach((element) {
       if(element.mainTag == "Buy vehicle"){
         orgBuyList.add(element);
@@ -350,8 +352,8 @@ class OrgProvider extends ChangeNotifier{
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getFullLoad/ForOrganisation?organizationId=26";
-   // String myUrl = AppConstants.BASE_URL+"getFullLoad/ForOrganisation?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
+    String myUrl = /*AppConstants.BASE_URL+*/"https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
+   // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
 
     print("Get All Load Truck Data - "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -361,6 +363,7 @@ class OrgProvider extends ChangeNotifier{
       orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
       orgAllFullLoadList.clear();
       orgAllFullLoadList.addAll(orgFullLoadList);
+      allPostCount = orgAllFullLoadList.length;
       orgFLAList.clear();
       orgFLRList.clear();
       orgPLAList.clear();

@@ -280,7 +280,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 101.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(

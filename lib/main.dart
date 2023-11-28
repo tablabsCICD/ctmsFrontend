@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/firebase_api.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
+import 'package:flutter_hr_management/organization/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/organization/provider/group/groupChatProvider.dart';
 import 'package:flutter_hr_management/organization/provider/group/groupListProvider.dart';
+import 'package:flutter_hr_management/organization/provider/job_list_provider.dart';
 import 'package:flutter_hr_management/organization/provider/localization_provider.dart';
 import 'package:flutter_hr_management/organization/provider/menu_provider.dart';
 import 'package:flutter_hr_management/organization/provider/more_provider.dart';
@@ -58,6 +61,8 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => locator<PlanProvider>()),
           ChangeNotifierProvider(create: (_) => locator<GroupListProvider>()),
           ChangeNotifierProvider(create: (_) => locator<GroupChatProvider>()),
+          ChangeNotifierProvider(create: (_) => locator<JobListProvider>()),
+          ChangeNotifierProvider(create: (_) => locator<GeneralPostProvider>()),
         ],
         child: MyApp(),
       )

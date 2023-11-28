@@ -172,7 +172,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     return Container(
       margin: EdgeInsets.only(left: 121.w, top: 23.h, bottom: 25.h),
       width: 414.w,
-      height: 63.h,
+      height: 60.h,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(43),
           color: Color(0xfff6f6f6)),
@@ -183,10 +183,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   edittext() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       child: Container(
         width: 414.w,
-        height: 62.h,
+        height: 60.h,
+        alignment: Alignment.center,
         child: TextField(
           controller: searchController,
           onChanged: (value) {

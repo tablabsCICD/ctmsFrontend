@@ -121,7 +121,7 @@ class _BuySellListState extends State<BuySellList> {
                               children: [
                                 Image.asset('assets/org/logo_iveco.png',height: 24.h,width: 126.w,),
                                 TextView(
-                                  title: 'Truck_80E190',
+                                  title: model.orgBuySellList[0].vehicleRegistrationNumber.toString(),
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
                                   fontSize: 25.sp,
@@ -179,9 +179,9 @@ class _BuySellListState extends State<BuySellList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  getCard('Engine Power','254 kW'),
+                                  getCard('Engine Power',model.orgBuySellList[0].enginePower.toString()),
                                   SizedBox(height: 17.h,),
-                                  getCard('Transmission','Manual'),
+                                  getCard('Transmission',model.orgBuySellList[0].transmission.toString()),
                                 ],
                               ),
                             ),
@@ -192,9 +192,9 @@ class _BuySellListState extends State<BuySellList> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  getCard('Drive Type','6 X4'),
+                                  getCard('Drive Type',model.orgBuySellList[0].driverType.toString()),
                                   SizedBox(height: 17.h,),
-                                  getCard('Weight','8t'),
+                                  getCard('Weight',model.orgBuySellList[0].weight.toString()),
                                 ],
                               ),
                             ),
@@ -253,7 +253,7 @@ class _BuySellListState extends State<BuySellList> {
                               : 2,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 12,
-                          itemCount: 3,
+                          itemCount: model.orgBuySellList.length,
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
@@ -274,7 +274,7 @@ class _BuySellListState extends State<BuySellList> {
                                         children: [
                                           Image.asset('assets/org/cargo_truck.png',height: 129.h,width: 335.w,),
                                           Text(
-                                            'Iveco 80E190',
+                                            model.orgBuySellList[index].vehicleInfo.toString(),
                                             style:TextStyle(
                                               color: Colors.black,
                                               fontSize: 20.sp,
@@ -283,7 +283,7 @@ class _BuySellListState extends State<BuySellList> {
                                             ),
                                           ),
                                           Text(
-                                            'KA-05-AH-5390 | 25.0 Tonnes',
+                                            '${model.orgBuySellList[0].enginePower} | ${model.orgBuySellList[0].weight}',
                                             style:TextStyle(
                                               color: Colors.black,
                                               fontSize: 15.sp,
@@ -354,6 +354,7 @@ class _BuySellListState extends State<BuySellList> {
         child: Container(
           width: 200.w,
           height: 150.h,
+          alignment: Alignment.center,
           child: Stack(
             children: <Widget>[
               SvgPicture.asset(
@@ -365,7 +366,6 @@ class _BuySellListState extends State<BuySellList> {
               ),
 
               Container(
-                transform: Matrix4.translationValues(-30.w, 0, 0.0),
                 height: 100.h,
                 width: 200.w,
                 child: Center(
@@ -452,7 +452,7 @@ class _BuySellListState extends State<BuySellList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 101.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -506,11 +506,11 @@ class _BuySellListState extends State<BuySellList> {
       onTap: () {
         if (id == 0) {
           model.orgBuySellList.sort(
-                  (b, a) => b.companyName!.compareTo(a.companyName!));
+                  (b, a) => b.ownerName!.compareTo(a.ownerName!));
           setState(() {});
         } else {
           model.orgBuySellList.sort(
-                  (a, b) => b.companyName!.compareTo(a.companyName!));
+                  (a, b) => b.ownerName!.compareTo(a.ownerName!));
           setState(() {});
         }
       },

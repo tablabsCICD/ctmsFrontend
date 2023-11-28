@@ -7,6 +7,9 @@ import 'package:flutter_hr_management/organization/company/company_menu/comp_dis
 import 'package:flutter_hr_management/organization/company/company_menu/comp_full_load.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_bids.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/company_general_post.dart';
+import 'package:flutter_hr_management/organization/company/company_menu/company_jobs.dart';
+import 'package:flutter_hr_management/organization/company/jobs/job_list_screen.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
@@ -26,6 +29,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
   static bool isFullLoad = false;
   static bool isBuySell = false;
   static bool isDiscussion = false;
+  static bool isJob = false;
+  static bool isGeneralPost = false;
   static bool isBid = false;
 
   @override
@@ -70,6 +75,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isDiscussion = false;
                 isBuySell = false;
                 isBid = false;
+                isGeneralPost = false;
+                isJob=false;
                 setState(() {});
                 //Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
                 Navigator.of(context).restorablePush((context, arguments) =>
@@ -89,6 +96,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isFullLoad = false;
                 isDiscussion = false;
                 isBid = false;
+                isGeneralPost = false;
+                isJob=false;
                 setState(() {});
                 //  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
                 Navigator.of(context).restorablePushReplacement(
@@ -107,6 +116,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isFullLoad = true;
                 isDiscussion = false;
                 isBid = false;
+                isGeneralPost = false;
+                isJob=false;
                 setState(() {});
                 // Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
                 Navigator.of(context).restorablePush((context, arguments) =>
@@ -124,6 +135,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isFullLoad = false;
                 isDiscussion = false;
                 isBuySell = true;
+                isGeneralPost = false;
+                isJob=false;
                 isBid = false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
@@ -160,11 +173,55 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isFullLoad = false;
                 isDiscussion = false;
                 isBid = true;
+                isJob=false;
+                isGeneralPost=false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
                             CompanyBidsScreen(organization[0])));
+                //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isJob,
+              title: "Jobs",
+              icon: "assets/org/bid.svg",
+              press: () {
+                isDashbord = false;
+                isAllUser = false;
+                isBuySell = false;
+                isFullLoad = false;
+                isDiscussion = false;
+                isBid = false;
+                isGeneralPost = false;
+                isJob=true;
+                setState(() {});
+                Navigator.of(context).restorablePush((context, arguments) =>
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            CompJobsScreen(organization[0])));
+                //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isGeneralPost,
+              title: "General Post",
+              icon: "assets/org/bid.svg",
+              press: () {
+                isDashbord = false;
+                isAllUser = false;
+                isBuySell = false;
+                isFullLoad = false;
+                isDiscussion = false;
+                isBid = false;
+                isJob=false;
+                isGeneralPost= true;
+                setState(() {});
+                Navigator.of(context).restorablePush((context, arguments) =>
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            GeneralPostScreen(organization[0])));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),

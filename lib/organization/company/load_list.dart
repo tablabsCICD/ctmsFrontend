@@ -13,6 +13,7 @@ import 'package:flutter_hr_management/organization/model/organization_model.dart
 import 'package:flutter_hr_management/organization/multi_select.dart';
 import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization/provider/bid_provider.dart';
+import 'package:flutter_hr_management/organization/provider/buy_sell_provider.dart';
 import 'package:flutter_hr_management/organization/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization/util/ResponsiveWidget.dart';
@@ -32,7 +33,7 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 
 class LoadList extends StatefulWidget {
   final dashboardProvider = locator<OrgProvider>();
-  final buySellProvider = locator<OrgProvider>();
+  final buySellProvider = locator<BuySellProvider>();
   Organization organization;
   int index;
   LoadList(this.organization,{Key? key, required this.index}) : super(key: key) {
@@ -91,7 +92,7 @@ class _LoadListState extends State<LoadList> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: InkWell(
                                   onTap: () {
-                                    _showMultiSelect(context);
+                                   // _showMultiSelect(context);
                                   },
                                   child: Row(
                                     mainAxisAlignment:
@@ -220,7 +221,7 @@ class _LoadListState extends State<LoadList> {
                       ),
                     ),
                     Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
-                    getPostList(context),
+                    getPostList(model,context),
             ]
            )
         )
@@ -301,9 +302,8 @@ class _LoadListState extends State<LoadList> {
     );
   }
 
-  getPostList(BuildContext context) {
-    return Consumer<OrgProvider>(
-      builder: (context, model, child) =>/* model.isLoading==true?Expanded(
+  getPostList(OrgProvider model,BuildContext context) {
+    return /* model.isLoading==true?Expanded(
           child: Container(
               height:
               MediaQuery.of(context).size.height - 400,
@@ -345,12 +345,13 @@ class _LoadListState extends State<LoadList> {
                 ),
                 elevation: 1,
                 child: Container(
-                  height: 218.h,
-                  width: 510.w,
+                  height: 225.h,
+                 // width: 510.w,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r)
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
                         width: 174.w,
@@ -373,14 +374,14 @@ class _LoadListState extends State<LoadList> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 17.w),
+                     // SizedBox(width: 17.w),
                       SizedBox(
                         width: 174.w,
                         child: Column(
                           children: [
                             Container(
-                              width: 140,
-                              height: 20,
+                              width: 140.w,
+                              height: 20.h,
                               alignment: Alignment.center,
                               decoration: new BoxDecoration(
                                   color: model
@@ -463,64 +464,73 @@ class _LoadListState extends State<LoadList> {
                         ),
                       ),
                       SizedBox(width: 20.w,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10.h,),
-                          Container(
-                            width: 130.w,
-                              alignment: Alignment.centerRight,
-                              child: InkWell(onTap: (){}, child: SvgPicture.asset('assets/delete.svg',height: 20.h,width: 20.w,))),
-                          SizedBox(height: 20.h,),
-                          Row(
-                            children: [
-                              getImage('',height: 30.h),
-                              SizedBox(width: 10.w,),
-                              TextView(
-                                 title: "${model.orgFullLoadList[index].nameOfPerson}",
-                                fontSize:15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff000000),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 5.h,),
-                          Row(
-                            children: [
-                              SizedBox(width: 15.w,),
-                              SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
-                              SizedBox(width: 20.w,),
-                              TextView(
-                                title: "${model.orgFullLoadList[index].type}",
-                                fontSize:15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff000000),
-                              ),
-                            ],
-                          ),
+                      SizedBox(
+                        width: 170.w,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10.h,),
+                            Container(
+                              width: 130.w,
+                                alignment: Alignment.centerRight,
+                                child: InkWell(onTap: (){}, child: SvgPicture.asset('assets/delete.svg',height: 20.h,width: 20.w,))),
+                            SizedBox(height: 20.h,),
+                            Row(
+                              children: [
+                                getImage('',height: 30.h),
+                                SizedBox(width: 10.w,),
+                                Expanded(
+                                  child: Text(
+                                     "${model.orgFullLoadList[index].nameOfPerson}",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize:15.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff000000),
+                                    ),
+                                    
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5.h,),
+                            Row(
+                              children: [
+                                SizedBox(width: 15.w,),
+                                SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
+                                SizedBox(width: 20.w,),
+                                TextView(
+                                  title: "${model.orgFullLoadList[index].type}",
+                                  fontSize:15.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff000000),
+                                ),
+                              ],
+                            ),
                   SizedBox(height: 30.h,),
                   SizedBox(
                     width: 121.w,
                     height: 40.h,
                     child: ElevatedButton(
-                      onPressed: (){
+                        onPressed: (){
 
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: ThemeColor.theme_blue,
-                        onPrimary: Colors.white,
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
-                      ),
-                      child: TextView(
-                        title: "Contact",
-                        fontSize:15.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xffffffff),
-                      ),
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: ThemeColor.theme_blue,
+                          onPrimary: Colors.white,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
+                        ),
+                        child: TextView(
+                          title: "Contact",
+                          fontSize:15.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xffffffff),
+                        ),
                     ),
                   )
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -528,7 +538,7 @@ class _LoadListState extends State<LoadList> {
         );
       }
       ),
-          ),
+
     );
   }
   getContainer(OrgProvider model,String title, int value,String count, Color bgColor, String img) {
@@ -592,7 +602,7 @@ class _LoadListState extends State<LoadList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 101.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -604,6 +614,7 @@ class _LoadListState extends State<LoadList> {
         ),
         child: Center(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               PopupMenuButton(
                 position: PopupMenuPosition.under,

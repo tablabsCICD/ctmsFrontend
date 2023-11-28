@@ -170,7 +170,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
                           ],
                         ),
                       ),
-                      Container(
+                      /*Container(
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -190,7 +190,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
                             pieChart(),
                           ],
                         ),
-                      )
+                      )*/
                     ],
                   )
                 : Column(
@@ -208,7 +208,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
                           empBarChart(),
                         ],
                       ),
-                      Column(
+                      /*Column(
                         children: [
                           Text(
                             "Customer Report",
@@ -220,7 +220,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
                           ),
                           pieChart(),
                         ],
-                      )
+                      )*/
                     ],
                   ),
             SizedBox(

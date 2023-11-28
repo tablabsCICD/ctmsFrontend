@@ -497,7 +497,7 @@ class UpdatedByUser {
   String? designation;
   String? contact;
   String? employeeLocation;
-  int? departmentId;
+  dynamic? departmentId;
   BoardingDeatails? boardingDeatails;
   Role? role;
   bool? isAdmin;

@@ -59,5 +59,12 @@ class Images {
   static String hrm = "assets/images/hrm.svg";
 static String bilty = "assets/images/bilty.svg";
 static String invoice = "assets/images/invoice.svg";
+  static String general_post = "assets/images/general_post.svg";
+  static String verified = "assets/images/verified.svg";
+  static String savejob = "assets/images/save_job.svg";
+  static String message_job = "assets/images/message_job.svg";
+  static String arrow_right = "assets/images/arrow_right.svg";
+  static String share_white = "assets/images/share_white.svg";
+  static String call_white = "assets/images/call_white.svg";
 
 }

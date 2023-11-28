@@ -13,6 +13,7 @@ class DateTimePickerDialog{
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   DateTime _currentDate = DateTime.now();
 
+
   Future<String> pickDateDialog(context) async{
     DateTime? _datePicker = await showDatePicker(
       initialDatePickerMode: DatePickerMode.day,
@@ -23,13 +24,48 @@ class DateTimePickerDialog{
     );
     if (_datePicker != null && _datePicker != _currentDate) {
       DateTime? date;
-        if (_datePicker.isBefore(DateTime.now())) {
-          date = _datePicker;
-          selectedDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
-        } else {
-          date = _datePicker;
-          selectedDate = DateFormat("yyyy-MM-dd").format(_datePicker);           //resFromDateCnt;
-        }
+      if (_datePicker.isBefore(DateTime.now())) {
+        date = _datePicker;
+        selectedDate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+      } else {
+        date = _datePicker;
+        selectedDate = DateFormat("yyyy-MM-dd").format(_datePicker);           //resFromDateCnt;
+      }
+    }
+    return selectedDate;
+
+    /*await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        //which date will display when user open the picker
+        firstDate: DateTime(1950),
+        //what will be the previous supported year in picker
+        lastDate: DateTime
+            .now()) //what will be the up to supported date in picker
+        .then((pickedDate) {
+      //then usually do the future job
+      if (pickedDate == null) {
+        //if user tap cancel then this function will stop
+        return null;
+      }
+      _selectedDate=pickedDate;
+    });
+    if(_selectedDate!=null){
+      return GetDateFormat.getFormatedDate(_selectedDate);
+    }
+    return "Select Date";*/
+  }
+
+  Future<String> pickBeforeDateDialog(context) async{
+    DateTime? _datePicker = await showDatePicker(
+      initialDatePickerMode: DatePickerMode.day,
+      context: context,
+      initialDate: _currentDate,
+      firstDate: DateTime(1947),
+      lastDate: DateTime(2030),
+    );
+    if (_datePicker != null && _datePicker != _currentDate) {
+       selectedDate = DateFormat("yyyy-MM-dd").format(_datePicker);           //resFromDateCnt;
     }
     return selectedDate;
 

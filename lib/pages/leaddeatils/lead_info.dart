@@ -79,6 +79,8 @@ class _LeadInfo extends State<LeadInfo> {
                     Navigator.pop(context);
                   },
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
                         Images.back_arrow,
@@ -130,6 +132,7 @@ class _LeadInfo extends State<LeadInfo> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,6 +149,7 @@ class _LeadInfo extends State<LeadInfo> {
                             ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(widget.leadData.lead!.companyName!,
                                     style: TextStyle(
@@ -153,6 +157,11 @@ class _LeadInfo extends State<LeadInfo> {
                                       fontWeight: FontWeight.w400,
                                     )),
                                 Text(widget.leadData.lead!.typeOfBusiness!,
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w300,
+                                    )),
+                                Text("Created Date : "+widget.leadData.lead!.date!,
                                     style: TextStyle(
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w300,
@@ -333,7 +342,7 @@ class _LeadInfo extends State<LeadInfo> {
                                 SizedBox(
                                   width: 23.w,
                                 ),
-                                Text("Current Lead Status:${widget.leadData.status}",
+                                Text("Current Lead Status : ${widget.leadData.status}",
                                     style: TextStyle(
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w500,
@@ -780,7 +789,11 @@ class _LeadInfo extends State<LeadInfo> {
 
           SizedBox(height: 16.h),
           InkWell(
-            onTap: _submitForm,
+            onTap: (){
+              _submitForm(stateSetter);
+              stateSetter(() {
+              });
+            },
             child: Container(
               decoration: BoxDecoration(
                   color: ThemeColor.theme_blue,
@@ -1039,7 +1052,7 @@ class _LeadInfo extends State<LeadInfo> {
     }
   }
 
-  void _submitForm() async {
+  void _submitForm(StateSetter stateSetter) async {
     LoginDeatils loginDeatils =
         await LocalSharePreferences.localSharePreferences.getLoginData();
     String token = await LocalSharePreferences()
@@ -1074,6 +1087,8 @@ class _LeadInfo extends State<LeadInfo> {
       selectDate = "";
       selectedEmp = 0;
       selectedStatus = "Select Status";
+      stateSetter(() {
+      });
       Navigator.pop(context);
     } else {
      // ToastMessage.show(context, "Please try Again");

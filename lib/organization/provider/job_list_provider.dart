@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
@@ -19,16 +20,15 @@ class JobListProvider extends ChangeNotifier{
 
   getAllJobs()async{
     //ApiResponse apiResponse=await ApiHelper().apiWithoutDecodeGet(ApiConstant.BASE_URL+'postJob?page=$selectedPage');
-    String myUrl = AppConstants.JOBS_ALL_CARD +'?type=Job&page=${selectedPage}';
+    String myUrl = /*AppConstants.JOBS_ALL_CARD +*/'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/postJob';
+    print("Get All Jobs : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     var  response = json.decode(req.body);
-
-    if(response.status==200){
-      JobList jobList=JobList.fromJson(response.response);
-      if(selectedPage==0){
-        listJobs.clear();
-      }
-      listJobs.addAll(jobList.content!);
+    print(response);
+    if(response != null){
+      JobList jobList=JobList.fromJson(response);
+      listJobs.addAll(jobList.content as Iterable<JobData>);
+      print(listJobs.length);
       selectedPage++;
       notifyListeners();
 
