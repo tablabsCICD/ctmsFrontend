@@ -792,7 +792,13 @@ class _LeadInfo extends State<LeadInfo> {
           SizedBox(height: 16.h),
           InkWell(
             onTap: (){
-              _submitForm(stateSetter);
+              if(selectDate==''){
+                showCustomToast(context, "Please select next followup date", Icons.clear, Colors.red);
+              }else if(selectedEmp==0){
+                showCustomToast(context, "Please select employee", Icons.clear, Colors.red);
+              } else{
+                _submitForm(stateSetter);
+              }
               stateSetter(() {
               });
             },

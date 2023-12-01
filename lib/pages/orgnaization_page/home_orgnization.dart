@@ -95,9 +95,8 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         }, child: empCounts("0", "CRM", Images.crm, Color(
                             0xFFFFEDF9)),),
                         SizedBox(width: 38.w,),
-                        // http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee
                         InkWell(onTap: () async {
-                         // getEmpToken(loginDeatils!.data!.id!);
+                         await getEmpToken(loginDeatils!.data!.id!);
                           final url = Uri.parse(
                               "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                           debugPrint("HRMS Url : "+url.toString());
@@ -121,7 +120,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         SizedBox(width: 38.w,),
                         InkWell(
                           onTap: () async {
-                          //  getEmpToken(loginDeatils!.data!.id!);
+                          await  getEmpToken(loginDeatils!.data!.id!);
                             final url = Uri.parse(
                                 "http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                             debugPrint("Bilty Url : "+url.toString());
