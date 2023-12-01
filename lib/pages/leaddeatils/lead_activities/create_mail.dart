@@ -15,13 +15,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../common/app_colors.dart';
+import '../../../model/response/lead_list.dart';
 import '../../../utils/constant.dart';
 
 class CreateMail extends StatefulWidget {
   bool onlyMail;
+  Lead? lead;
 
-
-  CreateMail({Key? key, required this.onlyMail}) : super(key: key);
+  CreateMail({Key? key, required this.onlyMail,this.lead}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _CreateMail();
@@ -35,6 +36,12 @@ class _CreateMail extends State<CreateMail>{
   TextEditingController subjectController=TextEditingController();
   TextEditingController mailController=TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    toNameController.text = widget.lead!.emailId!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +236,7 @@ class _CreateMail extends State<CreateMail>{
           controller: controller,
           decoration: InputDecoration(
             border: InputBorder.none,
-            labelText: label,
+           // labelText: label,
             hintText: label,
             labelStyle: TextStyle(color: Color(0xff1B1B1B),fontSize: 15.sp,fontWeight: FontWeight.w300),
             hintStyle: TextStyle(color: Color(0xffcccccc),fontSize: 13.sp,fontWeight: FontWeight.w300),

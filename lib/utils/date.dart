@@ -27,6 +27,16 @@ class GetDateFormat {
 
   }
 
+  static String getNextMonthDateOfCurrentDate(){
+    DateTime now = DateTime.now();
+    final date = now.add(Duration(days: 30));
+    String nextDate = DateFormat("yyyy-MM-dd").format(date);
+    /* DateTime now = DateTime.now();
+    String formattedDate = DateFormat(formatDate).format(now);*/
+    print('Next date of current date is $nextDate');
+    return nextDate;
+
+  }
   static String getFormatedDate(DateTime dateTime){
     DateTime now = dateTime;
     String formattedDate = DateFormat("yyyy-MM-dd").format(now);

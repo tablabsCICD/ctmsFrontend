@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/generated/l10n.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/base_widget/custom_button.dart';
 import 'package:flutter_hr_management/organization/base_widget/custom_search_city_feild.dart';
@@ -136,13 +137,13 @@ class _GeneralPostListState extends State<GeneralPostList> {
                     ),
                     elevation: 1,
                     child: Container(
-                      height: 225.h,
+                      height: ResponsiveWidget.isDesktop(context)?150.h:100.h,
                       // width: 510.w,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.r)
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ListTile(
                             leading: getImage(''),
@@ -159,10 +160,68 @@ class _GeneralPostListState extends State<GeneralPostList> {
                               color: Color(0xff818080),
                             ),
                           ),
-
+SizedBox(height: 16.h,),
                           Divider(),
-                          BaseWidget().likeComment(),
-                          SizedBox(height: 10.h,),
+                          SizedBox(height: 16.h,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                           // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(Images.like),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    S().like,
+                                    style: TextStyle(
+                                      color: Color(0xFF001E49),
+                                      fontSize: 14.sp,
+                                      fontFamily: GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Color(0xFF001E49),
+                                      fontSize: 14.sp,
+                                      fontFamily: GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(Images.message),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    S().comment,
+                                    style: TextStyle(
+                                      color: Color(0xFF001E49),
+                                      fontSize: 14.sp,
+                                      fontFamily: GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '0',
+                                    style: TextStyle(
+                                      color: Color(0xFF001E49),
+                                      fontSize: 14.sp,
+                                      fontFamily: GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                         // BaseWidget().likeComment(),
                         ],
                       ),
                     )),
@@ -201,11 +260,8 @@ class _GeneralPostListState extends State<GeneralPostList> {
 
                 },
                 itemBuilder: (ctx) => [
-                  _buildPopupMenu('All Loads',0,model),
-                  _buildPopupMenu('Full Load Available',1,model),
-                  _buildPopupMenu('Full Load Required',2,model),
-                  _buildPopupMenu('Part Load Available',3,model),
-                  _buildPopupMenu('Part Load Required',4,model),
+                  _buildPopupMenu('Sort By Name A to Z', 0,model),
+                  _buildPopupMenu('Sort By Name Z to A', 1,model),
                 ],
               ),
               Text(
@@ -234,9 +290,15 @@ class _GeneralPostListState extends State<GeneralPostList> {
           fontWeight: FontWeight.w500,
           color: Colors.black),),
       onTap: (){
-        setState(() {
-          selectedTab = title;
-        });
+        if (id == 0) {
+          model.generalPostList.sort(
+                  (b, a) => b.title!.compareTo(a.title!));
+          setState(() {});
+        } else {
+          model.generalPostList.sort(
+                  (a, b) => b.title!.compareTo(a.title!));
+          setState(() {});
+        }
       },
     );
   }

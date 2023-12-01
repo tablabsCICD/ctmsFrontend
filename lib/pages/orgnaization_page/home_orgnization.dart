@@ -99,7 +99,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         InkWell(onTap: () async {
                          // getEmpToken(loginDeatils!.data!.id!);
                           final url = Uri.parse(
-                              "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}/orgId=1");
+                              "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                           debugPrint("HRMS Url : "+url.toString());
                           if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
@@ -123,7 +123,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                           onTap: () async {
                           //  getEmpToken(loginDeatils!.data!.id!);
                             final url = Uri.parse(
-                                "http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading?token=${token}");
+                                "http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                             debugPrint("Bilty Url : "+url.toString());
                             if (!await launchUrl(url,)) {
                               throw Exception('Could not launch $url');

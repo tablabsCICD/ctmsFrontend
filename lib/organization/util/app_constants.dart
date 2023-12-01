@@ -60,7 +60,7 @@ class AppConstants {
   static String POST_TRANSCATION = BASE_URL + "transactions";
 
   //-------New Api ---------
-  static String FULL_LOAD_ALL_CARD = BASE_URL + "allcards/fullLoad/andquery";
+  static String FULL_LOAD_ALL_CARD = /*BASE_URL + */"https://api.tkdost.com/tkd2/api/allcards/fullLoad/andquery";
   static String JOBS_ALL_CARD = BASE_URL + "allCards/Jobs";
   static String BUY_SELL_ALL_CARD = BASE_URL + "allCards/buySell";
   static String LIKE_DISLIKE = BASE_URL + "discussionLikes";

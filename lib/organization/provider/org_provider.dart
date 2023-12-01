@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -22,21 +21,16 @@ import 'package:flutter_hr_management/organization/model/pool_purchase_model.dar
 import 'package:flutter_hr_management/organization/model/truck_load_model.dart';
 import 'package:flutter_hr_management/organization/util/app_constants.dart';
 
-class OrgProvider extends ChangeNotifier{
+class OrgProvider extends ChangeNotifier {
   List<Organization> orgVerifiedList = [];
   List<Organization> orgList = [];
   List<Organization> orgnization = [];
+
   List<User> userList = [];
   List<User> allUserList = [];
   List<User> rejectedUserList = [];
   List<User> approvedUserList = [];
   List<User> pendingUserList = [];
-
-  List<ListOfFullTruckLoad> fullLoadList = [];
-  List<ListOfBiding> bidList = [];
-  List<ListOfBuySell> buySellList = [];
-  List<ListOfBulkBuySell> orgoopPurchaseList = [];
-  List<ListOfUsers> listOfUsers = [];
 
   List<OrgFullLoadModel> orgFullLoadList = [];
   List<OrgFullLoadModel> orgAllFullLoadList = [];
@@ -44,6 +38,15 @@ class OrgProvider extends ChangeNotifier{
   List<OrgFullLoadModel> orgFLRList = [];
   List<OrgFullLoadModel> orgPLAList = [];
   List<OrgFullLoadModel> orgPLRList = [];
+
+  List<OrgBuySellModel> orgBuySellList = [];
+  List<OrgBuySellModel> orgBuyList = [];
+  List<OrgBuySellModel> orgSellList = [];
+  List<OrgBuySellModel> finalBuySellList = [];
+
+  List<OrgBidingModel> orgBigingList = [];
+  List<OrgBidingModel> placedBigingList = [];
+  List<OrgBidingModel> receivedBigingList = [];
 
   List<OrgPoolPurchaseModel> orgPoolPurchaseList = [];
   List<OrgPoolPurchaseModel> orgAllPoolPurchaseList = [];
@@ -54,17 +57,19 @@ class OrgProvider extends ChangeNotifier{
   List<OrgPoolPurchaseModel> orgInsuranceList = [];
   List<OrgPoolPurchaseModel> orgOtherList = [];
 
-  List<OrgBuySellModel> orgBuySellList = [];
-  List<OrgBuySellModel> orgBuyList = [];
-  List<OrgBuySellModel> orgSellList = [];
-
-  List<OrgBidingModel> orgBigingList = [];
-
   var response;
-  int userCount=0,allPostCount=0,buySellPostCount=0,poolPurchasePostCount=0,fullLoadPostCount=0,bidCont=0,fullLoadCount=0,partLoadCount=0;
+  int userCount = 0,
+      allPostCount = 0,
+      buySellPostCount = 0,
+      poolPurchasePostCount = 0,
+      fullLoadPostCount = 0,
+      bidCont = 0,
+      fullLoadCount = 0,
+      partLoadCount = 0;
 
   sendOtpByOrgId(String mobile) async {
-    String myUrl = AppConstants.BASE_URL + 'sendMobileOTPForCompanyLogin?mobileNumber=${mobile}';
+    String myUrl = AppConstants.BASE_URL +
+        'sendMobileOTPForCompanyLogin?mobileNumber=${mobile}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = json.decode(req.body);
@@ -72,8 +77,9 @@ class OrgProvider extends ChangeNotifier{
     return response;
   }
 
-  verifyOtpByOrgId(String mobile,String otp,String deviceId) async {
-    String myUrl = AppConstants.BASE_URL + 'verifyOTPForCompany?mobileNumber=${mobile}&otp=${otp}';
+  verifyOtpByOrgId(String mobile, String otp, String deviceId) async {
+    String myUrl = AppConstants.BASE_URL +
+        'verifyOTPForCompany?mobileNumber=${mobile}&otp=${otp}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = await json.decode(req.body);
@@ -83,9 +89,9 @@ class OrgProvider extends ChangeNotifier{
     return obj;
   }
 
-
   sendOtpUsingEmail(String email) async {
-    String myUrl = AppConstants.BASE_URL + 'SendOTPOnCompanyEmailId?emailId=${email}';
+    String myUrl =
+        AppConstants.BASE_URL + 'SendOTPOnCompanyEmailId?emailId=${email}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = json.decode(req.body);
@@ -93,8 +99,9 @@ class OrgProvider extends ChangeNotifier{
     return response;
   }
 
-  verifyOtpUsingEmail(String email,String otp,String deviceId) async {
-    String myUrl = AppConstants.BASE_URL + 'verifyOTPCompanyEmail?emailId=${email}&otp=${otp}&deviceId=${deviceId}';
+  verifyOtpUsingEmail(String email, String otp, String deviceId) async {
+    String myUrl = AppConstants.BASE_URL +
+        'verifyOTPCompanyEmail?emailId=${email}&otp=${otp}&deviceId=${deviceId}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = await json.decode(req.body);
@@ -103,12 +110,13 @@ class OrgProvider extends ChangeNotifier{
     notifyListeners();
     return organization;
   }
+
   bool isLoading = false;
 
   getOrganizationList({int currentPage = 0}) async {
     isLoading = true;
     notifyListeners();
-    if(currentPage == 0){
+    if (currentPage == 0) {
       orgVerifiedList.clear();
     }
     String myUrl = AppConstants.COMPANY + '?page=0&size=100';
@@ -121,16 +129,16 @@ class OrgProvider extends ChangeNotifier{
     orgVerifiedList.clear();
     orgList.addAll(type.content);
     orgList.forEach((element) {
-      if(element.isVerified == 1){
+      if (element.isVerified == 1) {
         orgVerifiedList.add(element);
       }
-      print("verifiedList length:   "+orgVerifiedList.length.toString());
+      print("verifiedList length:   " + orgVerifiedList.length.toString());
     });
     notifyListeners();
   }
 
   setCompanyVisitingFlag(bool flag) async {
-    if(flag == false){
+    if (flag == false) {
       orgnization = [];
       notifyListeners();
     }
@@ -141,108 +149,39 @@ class OrgProvider extends ChangeNotifier{
 
   setCompanyOrgId(int id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setInt("c_id", id );
+    await preferences.setInt("c_id", id);
   }
 
-  Future<bool?> getCompanyVisitingFlag() async{
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-    bool? alreadyVisited = await preferences.getBool("Visited")?? false;
+  Future<bool?> getCompanyVisitingFlag() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool? alreadyVisited = await preferences.getBool("Visited") ?? false;
     return alreadyVisited;
   }
 
-  Future<int?> getCompanyOrgId() async{
-    SharedPreferences preferences=await SharedPreferences.getInstance();
+  Future<int?> getCompanyOrgId() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     int? id = await preferences.getInt("c_id")!;
     return id;
   }
 
-  void filterSearchResults(String query,String type) {
-    if(type=="User") {
-      userList.clear();
-      allUserList.forEach((element) {
-        if (element.firstName!.contains(query) ||
-            element.lastName!.contains(query)||
-            element.mobileNumber!.toString().contains(query)) {
-          userList.add(element);
-        }
-      });
-      debugPrint('Final Users : ${userList.length}');
-      notifyListeners();
-    }else if(type=="Load") {
-      orgFullLoadList.clear();
-      orgAllFullLoadList.forEach((element) {
-        if (element.source!.contains(query) ||
-            element.destination!.contains(query)||
-            element.mobileNumber!.toString().contains(query)) {
-          orgFullLoadList.add(element);
-        }
-      });
-      debugPrint('Final Load List : ${orgFullLoadList.length}');
-      notifyListeners();
-    }
-  }
-
-  getCompanyDetails(int id) async {
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/1';
-   // String myUrl = AppConstants.BASE_URL + 'CompanyDetails';
-
-    print("GetOrg Details:"+myUrl);
-    var req = await http.get(Uri.parse(myUrl));
-    response = await json.decode(req.body);
-    var list = OrganizationModel.fromJson(response);
-    orgnization = list.content;
-    notifyListeners();
-    return orgnization;
-  }
-
-  getUsersByCompanyId(int id) async {
-    String myUrl = AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
-    print("All users by company::"+myUrl);
-    var req = await http.get(Uri.parse(myUrl));
-    response = await json.decode(req.body);
-    var list = AuthApi.fromJson(response);
-    userList.clear();
-    userList = list.content!;
-    allUserList.clear();
-    allUserList.addAll(userList);
-    approvedUserList.clear();
-    pendingUserList.clear();
-    rejectedUserList.clear();
-    userList.forEach((element) {
-      if(element.isUserVerifiedByCompany == 1){
-        approvedUserList.add(element);
-      }else if(element.isUserVerifiedByCompany == 0){
-        rejectedUserList.add(element);
-      }
-      else{
-        pendingUserList.add(element);
-      }
-    });
-    userCount = userList.length;
-    notifyListeners();
-  }
-
-  getUserList(String title){
-    userList.clear();
-
-    if(title == "All Users"){
-      userList.addAll(allUserList);
-      notifyListeners();}
-    if(title == "Approved"){
-      userList.addAll(approvedUserList);
-      notifyListeners();}
-    if(title == "Rejected"){
-      userList.addAll(rejectedUserList);
-      notifyListeners();}
-    if(title == "Pending") {
-      userList.addAll(pendingUserList);
-      notifyListeners();
-    }
-  }
-  createOrg({String? panCard,String? tanCard,String? city,String? companyAddress,String? cMobile,String? gst,
-    String? companyName,String? gst1,String? typeOfRegistration,String? landlineNumber,int? numberOfTimesRating, int? rating,
-    int? verified,String? state,String? offEmail,String? pointName,String? website
-  }) async {
+  createOrg(
+      {String? panCard,
+        String? tanCard,
+        String? city,
+        String? companyAddress,
+        String? cMobile,
+        String? gst,
+        String? companyName,
+        String? gst1,
+        String? typeOfRegistration,
+        String? landlineNumber,
+        int? numberOfTimesRating,
+        int? rating,
+        int? verified,
+        String? state,
+        String? offEmail,
+        String? pointName,
+        String? website}) async {
     String myUrl = AppConstants.COMPANY;
     Uri uri = Uri.parse(myUrl);
     Map<String, dynamic> data = {
@@ -269,98 +208,198 @@ class OrgProvider extends ChangeNotifier{
     print(data);
     var createResponse = await http.post(uri,
         headers: {"Content-Type": "application/json"}, body: body);
-    print("${createResponse.statusCode}" + " --- " + createResponse.body.toString());
+    print("${createResponse.statusCode}" +
+        " --- " +
+        createResponse.body.toString());
     var jsonData = jsonDecode(createResponse.body);
     Organization dataObj = Organization.fromJson(jsonData);
     orgVerifiedList.add(dataObj);
     notifyListeners();
   }
 
+  void filterSearchResults(String query, String type) {
+    if (type == "User") {
+      userList.clear();
+      allUserList.forEach((element) {
+        if (element.firstName!.contains(query) ||
+            element.lastName!.contains(query) ||
+            element.mobileNumber!.toString().contains(query)) {
+          userList.add(element);
+        }
+      });
+      debugPrint('Final Users : ${userList.length}');
+      notifyListeners();
+    } else if (type == "Load") {
+      orgFullLoadList.clear();
+      orgAllFullLoadList.forEach((element) {
+        if (element.source!.contains(query) ||
+            element.destination!.contains(query) ||
+            element.mobileNumber!.toString().contains(query)) {
+          orgFullLoadList.add(element);
+        }
+      });
+      debugPrint('Final Load List : ${orgFullLoadList.length}');
+      notifyListeners();
+    }
+  }
+
+  getCompanyDetails(int id) async {
+    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/1';
+    // String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
+    print("GetOrg Details:" + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    response = await json.decode(req.body);
+    var list = OrganizationModel.fromJson(response);
+    orgnization = list.content;
+    notifyListeners();
+    return orgnization;
+  }
+
+  getUsersByCompanyId(int id) async {
+    String myUrl =
+        AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
+    print("All users by company::" + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    response = await json.decode(req.body);
+    var list = AuthApi.fromJson(response);
+    userList.clear();
+    userList = list.content!;
+    allUserList.clear();
+    allUserList.addAll(userList);
+    approvedUserList.clear();
+    pendingUserList.clear();
+    rejectedUserList.clear();
+    userList.forEach((element) {
+      if (element.isUserVerifiedByCompany == 1) {
+        approvedUserList.add(element);
+      } else if (element.isUserVerifiedByCompany == 0) {
+        rejectedUserList.add(element);
+      } else {
+        pendingUserList.add(element);
+      }
+    });
+    userCount = userList.length;
+    notifyListeners();
+  }
+
+  getUserList(String title) {
+    userList.clear();
+
+    if (title == "All Users") {
+      userList.addAll(allUserList);
+      notifyListeners();
+    }
+    if (title == "Approved") {
+      userList.addAll(approvedUserList);
+      notifyListeners();
+    }
+    if (title == "Rejected") {
+      userList.addAll(rejectedUserList);
+      notifyListeners();
+    }
+    if (title == "Pending") {
+      userList.addAll(pendingUserList);
+      notifyListeners();
+    }
+  }
+
+  getFinalBuySellList(String title) {
+    finalBuySellList.clear();
+    orgBuySellList.forEach((element) {
+      if (title == "Buy vehicle") {
+        finalBuySellList.add(element);
+      } else {
+        finalBuySellList.add(element);
+      }
+    });
+    notifyListeners();
+  }
+
+
   getStaticData(int id) async {
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"getStastitcs?organizationId=${id}";
-    print("GET Statistics URL : "+myUrl);
+    String myUrl = AppConstants.BASE_URL+"/fullTruckStatistics?companyId=${id}";
+     //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
+    print("GET Statistics URL : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     var response = json.decode(req.body);
     var type = OrgStaticDataModel.fromJson(response);
     print(response);
-    userCount = type.numberOfEmployees;
-    fullLoadPostCount = type.numberOfFullLoadPosts;
-    bidCont = type.numberOfBids;
-    poolPurchasePostCount = type.numberOfPoolPurchase;
-    buySellPostCount = type.numberOfBuySellPosts;
-    fullLoadList = type.listOfFullTruckLoad;
-    buySellList = type.listOfBuySell;
-    orgoopPurchaseList = type.listOfBulkBuySell;
-    bidList = type.listOfBiding;
-    listOfUsers = type.listOfUsers;
+    userCount = type.data!.totalCompanyRegister!;
+    fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!+22;
+    bidCont = type.data!.totalLoggedUserNameInBiding!;
+    buySellPostCount = type.data!.totalLoggedUserNameInBuySell!;
     notifyListeners();
   }
-
 
   getOrgBidingList(int id) async {
     isLoading = true;
     notifyListeners();
-  //  String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBiding/ForOrganisation?organizationId=26";
-    String myUrl = /*AppConstants.BASE_URL+ */"https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";
- //   String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
-
-    print("Get Biding Data by OrgId - "+myUrl);
+    String myUrl = /*AppConstants.BASE_URL+ */
+        "https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";
+    //String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
+    print("Get Biding Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
-    if(req.statusCode == 200) {
+    if (req.statusCode == 200) {
       final response = json.decode(req.body);
-      orgBigingList = List<OrgBidingModel>.from(response.map((json) => OrgBidingModel.fromJson(json)));
-     // orgBigingList.sort((a, b) => a.amount.compareTo(b.amount));
+      orgBigingList = List<OrgBidingModel>.from(
+          response.map((json) => OrgBidingModel.fromJson(json)));
+      // orgBigingList.sort((a, b) => a.amount.compareTo(b.amount));
       print('Low to high in biding amount: $orgBigingList');
-      bidCont=orgBigingList.length;
-      orgBigingList.forEach((element) {print("amount : "+element.amount.toString());});
+      bidCont = orgBigingList.length;
+      orgBigingList.forEach((element) {
+        print("amount : " + element.amount.toString());
+      });
       notifyListeners();
     }
   }
 
- getBuyVehicles(int id) async {
-    isLoading = true;
-    notifyListeners();
-   // String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBuySell/ForOrganisation?organizationId=26";
-   // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
+  getBuyVehicles(int id) async {
+    // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
     String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
 
-    print("Get BuySell Data By OrgId - "+myUrl);
+    print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     final response = json.decode(req.body);
     print(response);
-    orgBuySellList = List<OrgBuySellModel>.from(response.map((json) => OrgBuySellModel.fromJson(json)));
-    orgBuyList.clear();
-    orgSellList.clear();
-    buySellPostCount=orgBuySellList.length;
-    orgBuySellList.forEach((element) {
-      if(element.mainTag == "Buy vehicle"){
-        orgBuyList.add(element);
-      }else {
-        orgSellList.add(element);
-      }
-    });
+    if(req.statusCode ==200) {
+      BuySellModel buySellModel = BuySellModel.fromJson(response);
+      orgBuySellList.addAll(buySellModel.data!);/*List<OrgBuySellModel>.from(
+          response.map((json) => OrgBuySellModel.fromJson(json)));*/
+      orgBuyList.clear();
+      orgSellList.clear();
+      getFinalBuySellList("Buy vehicle");
+      buySellPostCount = orgBuySellList.length;
+      orgBuySellList.forEach((element) {
+        if (element.mainTag == "Buy vehicle") {
+          orgBuyList.add(element);
+        } else {
+          orgSellList.add(element);
+        }
+      });
+    }
     notifyListeners();
   }
 
   getOrgFullLoadList(int id) async {
     isLoading = true;
     notifyListeners();
-    //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getFullLoad/ForOrganisation?organizationId=26";
-    String myUrl = /*AppConstants.BASE_URL+*/"https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
-   // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
+    String myUrl = /*AppConstants.BASE_URL+*/
+        "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
+    // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
 
-    print("Get All Load Truck Data - "+myUrl);
+    print("Get All Load Truck Data - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
     print(response);
-    if(req.statusCode == 200) {
-      orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
+    if (req.statusCode == 200) {
+      orgFullLoadList = List<OrgFullLoadModel>.from(
+          response.map((json) => OrgFullLoadModel.fromJson(json)));
       orgAllFullLoadList.clear();
       orgAllFullLoadList.addAll(orgFullLoadList);
       allPostCount = orgAllFullLoadList.length;
@@ -369,67 +408,82 @@ class OrgProvider extends ChangeNotifier{
       orgPLAList.clear();
       orgPLRList.clear();
       orgFullLoadList.forEach((element) {
-        if(element.mainTag == "Full load available"){
+        if (element.mainTag == "Full load available") {
           orgFLAList.add(element);
-        }else if(element.mainTag == "Full load required"){
+        } else if (element.mainTag == "Full load required") {
           orgFLRList.add(element);
-        }else if(element.mainTag == "Part load available"){
+        } else if (element.mainTag == "Part load available") {
           orgPLAList.add(element);
-        }
-        else{
+        } else {
           orgPLRList.add(element);
         }
       });
-      fullLoadCount = orgFLRList.length+orgFLAList.length;
-      partLoadCount = orgPLRList.length+orgPLAList.length;
+      fullLoadCount = orgFLRList.length + orgFLAList.length;
+      partLoadCount = orgPLRList.length + orgPLAList.length;
       notifyListeners();
     }
     isLoading = false;
-
   }
 
-  getFilterFullLoadList(String title){
+  getFilterFullLoadList(String title) {
     orgFullLoadList.clear();
-    if(title == "All Loads"){
+    if (title == "All Loads") {
       orgFullLoadList.addAll(orgAllFullLoadList);
-      notifyListeners();
     }
-    if(title == "Part Loads"){
+    if (title == "Part Loads") {
       orgFullLoadList.addAll(orgPLAList);
       orgFullLoadList.addAll(orgPLRList);
-      notifyListeners();
     }
-    if(title == "Full Loads"){
+    if (title == "Full Loads") {
       orgFullLoadList.addAll(orgFLAList);
+      orgFullLoadList.addAll(orgFLRList);
+    }
+    if (title == "Full Load Available") {
+      orgFullLoadList.addAll(orgFLAList);
+    }
+    if (title == "Full Load Required") {
       orgFullLoadList.addAll(orgFLRList);
       notifyListeners();
     }
-    if(title == "Full Load Available"){
-      orgFullLoadList.addAll(orgFLAList);
-      notifyListeners();}
-    if(title == "Full Load Required"){
-      orgFullLoadList.addAll(orgFLRList);
-      notifyListeners();}
-    if(title == "Part Load Available") {
+    if (title == "Part Load Available") {
       orgFullLoadList.addAll(orgPLAList);
-      notifyListeners();
     }
-    if(title == "Part Load Required") {
+    if (title == "Part Load Required") {
       orgFullLoadList.addAll(orgPLRList);
-      notifyListeners();
     }
+    notifyListeners();
   }
+
+  getSearchByNameList(String name, String source, String dest) async {
+    isLoading = true;
+    notifyListeners();
+    orgFullLoadList.clear();
+    String myUrl = AppConstants.FULL_LOAD_ALL_CARD +
+        '?nameOfPerson=${name}&source=${source}&destination=${dest}';
+    print(myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    isLoading == false;
+    response = json.decode(req.body);
+    print(response);
+    LoadListModel loadListModel = LoadListModel.fromJson(response);
+    orgFullLoadList = loadListModel.content!;
+    // orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
+    notifyListeners();
+  }
+
   getOrgPoolPurchaseList(int id) async {
     isLoading = true;
     notifyListeners();
-   // String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBulkBuySell/ForOrganisation?organizationId=26";
-    String myUrl = AppConstants.BASE_URL + "getBulkBuySell/ForOrganisation?organizationId=${id}";
+    // String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBulkBuySell/ForOrganisation?organizationId=26";
+    String myUrl = AppConstants.BASE_URL +
+        "getBulkBuySell/ForOrganisation?organizationId=${id}";
     print(myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
-    if(req.statusCode == 200) {
+    if (req.statusCode == 200) {
       final response = json.decode(req.body);
-      orgPoolPurchaseList = List<OrgPoolPurchaseModel>.from(response.map((json) => OrgPoolPurchaseModel.fromJson(json)));
+      orgPoolPurchaseList = List<OrgPoolPurchaseModel>.from(
+          response.map((json) => OrgPoolPurchaseModel.fromJson(json)));
       orgAllPoolPurchaseList.clear();
       orgAllPoolPurchaseList.addAll(orgPoolPurchaseList);
       orgVehicleList.clear();
@@ -439,18 +493,17 @@ class OrgProvider extends ChangeNotifier{
       orgInsuranceList.clear();
       orgOtherList.clear();
       orgPoolPurchaseList.forEach((element) {
-        if(element.purchaseItem == "Vehicle"){
+        if (element.purchaseItem == "Vehicle") {
           orgVehicleList.add(element);
-        }else if(element.purchaseItem == "Tyres"){
+        } else if (element.purchaseItem == "Tyres") {
           orgTyreList.add(element);
-        }else if(element.purchaseItem == "Body Building"){
+        } else if (element.purchaseItem == "Body Building") {
           orgBodyBuildingList.add(element);
-        }else if(element.purchaseItem == "Insurance"){
+        } else if (element.purchaseItem == "Insurance") {
           orgInsuranceList.add(element);
-        }else if(element.purchaseItem == "Finance"){
+        } else if (element.purchaseItem == "Finance") {
           orgFinanceList.add(element);
-        }
-        else{
+        } else {
           orgOtherList.add(element);
         }
       });
@@ -458,51 +511,37 @@ class OrgProvider extends ChangeNotifier{
     }
   }
 
-  getFilterPoolPurchaseList(String title){
+  getFilterPoolPurchaseList(String title) {
     orgPoolPurchaseList.clear();
-    if(title == "All Requirement"){
+    if (title == "All Requirement") {
       orgPoolPurchaseList.addAll(orgAllPoolPurchaseList);
-      notifyListeners();}
-    if(title == "Vehicles"){
+      notifyListeners();
+    }
+    if (title == "Vehicles") {
       orgPoolPurchaseList.addAll(orgVehicleList);
-      notifyListeners();}
-    if(title == "Tyres"){
+      notifyListeners();
+    }
+    if (title == "Tyres") {
       orgPoolPurchaseList.addAll(orgTyreList);
-      notifyListeners();}
-    if(title == "Body Building") {
+      notifyListeners();
+    }
+    if (title == "Body Building") {
       orgPoolPurchaseList.addAll(orgBodyBuildingList);
       notifyListeners();
     }
-    if(title == "Finance") {
+    if (title == "Finance") {
       orgPoolPurchaseList.addAll(orgFinanceList);
       notifyListeners();
     }
-    if(title == "Insurance") {
+    if (title == "Insurance") {
       orgPoolPurchaseList.addAll(orgInsuranceList);
       notifyListeners();
     }
-    if(title == "Other") {
+    if (title == "Other") {
       orgPoolPurchaseList.addAll(orgOtherList);
       notifyListeners();
     }
   }
-
-  getSearchByNameList(String name,String source,String dest) async {
-    isLoading = true;
-    notifyListeners();
-    orgFullLoadList.clear();
-    String myUrl = AppConstants.FULL_LOAD_ALL_CARD +'?nameOfPerson=${name}&source=${source}&destination=${dest}';
-    print(myUrl);
-    var req = await http.get(Uri.parse(myUrl));
-    isLoading == false;
-    response = json.decode(req.body);
-    print(response);
-    LoadListModel loadListModel = LoadListModel.fromJson(response);
-    orgFullLoadList = loadListModel.content!;
-   // orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
-    notifyListeners();
-  }
-
 
   deleteFullLoad(OrgFullLoadModel truckLoad) async {
     String myUrl = AppConstants.BASE_URL + 'fullTruckLoad?id=${truckLoad.id}';
@@ -525,14 +564,6 @@ class OrgProvider extends ChangeNotifier{
     notifyListeners();
   }
 
- deletePoolPurchase(OrgPoolPurchaseModel obj) async {
-    String myUrl = AppConstants.BULK_DATA + '?id=${obj.id}';
-    var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
-    orgPoolPurchaseList.remove(obj);
-    notifyListeners();
-  }
-
   deleteBid(OrgBidingModel bid) async {
     String myUrl = AppConstants.BID_TO_POST + '?id=${bid.bidingId}';
     print(myUrl);
@@ -543,27 +574,36 @@ class OrgProvider extends ChangeNotifier{
     notifyListeners();
   }
 
+  deletePoolPurchase(OrgPoolPurchaseModel obj) async {
+    String myUrl = AppConstants.BULK_DATA + '?id=${obj.id}';
+    var req = await http.delete(Uri.parse(myUrl));
+    var deleteResponse = json.decode(req.body);
+    orgPoolPurchaseList.remove(obj);
+    notifyListeners();
+  }
+
   String? image;
   String? uploadedDocs;
-  Future setImage(img) async{
+
+  Future setImage(img) async {
     this.image = img;
     this.notifyListeners();
   }
 
-  uploadCompanyDocuments({String? imageFilePath,
-    Uint8List? imageBytes,PlatformFile? objectFile}) async {
-
+  uploadCompanyDocuments(
+      {String? imageFilePath,
+      Uint8List? imageBytes,
+      PlatformFile? objectFile}) async {
     String myUrl = AppConstants.IMG_UPLOAD;
 
     var postUri = Uri.parse(myUrl);
     var request = new http.MultipartRequest("POST", postUri);
 
-    Map<String,String> headers = {"Content-Type": "multipart/form-data"};
+    Map<String, String> headers = {"Content-Type": "multipart/form-data"};
 
     request.files.add(new http.MultipartFile(
         "profilePicture", objectFile!.readStream!, objectFile.size,
         filename: objectFile.name));
-
 
     request.headers.addAll(headers);
     var response = await request.send();

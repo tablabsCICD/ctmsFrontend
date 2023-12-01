@@ -142,7 +142,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                       child: ElevatedButton(
                           onPressed: () async {
                             final url = Uri.parse(
-                                "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}/orgId=1/type=AddEmployee");
+                                "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=1&orgId=1&type=AddEmployee");
                             debugPrint("HRMS Url : "+url.toString());
                             if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');

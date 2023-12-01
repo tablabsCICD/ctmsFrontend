@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/organization/util/ResponsiveWidget.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/progress_dialog.dart';
@@ -35,7 +36,7 @@ class BidList extends StatefulWidget {
 class _BidListState extends State<BidList> {
 
 
-
+  String selectedTab = "Placed Quotes";
   @override
   void initState() {
     // TODO: implement initState
@@ -49,6 +50,24 @@ class _BidListState extends State<BidList> {
         builder: (context, model, child) => SingleChildScrollView(
           child: Column(
             children: [
+              Container(
+                height: 60,
+                child: Row(
+                  children: [
+                    getCircularContainer(
+                        "Placed Quotes",
+                        (selectedTab == "Placed Quotes"),
+                        0,
+                        model),
+                    getCircularContainer(
+                        "Received Quotes",
+                        (selectedTab == "Received Quotes"),
+                        1,
+                        model),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16.h,),
               Row(
                 mainAxisAlignment:MainAxisAlignment.spaceBetween,
                 children: [
@@ -337,6 +356,50 @@ class _BidListState extends State<BidList> {
             ),
           ),
         ]);
+  }
+
+  getCircularContainer(
+      String title, bool isSelected, int i, OrgProvider model) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedTab = title;
+          model.getFinalBuySellList(title);
+        });
+      },
+      child: Container(
+        width: 250.w,
+        height: 150.h,
+        alignment: Alignment.center,
+        child: Stack(
+          children: <Widget>[
+            SvgPicture.asset(
+              Images.red_arrow,
+              alignment: Alignment.center,
+              width: 250.w,
+              height: 100.h,
+              color: isSelected ? Color(0xffC3262C) : Colors.white,
+            ),
+            Container(
+              height: 100.h,
+              width: 200.w,
+              alignment: Alignment.center,
+              child: Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontSize: 20.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget tableHeader(text) {

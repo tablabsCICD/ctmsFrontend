@@ -646,54 +646,70 @@ class _DashboardState extends State<Dashboard> {
       height: 350.h,
       padding: EdgeInsets.all(20),
       color: Colors.white,
-      child: Column(
+      child: Stack(
         children: [
-          SizedBox(
-            width: 200.w,
-            child: _buildText(context, selectedFromDate, "Select From Date",
-                () async {
-              selectedFromDate =
-                  await DateTimePickerDialog().pickBeforeDateDialog(context);
-              if (selectedFromDate == null) {
-                selectedFromDate = "Select From Date";
-              }
-              stateSetter(() {});
-            }),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          SizedBox(
-            width: 200.w,
-            child:
-                _buildText(context, selectedToDate, "Select To Date", () async {
-              selectedToDate =
-                  await DateTimePickerDialog().pickDateDialog(context);
-              if (selectedToDate == null) {
-                selectedToDate = "Select To Date";
-              }
-              stateSetter(() {});
-            }),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                getReportApiResponse();
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: (){
                 Navigator.of(context).pop();
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Text(
-                  "Search",
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: GoogleFonts.poppins().fontFamily),
+              child: Icon(Icons.close_rounded,size: 20,),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 200.w,
+                  child: _buildText(context, selectedFromDate, "Select From Date",
+                      () async {
+                    selectedFromDate =
+                        await DateTimePickerDialog().pickBeforeDateDialog(context);
+                    if (selectedFromDate == null) {
+                      selectedFromDate = "Select From Date";
+                    }
+                    stateSetter(() {});
+                  }),
                 ),
-              ))
+                SizedBox(
+                  height: 20.h,
+                ),
+                SizedBox(
+                  width: 200.w,
+                  child:
+                      _buildText(context, selectedToDate, "Select To Date", () async {
+                    selectedToDate =
+                        await DateTimePickerDialog().pickDateDialog(context);
+                    if (selectedToDate == null) {
+                      selectedToDate = "Select To Date";
+                    }
+                    stateSetter(() {});
+                  }),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      getReportApiResponse();
+                      Navigator.of(context).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Text(
+                        "Search",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
+                      ),
+                    ))
+              ],
+            ),
+          ),
         ],
       ),
     );

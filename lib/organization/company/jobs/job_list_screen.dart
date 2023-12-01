@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
+import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
 import 'package:flutter_hr_management/organization/company/jobs/create_job_screen.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
@@ -14,9 +16,11 @@ import 'package:flutter_hr_management/organization/util/app_constants.dart';
 import 'package:flutter_hr_management/organization/util/star_display.dart';
 import 'package:flutter_hr_management/organization/util/style.dart';
 import 'package:flutter_hr_management/pages/widget/card/base_widgets.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +30,7 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 
 class JobListScreen extends StatefulWidget {
   Organization organization;
+
   JobListScreen(this.organization);
 
   @override
@@ -35,112 +40,117 @@ class JobListScreen extends StatefulWidget {
 }
 
 class _JobListState extends State<JobListScreen> {
+  TextEditingController jobTypeController = TextEditingController();
+  TextEditingController jobTitleController = TextEditingController();
+  TextEditingController jobDescController = TextEditingController();
+  TextEditingController salaryController = TextEditingController();
+  TextEditingController experienceController = TextEditingController();
+  TextEditingController jobLocationController = TextEditingController();
+  TextEditingController jobDepartmentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<JobListProvider>(
         builder: (context, model, child) => Column(
-          children: [
-            Row(
               children: [
-                Container(
-                  height: 60,
-                  child: Padding(
-                    padding: ResponsiveWidget.isDesktop(context)
-                        ? EdgeInsets.symmetric(horizontal: 35, vertical: 10)
-                        : EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    child: Row(
-                      children: [
-
-                      ],
-                    ),
-                  ),
-                ),
-                Spacer(),
                 Row(
                   children: [
-                    filterIcon(model),
-                    SizedBox(
-                      width: 27.w,
+                    Container(
+                      height: 60,
+                      child: Padding(
+                        padding: ResponsiveWidget.isDesktop(context)
+                            ? EdgeInsets.symmetric(horizontal: 35, vertical: 10)
+                            : EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                        child: Row(
+                          children: [],
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 58.h,
-                      width: 180.w,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            _showAlertDialog();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: ThemeColor.theme_blue,
-                              onPrimary: Colors.white),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add_circle,
-                                size: 18,
-                              ),
-                              SizedBox(
-                                width: 6.w,
-                              ),
-                              TextView(
-                                title: "Create Job",
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white,
-                              ),
-                            ],
-                          )),
-                    ),
-                    SizedBox(
-                      width: 27.w,
+                    Spacer(),
+                    Row(
+                      children: [
+                        filterIcon(model),
+                        SizedBox(
+                          width: 27.w,
+                        ),
+                        SizedBox(
+                          height: 58.h,
+                          width: 180.w,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                _showAlertDialog(model);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: ThemeColor.theme_blue,
+                                  onPrimary: Colors.white),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_circle,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 6.w,
+                                  ),
+                                  TextView(
+                                    title: "Create Job",
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              )),
+                        ),
+                        SizedBox(
+                          width: 27.w,
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                model.listJobs.isEmpty
+                    ? Expanded(
+                        child: Container(
+                            height: MediaQuery.of(context).size.height - 200,
+                            child: Center(
+                                child: Text(
+                              "No Record Found",
+                              style: Style.heading,
+                            ))))
+                    : Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 39.w, vertical: 31.h),
+                          child: StaggeredGridView.countBuilder(
+                            physics: ScrollPhysics(),
+                            crossAxisCount: ResponsiveWidget.isDesktop(context)
+                                ? 3
+                                : ResponsiveWidget.isMobile(context)
+                                    ? 1
+                                    : 3,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 12,
+                            itemCount: model.listJobs.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {},
+                                child: jobCard(model.listJobs[index], model),
+                              );
+                            },
+                            shrinkWrap: true,
+                            staggeredTileBuilder: (int index) =>
+                                StaggeredTile.fit(1),
+                          ),
+                        ),
+                      ),
+                //  getLoader(model.isLoading)
               ],
-            ),
-            model.listJobs.isEmpty
-                ? Expanded(
-                child: Container(
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: Center(
-                        child: Text(
-                          "No Record Found",
-                          style: Style.heading,
-                        ))))
-                : Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 39.w, vertical: 31.h),
-                child: StaggeredGridView.countBuilder(
-                  physics: ScrollPhysics(),
-                  crossAxisCount:
-                  ResponsiveWidget.isDesktop(context)
-                      ? 3
-                      : ResponsiveWidget.isMobile(context)
-                      ? 1
-                      : 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 12,
-                  itemCount: model.listJobs.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {},
-                      child: jobCard(model.listJobs[index]),
-                    );
-                  },
-                  shrinkWrap: true,
-                  staggeredTileBuilder: (int index) =>
-                      StaggeredTile.fit(1),
-                ),
-              ),
-            ),
-            //  getLoader(model.isLoading)
-          ],
-        )
-    );
+            ));
   }
 
-  _buildPage(BuildContext context) {
+/*  _buildPage(BuildContext context) {
     return Scaffold(
       backgroundColor: ThemeColor.baground,
       body: SafeArea(
@@ -166,7 +176,7 @@ class _JobListState extends State<JobListScreen> {
                         return Padding(
                           padding: EdgeInsets.only(
                               bottom: 12.h, left: 20.w, right: 20.w),
-                          child: jobCard(provider.listJobs[i]),
+                          child: jobCard(provider.listJobs[i],model),
                         );
                       },
                     ),
@@ -178,10 +188,9 @@ class _JobListState extends State<JobListScreen> {
         ),
       )),
     );
-  }
+  }*/
 
-
-  jobCard(JobData jobData) {
+  jobCard(JobData jobData, JobListProvider model) {
     return Container(
       width: 335.w,
       // height: 417.h,
@@ -216,8 +225,9 @@ class _JobListState extends State<JobListScreen> {
               ),
               child: Center(
                 child: Text(
-                  jobData.postJob!.experience==null?
-                      "No Info":jobData.postJob!.experience! + " Year",
+                  jobData.postJob!.experience == null
+                      ? "No Info"
+                      : jobData.postJob!.experience! + " Year",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 8.sp,
@@ -234,14 +244,28 @@ class _JobListState extends State<JobListScreen> {
               jobData.postJob!.companyName != null
                   ? jobData.postJob!.companyName!
                   : "No Info"),
-          SizedBox(width: 8.w),
+          SizedBox(height: 8.h),
           BaseWidget().jobHeading(jobData.postJob!.salary!),
           BaseWidget().heading(
               jobData.postJob!.jobDepartment!,
               jobData.postingDate != null ? jobData.postingDate! : "",
               jobData.postJob!.jobDescription!),
-          SizedBox(width: 8.w),
-       //   jobApply(),
+          SizedBox(height: 8.h),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFD25D5D), onPrimary: Colors.white),
+              onPressed: () {
+                model.deleteJob(jobData);
+              },
+              child: Text(
+                "Delete",
+                style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: GoogleFonts.poppins().fontFamily),
+              ))
+          //   jobApply(),
         ],
       ),
     );
@@ -285,13 +309,22 @@ class _JobListState extends State<JobListScreen> {
             ),
           ),
           SizedBox(width: 12.w),
-          SvgPicture.asset(Images.savejob,height: 40.h,width: 40.w,),
+          SvgPicture.asset(
+            Images.savejob,
+            height: 40.h,
+            width: 40.w,
+          ),
           SizedBox(width: 12.w),
-          SvgPicture.asset(Images.message_job,height: 45.h,width: 45.w,),
+          SvgPicture.asset(
+            Images.message_job,
+            height: 45.h,
+            width: 45.w,
+          ),
         ],
       ),
     );
   }
+
   filterIcon(JobListProvider model) {
     return Container(
         width: 125.w,
@@ -316,8 +349,8 @@ class _JobListState extends State<JobListScreen> {
                 ),
                 onSelected: (value) {},
                 itemBuilder: (ctx) => [
-                  _buildPopupMenu('Sort By Name A to Z', 0,model),
-                  _buildPopupMenu('Sort By Name Z to A', 1,model),
+                  _buildPopupMenu('Sort By Name A to Z', 0, model),
+                  _buildPopupMenu('Sort By Name Z to A', 1, model),
                 ],
               ),
               Text(
@@ -336,30 +369,34 @@ class _JobListState extends State<JobListScreen> {
   }
 
   PopupMenuItem _buildPopupMenu(
-      String title,
-      int? id, JobListProvider model,
-      ) {
+    String title,
+    int? id,
+    JobListProvider model,
+  ) {
     return PopupMenuItem(
-      child: Text(title, style: TextStyle(
-          fontSize: 16.sp,
-          fontFamily: GoogleFonts.poppins().fontFamily,
-          fontWeight: FontWeight.w500,
-          color: Colors.black),),
+      child: Text(
+        title,
+        style: TextStyle(
+            fontSize: 16.sp,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
+            color: Colors.black),
+      ),
       onTap: () {
         if (id == 0) {
           model.listJobs.sort(
-                  (b, a) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
+              (b, a) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
           setState(() {});
         } else {
           model.listJobs.sort(
-                  (a, b) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
+              (a, b) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
           setState(() {});
         }
       },
     );
   }
 
-  Future<void> _showAlertDialog() async {
+  Future<void> _showAlertDialog(JobListProvider model) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -372,100 +409,264 @@ class _JobListState extends State<JobListScreen> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return addemp(setState);
-              }),
+            return createJob(setState, model);
+          }),
         );
       },
     );
   }
 
-  List<dynamic> foundEmp = [];
-  List<dynamic> uniqueFoundEmp = [];
-  List<dynamic> EmployeeList = [];
+  String? uploadedDocument;
 
-  bool isLoad=false;
-
-
-  // This function is called whenever the text field changes
-  void _runFilter(String enteredKeyword, StateSetter stateSetter) {
-    List<dynamic> results = [];
-    if (enteredKeyword.isEmpty) {
-      results = EmployeeList;
-    } else {
-      results = EmployeeList
-          .where((user) =>
-          user.toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-    }
-    stateSetter(() {
-      foundEmp = results.toSet().toList();
-    });
-  }
-
-  addemp(StateSetter stateSetter) {
-    return  Container(
-      width: 350.w,
+  createJob(StateSetter stateSetter, JobListProvider model) {
+    return Container(
+      width: 408.w,
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(
-              onPressed: (){
-                Navigator.of(context).pop();
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                    )),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: Text(
+                "Create Job",
+                style: TextStyle(
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ),
+            SizedBox(height: 16.h),
+            _buildTextField('Job Title', 'Job Title', jobTitleController),
+            SizedBox(height: 16.h),
+            _buildTextField('Job Description', 'Please enter Job Description',
+                jobDescController),
+            SizedBox(height: 16.h),
+            _buildTextField('Salary', 'Please enter Salary', salaryController),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Experience', 'Please enter Experience', experienceController),
+            SizedBox(height: 16.h),
+            _buildTextField('Job Location', 'Please enter Job Location',
+                jobLocationController),
+            SizedBox(height: 16.h),
+            _buildTextField('Department', 'Please enter Job Department',
+                jobDepartmentController),
+            SizedBox(height: 16.h),
+            _buildDropdownField('Job Type', 'Please select job type',
+                jobTypeController, stateSetter),
+            SizedBox(height: 16.h),
+            InkWell(
+              onTap: () {
+                _submitForm(model);
               },
-              icon: Icon(Icons.close)),
-          TextField(
-            onChanged: (value) => _runFilter(value,stateSetter),
-            decoration: const InputDecoration(
-                labelText: 'Search', suffixIcon: Icon(Icons.search)),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-
-        ],
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Center(
+                  child: Text(
+                    "Create",
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.white),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
+  final orgProvider = locator<OrgProvider>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    orgProvider.getUsersByCompanyId(widget.organization.id!);
+  }
+  void _submitForm(JobListProvider model) async {
 
+    EasyLoading.show(status: "Loading");
+    var status = await model.createJob(
+        widget.organization.companyName,
+        widget.organization.companyMobileNumber,
+        orgProvider.userList[0].emailId,
+        jobLocationController.text,
+        0,
+        salaryController.text,
+        GetDateFormat.getNextMonthDateOfCurrentDate(),
+        orgProvider.userList[0].userName,
+        jobDescController.text,
+        "Jobs",
+        jobTypeController.text,
+        jobDescController.text,
+        jobDepartmentController.text,
+        0,
+        0,
+        experienceController.text);
+    EasyLoading.dismiss();
+    if (status == 200) {
+      showCustomToast(context, "Job Created", Icons.check, Colors.green);
+    } else {
+      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
+    }
+  }
 
-  getUserDetails(String title, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: 10, vertical: 5),
-      child: Row(
-          children: [
-            SizedBox(
-              width: 150.w,
-              child: TextView(
-                title: title,
-                fontSize:12.sp,
-                fontWeight: FontWeight.w300,
-                color: Color(0xff000000),
-              ),
-
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
             ),
-            SizedBox(
-              width: 50.w,
-              child: TextView(
-                title: ':',
-                fontSize:12.sp,
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
-                color: Color(0xff000000),
               ),
-
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(
+                    color: Color(0xffcccccc),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
+              ),
             ),
-            TextView(
-              title: value,
-              fontSize:12.sp,
-              fontWeight: FontWeight.w400,
-              color: Color(0xff000000),
-            ),
-          ]
+          ),
+        ),
+      ],
+    );
+  }
 
-      ),
+  String dropdownvalue = 'Full Time';
+  var items = [
+    'Full Time',
+    'Part Time',
+  ];
+
+  Widget _buildDropdownField(String label, String hint,
+      TextEditingController controller, StateSetter stateSetter) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        SizedBox(
+          height: 52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.7),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: DropdownButton(
+                value: dropdownvalue,
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down),
+                borderRadius: BorderRadius.circular(5.0),
+                underline: SizedBox.shrink(),
+                hint: Text(
+                  "Full Load",
+                  style: TextStyle(
+                    color: Color(0xff1B1B1B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(
+                        color: Color(0xff1B1B1B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  stateSetter(() {
+                    dropdownvalue = newValue!;
+                    jobTypeController.text = dropdownvalue;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -475,6 +475,7 @@ class _LeadInfo extends State<LeadInfo> {
                   visible: isCreateMail,
                   child: CreateMail(
                     onlyMail: false,
+                    lead:widget.leadData.lead!
                   )),
               Visibility(
                   visible: isMeeting,
@@ -707,7 +708,7 @@ class _LeadInfo extends State<LeadInfo> {
           ),
           Center(
             child: Text(
-              "Fllow Up Lead",
+              "FollowUp Lead",
               style: TextStyle(
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w500,

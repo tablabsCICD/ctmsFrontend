@@ -55,6 +55,7 @@ class CompanyDashboard extends StatefulWidget {
 
   CompanyDashboard(this.organization, {Key? key}) : super(key: key) {
     orgProvider.getUsersByCompanyId(organization.id!);
+    orgProvider.getBuyVehicles(organization.id!);
     orgProvider.getStaticData(organization.id!);
   }
 
@@ -211,47 +212,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                           SizedBox(height: 35.h,),
                           Expanded(
                               child: container)
-                         /* Container(
-                            height: 430,
-                            child: Stack(
-                              children: [
-                                Container(
-                                    height: 300,
-                                    decoration: BoxDecoration(
-                                      color: ColorResources.HOME_APPBAR,
-                                    )
-                                ),
-                                Align(
-                                    alignment: Alignment.topCenter,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: 40),
-                                      child: getContainer("All Users", 0,model.userCount.toString(), Colors.blue[100]!,"assets/images/navigation_image/my_profile.png"),
-                                    )
 
-                                ),
-                                Positioned(
-                                  top: 225,
-                                  left: 0,
-                                  right: 0,
-                                  child: Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        getContainer("Load Post",1,model.fullLoadPostCount.toString(), Colors.pink[100]!,'assets/images/navigation_image/insurance.png'),
-                                        getContainer("Pool Purchase Post",2,model.poolPurchasePostCount.toString(), Colors.green[100]!,'assets/images/navigation_image/pool_purchase.png'),
-                                        getContainer("Buy Sell Post",3, model.buySellPostCount.toString(), Colors.deepOrange[100]!,'assets/images/navigation_image/vehicle.png'),
-                                        getContainer("All Bids",4,model.bidCont.toString(), Colors.indigo[100]!,'assets/images/bid.png'),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                              height: 500,
-                              child: container)
-                          */
                         ],
                       ),
                     ),
@@ -260,7 +221,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                 ),
                 Positioned(
                   top: 115.h,
-                  left: 265.w,
+                  left: 255.w,
                   child: InkWell(
                     onTap: () {
                       Navigator.pushReplacementNamed(context, AppRoutes.home);

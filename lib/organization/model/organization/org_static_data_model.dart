@@ -1,4 +1,65 @@
 class OrgStaticDataModel {
+  String? message;
+  Data? data;
+  bool? success;
+
+  OrgStaticDataModel({this.message, this.data, this.success});
+
+  OrgStaticDataModel.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    data['success'] = this.success;
+    return data;
+  }
+}
+
+class Data {
+  int? totalCompanyRegister;
+  int? totalLoggedUserNameInFullTruck;
+  int? totalLoggedUserNameWithPartLoad;
+  int? totalLoggedUserNameInBiding;
+  int? totalLoggedUserNameInBuySell;
+
+  Data(
+      {this.totalCompanyRegister,
+        this.totalLoggedUserNameInFullTruck,
+        this.totalLoggedUserNameWithPartLoad,
+        this.totalLoggedUserNameInBiding,
+        this.totalLoggedUserNameInBuySell});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    totalCompanyRegister = json['totalCompanyRegister'];
+    totalLoggedUserNameInFullTruck = json['totalLoggedUserNameInFullTruck'];
+    totalLoggedUserNameWithPartLoad = json['totalLoggedUserNameWithPartLoad'];
+    totalLoggedUserNameInBiding = json['totalLoggedUserNameInBiding'];
+    totalLoggedUserNameInBuySell = json['totalLoggedUserNameInBuySell'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['totalCompanyRegister'] = this.totalCompanyRegister;
+    data['totalLoggedUserNameInFullTruck'] =
+        this.totalLoggedUserNameInFullTruck;
+    data['totalLoggedUserNameWithPartLoad'] =
+        this.totalLoggedUserNameWithPartLoad;
+    data['totalLoggedUserNameInBiding'] = this.totalLoggedUserNameInBiding;
+    data['totalLoggedUserNameInBuySell'] = this.totalLoggedUserNameInBuySell;
+    return data;
+  }
+}
+
+
+/*
+class OrgStaticDataModel {
   OrgStaticDataModel({
     required this.numberOfEmployees,
     required this.numberOfFullLoadPosts,
@@ -605,4 +666,4 @@ class ListOfBiding {
     _data['loggedTime'] = loggedTime;
     return _data;
   }
-}
+}*/

@@ -88,6 +88,7 @@ class BuySellProvider extends ChangeNotifier{
       "yearOfBuying": yearOfBuying
     };
     var body = json.encode(data);
+    print(body);
     print(data);
     var createResponse = await http.post(uri,
         headers: {"Content-Type": "application/json"}, body: body);

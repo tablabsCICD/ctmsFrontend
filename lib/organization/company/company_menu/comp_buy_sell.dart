@@ -86,7 +86,7 @@ class _CompBuySellState extends State<CompBuySell> {
             ),
             Positioned(
               top: 115.h,
-              left: 265.w,
+              left: 255.w,
               child: InkWell(
                 onTap: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);

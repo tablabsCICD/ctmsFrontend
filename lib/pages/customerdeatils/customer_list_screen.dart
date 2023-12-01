@@ -90,6 +90,7 @@ class _LeadListData extends State<CustomerListData> {
                   tableHeader("Company Name"),
                   if (!AppResponsive.isMobile(context))
                     tableHeader("Email"),
+                  tableHeader("Converted Date"),
                   tableHeader("Assign to"),
                   if (!AppResponsive.isMobile(context)) tableHeader(""),
 
@@ -102,9 +103,10 @@ class _LeadListData extends State<CustomerListData> {
                 context,
                 name: leadData[i].lead!.companyName,
                 color: Colors.blue,
-                image: "assets/user1.jpg",
-                designation: leadData[i].lead!.emailId,
+                image: leadData[i].lead!.addLogo,
+                email: leadData[i].lead!.emailId,
                 status: leadData[i].status,
+                date:leadData[i].leadUpdates![leadData[i].leadUpdates!.length-1].date
                 ),
 
             ],
@@ -126,7 +128,7 @@ class _LeadListData extends State<CustomerListData> {
       ),
     );
   }
-  TableRow tableRow(context, {name, image, designation, status, color}) {
+  TableRow tableRow(context, {name, image, email, status, color,date}) {
     return TableRow(
         decoration: BoxDecoration(
           border: Border(
@@ -157,9 +159,8 @@ class _LeadListData extends State<CustomerListData> {
             ),
           ),
           // Designation
-          if (!AppResponsive.isMobile(context)) Text(designation),
-
-
+          if (!AppResponsive.isMobile(context)) Text(email),
+          Text(date),
           Row(
             children: [
               Container(

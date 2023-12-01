@@ -264,7 +264,7 @@ class _LoadListState extends State<LoadList> {
   var selectedTab = 'All Loads';
   late List<int> selectedValuesList = <int>[];
 
-  getCircularContainer(String title, bool isSelected,int i) {
+ /* getCircularContainer(String title, bool isSelected,int i) {
     return Consumer<OrgProvider>(
       builder: (context, model, child) =>InkWell(
         onTap: (){
@@ -300,7 +300,7 @@ class _LoadListState extends State<LoadList> {
         ),
       ),
     );
-  }
+  }*/
 
   getPostList(OrgProvider model,BuildContext context) {
     return /* model.isLoading==true?Expanded(
@@ -345,7 +345,7 @@ class _LoadListState extends State<LoadList> {
                 ),
                 elevation: 1,
                 child: Container(
-                  height: 225.h,
+                  height: 230.h,
                  // width: 510.w,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.r)
@@ -381,7 +381,7 @@ class _LoadListState extends State<LoadList> {
                           children: [
                             Container(
                               width: 140.w,
-                              height: 20.h,
+                              height: 25.h,
                               alignment: Alignment.center,
                               decoration: new BoxDecoration(
                                   color: model

@@ -209,13 +209,13 @@ class _LeadDashboard extends State<LeadDashboard> {
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    print("Get All Leads :" +
-        ApiConstant.GET_ALL_LEAD +
-        "?page=${pageNo}&size=10&sortBy=id&sortDir=dsc");
+    String myUrl = ApiConstant.GET_ALL_LEAD +
+        "?page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
+    print("Get All Leads :" + myUrl
+        );
     final dio = Dio();
     final response = await dio.get(
-        ApiConstant.GET_ALL_LEAD +
-            "?page=${pageNo}&size=10&sortBy=id&sortDir=dsc",
+        myUrl,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -249,6 +249,33 @@ class _LeadDashboard extends State<LeadDashboard> {
       });
       print('this is ${leadData.length}');
 
+      isLoad = false;
+    }
+  }
+
+  Future<void> GetFilterdLeadData(int pageNo,String fromDate, String toDate) async {
+    isLoad = true;
+    setState(() {});
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    String myUrl = ApiConstant.BASE_URL +
+        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${fromDate}&toDate=${toDate}";
+    print("Get All Leads :" + myUrl
+        );
+    final dio = Dio();
+    final response = await dio.get(myUrl,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      LeadListResponse leadList =
+      LeadListResponse.fromJson(jsonDecode(response.data));
+      finalLeadData.clear();
+      finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
+      print('this is ${finalLeadData.length}');
+      setState(() {});
       isLoad = false;
     }
   }
@@ -1616,66 +1643,52 @@ class _LeadDashboard extends State<LeadDashboard> {
                   height: 350.h,
                   padding: EdgeInsets.all(20),
                   color: Colors.white,
-                  child: Column(
+                  child: Stack(
                     children: [
-                      SizedBox(
-                        width: 200.w,
-                        child: _buildText(
-                            selectedFromDate, "Select From Date", () async {
-                          selectedFromDate =
-                          await DateTimePickerDialog().pickBeforeDateDialog(
-                              context);
-                          if (selectedFromDate == null) {
-                            selectedFromDate = "Select From Date";
-                          }
-                          stateSetter(() {});
-                        }),
-                      ),
-                      SizedBox(height: 20.h,),
-                      SizedBox(
-                        width: 200.w,
-                        child: _buildText(
-                            selectedToDate, "Select To Date", () async {
-                          selectedToDate =
-                          await DateTimePickerDialog().pickDateDialog(context);
-                          if (selectedToDate == null) {
-                            selectedToDate = "Select To Date";
-                          }
-                          stateSetter(() {});
-                        }),
-                      ),
-                      SizedBox(height: 20.h,),
-                      ElevatedButton(
-                          onPressed: () {
-                            debugPrint('From Date :${selectedFromDate} \n To date :${selectedToDate}');
-                            DateTime fromDate = DateTime.parse(selectedFromDate);
-                            DateTime toDate = DateTime.parse(selectedToDate);
-                            debugPrint('From Date :${fromDate} \n To date :${toDate}');
-                            leadData.forEach((element) {
-                              debugPrint('lead Date :${element.lead!.date}');
-                              DateTime checkDate = DateFormat("yyyy-MM-dd hh:mm:ss").parse("${element.lead!.date}");
-                              debugPrint('Check Date :${checkDate}');
-                              if (checkDate.isBefore(toDate) && checkDate.isAfter(fromDate)){
-                                dateWiseLead.add(element);
-                              }
-                            });
-                            finalLeadData.clear();
-                            finalLeadData.addAll(dateWiseLead);
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: InkWell(
+                          onTap: (){
                             Navigator.of(context).pop();
-                            stateSetter(() {});
                           },
+                          child: Icon(Icons.close,size: 20,),
+                        ),
+                      ),
+                      Align(
+                        alignment:Alignment.center,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 200.w,
+                              child: _buildText(
+                                  selectedFromDate, "Select From Date", () async {
+                                selectedFromDate =
+                                await DateTimePickerDialog().pickBeforeDateDialog(
+                                    context);
+                                if (selectedFromDate == null) {
+                                  selectedFromDate = "Select From Date";
+                                }
+                                stateSetter(() {});
+                              }),
+                            ),
+                            SizedBox(height: 20.h,),
+                            SizedBox(
+                              width: 200.w,
+                              child: _buildText(
+                                  selectedToDate, "Select To Date", () async {
+                                selectedToDate =
+                                await DateTimePickerDialog().pickBeforeDateDialog(context);
+                                if (selectedToDate == null) {
+                                  selectedToDate = "Select To Date";
+                                }
+                                stateSetter(() {});
+                              }),
+                            ),
+                            SizedBox(height: 20.h,),
 
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: Text("Search", style: TextStyle(
-                                fontSize: 15.sp,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: GoogleFonts
-                                    .poppins()
-                                    .fontFamily),),
-                          )
-                      )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );

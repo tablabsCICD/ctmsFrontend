@@ -928,29 +928,22 @@ class BaseWidget {
         children: [
           Container(
            // width: 155.50.w,
-         //   height: 15.h,
+            height: 16.h,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+             /* mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,*/
               children: [
                 Container(
                   width: 16.w,
                   height: 16.h,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 16.w,
-                        height: 16.h,
-                        child: Stack(children: [
-                          SvgPicture.asset(Images.like)
+                  child: Container(
+                    width: 16.w,
+                    height: 16.h,
+                    child: Stack(children: [
+                      SvgPicture.asset(Images.like)
 
-                        ]),
-                      ),
-                    ],
+                    ]),
                   ),
                 ),
                 SizedBox(width: 8),
@@ -987,7 +980,7 @@ class BaseWidget {
           ),
           Container(
            // width: 155.50.w,
-           // height: 16.h,
+           height: 16.h,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -996,19 +989,12 @@ class BaseWidget {
                 Container(
                   width: 16.w,
                   height: 16.h,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 16.w,
-                        height: 16.h,
-                        child: Stack(children: [
-                          SvgPicture.asset(Images.message)
-                        ]),
-                      ),
-                    ],
+                  child: Container(
+                    width: 16.w,
+                    height: 16.h,
+                    child: Stack(children: [
+                      SvgPicture.asset(Images.message)
+                    ]),
                   ),
                 ),
                 SizedBox(width: 8),
