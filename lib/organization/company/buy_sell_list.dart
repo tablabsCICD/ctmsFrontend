@@ -124,7 +124,7 @@ class _BuySellListState extends State<BuySellList> {
                           : /*model.finalBuySellList[0].mainTag == "Sell Vehicle"
                               ? SizedBox.shrink()
                               : */Container(
-                                  height: 423.h,
+                                  height: 433.h,
                                   width: 1052.w,
                                   padding: EdgeInsets.all(29),
                                   decoration: BoxDecoration(

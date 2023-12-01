@@ -97,7 +97,7 @@ class _LeadDashboard extends State<CustomerList> {
           /// Header Part
           HeaderWidget(isSearchVisible:true,onSearchTap: (value){filterSearchResults(value);},),
           Container(
-            margin: EdgeInsets.all(33),
+            margin: EdgeInsets.only(top:33,left: 33,right: 33,bottom: 10),
             child: Row(
               children: [
                 Text(
@@ -398,14 +398,14 @@ class _LeadDashboard extends State<CustomerList> {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextView(
+                   /* TextView(
                       title: "Customer",
                       fontWeight: FontWeight.w600,
                       color: AppColor.black,
                       fontSize: 30.sp,
-                    ),
+                    ),*/
                     Container(
                       width: 300.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
@@ -471,6 +471,7 @@ class _LeadDashboard extends State<CustomerList> {
                           tableHeader("Type Of Business"),
                           tableHeader("Email"),
                           tableHeader("Contact"),
+                          tableHeader("Date"),
                           tableHeader(""),
                           /*if (!AppResponsive.isMobile(context))
                       tableHeader("Email"),
@@ -489,6 +490,7 @@ class _LeadDashboard extends State<CustomerList> {
                             client: finalCustomerList[i].typeOfBusiness,
                             project: finalCustomerList[i].emailId,
                             contact: finalCustomerList[i].mobileNumber,
+                            date:finalCustomerList[i].date,
                             // status: emData[i].lead!.leadAssignedTo!.firstName!+" "+emData[i].lead!.leadAssignedTo!.lastName!,
                             status: finalCustomerList[i].leadconvertedByEmployee,
                             index: i),
@@ -501,7 +503,7 @@ class _LeadDashboard extends State<CustomerList> {
   }
 
   TableRow tableRow(context,
-      {name, image, client, project, status, color, index, String? contact}) {
+      {name, image, client, project, status, color, index, String? contact,String? date}) {
     return TableRow(
         decoration: BoxDecoration(
             /* border: Border(
@@ -547,6 +549,11 @@ class _LeadDashboard extends State<CustomerList> {
               fontWeight: FontWeight.w300),
           TextView(
               title: contact.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: date.toString(),
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),

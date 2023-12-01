@@ -80,7 +80,7 @@ class _AssignProject extends State<AssignProject>{
 
     return Container(
       width: 1362.w,
-      height: 125.h,
+     // height: 125.h,
       padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
       decoration: ShapeDecoration(
         color: Colors.white,
