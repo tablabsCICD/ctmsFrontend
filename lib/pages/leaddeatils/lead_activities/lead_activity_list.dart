@@ -67,7 +67,7 @@ class _LeadActivity extends State<LeadActivity> {
                   ),
                 ),
                 Container(
-                  width: 100.w,
+                  width: 150.w,
                   child: Text(
                     'View All',
                     style: TextStyle(

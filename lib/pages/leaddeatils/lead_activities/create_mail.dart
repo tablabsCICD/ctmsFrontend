@@ -33,6 +33,7 @@ class CreateMail extends StatefulWidget {
 
 class _CreateMail extends State<CreateMail>{
   TextEditingController toNameController=TextEditingController();
+  TextEditingController ccNameController=TextEditingController();
   TextEditingController subjectController=TextEditingController();
   TextEditingController mailController=TextEditingController();
 
@@ -186,6 +187,8 @@ class _CreateMail extends State<CreateMail>{
 
           children: [
             _buildTextField("Send To",toNameController),
+            SizedBox(height: 15.h,),
+            _buildTextField("Cc",ccNameController),
             SizedBox(height: 15.h,),
             _buildTextField("Subject",subjectController),
             SizedBox(height: 15.h,),

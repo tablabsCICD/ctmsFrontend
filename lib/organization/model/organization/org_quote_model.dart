@@ -1,5 +1,7 @@
+import 'package:flutter_hr_management/organization/model/organization/org_biding_model.dart';
+
 class OrgQuoteModel {
-  List<Content>? content;
+  List<QuoteWithPostDetailList>? content;
   bool? last;
   int? totalPages;
   int? totalElements;
@@ -22,9 +24,9 @@ class OrgQuoteModel {
 
   OrgQuoteModel.fromJson(Map<String, dynamic> json) {
     if (json['content'] != null) {
-      content = <Content>[];
+      content = <QuoteWithPostDetailList>[];
       json['content'].forEach((v) {
-        content!.add(new Content.fromJson(v));
+        content!.add(new QuoteWithPostDetailList.fromJson(v));
       });
     }
     last = json['last'];
@@ -54,20 +56,20 @@ class OrgQuoteModel {
   }
 }
 
-class Content {
+class QuoteWithPostDetailList {
   GenericCardsDto? genericCardsDto;
-  List<BidList>? bidings;
+  List<BidList>? bidingList;
 
-  Content({this.genericCardsDto, this.bidings});
+  QuoteWithPostDetailList({this.genericCardsDto, this.bidingList});
 
-  Content.fromJson(Map<String, dynamic> json) {
+  QuoteWithPostDetailList.fromJson(Map<String, dynamic> json) {
     genericCardsDto = json['genericCardsDto'] != null
         ? new GenericCardsDto.fromJson(json['genericCardsDto'])
         : null;
     if (json['bidings'] != null) {
-      bidings = <BidList>[];
+      bidingList = <BidList>[];
       json['bidings'].forEach((v) {
-        bidings!.add(new BidList.fromJson(v));
+        bidingList!.add(new BidList.fromJson(v));
       });
     }
   }
@@ -77,8 +79,8 @@ class Content {
     if (this.genericCardsDto != null) {
       data['genericCardsDto'] = this.genericCardsDto!.toJson();
     }
-    if (this.bidings != null) {
-      data['bidings'] = this.bidings!.map((v) => v.toJson()).toList();
+    if (this.bidingList != null) {
+      data['bidings'] = this.bidingList!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -288,7 +290,7 @@ class GenericCardsDto {
 }
 
 class BidList {
-  BidList? bidings;
+  Bidings? bidings;
   String? firstName;
   String? lastName;
   String? profileImage;
@@ -307,7 +309,7 @@ class BidList {
 
   BidList.fromJson(Map<String, dynamic> json) {
     bidings =
-    json['bidings'] != null ? new BidList.fromJson(json['bidings']) : null;
+    json['bidings'] != null ? new Bidings.fromJson(json['bidings']) : null;
     firstName = json['firstName'];
     lastName = json['lastName'];
     profileImage = json['profileImage'];

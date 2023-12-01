@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
 import 'package:flutter_hr_management/locator.dart';
@@ -137,7 +138,7 @@ class _GeneralPostListState extends State<GeneralPostList> {
                     ),
                     elevation: 1,
                     child: Container(
-                      height: ResponsiveWidget.isDesktop(context)?150.h:100.h,
+                      height: AppResponsive.isDesktop(context)?200.h:100.h,
                       // width: 510.w,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.r)

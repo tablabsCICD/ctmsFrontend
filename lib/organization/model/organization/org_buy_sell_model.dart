@@ -1,6 +1,6 @@
 class BuySellModel {
   String? message;
-  List<OrgBuySellModel>? data;
+  List<OrgBuySellModel1>? data;
   bool? success;
 
   BuySellModel({this.message, this.data, this.success});
@@ -8,9 +8,9 @@ class BuySellModel {
   BuySellModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['data'] != null) {
-      data = <OrgBuySellModel>[];
+      data = <OrgBuySellModel1>[];
       json['data'].forEach((v) {
-        data!.add(new OrgBuySellModel.fromJson(v));
+        data!.add(new OrgBuySellModel1.fromJson(v));
       });
     }
     success = json['success'];
@@ -27,7 +27,7 @@ class BuySellModel {
   }
 }
 
-class Data {
+class OrgBuySellModel1 {
   int? id;
   String? type;
   String? ownerName;
@@ -67,7 +67,7 @@ class Data {
   String? buySelltype;
   String? topicName;
 
-  Data(
+  OrgBuySellModel1(
       {this.id,
         this.type,
         this.ownerName,
@@ -107,7 +107,7 @@ class Data {
         this.buySelltype,
         this.topicName});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  OrgBuySellModel1.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     type = json['type'];
     ownerName = json['ownerName'];
@@ -299,18 +299,18 @@ class OrgBuySellModel {
     image2 = json['image2'];
     image3 = json['image3'];
     image4 = json['image4'];
-    privatePost = json['privatePost'];
-    vehicleInfo = json['vehicleInfo'];
-    enginePower = json['enginePower'];
-    documents = json['documents'];
-    weight = json['weight'];
-    driverType = json['driverType'];
-    transmission = json['transmission'];
-    tableName = json['tableName'];
-    mainTag = json['mainTag'];
-    postingTime = json['postingTime'];
-    buySelltype = json['buySelltype'];
-    topicName = json['topicName'];
+    privatePost = json['privatePost']??"";
+    vehicleInfo = json['vehicleInfo']??"";
+    enginePower = json['enginePower']??'';
+    documents = json['documents']??'';
+    weight = json['weight']??'';
+    driverType = json['driverType']??'';
+    transmission = json['transmission']??'';
+    tableName = json['tableName']??'';
+    mainTag = json['mainTag']??"";
+    postingTime = json['postingTime']??'';
+    buySelltype = json['buySelltype']??'';
+    topicName = json['topicName']??'';
   }
 
   Map<String, dynamic> toJson() {

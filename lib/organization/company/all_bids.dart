@@ -91,7 +91,7 @@ class _BidListState extends State<BidList> {
                 decoration: BoxDecoration(
                     color: AppColor.white, borderRadius: BorderRadius.circular(5)),
                 padding: EdgeInsets.all(20),
-                child: /*model.orgBigingList.isEmpty
+                child: model.orgBigingList.isEmpty
                     ? Expanded(
                     child: Container(
                         height:
@@ -102,7 +102,7 @@ class _BidListState extends State<BidList> {
                                 fontSize: 16.sp,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w900))))
-                    : */Table(
+                    : Table(
                   columnWidths: {
                     0: FlexColumnWidth(60),
                     1: FlexColumnWidth(40),
@@ -134,15 +134,15 @@ class _BidListState extends State<BidList> {
                     ),
                     for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
                         context,
-                        material: model.orgBigingList[i].companyName,
-                        route1: model.orgBigingList[i].source,
-                        route2: model.orgBigingList[i].destination,
-                        km: '300',
-                        totalBids: model.orgBigingList[i].bidingId.toString(),
-                        bestMatch:'test',//model.orgBigingList[i].companyName,
-                        endtime:'test',//model.orgBigingList[i].postingTime,
-                        status: 'complete',//model.orgBigingList[i].description,
-                        price: '${model.orgBigingList[i].amount.toString()}'
+                        material: model.orgBigingList[i].genericCardsDto!.companyName,
+                        route1: model.orgBigingList[i].genericCardsDto!.source,
+                        route2: model.orgBigingList[i].genericCardsDto!.destination,
+                        km: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
+                        totalBids: model.orgBigingList[i].bidingList!.length.toString(),
+                        bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
+                        endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
+                        status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
+                        price: '${model.orgBigingList[i].bidingList!.length.toString()}'
                     ),
 
                   ],
@@ -215,16 +215,17 @@ class _BidListState extends State<BidList> {
       onTap: () {
         if (id == 0) {
           model.orgBigingList.sort(
-                  (b, a) => b.companyName!.compareTo(a.companyName!));
+                  (b, a) => b.genericCardsDto!.companyName!.compareTo(a.genericCardsDto!.companyName!));
           setState(() {});
         } else {
           model.orgBigingList.sort(
-                  (a, b) => b.companyName!.compareTo(a.companyName!));
+                  (a, b) => b.genericCardsDto!.companyName!.compareTo(a.genericCardsDto!.companyName!));
           setState(() {});
         }
       },
     );
   }
+
 
   TableRow tableRow(context, {String? material,String? route1,String? route2,String? km,String? totalBids,String? bestMatch,String? endtime,String?status,String?price}) {
     return TableRow(
@@ -234,23 +235,26 @@ class _BidListState extends State<BidList> {
       ),
         children: [
           //Full Name
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.asset('assets/org/container.png',height: 82.h,width: 88.w,alignment: Alignment.centerLeft,),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                material!,
-                style:TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w300,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset('assets/org/container.png',height: 82.h,width: 88.w,alignment: Alignment.centerLeft,),
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-            ],
+                Text(
+                  material!,
+                  style:TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.sp,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ],
+            ),
           ),
 
           SizedBox(
@@ -268,8 +272,16 @@ class _BidListState extends State<BidList> {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: Container(
+                    height: 30.h,
+                    width: 1.w,
+                    color: Colors.black,
+                  ),
+                ),
                 Text(
-                  route1!,
+                  route2!,
                   style:TextStyle(
                     color: Colors.black,
                     fontSize: 15.sp,
@@ -281,7 +293,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            km!,
+            km==null?'-':km,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -290,7 +302,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            totalBids!,
+            totalBids=='0'?'-':totalBids!,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -299,7 +311,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            bestMatch!,
+            bestMatch==null?'-':bestMatch,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -308,7 +320,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            endtime!,
+            endtime==null?'-':endtime,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -317,7 +329,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            status!,
+            status==null?'-':status,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,
@@ -326,7 +338,7 @@ class _BidListState extends State<BidList> {
             ),
           ),
           Text(
-            price!,
+            price==null?'-':price,
             style:TextStyle(
               color: Colors.black,
               fontSize: 15.sp,

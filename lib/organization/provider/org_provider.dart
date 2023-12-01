@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/organization/company/load_list.dart';
 import 'package:flutter_hr_management/organization/model/load_model.dart';
+import 'package:flutter_hr_management/organization/model/organization/org_quote_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/search_load_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -39,14 +40,14 @@ class OrgProvider extends ChangeNotifier {
   List<OrgFullLoadModel> orgPLAList = [];
   List<OrgFullLoadModel> orgPLRList = [];
 
-  List<OrgBuySellModel> orgBuySellList = [];
-  List<OrgBuySellModel> orgBuyList = [];
-  List<OrgBuySellModel> orgSellList = [];
-  List<OrgBuySellModel> finalBuySellList = [];
+  List<OrgBuySellModel1> orgBuySellList = [];
+  List<OrgBuySellModel1> orgBuyList = [];
+  List<OrgBuySellModel1> orgSellList = [];
+  List<OrgBuySellModel1> finalBuySellList = [];
 
-  List<OrgBidingModel> orgBigingList = [];
-  List<OrgBidingModel> placedBigingList = [];
-  List<OrgBidingModel> receivedBigingList = [];
+  List<QuoteWithPostDetailList> orgBigingList = [];
+  List<QuoteWithPostDetailList> placedBigingList = [];
+  List<QuoteWithPostDetailList> receivedBigingList = [];
 
   List<OrgPoolPurchaseModel> orgPoolPurchaseList = [];
   List<OrgPoolPurchaseModel> orgAllPoolPurchaseList = [];
@@ -303,15 +304,17 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
+  String selectedTab = "Buy Vehicle";
+
   getFinalBuySellList(String title) {
+    selectedTab = title;
     finalBuySellList.clear();
-    orgBuySellList.forEach((element) {
-      if (title == "Buy vehicle") {
-        finalBuySellList.add(element);
-      } else {
-        finalBuySellList.add(element);
-      }
-    });
+    if(selectedTab=="Buy Vehicle"){
+      finalBuySellList.addAll(orgBuyList);
+    }else{
+      finalBuySellList.addAll(orgSellList);
+    }
+    print(selectedTab +"List"+finalBuySellList.length.toString());
     notifyListeners();
   }
 
@@ -338,21 +341,23 @@ class OrgProvider extends ChangeNotifier {
   getOrgBidingList(int id) async {
     isLoading = true;
     notifyListeners();
-    String myUrl = /*AppConstants.BASE_URL+ */
-        "https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";
-    //String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
+   /* String myUrl = "https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";*/
+   // String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
+    String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
     print("Get Biding Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
+    orgBigingList.clear();
     if (req.statusCode == 200) {
       final response = json.decode(req.body);
-      orgBigingList = List<OrgBidingModel>.from(
-          response.map((json) => OrgBidingModel.fromJson(json)));
-      // orgBigingList.sort((a, b) => a.amount.compareTo(b.amount));
+      OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
+      orgBigingList.addAll(orgQuoteModel.content!);
+     /* orgBigingList = List<OrgBidingModel>.from(
+          response.map((json) => OrgBidingModel.fromJson(json)));*/
       print('Low to high in biding amount: $orgBigingList');
       bidCont = orgBigingList.length;
       orgBigingList.forEach((element) {
-        print("amount : " + element.amount.toString());
+        debugPrint("total bids : ${element.bidingList!.length}");
       });
       notifyListeners();
     }
@@ -361,27 +366,32 @@ class OrgProvider extends ChangeNotifier {
   getBuyVehicles(int id) async {
     // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
     String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
-
+    selectedTab="Buy Vehicle";
     print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     final response = json.decode(req.body);
     print(response);
     if(req.statusCode ==200) {
+      orgBuySellList.clear();
       BuySellModel buySellModel = BuySellModel.fromJson(response);
-      orgBuySellList.addAll(buySellModel.data!);/*List<OrgBuySellModel>.from(
-          response.map((json) => OrgBuySellModel.fromJson(json)));*/
+      orgBuySellList.addAll(buySellModel.data!);
       orgBuyList.clear();
       orgSellList.clear();
-      getFinalBuySellList("Buy vehicle");
-      buySellPostCount = orgBuySellList.length;
-      orgBuySellList.forEach((element) {
-        if (element.mainTag == "Buy vehicle") {
+      finalBuySellList.clear();
+     buySellPostCount = orgBuySellList.length;
+     orgBuySellList.forEach((element) {
+        if (element.type == "Buy Vehicle") {
           orgBuyList.add(element);
         } else {
           orgSellList.add(element);
         }
       });
+      if(selectedTab=="Buy Vehicle"){
+        finalBuySellList.addAll(orgBuyList);
+      }else{
+        finalBuySellList.addAll(orgSellList);
+      }
     }
     notifyListeners();
   }

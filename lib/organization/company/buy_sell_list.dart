@@ -53,7 +53,7 @@ class BuySellList extends StatefulWidget {
 class _BuySellListState extends State<BuySellList> {
   final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgProvider>();
-  String selectedTab = "Buy Vehicles";
+
   var selectedPageNumber = 1;
   ScrollController _scrollController = ScrollController();
   final buySellProvider = locator<BuySellProvider>();
@@ -95,13 +95,13 @@ class _BuySellListState extends State<BuySellList> {
                               child: Row(
                                 children: [
                                   getCircularContainer(
-                                      "Buy Vehicles",
-                                      (selectedTab == "Buy Vehicles"),
+                                      "Buy Vehicle",
+                                      (model.selectedTab == "Buy Vehicle"),
                                       0,
                                       model),
                                   getCircularContainer(
-                                      "Sell Vehicles",
-                                      (selectedTab == "Sell Vehicles"),
+                                      "Sell Vehicle",
+                                      (model.selectedTab == "Sell Vehicle"),
                                       1,
                                       model),
                                 ],
@@ -121,9 +121,9 @@ class _BuySellListState extends State<BuySellList> {
                                     "No Record Found",
                                     style: Style.heading,
                                   ))))
-                          : model.finalBuySellList[0].mainTag == "Sell Vehicle"
+                          : /*model.finalBuySellList[0].mainTag == "Sell Vehicle"
                               ? SizedBox.shrink()
-                              : Container(
+                              : */Container(
                                   height: 423.h,
                                   width: 1052.w,
                                   padding: EdgeInsets.all(29),
@@ -187,7 +187,7 @@ class _BuySellListState extends State<BuySellList> {
                                                                     5.r))),
                                                   ),
                                                   child: TextView(
-                                                    title: "Buy Now",
+                                                    title: model.selectedTab == "Sell Vehicle"?"Sell Now":"Buy Now",
                                                     fontSize: 15.sp,
                                                     fontWeight: FontWeight.w400,
                                                     color: Color(0xffffffff),
@@ -359,7 +359,7 @@ class _BuySellListState extends State<BuySellList> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  '${model.finalBuySellList[0].enginePower} | ${model.orgBuySellList[0].weight}',
+                                                  '${model.finalBuySellList[index].enginePower} | ${model.orgBuySellList[index].weight}',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15.sp,
@@ -394,7 +394,7 @@ class _BuySellListState extends State<BuySellList> {
                                                       size: 16,
                                                     ),
                                                     Text(
-                                                      'Bangalore, KA',
+                                                      '${model.finalBuySellList[index].city}',
                                                       style: TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 15.sp,
@@ -433,10 +433,7 @@ class _BuySellListState extends State<BuySellList> {
       String title, bool isSelected, int i, OrgProvider model) {
     return InkWell(
       onTap: () {
-        setState(() {
-          selectedTab = title;
-          model.getFinalBuySellList(title);
-        });
+        model.getFinalBuySellList(title);
       },
       child: Container(
         width: 200.w,

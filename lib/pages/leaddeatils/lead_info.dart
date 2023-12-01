@@ -56,6 +56,7 @@ class _LeadInfo extends State<LeadInfo> {
     // TODO: implement initState
     super.initState();
     callGetApi();
+    _potantialController.text = "0";
   }
 
   @override
@@ -127,7 +128,7 @@ class _LeadInfo extends State<LeadInfo> {
               Container(
                 padding: EdgeInsets.all(30),
                 width: 1362.w,
-                height: 486.h,
+                height: 496.h,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white),
@@ -226,7 +227,7 @@ class _LeadInfo extends State<LeadInfo> {
                       ],
                     ),
                     SizedBox(
-                      height: 83.h,
+                      height: 63.h,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -276,7 +277,7 @@ class _LeadInfo extends State<LeadInfo> {
                         ),
                         Container(
                             width: 6.w,
-                            height: 213.h,
+                            height: 180.h,
                             decoration:
                                 BoxDecoration(color: Color(0xffc3262c))),
                         Row(
@@ -318,7 +319,7 @@ class _LeadInfo extends State<LeadInfo> {
                         ),
                         Container(
                             width: 6.w,
-                            height: 213.h,
+                            height: 180.h,
                             decoration:
                                 BoxDecoration(color: Color(0xffc3262c))),
                         Column(
@@ -668,6 +669,7 @@ class _LeadInfo extends State<LeadInfo> {
   }
 
   TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _potantialController = TextEditingController();
   TextEditingController _sourceofleadController = TextEditingController();
   String selectDate = "";
   int selectedEmp = 0;
@@ -720,7 +722,7 @@ class _LeadInfo extends State<LeadInfo> {
           SizedBox(height: 20.h),
           SizedBox(height: 16.h),
           _buildTextField(
-              'Description ', 'Please Description', _descriptionController),
+              'Description', 'Please Description', _descriptionController),
           SizedBox(height: 16.h),
           _buildText('Select Photo',
               '${uploadedLeadDocument == null ? "Click here to select Photo" : uploadedLeadDocument}',
@@ -752,12 +754,11 @@ class _LeadInfo extends State<LeadInfo> {
               selectedEmp = list;
             });
           }),
-          SizedBox(height: 16.h),
           // _buildTextField('Name Coordinator', _coordinatorController),
           //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
           SizedBox(height: 16.h),
           _buildTextField(
-              'Potential', 'Please Enter potential', _sourceofleadController),
+              'Potential', 'Please Enter potential', _potantialController),
 
           SizedBox(height: 16.h),
           _buildDropdownField('Source Of Lead', 'Please select', stateSetter),
@@ -954,7 +955,7 @@ class _LeadInfo extends State<LeadInfo> {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0.w),
           child: Text(
-            label,
+            label=="Potential"?"Potential(value between 0 to 10)":label,
             style: TextStyle(
               color: Color(0xff1B1B1B),
               fontSize: 15.sp,
@@ -966,7 +967,7 @@ class _LeadInfo extends State<LeadInfo> {
           height: 10.h,
         ),
         SizedBox(
-          height: 52.h,
+          height:label=="Description"?100.h: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
@@ -975,7 +976,9 @@ class _LeadInfo extends State<LeadInfo> {
                 color: Color(0xff1B1B1B),
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis
               ),
+              maxLines: label=="Description"?5:1,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
