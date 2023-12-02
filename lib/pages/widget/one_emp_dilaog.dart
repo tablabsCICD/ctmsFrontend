@@ -172,7 +172,7 @@ class _EmpDialogOne extends State<EmpDialogOne>{
 
   Future<void> ApiGetData() async{
 
-    var response = await ApiHelper().apiGet(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10");
+    var response = await ApiHelper().apiGet(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10000");
     if(response.status==200){
       EmployeeListResponse employeeList =EmployeeListResponse.fromJson(response.response);
       //emData=employeeList.data!;

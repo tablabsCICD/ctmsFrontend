@@ -184,17 +184,17 @@ class _EmpDashboard extends State<EmpDashboard> {
                 SizedBox(
                   width: 38.w,
                 ),
-                empCounts("${totalElements}", "Total Employee", Images.emp_tot,
+                empCounts("${totalElements}", "Total Employees", Images.emp_tot,
                     Color(0xFFEAF8F4), true),
                 SizedBox(
                   width: 38.w,
                 ),
-                empCounts("${activeEmpData.length}", "Active Employee",
+                empCounts("${activeEmpData.length}", "Active Employees",
                     Images.emp_tot, Color(0xFFFFEDF9), false),
                 SizedBox(
                   width: 38.w,
                 ),
-                empCounts("${inActiveEmpData.length}", "Inactive Employee",
+                empCounts("${inActiveEmpData.length}", "Inactive Employees",
                     Images.emp_tot, Color(0xFFFEF0E5), false),
               ],
             ),

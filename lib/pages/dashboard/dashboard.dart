@@ -65,186 +65,146 @@ class _DashboardState extends State<Dashboard> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      child: Column(
+              child: Container(
+                  margin: EdgeInsets.all(33),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30.0),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
                         children: [
-                          // NotificationCardWidget(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          if (AppResponsive.isMobile(context)) ...{
-                            CalendarWidget(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          },
-                          //  RecruitmentDataWidget(title: 'Pending Recruitment',),
-                          Container(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 30.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Textview(
-                                          TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 30.sp,
-                                            fontFamily: GoogleFonts.poppins()
-                                                .fontFamily,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          title: 'Employee Lead Report'),
-                                      filterIcon(),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: 300.w,
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            InkWell(
-                                                onTap: () {
-                                                  getPrevPage(
-                                                      selectedPageNumber);
-                                                },
-                                                child: Icon(
-                                                  Icons.arrow_back_ios,
-                                                  size: 16,
-                                                )),
-                                            Text(
-                                              "Showing ${selectedPageNumber + 1}-10 out of ${totalElements} Results",
-                                              style: TextStyle(
-                                                  fontSize: 15.sp,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontFamily:
-                                                      GoogleFonts.poppins()
-                                                          .fontFamily),
-                                            ),
-                                            InkWell(
-                                                onTap: () {
-                                                  getNextPage(
-                                                      selectedPageNumber);
-                                                },
-                                                child: Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  size: 16,
-                                                ))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: AppColor.white,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  padding: EdgeInsets.all(20),
-                                  margin: EdgeInsets.only(left: 30.w),
-                                  child: finalEmpData.isEmpty
-                                      ? Expanded(
-                                          child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height -
-                                                  400,
-                                              child: Center(
-                                                  child: TextView(
-                                                      title: "No Record Found",
-                                                      fontSize: 16.sp,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w900))))
-                                      : Table(
-                                          columnWidths: {
-                                            0: FlexColumnWidth(90),
-                                            1: FlexColumnWidth(50),
-                                            2: FlexColumnWidth(70),
-                                            3: FlexColumnWidth(50),
-                                            4: FlexColumnWidth(50),
-                                          },
-                                          defaultVerticalAlignment:
-                                              TableCellVerticalAlignment.middle,
-                                          children: [
-                                            /// Table Header
-                                            TableRow(
-                                              children: [
-                                                tableHeader("Name"),
-                                                tableHeader("Designation"),
-                                                tableHeader("Contact"),
-                                                tableHeader("Gmail"),
-                                                tableHeader("Report"),
-                                              ],
-                                            ),
-                                            for (int i = 0;
-                                                i < finalEmpData.length;
-                                                i++)
-                                              tableRow(
-                                                context,
-                                                name:
-                                                    "${finalEmpData[i].firstName} ${finalEmpData[i].lastName}",
-                                                color: Colors.blue,
-                                                image: finalEmpData[i].image,
-                                                designation:
-                                                    finalEmpData[i].designation,
-                                                contact:
-                                                    finalEmpData[i].contact,
-                                                gmail: finalEmpData[i].emailId,
-                                                status: finalEmpData[i].status,
-                                                isSelected:
-                                                    finalEmpData[i].isSelected,
-                                                index: i,
-                                              ),
-                                          ],
-                                        ),
-                                ),
-                                //  getEmpTable(),
-                              ],
-                            ),
-                          )
+                          Textview(
+                              TextStyle(
+                                color: Colors.black,
+                                fontSize: 30.sp,
+                                fontFamily: GoogleFonts.poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              title: 'Employee Lead Report'),
+                          filterIcon(),
                         ],
                       ),
                     ),
-                  ),
-                  if (!AppResponsive.isMobile(context))
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          width: 300.w,
+                          margin:
+                          EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            margin:
+                            EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      getPrevPage(
+                                          selectedPageNumber);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      size: 16,
+                                    )),
+                                Text(
+                                  "Showing ${selectedPageNumber + 1}-10 out of ${totalElements} Results",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w300,
+                                      fontFamily:
+                                      GoogleFonts.poppins()
+                                          .fontFamily),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      getNextPage(
+                                          selectedPageNumber);
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                    ))
+                              ],
                             ),
-                            CalendarWidget(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            ProfileCardWidget(),
-                          ],
+                          ),
                         ),
+                      ],
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: AppColor.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      padding: EdgeInsets.all(20),
+
+                      child: finalEmpData.isEmpty
+                          ? Expanded(
+                          child: Container(
+                              height: MediaQuery.of(context)
+                                  .size
+                                  .height -
+                                  400,
+                              child: Center(
+                                  child: TextView(
+                                      title: "No Record Found",
+                                      fontSize: 16.sp,
+                                      color: Colors.black,
+                                      fontWeight:
+                                      FontWeight.w900))))
+                          : Table(
+                        columnWidths: {
+                          0: FlexColumnWidth(70),
+                          1: FlexColumnWidth(50),
+                          2: FlexColumnWidth(70),
+                          3: FlexColumnWidth(50),
+                          4: FlexColumnWidth(50),
+                          5: FlexColumnWidth(50),
+                        },
+                        defaultVerticalAlignment:
+                        TableCellVerticalAlignment.middle,
+                        children: [
+                          /// Table Header
+                          TableRow(
+                            children: [
+                              tableHeader("Name"),
+                              tableHeader("Designation"),
+                              tableHeader("Contact"),
+                              tableHeader("Gmail"),
+                              tableHeader("Report"),
+                              tableHeader("Chart Report"),
+                            ],
+                          ),
+                          for (int i = 0;
+                          i < finalEmpData.length;
+                          i++)
+                            tableRow(
+                              context,
+                              name:
+                              "${finalEmpData[i].firstName} ${finalEmpData[i].lastName}",
+                              color: Colors.blue,
+                              image: finalEmpData[i].image,
+                              designation:
+                              finalEmpData[i].designation,
+                              contact:
+                              finalEmpData[i].contact,
+                              gmail: finalEmpData[i].emailId,
+                              status: finalEmpData[i].status,
+                              isSelected:
+                              finalEmpData[i].isSelected,
+                              index: i,
+                            ),
+                        ],
                       ),
                     ),
-                ],
-              ),
+                    //  getEmpTable(),
+                  ],
+                ),
+              )
             ),
           ),
         ],
@@ -326,6 +286,32 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       Container(
+        width: 10.w,
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: () {
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return Dialog(
+                  alignment: Alignment.center,
+                  backgroundColor: Colors.transparent,
+                  insetAnimationDuration: Duration(milliseconds: 200),
+                  insetAnimationCurve: Curves.easeOutExpo,
+                  // <-- SEE HERE
+                  child: StatefulBuilder(builder:
+                      (BuildContext context, StateSetter setState) {
+                    return _showDateWiseDialog(context, setState,index);
+                  }),
+                );
+              },
+            );
+          },
+          child: Icon(Icons.download_for_offline,size: 20,color: Colors.blue,)
+        ),
+      ),
+      Container(
         height: 27.h,
         width: 83.w,
         decoration: BoxDecoration(
@@ -352,14 +338,37 @@ class _DashboardState extends State<Dashboard> {
                       // <-- SEE HERE
                       child: StatefulBuilder(builder:
                           (BuildContext context, StateSetter setState) {
-                        return _showDateWiseDialog(context, setState);
+                        return Container(
+                          width: 450.w,
+                          height: 450.h,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 450.w,
+                                padding: EdgeInsets.only(bottom: 10),
+                                alignment: Alignment.topRight,child: InkWell(
+                                child: Icon(Icons.close,size: 20,),
+                                onTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                              ),),
+                              Align(alignment: Alignment.center,
+                                  child: CustomerGrpah(id: emData[index].id!,)),
+                            ],
+                          ),
+                        );
                       }),
                     );
                   },
                 );
               },
               child: Text(
-                "View Report",
+                "Chart Report",
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 15.sp,
@@ -539,14 +548,14 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  Future<void> getReportApiResponse() async {
+  Future<void> getReportApiResponse(int index) async {
     EasyLoading.show(status: "Loading");
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     print("Token:" + token);
     var req = await http.get(
         Uri.parse(ApiConstant.BASE_URL +
-            "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=2023-11-01&endDate=2023-11-28&employeeId=1"),
+            "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=${selectedFromDate}1&endDate=${selectedToDate}&employeeId=${emData}"),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -640,7 +649,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter) {
+  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter, int index) {
     return Container(
       width: 350.w,
       height: 350.h,
@@ -693,7 +702,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      getReportApiResponse();
+                      getReportApiResponse(index);
                       Navigator.of(context).pop();
                     },
                     child: Padding(

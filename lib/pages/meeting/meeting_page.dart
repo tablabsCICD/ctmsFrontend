@@ -294,121 +294,123 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 5.h,
-          ),
-          Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 16,
-                  )),
-              SizedBox(
-                width: 5.w,
-              ),
-              Text(
-                "Back",
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 5.h,
+            ),
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                    )),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: Text(
+                "Create Meeting",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColor.black,
-                  fontSize: 16.sp,
+                  fontSize: 25.sp,
                 ),
               ),
-            ],
-          ),
-          Center(
-            child: Text(
-              "Create Meeting",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: AppColor.black,
-                fontSize: 25.sp,
-              ),
             ),
-          ),
-          SizedBox(height: 20.h),
-          _buildTextField('Title', 'Title', _meetingTitleController),
-          SizedBox(height: 16),
-          _buildTextField('Description', 'Description', _meetingDecController),
-          SizedBox(height: 16),
-          _buildTextField('Link', 'Link', _meetingLinkController),
-          SizedBox(height: 16),
-          _buildText(selectDate, "Select Date",() async {
-            selectDate = await DateTimePickerDialog().pickDateDialog(context);
-            if (selectDate == null) {
-              selectDate = "Select Date";
-            }
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          _buildText(selectTime, "Select Time", () async {
-            selectTime = await DateTimePickerDialog().selectTime(context);
-            if (selectTime == null) {
-              selectTime = "Select Time";
-            }
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          _buildText(
-              selectedEmpList.length == 0
-                  ? 'Select Employee'
-                  : 'selected emp is ${selectedEmpList.length}', "Select Employee",() async {
-            var list = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return EmpDialog();
-                });
-            print('the list is ${list}');
-            selectedEmpList = list;
-            setState(() {
+            SizedBox(height: 20.h),
+            _buildTextField('Title', 'Title', _meetingTitleController),
+            SizedBox(height: 16),
+            _buildTextField('Description', 'Description', _meetingDecController),
+            SizedBox(height: 16),
+            _buildTextField('Link', 'Link', _meetingLinkController),
+            SizedBox(height: 16),
+            _buildText(selectDate, "Select Date",() async {
+              selectDate = await DateTimePickerDialog().pickDateDialog(context);
+              if (selectDate == null) {
+                selectDate = "Select Date";
+              }
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            _buildText(selectTime, "Select Time", () async {
+              selectTime = await DateTimePickerDialog().selectTime(context);
+              if (selectTime == null) {
+                selectTime = "Select Time";
+              }
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            _buildText(
+                selectedEmpList.length == 0
+                    ? 'Select Employee'
+                    : 'selected emp is ${selectedEmpList.length}', "Select Employee",() async {
+              var list = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return EmpDialog();
+                  });
+              print('the list is ${list}');
               selectedEmpList = list;
-            });
-          }),
-          SizedBox(height: 16),
-          _buildText(
-              selectedLead.length == 0
-                  ? "Select Lead"
-                  : 'selected lead count ${selectedLead.length.toString()}', "Select Lead",
-              () async {
-            var list = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return LeadDialog();
-                });
-            print('the list is ${list}');
-            selectedLead = list;
-            setState(() {
+              setState(() {
+                selectedEmpList = list;
+              });
+            }),
+            SizedBox(height: 16),
+            _buildText(
+                selectedLead.length == 0
+                    ? "Select Lead"
+                    : 'selected lead count ${selectedLead.length.toString()}', "Select Lead",
+                () async {
+              var list = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return LeadDialog();
+                  });
+              print('the list is ${list}');
               selectedLead = list;
-            });
-          }),
-          SizedBox(height: 16),
-          InkWell(
-            onTap: _submitForm,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: ThemeColor.theme_blue,
-                  borderRadius: BorderRadius.circular(5)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.white),
+              setState(() {
+                selectedLead = list;
+              });
+            }),
+            SizedBox(height: 16),
+            InkWell(
+              onTap: _submitForm,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Center(
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: AppColor.white),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -419,120 +421,122 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(10)),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 16,
-                  )),
-              SizedBox(
-                width: 5.w,
-              ),
-              Text(
-                "Back",
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 10.h,
+            ),
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                    )),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: Text(
+                "Edit Meeting",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   color: AppColor.black,
-                  fontSize: 16.sp,
-                ),
-              ),
-            ],
-          ),
-          Center(
-            child: Text(
-              "Edit Meeting",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: AppColor.black,
-                fontSize: 25.sp,
-              ),
-            ),
-          ),
-          SizedBox(height: 20.h),
-          _buildTextField('Title', 'Title', _editmeetingTitleController),
-          SizedBox(height: 16),
-          _buildTextField(
-              'Description', 'Description', _editmeetingDecController),
-          SizedBox(height: 16),
-          _buildTextField('Link', 'Link', _editmeetingLinkController),
-          SizedBox(height: 16),
-          _buildText(editSelectDate,"Select Date", () async {
-            editSelectDate =
-                await DateTimePickerDialog().pickDateDialog(context);
-            if (editSelectDate == null) {
-              editSelectDate = "Select Date";
-            }
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          _buildText(editSelectTime,"Select Time", () async {
-            editSelectTime = await DateTimePickerDialog().selectTime(context);
-            if (editSelectTime == null) {
-              editSelectTime = "Select Time";
-            }
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          _buildText(
-              editSelectedEmpList.length == 0
-                  ? 'Select Employee'
-                  : 'selected emp is ${editSelectedEmpList.length}', "Select Employee",() async {
-            var list = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return EmpDialog();
-                });
-            print('the list is ${list}');
-            selectedEmpList = list;
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          _buildText(
-              editSelectLead.length == 0
-                  ? "Select Lead"
-                  : 'selected lead ${editSelectLead.length.toString()}',"Select Lead", () async {
-            var list = await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return LeadDialog();
-                });
-            print('the list is ${list}');
-            selectedLead = list;
-            setState(() {});
-          }),
-          SizedBox(height: 16),
-          InkWell(
-            onTap: () {
-              _editSubmitForm(meetingData);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: ThemeColor.theme_blue,
-                  borderRadius: BorderRadius.circular(5)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.white),
+                  fontSize: 25.sp,
                 ),
               ),
             ),
-          )
-        ],
+            SizedBox(height: 20.h),
+            _buildTextField('Title', 'Title', _editmeetingTitleController),
+            SizedBox(height: 16),
+            _buildTextField(
+                'Description', 'Description', _editmeetingDecController),
+            SizedBox(height: 16),
+            _buildTextField('Link', 'Link', _editmeetingLinkController),
+            SizedBox(height: 16),
+            _buildText(editSelectDate,"Select Date", () async {
+              editSelectDate =
+                  await DateTimePickerDialog().pickDateDialog(context);
+              if (editSelectDate == null) {
+                editSelectDate = "Select Date";
+              }
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            _buildText(editSelectTime,"Select Time", () async {
+              editSelectTime = await DateTimePickerDialog().selectTime(context);
+              if (editSelectTime == null) {
+                editSelectTime = "Select Time";
+              }
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            _buildText(
+                editSelectedEmpList.length == 0
+                    ? 'Select Employee'
+                    : 'selected emp is ${editSelectedEmpList.length}', "Select Employee",() async {
+              var list = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return EmpDialog();
+                  });
+              print('the list is ${list}');
+              selectedEmpList = list;
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            _buildText(
+                editSelectLead.length == 0
+                    ? "Select Lead"
+                    : 'selected lead ${editSelectLead.length.toString()}',"Select Lead", () async {
+              var list = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return LeadDialog();
+                  });
+              print('the list is ${list}');
+              selectedLead = list;
+              setState(() {});
+            }),
+            SizedBox(height: 16),
+            InkWell(
+              onTap: () {
+                _editSubmitForm(meetingData);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Center(
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: AppColor.white),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -557,7 +561,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
           height: 10.h,
         ),
         SizedBox(
-          height: 52.h,
+          height:label=="Description"?75.h: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
@@ -566,7 +570,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 color: Color(0xff1B1B1B),
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
+                  overflow: TextOverflow.ellipsis
               ),
+              maxLines: label=="Description"?5:1,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5.0),
@@ -1102,7 +1108,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                   },
                                   child: Textview(
                                       TextStyle(
-                                        fontSize: 14.sp,
+                                        fontSize: 12.sp,
                                         fontFamily:
                                             GoogleFonts.poppins().fontFamily,
                                         fontWeight: FontWeight.w400,
@@ -1140,7 +1146,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                   child: Textview(
                                       TextStyle(
                                         color: Colors.red,
-                                        fontSize: 14.sp,
+                                        fontSize: 12.sp,
                                         fontFamily:
                                         GoogleFonts.poppins().fontFamily,
                                         fontWeight: FontWeight.w400,
@@ -1155,8 +1161,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       width: 23.w,
                     ),*/
                    meetingData.active==true? checkDateExpiry(meetingData.date)==true?SizedBox(
-                      width: 100.w,
-                      height: 45.h,
+                      //width: 100.w,
+                      height: 40.h,
                       child: OutlinedButton(
                         style: ButtonStyle(
                           foregroundColor:
@@ -1174,8 +1180,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                               MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.hovered))
-                                return ThemeColor.redShade; //<-- SEE HERE
-                              return ThemeColor.redShade; // Defer to the widget's default.
+                                return ThemeColor.red; //<-- SEE HERE
+                              return ThemeColor.red; // Defer to the widget's default.
                             },
                           ),
                         ),
@@ -1184,7 +1190,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         },
                         child: Textview(
                             TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 12.sp,
                               fontFamily: GoogleFonts.poppins().fontFamily,
                               fontWeight: FontWeight.w400,
                             ),
@@ -1192,7 +1198,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       ),
                     ):SizedBox(
                      width: 100.w,
-                     height: 45.h,
+                     height: 40.h,
                      child: OutlinedButton(
                        style: ButtonStyle(
                          foregroundColor:
@@ -1227,7 +1233,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                        },
                        child: Textview(
                            TextStyle(
-                             fontSize: 14.sp,
+                             fontSize: 12.sp,
                              fontFamily: GoogleFonts.poppins().fontFamily,
                              fontWeight: FontWeight.w400,
                            ),
@@ -1236,7 +1242,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                    ): Textview(
                        TextStyle(
                          color: Colors.red,
-                         fontSize: 14.sp,
+                         fontSize: 12.sp,
                          fontFamily:
                          GoogleFonts.poppins().fontFamily,
                          fontWeight: FontWeight.w400,

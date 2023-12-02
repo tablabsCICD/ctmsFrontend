@@ -162,7 +162,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             margin: EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Lead', '${leadData.length}', '', true,
+                leadCountCard('Total Leads', '${leadData.length}', '', true,
                     Colors.green.shade50),
                 SizedBox(
                   width: 32.w,
@@ -403,7 +403,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             }),
             SizedBox(height: 16.h),
             _buildTextField(
-                'Email', 'Please enter your email ID', _emailController),
+                'Company Email', 'Please enter your email ID', _emailController),
             SizedBox(height: 16.h),
             _buildTextField(
                 'Phone', 'Please enter your phone number', _phoneController),
@@ -416,7 +416,7 @@ class _LeadDashboard extends State<LeadDashboard> {
             SizedBox(height: 16.h),
             _buildText(
                 '${uploadedDocument == null
-                    ? "Click here to select Photo"
+                    ? "Click here to upload document"
                     : uploadedDocument}',
                 'Document', () async {
               pickFile(stateSetter, false);

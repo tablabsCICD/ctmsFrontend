@@ -198,8 +198,20 @@ class _CreateMail extends State<CreateMail>{
             SizedBox(height: 15.h,),
             InkWell(
               onTap: (){
-                callAPI();
-
+                final bool toEmailValid =
+                RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(toNameController.text);
+                final bool ccEmailValid =
+                RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(ccNameController.text);
+                if(toEmailValid==false){
+                  showCustomToast(context, "Enter valid email id", Icons.close, Colors.red);
+                }else if(ccEmailValid==false){
+                  showCustomToast(context, "Enter valid email id in cc", Icons.close, Colors.red);
+                }else {
+                  // callAPI();
+                  callAPICC(context);
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -310,6 +322,33 @@ class _CreateMail extends State<CreateMail>{
 
 
 
+  }
+
+  void callAPICC(context) async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    EasyLoading.show(status: "Loading");
+    Dio dio=Dio();
+    String url = ApiConstant.BASE_URL+"api/Employee/SendCCEmail?cc=${toNameController.text}&cc=${ccNameController.text}&subject=${subjectController.text}&message=${mailController.text}";
+    print(url);
+    var response=await dio.post(url,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print('the response is ${response}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      showCustomToast(context, "Mail Sent Successfully", Icons.check, Colors.green);
+      toNameController.clear();
+      ccNameController.clear();
+      mailController.clear();
+      subjectController.clear();
+      setState(() {
+      });
+    }else{
+      showCustomToast(context, "Something went wrong! Please try again", Icons.close, Colors.red);
+    }
   }
 
 }

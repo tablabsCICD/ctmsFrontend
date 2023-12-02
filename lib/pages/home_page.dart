@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                     margin: EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
                     child: Row(
                       children: [
-                        leadCountCard('Total Lead', '${leadData.length}', '', true,
+                        leadCountCard('Total Leads', '${leadData.length}', '', true,
                             Colors.green.shade50),
                         SizedBox(
                           width: 32.w,
@@ -183,17 +183,17 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           width: 38.w,
                         ),
-                        empCounts("${empData.length}", "Total Employee", Images.emp_tot,
+                        empCounts("${empData.length}", "Total Employees", Images.emp_tot,
                             Color(0xFFEAF8F4), true),
                         SizedBox(
                           width: 38.w,
                         ),
-                        empCounts("${activeEmpData.length}", "Active Employee",
+                        empCounts("${activeEmpData.length}", "Active Employees",
                             Images.emp_tot, Color(0xFFFFEDF9), false),
                         SizedBox(
                           width: 38.w,
                         ),
-                        empCounts("${inActiveEmpData.length}", "Inactive Employee",
+                        empCounts("${inActiveEmpData.length}", "Inactive Employees",
                             Images.emp_tot, Color(0xFFFEF0E5), false),
                       ],
                     ),

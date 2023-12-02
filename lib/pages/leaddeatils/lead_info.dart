@@ -724,8 +724,8 @@ class _LeadInfo extends State<LeadInfo> {
           _buildTextField(
               'Description', 'Please Description', _descriptionController),
           SizedBox(height: 16.h),
-          _buildText('Select Photo',
-              '${uploadedLeadDocument == null ? "Click here to select Photo" : uploadedLeadDocument}',
+          _buildText('Document',
+              '${uploadedLeadDocument == null ? "Click here to upload document" : uploadedLeadDocument}',
                   () async {
                 pickFile(stateSetter,false);
               }),

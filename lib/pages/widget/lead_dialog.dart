@@ -77,14 +77,22 @@ class _LeadDialog extends State<LeadDialog>{
                           padding: const EdgeInsets.all(8.0),
                           child: InkWell(
                             onTap: (){
-                             /* if(emData[index].lead!.isSelected!){
+                              selectedEmp.clear();
+                              /*if(emData[index].lead!.isSelected!){
                                 selectedEmp.add(emData[index].lead!.id!);
                                 emData[index].lead!.isSelected=false;
                               }else{
                                 // selectedEmp.remove(emData[index].id!);
                                 emData[index].lead!.isSelected=true;
                               }*/
-                              emData.forEach((element) {element.lead!.isSelected!=false; });
+                             // emData.forEach((element) {element.lead!.isSelected!=false; });
+                              for(int i=0;i<emData.length;i++){
+                                if(index==i){
+                                  emData[index].lead!.isSelected=true;
+                                }else{
+                                  emData[i].lead!.isSelected=false;
+                                }
+                              }
                               emData[index].lead!.isSelected=true;
                               selectedEmp.add(emData[index].lead!.id!);
                               print(selectedEmp);
@@ -166,7 +174,7 @@ class _LeadDialog extends State<LeadDialog>{
 
   Future<void> ApiGetData() async{
 
-    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD+"?page=0&size=10&sortBy=id&sortDir=asc");
+    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD+"?page=0&size=10000&sortBy=id&sortDir=asc");
     if(response.status==200){
       LeadListResponse employeeList =LeadListResponse.fromJson(response.response);
       //emData=employeeList.data!;

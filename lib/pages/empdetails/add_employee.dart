@@ -43,7 +43,7 @@ class _EditEmployeeState extends State<EditEmployee> {
     _nameController.text=widget.empData.firstName!;
     _lastnameController.text=widget.empData.lastName!;
     _emailController.text=widget.empData.emailId!;
-    _phoneController.text=widget.empData.mobileNumber!;
+    _phoneController.text=widget.empData.contact!;
     _addLeadController.text=widget.empData.address!;
     setState(() {
 
