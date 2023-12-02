@@ -798,18 +798,16 @@ class _LoginScreen extends State<LoginScreen> {
         print('the response is ${jwtResponse}');
         JWTLoginData jwtLoginData =
             JWTLoginData.fromJson(jwtResponse);
-        if (jwtLoginData.data != null) {
+        if (jwtLoginData.data == '') {
+          showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
+
+        } else {
           String token = jwtLoginData.data!;
-          /*ApiConstant.token = token;
-          print("LoginToken ::" + token);*/
           LocalSharePreferences()
               .setString(SharedPreferencesConstant.AuthToken, token);
           String finalToken = await LocalSharePreferences()
               .getString(SharedPreferencesConstant.AuthToken);
           print("Final Token ::"+finalToken);
-        } else {
-         // ToastMessage.show(context, jwtLoginData.message!);
-          showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
         }
 
         String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
@@ -841,11 +839,11 @@ class _LoginScreen extends State<LoginScreen> {
           }
         } else {
         //  ToastMessage.show(context, "Try Again");
-          showCustomToast(context, "Try Again", Icons.clear, Colors.red);
+          showCustomToast(context, "Something went wrong! Please Try Again", Icons.clear, Colors.red);
         }
       } else {
        // ToastMessage.show(context, "Try Again");
-        showCustomToast(context, "Try Again", Icons.clear, Colors.red);
+        showCustomToast(context, "Something went wrong! Please Try Again", Icons.clear, Colors.red);
       }
     } else {
      // ToastMessage.show(context, "Please fill correct email and password");

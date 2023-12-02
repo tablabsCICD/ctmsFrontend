@@ -10,17 +10,17 @@ showCustomToast(
   FToast fToast = FToast();
   fToast.init(context);
   Widget toast = Container(
-    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 15),
+    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
-      color: Colors.white,
+      color: color,
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           icon,
-          color: color,
+          color: Colors.white,
         ),
         SizedBox(
           width: 12,
@@ -28,8 +28,8 @@ showCustomToast(
         Text(
           msg,
           style: TextStyle(
-            color: color,
-            fontSize: 20.sp,
+            color: Colors.white,
+            fontSize: 16.sp,
             fontFamily: GoogleFonts.poppins().fontFamily,
             fontWeight: FontWeight.w400,
           ),
