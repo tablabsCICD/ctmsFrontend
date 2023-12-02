@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/constant/images.dart';
@@ -512,9 +513,33 @@ class _LoadListState extends State<LoadList> {
                     width: 121.w,
                     height: 40.h,
                     child: ElevatedButton(
-                        onPressed: (){
-
-                        },
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) => new CupertinoAlertDialog(
+                              title: Text(
+                                  'Contact Number : ${model.orgFullLoadList[index].mobileNumber}',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.all(10.0),
+                                    child: Text('Ok',
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 18)),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ));
+                      },
                         style: ElevatedButton.styleFrom(
                           primary: ThemeColor.theme_blue,
                           onPrimary: Colors.white,

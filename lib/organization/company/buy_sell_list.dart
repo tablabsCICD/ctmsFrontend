@@ -522,8 +522,8 @@ class _BuySellListState extends State<BuySellList> {
               ? SizedBox.shrink()
               : SvgPicture.asset(
                   icon,
-                  height: 30.h,
-                  width: 30.h,
+                  height: 25.h,
+                  width: 25.h,
                 ),
           SizedBox(
             width: 5.w,
@@ -534,7 +534,7 @@ class _BuySellListState extends State<BuySellList> {
                   title: title,
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
-                  fontSize: 15.sp,
+                  fontSize: 14.sp,
                 )
         ],
       ),

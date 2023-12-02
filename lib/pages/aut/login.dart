@@ -440,7 +440,7 @@ class _LoginScreen extends State<LoginScreen> {
                   _submitForm();
                 }),
           ),
-          Textview(
+          /* Textview(
               TextStyle(
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontSize: 18.sp,
@@ -478,7 +478,7 @@ class _LoginScreen extends State<LoginScreen> {
                     title: "Sign Up"),
               ),
             ],
-          ),
+          ),*/
         ],
       ),
     );

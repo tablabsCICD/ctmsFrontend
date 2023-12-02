@@ -142,7 +142,7 @@ class _BidListState extends State<BidList> {
                         bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
                         endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
                         status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
-                        price: '${model.orgBigingList[i].bidingList!.length.toString()}'
+                        price: '${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
                     ),
 
                   ],

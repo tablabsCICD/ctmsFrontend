@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -179,32 +180,38 @@ class _AllUsersListState extends State<AllUsersList> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           ListTile(
-                                            title: TextView(
-                                              title: "${model.userList[index].firstName} ${model.userList[index].lastName}",
-                                              fontSize:15.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xff000000),
-                                            ),
-                                            subtitle: model.userList[index]
-                                                        .isUserVerifiedByCompany ==
-                                                    1
-                                                ? Tooltip(
-                                                    message:
-                                                        "This user is verified by '${model.userList[index].companyName}'",
-                                                    child: Image.asset(
-                                                      'assets/menu_report.png',
-                                                      width: 5,
-                                                      height: 15,
-                                                    ),
-                                                  )
-                                                : SizedBox.shrink(),
-                                            /*leading: Stack(
+                                            title: Row(
                                               children: [
-                                                getImage(model.userList[index]
-                                                    .profilePicture
-                                                    .toString()),
+                                                TextView(
+                                                  title: "${model.userList[index].firstName} ${model.userList[index].lastName}",
+                                                  fontSize:15.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xff000000),
+                                                ),
+                                                SizedBox(width: 5.w,),
+                                                model.userList[index]
+                                                    .isUserVerifiedByCompany ==
+                                                    1
+                                                    ? Tooltip(
+                                                  message:
+                                                  "This user is verified by '${model.userList[index].companyName}'",
+                                                  child: SvgPicture.asset(
+                                                    'assets/org/sheild.svg',
+                                                    width: 5,
+                                                    height: 15,
+                                                  ),
+                                                )
+                                                    : SizedBox.shrink()
                                               ],
-                                            ),*/
+                                            ),
+                                            subtitle: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10.w, vertical: 10.h),
+                                              child: StarDisplay(value:int.parse('${/*model.userList[index].ratings.toString()*/5}')),
+                                            ),
+                                            leading: getImage(model.userList[index]
+                                                .profilePicture
+                                                .toString()),
                                             trailing: model.userList[index].isUserVerifiedByCompany==1?Container(
                                               width: 100,
                                               child: Row(
@@ -213,7 +220,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                 children: [
                                                   Icon(
                                                     Icons.circle,
-                                                    size: 7.r,
+                                                    size: 10.r,
                                                     color: Colors.green,
                                                   ),
                                                   SizedBox(
@@ -221,9 +228,9 @@ class _AllUsersListState extends State<AllUsersList> {
                                                   ),
                                                   TextView(
                                                    title: 'Approved',
-                                                    fontSize:12.sp,
+                                                    fontSize:14.sp,
                                                     fontWeight: FontWeight.w300,
-                                                    color: Color(0xff000000),
+                                                    color: Colors.green,
                                                   ),
                                                 ],
                                               ),
@@ -236,11 +243,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                           getUserDetails('Company Name','${model.userList[index].companyName}'),
                                           getUserDetails('Company Address','${model.userList[index].companyAddress}'),
                                           getUserDetails('Status','${model.userList[index].state}'),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.w, vertical: 10.h),
-                                            child: StarDisplay(value:int.parse('${/*model.userList[index].ratings.toString()*/5}')),
-                                          ),
+
                                         ],
                                       )),
                                 );
@@ -349,9 +352,22 @@ class _AllUsersListState extends State<AllUsersList> {
   List<dynamic> EmployeeList = [];
   List<User> allUserList = [];
   bool isLoad=false;
-  getEmployeeName() async {
 
+  EmployeeListResponse? employeeListResponse;
+  getEmployeeName() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
     isLoad = true;
+    setState(() {});
+    Dio dio = Dio();
+    final response = await dio.get(
+        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${0}&size=1000",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+
+   /* isLoad = true;
     String myUrl = AppConstants.GET_ALL_USER;
     print(myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -359,13 +375,24 @@ class _AllUsersListState extends State<AllUsersList> {
     var response = json.decode(req.body);
     print(response);
     var type = AuthApi.fromJson(response);
-    allUserList.addAll(type.content as Iterable<User>);
+
+     allUserList.addAll(response.content as Iterable<User>);
     type.content!.forEach((element) {
       EmployeeList.add(element.firstName.toString()+" "+element.lastName.toString());
     });
     foundEmp = EmployeeList.toSet().toList();
+    */
 
-
+    if (response.statusCode == 200) {
+      employeeListResponse =
+          EmployeeListResponse.fromJson(jsonDecode(response.data));
+      employeeListResponse!.data!.content!.forEach((element) {
+        EmployeeList.add(
+            element.firstName.toString() + " " + element.lastName.toString());
+      });
+      foundEmp = EmployeeList.toSet().toList();
+    }
+    isLoad=false;
     setState(() {
 
     });
@@ -409,54 +436,48 @@ class _AllUsersListState extends State<AllUsersList> {
           const SizedBox(
             height: 20,
           ),
-          Container(
-            height: 500,
-            width: 300,
+          Expanded(
             child: foundEmp.isNotEmpty
                 ? ListView.builder(
               shrinkWrap: true,
               itemCount: foundEmp.length,
               itemBuilder: (context, index) =>
-                  Column(
-                    children: [
-                      ListTile(
-                        onTap: () {
-                          allUserList.forEach((element) {
-                            if (foundEmp[index] ==
-                                "${element.firstName} ${element.lastName}") {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text("Add Employee"),
-                                    content:
-                                    Text("You want to add employee?"),
-                                    actions: [
-                                      TextButton(
-                                        child: Text("Add"),
-                                        onPressed: () {
-                                          addToTKDConnect(element, stateSetter);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text("Cancel"),
-                                        onPressed: () {
-                                          /*showCustomToast(
-                                              context, "", Icons.clear, Colors.red);*/
-                                          Navigator.of(context).pop();
-                                        },
-                                      )
-                                    ],
-                                  );
-                                },
+                  ListTile(
+                    onTap: () {
+                      allUserList.forEach((element) {
+                        if (foundEmp[index] ==
+                            "${element.firstName} ${element.lastName}") {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Add Employee"),
+                                content:
+                                Text("You want to add employee?"),
+                                actions: [
+                                  TextButton(
+                                    child: Text("Add"),
+                                    onPressed: () {
+                                      addToTKDConnect(element, stateSetter);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      /*showCustomToast(
+                                          context, "", Icons.clear, Colors.red);*/
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
                               );
-                            }
-                          });
-                        //  Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
-                        },
-                        title: Text(foundEmp[index]),
-                      ),
-                    ],
+                            },
+                          );
+                        }
+                      });
+                    //  Navigator.pop(context,[foundEmp[index].toString(),foundEmp[index].toString()]);
+                    },
+                    title: Text(foundEmp[index]),
                   ),
 
             )
