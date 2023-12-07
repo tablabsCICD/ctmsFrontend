@@ -51,7 +51,8 @@ class _BidListState extends State<BidList> {
           child: Column(
             children: [
               Container(
-                height: 60,
+                height: 40,
+                margin: EdgeInsets.all(30),
                 child: Row(
                   children: [
                     getCircularContainer(
@@ -59,6 +60,7 @@ class _BidListState extends State<BidList> {
                         (selectedTab == "Placed Quotes"),
                         0,
                         model),
+                    SizedBox(width: 10.w,),
                     getCircularContainer(
                         "Received Quotes",
                         (selectedTab == "Received Quotes"),
@@ -376,39 +378,27 @@ class _BidListState extends State<BidList> {
       onTap: () {
         setState(() {
           selectedTab = title;
-          model.getFinalBuySellList(title);
+         // model.getFinalBuySellList(title);
         });
       },
       child: Container(
-        width: 250.w,
+        width: 200.w,
         height: 150.h,
         alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-            SvgPicture.asset(
-              Images.red_arrow,
-              alignment: Alignment.center,
-              width: 250.w,
-              height: 100.h,
-              color: isSelected ? Color(0xffC3262C) : Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: isSelected ? Color(0xffC3262C) : Colors.white,
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontSize: 20.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w500,
             ),
-            Container(
-              height: 100.h,
-              width: 200.w,
-              alignment: Alignment.center,
-              child: Center(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontSize: 20.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

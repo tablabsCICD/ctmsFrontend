@@ -360,8 +360,8 @@ class _LoadListState extends State<LoadList> {
                           children: [
                             Image.asset('assets/org/container.png',height: 162.h,width: 174.w,),
                             TextView(
-                              title: 'Plywood',
-                              // title: "${model.orgFullLoadList[index].modelName}",
+                             // title: 'Plywood',
+                               title: "${model.orgFullLoadList[index].material}",
                               fontSize:15.sp,
                               fontWeight: FontWeight.w600,
                               color: Color(0xff000000),
@@ -456,7 +456,7 @@ class _LoadListState extends State<LoadList> {
                             ),
                             SizedBox(height: 20.h,),
                             TextView(
-                              title: "Expire : 19 Sept, 2023",
+                              title: "Expire : ${model.orgFullLoadList[index].expireDate}",
                               fontSize:15.sp,
                               fontWeight: FontWeight.w300,
                               color: Color(0xff000000),
@@ -482,14 +482,13 @@ class _LoadListState extends State<LoadList> {
                                 SizedBox(width: 10.w,),
                                 Expanded(
                                   child: Text(
-                                     "${model.orgFullLoadList[index].nameOfPerson}",
+                                     "${model.orgFullLoadList[index].transporterOrCustomerName}",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize:15.sp,
                                       fontWeight: FontWeight.w600,
                                       color: Color(0xff000000),
                                     ),
-                                    
                                   ),
                                 ),
                               ],
@@ -501,7 +500,7 @@ class _LoadListState extends State<LoadList> {
                                 SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
                                 SizedBox(width: 20.w,),
                                 TextView(
-                                  title: "${model.orgFullLoadList[index].type}",
+                                  title: "${model.orgFullLoadList[index].transporterType}",
                                   fontSize:15.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xff000000),
@@ -518,7 +517,7 @@ class _LoadListState extends State<LoadList> {
                             context: context,
                             builder: (_) => new CupertinoAlertDialog(
                               title: Text(
-                                  'Contact Number : ${model.orgFullLoadList[index].mobileNumber}',
+                                  'Contact Number : ${model.orgFullLoadList[index].contactNumber}',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,

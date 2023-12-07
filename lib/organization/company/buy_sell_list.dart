@@ -58,7 +58,7 @@ class _BuySellListState extends State<BuySellList> {
   ScrollController _scrollController = ScrollController();
   final buySellProvider = locator<BuySellProvider>();
 
-  @override
+ /* @override
   void initState() {
     super.initState();
     _scrollController.addListener(() {
@@ -68,7 +68,7 @@ class _BuySellListState extends State<BuySellList> {
         selectedPageNumber++;
       }
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -82,48 +82,29 @@ class _BuySellListState extends State<BuySellList> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 60,
-                            child: Padding(
-                              padding: ResponsiveWidget.isDesktop(context)
-                                  ? EdgeInsets.symmetric(
-                                      horizontal: 0, vertical: 10)
-                                  : EdgeInsets.symmetric(
-                                      horizontal: 0, vertical: 10),
-                              child: Row(
-                                children: [
-                                  getCircularContainer(
-                                      "Buy Vehicle",
-                                      (model.selectedTab == "Buy Vehicle"),
-                                      0,
-                                      model),
-                                  getCircularContainer(
-                                      "Sell Vehicle",
-                                      (model.selectedTab == "Sell Vehicle"),
-                                      1,
-                                      model),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                      Container(
+                        height: 40,
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: Row(
+                          children: [
+                            getCircularContainer(
+                                "Buy Vehicle",
+                                (model.selectedTab == "Buy Vehicle"),
+                                0,
+                                model),
+                            SizedBox(width: 10.w,),
+                            getCircularContainer(
+                                "Sell Vehicle",
+                                (model.selectedTab == "Sell Vehicle"),
+                                1,
+                                model),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 10.h),
                       model.finalBuySellList.isEmpty
-                          ? Expanded(
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height - 200,
-                                  child: Center(
-                                      child: Text(
-                                    "No Record Found",
-                                    style: Style.heading,
-                                  ))))
-                          : /*model.finalBuySellList[0].mainTag == "Sell Vehicle"
-                              ? SizedBox.shrink()
-                              : */Container(
+                          ? SizedBox.shrink()
+                          : Container(
                                   height: 433.h,
                                   width: 1052.w,
                                   padding: EdgeInsets.all(29),
@@ -297,15 +278,14 @@ class _BuySellListState extends State<BuySellList> {
                       ),
                       SizedBox(height: 10.h),
                       model.finalBuySellList.isEmpty
-                          ? Expanded(
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height - 200,
-                                  child: Center(
-                                      child: Text(
-                                    "No Record Found",
-                                    style: Style.heading,
-                                  ))))
+                          ? Container(
+                              height:
+                                  MediaQuery.of(context).size.height - 200,
+                              child: Center(
+                                  child: Text(
+                                "No Record Found",
+                                style: Style.heading,
+                              )))
                           : Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 39.w, vertical: 31.h),
@@ -371,43 +351,78 @@ class _BuySellListState extends State<BuySellList> {
                                                 ),
                                               ],
                                             ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Current Location',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 15.sp,
-                                                    fontFamily:
-                                                        GoogleFonts.poppins()
-                                                            .fontFamily,
-                                                    fontWeight: FontWeight.w300,
+                                            SizedBox(
+                                              width: 140.w,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Current Location',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 15.sp,
+                                                      fontFamily:
+                                                          GoogleFonts.poppins()
+                                                              .fontFamily,
+                                                      fontWeight: FontWeight.w300,
+                                                    ),
                                                   ),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .location_on_outlined,
-                                                      size: 16,
-                                                    ),
-                                                    Text(
-                                                      '${model.finalBuySellList[index].city}',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 15.sp,
-                                                        fontFamily: GoogleFonts
-                                                                .poppins()
-                                                            .fontFamily,
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .location_on_outlined,
+                                                        size: 16,
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                      Text(
+                                                        '${model.finalBuySellList[index].city}',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 15.sp,
+                                                          fontFamily: GoogleFonts
+                                                                  .poppins()
+                                                              .fontFamily,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 39.h,),
+                                                  Row(
+                                                    children: [
+                                                      getImage('',height: 30.h),
+                                                      SizedBox(width: 10.w,),
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${model.finalBuySellList[index].ownerName}",
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                            fontSize:15.sp,
+                                                            fontWeight: FontWeight.w300,
+                                                            color: Color(0xff000000),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.h,),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: 15.w,),
+                                                      SvgPicture.asset('assets/sheild.svg',height: 15.h,width: 15.w,),
+                                                      SizedBox(width: 5.w,),
+                                                      TextView(
+                                                        title: "${model.finalBuySellList[index].driverType}",
+                                                        fontSize:14.sp,
+                                                        fontWeight: FontWeight.w200,
+                                                        color: Color(0xff000000),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),
@@ -438,32 +453,21 @@ class _BuySellListState extends State<BuySellList> {
       child: Container(
         width: 200.w,
         height: 150.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: isSelected ? Color(0xffC3262C) : Colors.white,
+        ),
         alignment: Alignment.center,
-        child: Stack(
-          children: <Widget>[
-            SvgPicture.asset(
-              Images.red_arrow,
-              alignment: Alignment.center,
-              width: 250.w,
-              height: 100.h,
-              color: isSelected ? Color(0xffC3262C) : Colors.white,
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontSize: 20.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w500,
             ),
-            Container(
-              height: 100.h,
-              width: 200.w,
-              child: Center(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontSize: 20.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

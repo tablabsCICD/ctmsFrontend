@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter_hr_management/pages/report/customer_model.dart';
 import 'package:flutter_hr_management/pages/report/pdf_service.dart';
 import 'package:flutter_hr_management/pages/report/saveFile.dart';
@@ -27,6 +28,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:universal_html/html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'widget/calender_widget.dart';
 import 'widget/header_widget.dart';
@@ -34,6 +36,8 @@ import 'widget/notification_card_widget.dart';
 import 'widget/profile_card_widget.dart';
 import 'widget/recruitment_data_widget.dart';
 import 'package:http/http.dart' as http;
+import 'dart:html' as html;
+
 
 class Dashboard extends StatefulWidget {
   @override
@@ -553,18 +557,36 @@ class _DashboardState extends State<Dashboard> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     print("Token:" + token);
+    String url = ApiConstant.BASE_URL +
+        "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=${selectedFromDate}1&endDate=${selectedToDate}&employeeId=${emData[index].id}";
+    print("MyUrl:"+url);
     var req = await http.get(
-        Uri.parse(ApiConstant.BASE_URL +
-            "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=${selectedFromDate}1&endDate=${selectedToDate}&employeeId=${emData}"),
+        Uri.parse(url),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
         });
-    var response = json.decode(req.body);
-    print(response);
+
     EasyLoading.dismiss();
     if (req.statusCode == 200) {
+      var response = json.decode(req.body);
+      print(response);
+
       EmpReportModel empReportModel =
+      EmpReportModel.fromJson(jsonDecode(req.body));
+
+      Uint8List bytes = base64.decode(empReportModel.data!.report!);
+
+      final blob = html.Blob([bytes],'application/pdf');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+
+
+
+      await launchUrl(Uri.parse(url));
+
+
+
+     /* EmpReportModel empReportModel =
           EmpReportModel.fromJson(jsonDecode(req.body));
 
       print('base 64 code : ${empReportModel.data!.report!}');
@@ -582,7 +604,7 @@ class _DashboardState extends State<Dashboard> {
         ..click();
 
       //Dispose the document
-      document.dispose();
+      document.dispose();*/
 
       /*var base64 =empReportModel.data!.report!;
         var bytes = base64Decode(base64);

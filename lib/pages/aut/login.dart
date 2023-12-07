@@ -800,7 +800,7 @@ class _LoginScreen extends State<LoginScreen> {
             JWTLoginData.fromJson(jwtResponse);
         if (jwtLoginData.data == '') {
           showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
-
+         EasyLoading.dismiss();
         } else {
           String token = jwtLoginData.data!;
           LocalSharePreferences()

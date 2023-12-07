@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/refresh.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/view_image-dialog.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -31,7 +32,7 @@ class LeadActivity extends StatefulWidget {
   }
 }
 
-class _LeadActivity extends State<LeadActivity> {
+class _LeadActivity extends State<LeadActivity> implements AbRefresh{
   List<LeadUpdateData> listLeadActivityData = [];
 
   @override
@@ -144,6 +145,11 @@ class _LeadActivity extends State<LeadActivity> {
     );
   }
 
+  void refresh(){
+    debugPrint("In lead activity");
+  }
+
+
   Widget tableHeader(text) {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 20),
@@ -187,7 +193,28 @@ class _LeadActivity extends State<LeadActivity> {
           TextView(title:status,fontSize: 16.sp,color: Colors.red,fontWeight: FontWeight.w400,),
           if (!AppResponsive.isMobile(context))
             TextView(title:date,fontSize: 16.sp,color: Colors.black,fontWeight: FontWeight.w400,),
-          TextView(title:"View Document",fontSize: 16.sp,color: Colors.blue,fontWeight: FontWeight.w400,),
+         // TextView(title:"View Document",fontSize: 16.sp,color: Colors.blue,fontWeight: FontWeight.w400,),
+          listLeadActivityData[index].document==''?SizedBox.shrink():InkWell(
+            onTap: () async {
+              final url =Uri.parse(listLeadActivityData[index].document.toString());
+              if (!await launchUrl(url,)) {
+                throw Exception('Could not launch $url');
+              }
+              /*await showDialog(
+              context: context,
+              builder: (_) => ImageDialog(
+                  listLeadActivityData[index].document!));*/
+            },
+            child: Text(
+              "View Document",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 20.sp,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
         ]);
 
   }
@@ -330,5 +357,13 @@ class _LeadActivity extends State<LeadActivity> {
       EasyLoading.dismiss();
       print(e);
     }
+  }
+
+  @override
+  void refreshPage() {
+    // TODO: implement refreshPage
+    setState(() {
+      debugPrint("In page refresh");
+    });
   }
 }

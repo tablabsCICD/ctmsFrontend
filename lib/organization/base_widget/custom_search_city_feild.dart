@@ -64,7 +64,7 @@ class CustomSearchCityTextField extends StatelessWidget {
             filled: true,
             contentPadding: EdgeInsets.only(bottom: 10,left: 0,right: 0),
             prefixIcon: Icon(Icons.location_on_outlined,size: 15,color: Color(0xff292929)),
-              suffixIcon: Icon(Icons.keyboard_arrow_down,size: 20,color: Color(0xff292929)),
+              suffixIcon: controller.isEmpty?Icon(Icons.keyboard_arrow_down,size: 20,color: Color(0xff292929)):Icon(Icons.close,size: 20,color: Color(0xffC3262C)),
               hintText: hintText,
               hintStyle: TextStyle(
                   fontSize: 15.sp,

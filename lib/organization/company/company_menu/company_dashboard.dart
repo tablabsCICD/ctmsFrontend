@@ -86,7 +86,6 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                       Expanded(
                         child: CompanySideBar(),
                       ),
-
                     /// Main Body Part
                     Expanded(
                       flex: 4,
@@ -179,6 +178,10 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                                   style: Style.button),
                                             ),
                                           ),
+                                          SizedBox(
+                                            width: 15.w,
+                                          ),
+
                                         ],
                                       ),
                                     ),
@@ -212,27 +215,25 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                           SizedBox(height: 35.h,),
                           Expanded(
                               child: container)
-
                         ],
                       ),
                     ),
-
                   ],
                 ),
-                Positioned(
+                ResponsiveWidget.isDesktop(context)?Positioned(
                   top: 115.h,
-                  left: 255.w,
+                  left: 265.w,
                   child: InkWell(
                     onTap: () {
                       Navigator.pushReplacementNamed(context, AppRoutes.home);
                     },
                     child: SvgPicture.asset(
                       "assets/back_button.svg",
-                      height: 66.h,
-                      width: 66.w,
+                      height: 76.h,
+                      width: 76.w,
                     ),
                   ),
-                ),
+                ):SizedBox.shrink(),
               ],
             ),
           )),

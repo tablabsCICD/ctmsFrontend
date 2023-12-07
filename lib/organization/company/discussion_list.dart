@@ -264,16 +264,16 @@ class _DiscussionListState extends State<DiscussionList> {
                           minVerticalPadding: 0,
                           leading: getImage(model
                               .orgFullLoadList[index]
-                              .companyLogo
+                              .image
                               .toString()),
                           title: CustomText(
                               model.orgFullLoadList[index]
-                                  .nameOfPerson
+                                  .contactNumber
                                   .toString(),
                               style: Style.title),
                           subtitle: CustomText(
                               model.orgFullLoadList[index]
-                                  .companyName
+                                  .emailId
                                   .toString(),
                               style: Style.subtitle),
                         ),
@@ -291,7 +291,7 @@ class _DiscussionListState extends State<DiscussionList> {
                           padding: const EdgeInsets.only(
                               left: 10.0, bottom: 10, right: 10),
                           child: CustomText(
-                            model.orgFullLoadList[index].content
+                            model.orgFullLoadList[index].date
                                 .toString(),
                             style: Style.content,
                           ),

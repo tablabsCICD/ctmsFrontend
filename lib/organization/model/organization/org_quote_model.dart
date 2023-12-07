@@ -102,7 +102,7 @@ class GenericCardsDto {
   String? reminderUserName;
   String? sharableLink;
   String? deviceId;
-  String? ratings;
+  int? ratings;
   int? mobileNumber;
   String? source;
   String? destination;
@@ -190,7 +190,7 @@ class GenericCardsDto {
     reminderUserName = json['reminderUserName']??'';
     sharableLink = json['sharableLink']??'';
     deviceId = json['deviceId']??'';
-    ratings = json['ratings']??'';
+    ratings = json['ratings']??0;
     mobileNumber = json['mobileNumber']??0;
     source = json['source']??'';
     destination = json['destination']??'';

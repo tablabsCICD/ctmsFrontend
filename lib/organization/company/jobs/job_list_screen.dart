@@ -110,7 +110,64 @@ class _JobListState extends State<JobListScreen> {
                     ),
                   ],
                 ),
-                model.listJobs.isEmpty
+                Container(
+                  decoration: BoxDecoration(
+                      color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+                  margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
+                  child: model.listJobs.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      : Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    columnWidths: {
+                      0: FlexColumnWidth(50),
+                      1: FlexColumnWidth(70),
+                      2: FlexColumnWidth(30),
+                      3: FlexColumnWidth(30),
+                      4: FlexColumnWidth(30),
+                      5: FlexColumnWidth(30),
+                      6: FlexColumnWidth(30),
+                    },
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        children: [
+                          tableHeader("Job Title"),
+                          tableHeader("Jod Description"),
+                          tableHeader("Experience"),
+                         // tableHeader("Experience"),
+                          tableHeader("Job Type"),
+                          tableHeader("Salary"),
+                          tableHeader("Details"),
+                          tableHeader(""),
+                        ],
+                      ),
+                      /// Table Data
+                      for (int i = 0; i < model.listJobs.length; i++)
+                        tableRow(context, model.listJobs[i],
+                            id: model.listJobs[i].postJob!.id,
+                            color: Colors.blue,
+                            title: model.listJobs[i].postJob!.message,
+                            jd: model.listJobs[i].postJob!.jobDescription,
+                            experience: model.listJobs[i].postJob!.experience,
+                            date: model.listJobs[i].postJob!.salary,
+                            jobType: model.listJobs[i].postJob!.jobType,
+                            index: i),
+                    ],
+                  ),
+                ),
+               /* model.listJobs.isEmpty
                     ? Expanded(
                         child: Container(
                             height: MediaQuery.of(context).size.height - 200,
@@ -144,10 +201,103 @@ class _JobListState extends State<JobListScreen> {
                                 StaggeredTile.fit(1),
                           ),
                         ),
-                      ),
+                      ),*/
                 //  getLoader(model.isLoading)
               ],
             ));
+  }
+
+  TableRow tableRow(context, JobData leadData,
+      {id, title, jd, experience, color, index, date,jobType}) {
+    return TableRow(
+        children: [
+          //Full Name
+         /* InkWell(
+            onTap: () {
+             *//* Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      LeadInfo(
+                        leadData: finalLeadData[index],
+                      )));*//*
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 15),
+              child: TextView(
+                  title: id,
+                  fontSize: 16.sp,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),*/
+          TextView(
+              title: title,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+
+          TextView(
+              title: jd,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: experience,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: jobType,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: date,
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          InkWell(
+              onTap: () {
+                //  showAlertDialog(context, index);
+              },
+              child: Text("View",style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                decoration: TextDecoration.underline
+              ),)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              InkWell(
+                  onTap: () {
+                  //  showAlertDialog(context, index);
+                  },
+                  child: Icon(Icons.delete, color: Colors.red)),
+              SizedBox(
+                width: 5.w,
+              ),
+              InkWell(
+                  onTap: () {
+                    //  _showAlertDialog();
+                   // editleadDilaog(leadData);
+                  },
+                  child: Icon(Icons.edit, color: Colors.grey)),
+            ],
+          )
+        ]);
+  }
+
+  Widget tableHeader(text) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 15),
+      child: TextView(
+          title: text,
+          fontSize: 18.sp,
+          color: Colors.black,
+          fontWeight: FontWeight.w900),
+    );
   }
 
 /*  _buildPage(BuildContext context) {
@@ -247,7 +397,7 @@ class _JobListState extends State<JobListScreen> {
           SizedBox(height: 8.h),
           BaseWidget().jobHeading(jobData.postJob!.salary!),
           BaseWidget().heading(
-              jobData.postJob!.jobDepartment!,
+              jobData.postJob!.message!,
               jobData.postingDate != null ? jobData.postingDate! : "",
               jobData.postJob!.jobDescription!),
           SizedBox(height: 8.h),
@@ -519,7 +669,6 @@ class _JobListState extends State<JobListScreen> {
     orgProvider.getUsersByCompanyId(widget.organization.id!);
   }
   void _submitForm(JobListProvider model) async {
-
     EasyLoading.show(status: "Loading");
     var status = await model.createJob(
         widget.organization.companyName,
@@ -533,7 +682,7 @@ class _JobListState extends State<JobListScreen> {
         jobDescController.text,
         "Jobs",
         jobTypeController.text,
-        jobDescController.text,
+        jobTitleController.text,
         jobDepartmentController.text,
         0,
         0,
@@ -544,6 +693,7 @@ class _JobListState extends State<JobListScreen> {
     } else {
       showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
+    Navigator.of(context).pop();
   }
 
   Widget _buildTextField(
@@ -559,6 +709,7 @@ class _JobListState extends State<JobListScreen> {
               color: Color(0xff1B1B1B),
               fontSize: 15.sp,
               fontWeight: FontWeight.w300,
+              overflow: TextOverflow.ellipsis
             ),
           ),
         ),
@@ -566,7 +717,7 @@ class _JobListState extends State<JobListScreen> {
           height: 10.h,
         ),
         SizedBox(
-          height: 52.h,
+          height: label=='Job Description'?75.h:52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(

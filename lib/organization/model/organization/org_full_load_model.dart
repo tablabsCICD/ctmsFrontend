@@ -1,148 +1,181 @@
+class FullLoadModel {
+  String? message;
+  List<OrgFullLoadModel>? data;
+  bool? success;
+
+  FullLoadModel({this.message, this.data, this.success});
+
+  FullLoadModel.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <OrgFullLoadModel>[];
+      json['data'].forEach((v) {
+        data!.add(new OrgFullLoadModel.fromJson(v));
+      });
+    }
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    data['success'] = this.success;
+    return data;
+  }
+}
+
 class OrgFullLoadModel {
   int? id;
-  int? userId;
-  String? type;
-  String? postingTime;
-  String? companyName;
-  String? nameOfPerson;
-  String? companyRating;
-  String? content;
-  String? topicName;
-  String? tableName;
-  String? companyLogo;
-  int? partLoadOrNot;
-  int? reminderUserName;
-  String? sharableLink;
-  String? deviceId;
-  double? ratings;
-  int? mobileNumber;
+  String? fullLoadChoice;
+  String? transporterOrCustomerName;
+  int? contactNumber;
+  String? emailId;
   String? source;
   String? destination;
-  String? mainTag;
-  int? privatePost;
-  String? makerName;
-  String? modelName;
-  String? mfgYear;
-  String? estPrice;
-  int? dnd;
+  String? typeOfCargo;
+  String? otherDetails;
   String? vehicleSize;
-  String? association;
-  int? isPaid;
-  String? website;
-  String? alterativeNumber;
-  String? companyDetailsName;
-  String? isVerifiedByCompany;
+  String? loadWeight;
+  String? instructions;
+  int? partLoad;
+  int? date;
+  String? os;
+  String? loggedUserName;
+  int? loggedTime;
+  int? privatePost;
+  int? dnd;
   String? typeOfPayment;
+  String? image;
+  String? tableName;
+  String? mainTag;
+  String? postingTime;
+  String? type;
+  String? topicName;
+  int? rating;
+  List<int>? listOfUserIds;
+  List<String>? images;
+  String? material;
+  String? expireDate;
+  String? transporterType;
 
   OrgFullLoadModel(
       {this.id,
-        this.userId,
-        this.type,
-        this.postingTime,
-        this.companyName,
-        this.nameOfPerson,
-        this.companyRating,
-        this.content,
-        this.topicName,
-        this.tableName,
-        this.companyLogo,
-        this.partLoadOrNot,
-        this.reminderUserName,
-        this.sharableLink,
-        this.deviceId,
-        this.ratings,
-        this.mobileNumber,
+        this.fullLoadChoice,
+        this.transporterOrCustomerName,
+        this.contactNumber,
+        this.emailId,
         this.source,
         this.destination,
-        this.mainTag,
-        this.privatePost,
-        this.makerName,
-        this.modelName,
-        this.mfgYear,
-        this.estPrice,
-        this.dnd,
+        this.typeOfCargo,
+        this.otherDetails,
         this.vehicleSize,
-        this.association,
-        this.isPaid,
-        this.website,
-        this.alterativeNumber,
-        this.companyDetailsName,
-        this.isVerifiedByCompany,
-        this.typeOfPayment});
+        this.loadWeight,
+        this.instructions,
+        this.partLoad,
+        this.date,
+        this.os,
+        this.loggedUserName,
+        this.loggedTime,
+        this.privatePost,
+        this.dnd,
+        this.typeOfPayment,
+        this.image,
+        this.tableName,
+        this.mainTag,
+        this.postingTime,
+        this.type,
+        this.topicName,
+        this.rating,
+        this.listOfUserIds,
+        this.images,
+        this.material,
+        this.expireDate,
+        this.transporterType});
 
   OrgFullLoadModel.fromJson(Map<String, dynamic> json) {
-    id = json['id']??0;
-    userId = json['userId']??0;
-    type = json['type']??"";
-    postingTime = json['postingTime']??"";
-    companyName = json['companyName']??"";
-    nameOfPerson = json['nameOfPerson']??"";
-    companyRating = json['companyRating']??"";
-    content = json['content']??"";
-    topicName = json['topicName']??"";
-    tableName = json['tableName']??"";
-    companyLogo = json['companyLogo']??"";
-    partLoadOrNot = json['partLoadOrNot']??0;
-    reminderUserName = json['reminderUserName']??0;
-    sharableLink = json['sharableLink']??"";
-    deviceId = json['deviceId']??"";
-    ratings = json['ratings']??0.0;
-    mobileNumber = json['mobileNumber']??0;
-    source = json['source']??"";
-    destination = json['destination']??"";
-    mainTag = json['mainTag']??"";
-    privatePost = json['privatePost']??0;
-    makerName = json['makerName']??"";
-    modelName = json['modelName']??"";
-    mfgYear = json['mfgYear']??"";
-    estPrice = json['estPrice']??"";
-    dnd = json['dnd']??0;
-    vehicleSize = json['vehicleSize']??"";
-    association = json['association']??"";
-    isPaid = json['isPaid']??0;
-    website = json['website']??"";
-    alterativeNumber = json['alterativeNumber']??"";
-    companyDetailsName = json['companyDetailsName']??"";
-    isVerifiedByCompany = json['isVerifiedByCompany']??"";
-    typeOfPayment = json['typeOfPayment']??"";
+    id = json['id'];
+    fullLoadChoice = json['fullLoadChoice'];
+    transporterOrCustomerName = json['transporterOrCustomerName'];
+    contactNumber = json['contactNumber'];
+    emailId = json['emailId'];
+    source = json['source'];
+    destination = json['destination'];
+    typeOfCargo = json['typeOfCargo'];
+    otherDetails = json['otherDetails'];
+    vehicleSize = json['vehicleSize'];
+    loadWeight = json['loadWeight'];
+    instructions = json['instructions'];
+    partLoad = json['partLoad'];
+    date = json['date'];
+    os = json['os'];
+    loggedUserName = json['loggedUserName'];
+    loggedTime = json['loggedTime'];
+    privatePost = json['privatePost'];
+    dnd = json['dnd'];
+    typeOfPayment = json['typeOfPayment'];
+    image = json['image'];
+    tableName = json['tableName'];
+    mainTag = json['mainTag'];
+    postingTime = json['postingTime'];
+    type = json['type'];
+    topicName = json['topicName'];
+    rating = json['rating'];
+    if (json['listOfUserIds'] != null) {
+      listOfUserIds = <int>[];
+      json['listOfUserIds'].forEach((v) {
+        listOfUserIds!.add((v));
+      });
+    }
+    if (json['images'] != null) {
+      images = <String>[];
+      json['images'].forEach((v) {
+        images!.add((v));
+      });
+    }
+    material = json['material']??'';
+    expireDate = json['expireDate']??'';
+    transporterType = json['transporterType']??'';
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['userId'] = this.userId;
-    data['type'] = this.type;
-    data['postingTime'] = this.postingTime;
-    data['companyName'] = this.companyName;
-    data['nameOfPerson'] = this.nameOfPerson;
-    data['companyRating'] = this.companyRating;
-    data['content'] = this.content;
-    data['topicName'] = this.topicName;
-    data['tableName'] = this.tableName;
-    data['companyLogo'] = this.companyLogo;
-    data['partLoadOrNot'] = this.partLoadOrNot;
-    data['reminderUserName'] = this.reminderUserName;
-    data['sharableLink'] = this.sharableLink;
-    data['deviceId'] = this.deviceId;
-    data['ratings'] = this.ratings;
-    data['mobileNumber'] = this.mobileNumber;
+    data['fullLoadChoice'] = this.fullLoadChoice;
+    data['transporterOrCustomerName'] = this.transporterOrCustomerName;
+    data['contactNumber'] = this.contactNumber;
+    data['emailId'] = this.emailId;
     data['source'] = this.source;
     data['destination'] = this.destination;
-    data['mainTag'] = this.mainTag;
-    data['privatePost'] = this.privatePost;
-    data['makerName'] = this.makerName;
-    data['modelName'] = this.modelName;
-    data['mfgYear'] = this.mfgYear;
-    data['estPrice'] = this.estPrice;
-    data['dnd'] = this.dnd;
+    data['typeOfCargo'] = this.typeOfCargo;
+    data['otherDetails'] = this.otherDetails;
     data['vehicleSize'] = this.vehicleSize;
-    data['association'] = this.association;
-    data['isPaid'] = this.isPaid;
-    data['website'] = this.website;
-    data['alterativeNumber'] = this.alterativeNumber;
-    data['companyDetailsName'] = this.companyDetailsName;
-    data['isVerifiedByCompany'] = this.isVerifiedByCompany;
+    data['loadWeight'] = this.loadWeight;
+    data['instructions'] = this.instructions;
+    data['partLoad'] = this.partLoad;
+    data['date'] = this.date;
+    data['os'] = this.os;
+    data['loggedUserName'] = this.loggedUserName;
+    data['loggedTime'] = this.loggedTime;
+    data['privatePost'] = this.privatePost;
+    data['dnd'] = this.dnd;
     data['typeOfPayment'] = this.typeOfPayment;
+    data['image'] = this.image;
+    data['tableName'] = this.tableName;
+    data['mainTag'] = this.mainTag;
+    data['postingTime'] = this.postingTime;
+    data['type'] = this.type;
+    data['topicName'] = this.topicName;
+    data['rating'] = this.rating;
+    data['listOfUserIds'] = this.listOfUserIds;
+    if (this.images != null) {
+      data['images'] = this.images!.map((v) => v).toList();
+    }
+    data['material'] = this.material;
+    data['expireDate'] = this.expireDate;
+    data['transporterType'] = this.transporterType;
     return data;
   }
 }

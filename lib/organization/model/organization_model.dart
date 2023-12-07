@@ -51,6 +51,7 @@ class Organization {
   Organization({
     required this.id,
     required this.companyName,
+    required this.companyLogo,
     required this.companyAddress,
     required this.isVerified,
     required this.website,
@@ -85,6 +86,7 @@ class Organization {
   late final int? rating;
   late final int? numberOfRatings;
   late final String? city;
+  late final String? companyLogo;
   late final String? state;
 
   Organization.fromJson(Map<String, dynamic> json){
@@ -106,6 +108,7 @@ class Organization {
     numberOfRatings = json['numberOfRatings']??0;
     city = json['city']??'';
     state = json['state']??'';
+    companyLogo = json['companyLogo']??'';
   }
 
   Map<String, dynamic> toJson() {
@@ -128,6 +131,7 @@ class Organization {
     _data['numberOfRatings'] = numberOfRatings;
     _data['city'] = city;
     _data['state'] = state;
+    _data['companyLogo'] = companyLogo;
     return _data;
   }
 }

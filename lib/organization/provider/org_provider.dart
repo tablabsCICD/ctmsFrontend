@@ -235,7 +235,7 @@ class OrgProvider extends ChangeNotifier {
       orgAllFullLoadList.forEach((element) {
         if (element.source!.contains(query) ||
             element.destination!.contains(query) ||
-            element.mobileNumber!.toString().contains(query)) {
+            element.contactNumber!.toString().contains(query)) {
           orgFullLoadList.add(element);
         }
       });
@@ -306,17 +306,7 @@ class OrgProvider extends ChangeNotifier {
 
   String selectedTab = "Buy Vehicle";
 
-  getFinalBuySellList(String title) {
-    selectedTab = title;
-    finalBuySellList.clear();
-    if(selectedTab=="Buy Vehicle"){
-      finalBuySellList.addAll(orgBuyList);
-    }else{
-      finalBuySellList.addAll(orgSellList);
-    }
-    print(selectedTab +"List"+finalBuySellList.length.toString());
-    notifyListeners();
-  }
+
 
 
   getStaticData(int id) async {
@@ -332,7 +322,7 @@ class OrgProvider extends ChangeNotifier {
     var type = OrgStaticDataModel.fromJson(response);
     print(response);
     userCount = type.data!.totalCompanyRegister!;
-    fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!+22;
+    fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!;
     bidCont = type.data!.totalLoggedUserNameInBiding!;
     buySellPostCount = type.data!.totalLoggedUserNameInBuySell!;
     notifyListeners();
@@ -340,7 +330,7 @@ class OrgProvider extends ChangeNotifier {
 
   getOrgBidingList(int id) async {
     isLoading = true;
-    notifyListeners();
+   // notifyListeners();
    /* String myUrl = "https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";*/
    // String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
     String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
@@ -351,9 +341,7 @@ class OrgProvider extends ChangeNotifier {
     if (req.statusCode == 200) {
       final response = json.decode(req.body);
       OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
-      orgBigingList.addAll(orgQuoteModel.content!);
-     /* orgBigingList = List<OrgBidingModel>.from(
-          response.map((json) => OrgBidingModel.fromJson(json)));*/
+        orgBigingList.addAll(orgQuoteModel.content!);
       print('Low to high in biding amount: $orgBigingList');
       bidCont = orgBigingList.length;
       orgBigingList.forEach((element) {
@@ -396,20 +384,32 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  getFinalBuySellList(String title) {
+    selectedTab = title;
+    finalBuySellList.clear();
+    if(selectedTab=="Buy Vehicle"){
+      finalBuySellList.addAll(orgBuyList);
+    }else{
+      finalBuySellList.addAll(orgSellList);
+    }
+    print(selectedTab +"List"+finalBuySellList.length.toString());
+    notifyListeners();
+  }
+
   getOrgFullLoadList(int id) async {
     isLoading = true;
     notifyListeners();
-    String myUrl = /*AppConstants.BASE_URL+*/
-        "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
-    // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}&page=0&size=10&sortDir=desc";
-
+    //String myUrl = "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
+     String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}";
     print("Get All Load Truck Data - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
     print(response);
     if (req.statusCode == 200) {
-      orgFullLoadList = List<OrgFullLoadModel>.from(
-          response.map((json) => OrgFullLoadModel.fromJson(json)));
+      FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+      orgFullLoadList = fullLoadModel.data!;
+     /* orgFullLoadList = List<OrgFullLoadModel>.from(
+          response.map((json) => OrgFullLoadModel.fromJson(json)));*/
       orgAllFullLoadList.clear();
       orgAllFullLoadList.addAll(orgFullLoadList);
       allPostCount = orgAllFullLoadList.length;

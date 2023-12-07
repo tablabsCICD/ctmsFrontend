@@ -83,8 +83,6 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                               MaterialPageRoute(
                                   builder: (builder) =>
                                       CompanyDashboard(organization[0])));
-                          /* {id: 26, companyName: Skillup, companyAddress: Pune, isVerified: 0, website: www.skillup.com, landlineNumber: 020336677, companyMobileNumber: 8379939930, pointOfContact: Navale, gstNumber: 123456789, gstNumber2: 123456789, typeOfRegistration: Private Ltd., panCardNumber: CHI5789H, tanCardNumber: CHI5789H, officialEmailId: skillup@gmail.com, rating: 5, numberOfRatings: 5, city: Pune, state: Maharastra, otp: }, {id: 41, companyName: abcd, companyAddress: pune, isVerified: 0, website: www.abcd.com, landlineNumber: 123456, companyMobileNumber: 8379939930, pointOfContact: swati, gstNumber: 12345, gstNumber2: "https://s3.ap-south-1.amazonaws.com//tkd-profile/profileImages//1675949056174-aadhar.jpg", typeOfRegistration: One Person Company, panCardNumber: 123456, tanCardNumber: 123456, officialEmailId: swatibahir@gmail.com, rating: 5, numberOfRatings: 1, city: Pune, state: Maharastra, otp: null}*/
-                          //  Navigator.pushNamed(context, AppRoutes.org);
                         },
                           child: empCounts(
                               "0", "Monitoring", Images.monitoring, Color(
@@ -98,7 +96,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         InkWell(onTap: () async {
                          await getEmpToken(loginDeatils!.data!.id!);
                           final url = Uri.parse(
-                              "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
+                              ApiConstant.HRMS_URL+"?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                           debugPrint("HRMS Url : "+url.toString());
                           if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
@@ -121,8 +119,8 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         InkWell(
                           onTap: () async {
                           await  getEmpToken(loginDeatils!.data!.id!);
-                            final url = Uri.parse(
-                                "http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
+                            final url = Uri.parse(ApiConstant.BILTY_URL+
+                                "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                             debugPrint("Bilty Url : "+url.toString());
                             if (!await launchUrl(url,)) {
                               throw Exception('Could not launch $url');
@@ -231,6 +229,6 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
   LoginDeatils? loginDeatils;
   Future<void> getLoginDetail() async {
     loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
-    getEmpToken(loginDeatils!.data!.id!);
+   // getEmpToken(loginDeatils!.data!.id!);
   }
 }

@@ -12,6 +12,7 @@ import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/lead_activity.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/list_meeting.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/refresh.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 import '../../common/app_colors.dart';
 import '../../model/response/login_data.dart';
@@ -45,18 +47,20 @@ class LeadInfo extends StatefulWidget {
   }
 }
 
-class _LeadInfo extends State<LeadInfo> {
+class _LeadInfo extends State<LeadInfo> implements AbRefresh{
   bool isActivity = true;
   bool isReminder = false;
   bool isCreateMail = false;
   bool isMeeting = false;
 
+  LeadActivity? leadActivity;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     callGetApi();
     _potantialController.text = "0";
+
   }
 
   @override
@@ -792,6 +796,7 @@ class _LeadInfo extends State<LeadInfo> {
           SizedBox(height: 16.h),
           InkWell(
             onTap: (){
+            //  leadActivity!.refresh();
               if(selectDate==''){
                 showCustomToast(context, "Please select next followup date", Icons.clear, Colors.red);
               }else if(selectedEmp==0){
@@ -800,6 +805,10 @@ class _LeadInfo extends State<LeadInfo> {
                 _submitForm(stateSetter);
               }
               stateSetter(() {
+                isActivity=false;
+              });
+              stateSetter(() {
+                isActivity=true;
               });
             },
             child: Container(
@@ -1105,5 +1114,13 @@ class _LeadInfo extends State<LeadInfo> {
       showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
     EasyLoading.dismiss();
+  }
+
+  @override
+  void refreshPage() {
+    // TODO: implement refreshPage
+    setState(() {
+
+    });
   }
 }

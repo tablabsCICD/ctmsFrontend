@@ -14,14 +14,14 @@ class JobListProvider extends ChangeNotifier {
   List<JobData> listJobs = [];
 
   JobListProvider() : super() {
-    getAllJobs();
+    getAllJobs(1);
     pagenation();
   }
 
-  getAllJobs() async {
+  getAllJobs(int id) async {
     //ApiResponse apiResponse=await ApiHelper().apiWithoutDecodeGet(ApiConstant.BASE_URL+'postJob?page=$selectedPage');
-    String myUrl = /*AppConstants.JOBS_ALL_CARD +*/
-        'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/postJob';
+   // String myUrl = 'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/postJob';
+   String myUrl = AppConstants.BASE_URL +'GetPostJobBycompanyId?company_id=${id}';
     print("Get All Jobs : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     var response = json.decode(req.body);
@@ -49,7 +49,7 @@ class JobListProvider extends ChangeNotifier {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        getAllJobs();
+        getAllJobs(1);
       }
     });
   }

@@ -81,22 +81,20 @@ class _AllUsersListState extends State<AllUsersList> {
                   Row(
                     children: [
                       Container(
-                        height: 60,
-                        child: Padding(
-                          padding: ResponsiveWidget.isDesktop(context)
-                              ? EdgeInsets.symmetric(horizontal: 35, vertical: 10)
-                              : EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                          child: Row(
-                            children: [
-                              getCircularContainer(
-                                  "All Users", (selectedTab == "All Users"), 0),
-                              getCircularContainer(
-                                  "Approved", (selectedTab == "Approved"), 1),
-                              getCircularContainer(
-                                  "Rejected", (selectedTab == "Rejected"), 2),
-                              //  getCircularContainer("Pending",(selectedTab == "Pending"),3),
-                            ],
-                          ),
+                        height: 40,
+                        margin: EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            getCircularContainer(
+                                "All Users", (selectedTab == "All Users"), 0),
+                            SizedBox(width: 10.w,),
+                            getCircularContainer(
+                                "Approved", (selectedTab == "Approved"), 1),
+                            SizedBox(width: 10.w,),
+                            getCircularContainer(
+                                "Rejected", (selectedTab == "Rejected"), 2),
+                            //  getCircularContainer("Pending",(selectedTab == "Pending"),3),
+                          ],
                         ),
                       ),
                       Spacer(),
@@ -567,31 +565,20 @@ class _AllUsersListState extends State<AllUsersList> {
         child: Container(
           width: 200.w,
           height: 150.h,
-          child: Stack(
-            children: <Widget>[
-              SvgPicture.asset(
-                Images.red_arrow,
-                alignment: Alignment.center,
-                width: 250.w,
-                height: 100.h,
-                color: isSelected ? Color(0xffC3262C) : Colors.white,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: isSelected ? Color(0xffC3262C) : Colors.white,
+          ),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontSize: 20.sp,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w500,
               ),
-
-              Container(
-                height: 100.h,
-                child: Center(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black,
-                      fontSize: 20.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
