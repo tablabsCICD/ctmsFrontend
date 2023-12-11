@@ -386,11 +386,7 @@ class _LeadDashboard extends State<CustomerList> {
   }
 
   leadList() {
-    return isLoad
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Container(
+    return Container(
             /*decoration: BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(20)),*/
             padding: EdgeInsets.all(20),
@@ -438,14 +434,25 @@ class _LeadDashboard extends State<CustomerList> {
                 SizedBox(
                   height: 25.h,
                 ),
-                Container(
+                isLoad
+                    ? Container(
+                  margin: EdgeInsets.only(left: 15.w,right: 15.w),
+                  height: MediaQuery.of(context).size.height - 400,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+                    :  Container(
                   decoration: BoxDecoration(
                       color: AppColor.white,
                       borderRadius: BorderRadius.circular(10)),
                   padding: EdgeInsets.all(20),
                   child: finalCustomerList.isEmpty
-                      ? Expanded(
-                      child: Container(
+                      ? Container(
                           height:
                           MediaQuery.of(context).size.height - 400,
                           child: Center(
@@ -453,7 +460,7 @@ class _LeadDashboard extends State<CustomerList> {
                                   title: "No Record Found",
                                   fontSize: 16.sp,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.w900))))
+                                  fontWeight: FontWeight.w900)))
                       :  Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [

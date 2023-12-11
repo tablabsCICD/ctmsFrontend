@@ -28,19 +28,23 @@ class LeadActivity extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _LeadActivity();
+    return LeadActivityState();
   }
 }
 
-class _LeadActivity extends State<LeadActivity> implements AbRefresh{
+class LeadActivityState extends State<LeadActivity> implements AbRefresh{
   List<LeadUpdateData> listLeadActivityData = [];
+
+  static AbRefresh? abRefresh;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    abRefresh = this;
     callGetApi();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -309,10 +313,7 @@ class _LeadActivity extends State<LeadActivity> implements AbRefresh{
               if (!await launchUrl(url,)) {
                 throw Exception('Could not launch $url');
               }
-              /*await showDialog(
-              context: context,
-              builder: (_) => ImageDialog(
-                  listLeadActivityData[index].document!));*/
+
             },
             child: Text(
               "View Document",
@@ -342,6 +343,7 @@ class _LeadActivity extends State<LeadActivity> implements AbRefresh{
             'Authorization': 'Bearer ${token}',
           }));
       print('the activity is ${response.data}');
+      listLeadActivityData.clear();
       if (response.statusCode == 200) {
         LeadActivityModel leadActivity =
             LeadActivityModel.fromJson(jsonDecode(response.data));
@@ -362,8 +364,7 @@ class _LeadActivity extends State<LeadActivity> implements AbRefresh{
   @override
   void refreshPage() {
     // TODO: implement refreshPage
-    setState(() {
-      debugPrint("In page refresh");
-    });
+    debugPrint("In page refresh");
+    callGetApi();
   }
 }

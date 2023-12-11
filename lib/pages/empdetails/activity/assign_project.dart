@@ -45,7 +45,6 @@ class _AssignProject extends State<AssignProject>{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 220.w,
             child: Text(
               'All Lead Assigned',
               style: TextStyle(

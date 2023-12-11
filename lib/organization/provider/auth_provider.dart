@@ -391,6 +391,7 @@ class  AuthProvider extends ChangeNotifier{
     Uri uri = Uri.parse(myUrl);
     Map<String, dynamic> data = {
       "aadharCard": aadharCard ?? userDetailList[0].aadharCard ?? '',
+      "aadharCardForVerification": aadharCard ?? userDetailList[0].aadharCard ?? '',
       "alternativeNumber": alternativeNumber ?? userDetailList[0].alternativeNumber,
       "city": city ?? userDetailList[0].city,
       "companyAddress": companyAddress ?? userDetailList[0].companyAddress,

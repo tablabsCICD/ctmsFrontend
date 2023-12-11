@@ -12,7 +12,10 @@ import 'package:flutter_hr_management/organization/company/company_menu/company_
 import 'package:flutter_hr_management/organization/company/jobs/job_list_screen.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/organization/util/app_constants.dart';
+import 'package:flutter_hr_management/pages/orgnaization_page/home_orgnization.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -49,8 +52,27 @@ class _CompanySideBarState extends State<CompanySideBar> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 47.h,
+            InkWell(
+              onTap: (){
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 0.h),
+                height: 47.h,
+                width: 100.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: ThemeColor.baground,
+                  borderRadius: BorderRadius.circular(15.r)
+                ),
+                child: Text("Go Back",style:TextStyle(
+                  fontSize: 16.sp,
+                  fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w700,
+                ),),
+              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),

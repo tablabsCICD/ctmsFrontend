@@ -186,19 +186,19 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                       ),
                                     ),
                                   ),
-                                  Spacer(),
+                                  /*Spacer(),
                                   Row(
                                     children: [
                                       filterIcon(model),
                                       SizedBox(
                                         width: 27.w,
                                       ),
-                                     /* SvgPicture.asset('assets/more_icon.svg'),
+                                     *//* SvgPicture.asset('assets/more_icon.svg'),
                                       SizedBox(
                                         width: 27.w,
-                                      ),*/
+                                      ),*//*
                                     ],
-                                  ),
+                                  ),*/
                                 ],
                               )
                           ),
@@ -221,7 +221,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                   ],
                 ),
                 ResponsiveWidget.isDesktop(context)?Positioned(
-                  top: 115.h,
+                  top: 105.h,
                   left: 265.w,
                   child: InkWell(
                     onTap: () {
@@ -229,8 +229,8 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                     },
                     child: SvgPicture.asset(
                       "assets/back_button.svg",
-                      height: 76.h,
-                      width: 76.w,
+                      height: 80.h,
+                      width: 80.w,
                     ),
                   ),
                 ):SizedBox.shrink(),

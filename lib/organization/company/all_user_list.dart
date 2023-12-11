@@ -78,67 +78,70 @@ class _AllUsersListState extends State<AllUsersList> {
       body: Consumer<OrgProvider>(
           builder: (context, model, child) => Column(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 40,
-                        margin: EdgeInsets.all(20),
-                        child: Row(
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20.h,vertical: 10.h),
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 40,
+                          margin: EdgeInsets.symmetric(horizontal: 33.h,vertical: 20.h),
+                          child: Row(
+                            children: [
+                              getCircularContainer(
+                                  "All Users", (selectedTab == "All Users"), 0),
+                              SizedBox(width: 10.w,),
+                              getCircularContainer(
+                                  "Approved", (selectedTab == "Approved"), 1),
+                              SizedBox(width: 10.w,),
+                              getCircularContainer(
+                                  "Rejected", (selectedTab == "Rejected"), 2),
+                              //  getCircularContainer("Pending",(selectedTab == "Pending"),3),
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        Row(
                           children: [
-                            getCircularContainer(
-                                "All Users", (selectedTab == "All Users"), 0),
-                            SizedBox(width: 10.w,),
-                            getCircularContainer(
-                                "Approved", (selectedTab == "Approved"), 1),
-                            SizedBox(width: 10.w,),
-                            getCircularContainer(
-                                "Rejected", (selectedTab == "Rejected"), 2),
-                            //  getCircularContainer("Pending",(selectedTab == "Pending"),3),
+                            filterIcon(model),
+                            SizedBox(
+                              width: 27.w,
+                            ),
+                            SizedBox(
+                              height: 58.h,
+                              width: 180.w,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    _showAlertDialog();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: ThemeColor.theme_blue,
+                                      onPrimary: Colors.white),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_circle,
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 6.w,
+                                      ),
+                                      TextView(
+                                        title: "Add Employee",
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            SizedBox(
+                              width: 27.w,
+                            ),
                           ],
                         ),
-                      ),
-                      Spacer(),
-                      Row(
-                        children: [
-                          filterIcon(model),
-                          SizedBox(
-                            width: 27.w,
-                          ),
-                          SizedBox(
-                            height: 58.h,
-                            width: 180.w,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  _showAlertDialog();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    primary: ThemeColor.theme_blue,
-                                    onPrimary: Colors.white),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_circle,
-                                      size: 18,
-                                    ),
-                                    SizedBox(
-                                      width: 6.w,
-                                    ),
-                                    TextView(
-                                      title: "Add Employee",
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white,
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          SizedBox(
-                            width: 27.w,
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   model.userList.isEmpty && model.isLoading == false
                       ? Expanded(
@@ -152,7 +155,7 @@ class _AllUsersListState extends State<AllUsersList> {
                       : Expanded(
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 39.w, vertical: 31.h),
+                                horizontal: 33.w, vertical: 31.h),
                             child: StaggeredGridView.countBuilder(
                               physics: ScrollPhysics(),
                               crossAxisCount:
@@ -240,8 +243,162 @@ class _AllUsersListState extends State<AllUsersList> {
                                           getUserDetails('Address','${model.userList[index].city}, ${model.userList[index].state}'),
                                           getUserDetails('Company Name','${model.userList[index].companyName}'),
                                           getUserDetails('Company Address','${model.userList[index].companyAddress}'),
-                                          getUserDetails('Status','${model.userList[index].state}'),
+                                          SizedBox(height: 10.h,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              model.userList[index].isUserVerifiedByCompany==0?Padding(
+                                                padding: EdgeInsets.all(16.0),
+                                                child: OutlinedButton(
+                                                  style: ButtonStyle(
+                                                    foregroundColor:
+                                                    MaterialStateProperty.resolveWith<Color?>(
+                                                          (Set<MaterialState> states) {
+                                                        if (states.contains(MaterialState.hovered))
+                                                          return ThemeColor
+                                                              .white; //<-- SEE HERE
+                                                        return ThemeColor
+                                                            .white; // Defer to the widget's default.
+                                                      },
+                                                    ),
+                                                    backgroundColor:
+                                                    MaterialStateProperty.resolveWith<Color?>(
+                                                          (Set<MaterialState> states) {
+                                                        if (states.contains(MaterialState.hovered))
+                                                          return ThemeColor.theme_blue; //<-- SEE HERE
+                                                        return ThemeColor
+                                                            .theme_blue; // Defer to the widget's default.
+                                                      },
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                      await authProvider.updateUser(
+                                                        aadharCard: model.userList[index].aadharCard,
+                                                        alternativeNumber: model.userList[index].alternativeNumber,
+                                                        city: model.userList[index].city,
+                                                        companyId: model.userList[index].companyId,
+                                                        companyAddress: model.userList[index].companyAddress,
+                                                        companyLogo: model.userList[index].companyLogo,
+                                                        companyName: model.userList[index].companyName,
+                                                        country: model.userList[index].country,
+                                                        deviceId: model.userList[index].deviceId,
+                                                        emailId: model.userList[index].emailId,
+                                                        firstName: model.userList[index].firstName,
+                                                        id: model.userList[index].id,
+                                                        idOfMainBranch: model.userList[index].idOfMainBranch,
+                                                        isPaid: model.userList[index].isPaid,
+                                                        isUserVerifiedByCompany: 1,
+                                                        landlineNumber: model.userList[index].landlineNumber,
+                                                        lastName: model.userList[index].lastName,
+                                                        loggedTime: model.userList[index].loggedTime.toString(),
+                                                        loggedUserName: model.userList[index].loggedUserName,
+                                                        mainBranch: model.userList[index].mainBranch,
+                                                        mobileNumber: model.userList[index].mobileNumber,
+                                                        numberOfTimesRating: model.userList[index].numberOfTimesRating,
+                                                        os: model.userList[index].os,
+                                                        otp: model.userList[index].otp,
+                                                        paidStartDate: model.userList[index].paidStartDate,
+                                                        password: model.userList[index].password,
+                                                        preferredRouresEntered: model.userList[index].preferredRouresEntered,
+                                                        profilePicture: model.userList[index].profilePicture,
+                                                        rating: model.userList[index].ratings,
+                                                        state: model.userList[index].state,
+                                                        transporterOrAgent: model.userList[index].transporterOrAgent,
+                                                        userName: model.userList[index].userName,
+                                                        validTill: model.userList[index].validTill,
+                                                        website: model.userList[index].website,
+                                                        verified: model.userList[index].verified,
+                                                      );
+                                                      model.selectedTab="All Users";
+                                                      model.getUsersByCompanyId(1);
+                                                  },
+                                                  child: Text('Approve',
+                                                      style:TextStyle(
+                                                        fontSize: 12.sp,
+                                                        fontFamily:
+                                                        GoogleFonts.poppins().fontFamily,
+                                                        fontWeight: FontWeight.w400,
+                                                      ),
+                                                      ),
+                                                ),
+                                              ):
 
+                                              Padding(padding: EdgeInsets.all(16.0),
+                                                child: OutlinedButton(
+                                                  style: ButtonStyle(
+                                                    foregroundColor:
+                                                    MaterialStateProperty.resolveWith<Color?>(
+                                                          (Set<MaterialState> states) {
+                                                        if (states.contains(MaterialState.hovered))
+                                                          return ThemeColor
+                                                              .white; //<-- SEE HERE
+                                                        return ThemeColor
+                                                            .white; // Defer to the widget's default.
+                                                      },
+                                                    ),
+                                                    backgroundColor:
+                                                    MaterialStateProperty.resolveWith<Color?>(
+                                                          (Set<MaterialState> states) {
+                                                        if (states.contains(MaterialState.hovered))
+                                                          return ThemeColor.red; //<-- SEE HERE
+                                                        return ThemeColor
+                                                            .red; // Defer to the widget's default.
+                                                      },
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    await authProvider.updateUser(
+                                                      aadharCard: model.userList[index].aadharCard,
+                                                      alternativeNumber: model.userList[index].alternativeNumber,
+                                                      city: model.userList[index].city,
+                                                      companyId: model.userList[index].companyId,
+                                                      companyAddress: model.userList[index].companyAddress,
+                                                      companyLogo: model.userList[index].companyLogo,
+                                                      companyName: model.userList[index].companyName,
+                                                      country: model.userList[index].country,
+                                                      deviceId: model.userList[index].deviceId,
+                                                      emailId: model.userList[index].emailId,
+                                                      firstName: model.userList[index].firstName,
+                                                      id: model.userList[index].id,
+                                                      idOfMainBranch: model.userList[index].idOfMainBranch,
+                                                      isPaid: model.userList[index].isPaid,
+                                                      isUserVerifiedByCompany: 0,
+                                                      landlineNumber: model.userList[index].landlineNumber,
+                                                      lastName: model.userList[index].lastName,
+                                                      loggedTime: model.userList[index].loggedTime.toString(),
+                                                      loggedUserName: model.userList[index].loggedUserName,
+                                                      mainBranch: model.userList[index].mainBranch,
+                                                      mobileNumber: model.userList[index].mobileNumber,
+                                                      numberOfTimesRating: model.userList[index].numberOfTimesRating,
+                                                      os: model.userList[index].os,
+                                                      otp: model.userList[index].otp,
+                                                      paidStartDate: model.userList[index].paidStartDate,
+                                                      password: model.userList[index].password,
+                                                      preferredRouresEntered: model.userList[index].preferredRouresEntered,
+                                                      profilePicture: model.userList[index].profilePicture,
+                                                      rating: model.userList[index].ratings,
+                                                      state: model.userList[index].state,
+                                                      transporterOrAgent: model.userList[index].transporterOrAgent,
+                                                      userName: model.userList[index].userName,
+                                                      validTill: model.userList[index].validTill,
+                                                      website: model.userList[index].website,
+                                                      verified: model.userList[index].verified,
+                                                    );
+                                                    model.selectedTab="All Users";
+                                                    model.getUsersByCompanyId(1);
+                                                  },
+                                                  child: Text('Reject',
+                                                    style:TextStyle(
+                                                      fontSize: 12.sp,
+                                                      fontFamily:
+                                                      GoogleFonts.poppins().fontFamily,
+                                                      fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       )),
                                 );
@@ -307,7 +464,7 @@ class _AllUsersListState extends State<AllUsersList> {
       ) {
     return PopupMenuItem(
       child: Text(title, style: TextStyle(
-          fontSize: 16.sp,
+          fontSize: 14.sp,
           fontFamily: GoogleFonts.poppins().fontFamily,
           fontWeight: FontWeight.w500,
           color: Colors.black),),

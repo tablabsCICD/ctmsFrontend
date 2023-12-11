@@ -140,7 +140,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       SizedBox(
                         width: 27.w,
                       ),
-                      Builder(builder: (context) {
+                     /* Builder(builder: (context) {
                         return InkWell(
                           onTap: () {
                             showAlignedDialog(
@@ -176,37 +176,123 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       }),
                       SizedBox(
                         width: 27.w,
-                      ),
-                      Builder(builder: (context) {
-                        return InkWell(
-                          onTap: () {
-                            showAlignedDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return StatefulBuilder(builder:
-                                      (BuildContext context,
-                                          StateSetter setState) {
-                                    return _settingDialogBuilder(
-                                        context, setState);
-                                  });
-                                },
-                                followerAnchor: Alignment.topLeft,
-                                targetAnchor: Alignment.bottomLeft,
-                                barrierColor: Colors.transparent);
-                          },
-                          child: Container(
-                              width: 50.w,
-                              height: 50.h,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.settings,
-                                    color: Colors.black, size: 30.h),
+                      ),*/
+                      Container(
+                        width: 50.w,
+                        height: 50.h,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: ThemeColor.baground),
+                        child: PopupMenuButton(
+                          position: PopupMenuPosition.over,
+                          icon: Icon(Icons.settings,
+                              color: Colors.black, size: 30.h),
+                          itemBuilder: (ctx) => [
+                            PopupMenuItem(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Notification",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                StatefulBuilder(
+                                  builder: (BuildContext context,
+                                      void Function(void Function()) setState) {
+                                    return Switch(
+                                      // This bool value toggles the switch.
+                                      value: notificationSwitchValue,
+                                      overlayColor: overlayColor,
+                                      trackColor: trackColor,
+                                      thumbColor:
+                                          const MaterialStatePropertyAll<Color>(
+                                              Colors.white),
+                                      onChanged: (bool value) {
+                                        print("switch value: ${value}");
+                                        setState(() {
+                                          notificationSwitchValue = value;
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            )),
+                            PopupMenuItem(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "RoundRobin",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontFamily:
+                                          GoogleFonts.poppins().fontFamily,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black),
+                                ),
+                                StatefulBuilder(
+                                  builder: (BuildContext context,
+                                      void Function(void Function()) setState) {
+                                    return Switch(
+                                      // This bool value toggles the switch.
+                                      value: rrSwitchValue,
+                                      overlayColor: overlayColor,
+                                      trackColor: trackColor,
+                                      thumbColor:
+                                          const MaterialStatePropertyAll<Color>(
+                                              Colors.white),
+                                      onChanged: (bool value) {
+                                        print("switch value: ${value}");
+                                        setState(() {
+                                          rrSwitchValue = value;
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            )),
+                            PopupMenuItem(
+                              child: Text(
+                                "Update Company Profile",
+                                style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontFamily:
+                                        GoogleFonts.poppins().fontFamily,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black),
                               ),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: ThemeColor.baground)),
-                        );
-                      }),
+                              onTap: () {
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible:
+                                      false, // user must tap button!
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      alignment: Alignment.centerRight,
+                                      backgroundColor: Colors.transparent,
+                                      insetAnimationDuration:
+                                          Duration(milliseconds: 200),
+                                      insetAnimationCurve: Curves.easeOutExpo,
+                                      child: StatefulBuilder(builder:
+                                          (BuildContext context,
+                                              StateSetter setState) {
+                                        return EditCompany(setState);
+                                      }),
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      ),
                       SizedBox(
                         width: 27.w,
                       ),
@@ -319,7 +405,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         child: Card(
           elevation: 7,
           margin: EdgeInsets.only(top: 35.h),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
           child: Container(
             height: 250.h,
             width: 220.w,
@@ -353,8 +440,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                           value: notificationSwitchValue,
                           overlayColor: overlayColor,
                           trackColor: trackColor,
-                          thumbColor:
-                              const MaterialStatePropertyAll<Color>(Colors.white),
+                          thumbColor: const MaterialStatePropertyAll<Color>(
+                              Colors.white),
                           onChanged: (bool value) {
                             print("switch value: ${value}");
                             stateSetter(() {
@@ -380,10 +467,11 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                             hoverColor: Colors.white,*/
                           overlayColor: overlayColor,
                           trackColor: trackColor,
-                          thumbColor:
-                              const MaterialStatePropertyAll<Color>(Colors.white),
+                          thumbColor: const MaterialStatePropertyAll<Color>(
+                              Colors.white),
                           onChanged: (bool value) {
                             print("switch value: ${value}");
+                            LocalSharePreferences.localSharePreferences.setBool("isRoundRobin", value);
                             stateSetter(() {
                               rrSwitchValue = value;
                             });
@@ -407,7 +495,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                     Duration(milliseconds: 200),
                                 insetAnimationCurve: Curves.easeOutExpo,
                                 child: StatefulBuilder(builder:
-                                    (BuildContext context, StateSetter setState) {
+                                    (BuildContext context,
+                                        StateSetter setState) {
                                   return EditCompany(setState);
                                 }),
                               );
@@ -500,6 +589,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             InkWell(
               onTap: () {
                 submitEditForm();
+                Navigator.of(context).pop();
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -560,16 +650,18 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     var para = jsonEncode(parameter);
     String myUrl = AppConstants.BASE_URL + 'CompanyDetails';
     print(myUrl);
-    var response = await dio.put(myUrl,
-        data: para,
-       );
+    var response = await dio.put(
+      myUrl,
+      data: para,
+    );
     print('the body ${response.data}');
+    EasyLoading.dismiss();
     if (response.statusCode == 200) {
       showCustomToast(context, "Profile updated", Icons.check, Colors.green);
     } else {
       showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
-    EasyLoading.dismiss();
+
   }
 
   String imgPath = '';

@@ -96,7 +96,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         InkWell(onTap: () async {
                          await getEmpToken(loginDeatils!.data!.id!);
                           final url = Uri.parse(
-                              ApiConstant.HRMS_URL+"?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
+                              ApiConstant.HRMS_URL+"${isAdmin?"/employee":"/leave"}?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=1");
                           debugPrint("HRMS Url : "+url.toString());
                           if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
@@ -226,9 +226,11 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
     }
   }
 
+  bool isAdmin = false;
   LoginDeatils? loginDeatils;
   Future<void> getLoginDetail() async {
     loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+    isAdmin = loginDeatils!.data!.isAdmin!;
    // getEmpToken(loginDeatils!.data!.id!);
   }
 }

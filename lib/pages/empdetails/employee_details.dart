@@ -262,9 +262,16 @@ class _EmpDashboard extends State<EmpDashboard> {
             child: Container(
                 margin: EdgeInsets.only(left: 30, right: 38),
                 child: isLoad
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
+                    ? Container(
+                  height: MediaQuery.of(context).size.height - 400,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                      child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                    )
                     : Container(
                         // height: 350,
                         decoration: BoxDecoration(
@@ -274,19 +281,18 @@ class _EmpDashboard extends State<EmpDashboard> {
                           child: Column(
                             children: [
                               finalEmData.isEmpty
-                                  ? Expanded(
-                                      child: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height -
-                                              600,
-                                          child: Center(
-                                              child: TextView(
-                                                  title: "No Record Found",
-                                                  fontSize: 16.sp,
-                                                  color: Colors.black,
-                                                  fontWeight:
-                                                      FontWeight.w900))))
+                                  ? Container(
+                                      height: MediaQuery.of(context)
+                                              .size
+                                              .height -
+                                          600,
+                                      child: Center(
+                                          child: TextView(
+                                              title: "No Record Found",
+                                              fontSize: 16.sp,
+                                              color: Colors.black,
+                                              fontWeight:
+                                                  FontWeight.w900)))
                                   : Table(
                                       defaultVerticalAlignment:
                                           TableCellVerticalAlignment.middle,

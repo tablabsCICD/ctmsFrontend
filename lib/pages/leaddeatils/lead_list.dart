@@ -75,6 +75,7 @@ class _LeadDashboard extends State<LeadDashboard> {
   late EmpData empData = EmpData();
   int selectedEmp = 0;
   int editselectedEmp = 0;
+  bool isRR = false;
 
   @override
   void initState() {
@@ -128,7 +129,8 @@ class _LeadDashboard extends State<LeadDashboard> {
                       height: 58.h,
                       width: 180.w,
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async{
+                            isRR = await LocalSharePreferences.localSharePreferences.getBool("isRoundRobin");
                             _showAlertDialog();
                           },
                           style: ElevatedButton.styleFrom(
@@ -320,7 +322,7 @@ class _LeadDashboard extends State<LeadDashboard> {
 
   String? uploadedDocument;
 
-  addLead(StateSetter stateSetter) {
+  addLead(StateSetter stateSetter){
     return Container(
       width: 408.w,
       decoration: BoxDecoration(
@@ -910,13 +912,23 @@ class _LeadDashboard extends State<LeadDashboard> {
           SizedBox(
             height: 25.h,
           ),
-          Container(
+          isLoad
+              ? Container(
+            height: MediaQuery.of(context).size.height - 400,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+                child: Center(
+            child: CircularProgressIndicator(),
+          ),
+              )
+              :Container(
             decoration: BoxDecoration(
                 color: AppColor.white, borderRadius: BorderRadius.circular(10)),
             padding: EdgeInsets.all(20),
             child: finalLeadData.isEmpty
-                ? Expanded(
-                child: Container(
+                ? Container(
                     height: MediaQuery
                         .of(context)
                         .size
@@ -926,7 +938,7 @@ class _LeadDashboard extends State<LeadDashboard> {
                             title: "No Record Found",
                             fontSize: 16.sp,
                             color: Colors.black,
-                            fontWeight: FontWeight.w900))))
+                            fontWeight: FontWeight.w900)))
                 : Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               columnWidths: {

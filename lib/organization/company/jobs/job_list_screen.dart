@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
 import 'package:flutter_hr_management/organization/company/jobs/create_job_screen.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
+import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/job_list_provider.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
@@ -27,6 +28,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class JobListScreen extends StatefulWidget {
   Organization organization;
@@ -113,7 +115,7 @@ class _JobListState extends State<JobListScreen> {
                 Container(
                   decoration: BoxDecoration(
                       color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 30.w,vertical: 10.h),
                   margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
                   child: model.listJobs.isEmpty
                       ? Expanded(
@@ -149,7 +151,8 @@ class _JobListState extends State<JobListScreen> {
                          // tableHeader("Experience"),
                           tableHeader("Job Type"),
                           tableHeader("Salary"),
-                          tableHeader("Details"),
+                          tableHeader("Date"),
+                          tableHeader("Applicants"),
                           tableHeader(""),
                         ],
                       ),
@@ -161,7 +164,8 @@ class _JobListState extends State<JobListScreen> {
                             title: model.listJobs[i].postJob!.message,
                             jd: model.listJobs[i].postJob!.jobDescription,
                             experience: model.listJobs[i].postJob!.experience,
-                            date: model.listJobs[i].postJob!.salary,
+                            salary: model.listJobs[i].postJob!.salary,
+                            date: model.listJobs[i].postJob!.postingTime,
                             jobType: model.listJobs[i].postJob!.jobType,
                             index: i),
                     ],
@@ -207,72 +211,85 @@ class _JobListState extends State<JobListScreen> {
             ));
   }
 
-  TableRow tableRow(context, JobData leadData,
-      {id, title, jd, experience, color, index, date,jobType}) {
+  TableRow tableRow(context, JobData jobData,
+      {id, title, jd, experience, color, index, date,jobType,salary}) {
     return TableRow(
         children: [
-          //Full Name
-         /* InkWell(
-            onTap: () {
-             *//* Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      LeadInfo(
-                        leadData: finalLeadData[index],
-                      )));*//*
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 15),
-              child: TextView(
-                  title: id,
-                  fontSize: 16.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w300),
-            ),
-          ),*/
-          TextView(
-              title: title,
-              fontSize: 16.sp,
-              color: Colors.black,
-              fontWeight: FontWeight.w300),
+          Container(
+            height: 100.h,
+            alignment: Alignment.centerLeft,
+            child: TextView(
+                title: title,
+                fontSize: 14.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.w300),
+          ),
 
           TextView(
               title: jd,
-              fontSize: 16.sp,
+              fontSize: 14.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
               title: experience,
-              fontSize: 16.sp,
+              fontSize: 14.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
               title: jobType,
-              fontSize: 16.sp,
+              fontSize: 14.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: salary,
+              fontSize: 14.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
               title: date,
-              fontSize: 16.sp,
+              fontSize: 14.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           InkWell(
-              onTap: () {
-                //  showAlertDialog(context, index);
+              onTap: () async{
+                await jobProvider.getAllJobApplicantsByJobId(jobData.postJob!.id!);
+                showDialog<void>(
+                  context: context,
+                  barrierDismissible: true, // user must tap button!
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      alignment: Alignment.centerRight,
+                      backgroundColor: Colors.transparent,
+                      insetAnimationDuration: Duration(milliseconds: 200),
+                      insetAnimationCurve: Curves.easeOutExpo,
+                      // <-- SEE HERE
+                      child: StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) {
+                            return DispalyApplicants(setState);
+                          }),
+                    );
+                  },
+                );
               },
               child: Text("View",style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   color: Colors.blue,
                   fontWeight: FontWeight.w300,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                 decoration: TextDecoration.underline
               ),)),
-          Row(
+          InkWell(
+              onTap: () {
+                jobProvider.deleteJob(jobData);
+              },
+              child: Icon(Icons.delete, color: Colors.red)),
+          /*Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               InkWell(
                   onTap: () {
-                  //  showAlertDialog(context, index);
+                    jobProvider.deleteJob(jobData);
                   },
                   child: Icon(Icons.delete, color: Colors.red)),
               SizedBox(
@@ -280,12 +297,11 @@ class _JobListState extends State<JobListScreen> {
               ),
               InkWell(
                   onTap: () {
-                    //  _showAlertDialog();
-                   // editleadDilaog(leadData);
+
                   },
                   child: Icon(Icons.edit, color: Colors.grey)),
             ],
-          )
+          )*/
         ]);
   }
 
@@ -294,7 +310,7 @@ class _JobListState extends State<JobListScreen> {
       margin: EdgeInsets.symmetric(vertical: 15),
       child: TextView(
           title: text,
-          fontSize: 18.sp,
+          fontSize: 16.sp,
           color: Colors.black,
           fontWeight: FontWeight.w900),
     );
@@ -662,6 +678,7 @@ class _JobListState extends State<JobListScreen> {
     );
   }
   final orgProvider = locator<OrgProvider>();
+  final jobProvider = locator<JobListProvider>();
   @override
   void initState() {
     // TODO: implement initState
@@ -820,4 +837,114 @@ class _JobListState extends State<JobListScreen> {
       ],
     );
   }
+
+  DispalyApplicants(StateSetter setState) {
+    return Consumer<JobListProvider>(
+      builder: (context, model, child) => Container(
+        decoration: BoxDecoration(
+            color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+        padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+        margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
+        child: model.jobApplicantList.isEmpty
+            ? Expanded(
+            child: Container(
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height - 400,
+                child: Center(
+                    child: TextView(
+                        title: "There is no applicant in this job role!!",
+                        fontSize: 16.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900))))
+            : Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          columnWidths: {
+            0: FlexColumnWidth(20),
+            1: FlexColumnWidth(50),
+            2: FlexColumnWidth(30),
+            3: FlexColumnWidth(40),
+            4: FlexColumnWidth(30),
+            5: FlexColumnWidth(30),
+          },
+          children: [
+            /// Table Header
+            TableRow(
+              children: [
+                tableHeader("No."),
+                tableHeader("Applicant Name"),
+                tableHeader("Contact"),
+                tableHeader("EmailId"),
+                tableHeader("Qualification"),
+                tableHeader("Resume"),
+              ],
+            ),
+            /// Table Data
+            for (int i = 0; i < model.jobApplicantList.length; i++)
+              applicantTableRow(context, model.jobApplicantList[i],i),
+          ],
+        ),
+      ),
+    );
+  }
+
+  TableRow applicantTableRow(context, ApplicantList jobApplicantList,int index
+      ) {
+    return TableRow(
+        children: [
+          Container(
+            height: 100.h,
+            alignment: Alignment.centerLeft,
+            child: TextView(
+                title: '-',//jobApplicantList.applicationId.toString(),
+                fontSize: 16.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.w300),
+          ),
+          TextView(
+              title: jobApplicantList.firstName.toString()+" "+jobApplicantList.lastName.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: jobApplicantList.mobile.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: jobApplicantList.emailId.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          TextView(
+              title: jobApplicantList.qualification==''?"-":jobApplicantList.qualification.toString(),
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300),
+          jobApplicantList.document=='-'?TextView(
+              title: "-",
+              fontSize: 16.sp,
+              color: Colors.black,
+              fontWeight: FontWeight.w300)
+          :InkWell(
+              onTap: () async {
+                final url =Uri.parse(jobApplicantList.document.toString());
+                if (!await launchUrl(url,)) {
+                throw Exception('Could not launch $url');
+                }
+              },
+              child: Text("View Resume",style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  decoration: TextDecoration.underline
+              ),
+              )
+          )
+        ]);
+  }
 }
+
+

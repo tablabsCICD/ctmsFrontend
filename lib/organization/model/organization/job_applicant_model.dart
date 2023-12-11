@@ -170,6 +170,9 @@ class ApplicantList {
   String? emailId;
   String? applyDate;
   String? document;
+  String? qualification;
+  List<String>? skills;
+  String? applicationId;
 
   ApplicantList(
       {this.id,
@@ -179,17 +182,28 @@ class ApplicantList {
         this.mobile,
         this.emailId,
         this.applyDate,
-        this.document});
+        this.document,
+        this.qualification,
+        this.skills,
+        this.applicationId});
 
   ApplicantList.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     jobId = json['jobId'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobile = json['mobile'];
-    emailId = json['emailId'];
-    applyDate = json['applyDate'];
-    document = json['document'];
+    firstName = json['firstName']??"-";
+    lastName = json['lastName']??'-';
+    mobile = json['mobile']??"-";
+    emailId = json['emailId']??'-';
+    applyDate = json['applyDate']??"-";
+    document = json['document']??"-";
+    qualification = json['qualification']??'-';
+    if (json['skills'] != null) {
+      skills = <String>[];
+      json['skills'].forEach((v) {
+        skills!.add((v));
+      });
+    }
+    applicationId = json['applicationId']??'-';
   }
 
   Map<String, dynamic> toJson() {
@@ -202,6 +216,11 @@ class ApplicantList {
     data['emailId'] = this.emailId;
     data['applyDate'] = this.applyDate;
     data['document'] = this.document;
+    data['qualification'] = this.qualification;
+    if (this.skills != null) {
+      data['skills'] = this.skills!.map((v) => v).toList();
+    }
+    data['applicationId'] = this.applicationId;
     return data;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,20 +33,42 @@ class _SideBarState extends State<SideBar> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkWell(
+           /* InkWell(
               onTap: (){
                 Navigator.pushReplacementNamed(context, AppRoutes.home);
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: /*Text("Go To Back Menu",style: TextStyle(
+                child: *//*Text("Go To Back Menu",style: TextStyle(
                     fontSize: 20.sp,
                     color: Colors.black,
                     fontWeight: FontWeight.w300,
-                    fontFamily: GoogleFonts.poppins().fontFamily)),*/
+                    fontFamily: GoogleFonts.poppins().fontFamily)),*//*
                 SvgPicture.asset(
                   "assets/back_button.svg",height: 66.h,width: 66.w,
                 )),
+            ),*/
+            InkWell(
+              onTap: (){
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 0.h),
+                height: 47.h,
+                width: 100.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: ThemeColor.baground,
+                    borderRadius: BorderRadius.circular(15.r)
+                ),
+                child: Text("Go Back",style:TextStyle(
+                  fontSize: 16.sp,
+                  fontFamily:
+                  GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w700,
+                ),),
+              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),

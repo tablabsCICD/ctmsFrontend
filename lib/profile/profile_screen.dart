@@ -51,7 +51,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            HeaderWidget(isSearchVisible:true,),
+            HeaderWidget(isSearchVisible:false,),
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 30,vertical: 30),
@@ -375,8 +375,17 @@ class _ProfileInfoState extends State<ProfileInfo> {
     var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response);
+    await LocalSharePreferences().getLoginData();
     if(response.statusCode==200){
-     // ToastMessage.show(context, "Emp Edit Success");
+      LoginDeatils loginDeatils = LoginDeatils.fromJson(jsonDecode(response.data));
+      if (loginDeatils.data != null) {
+        String response = jsonEncode(loginDeatils);
+        LocalSharePreferences()
+            .setString(SharedPreferencesConstant.LoginKey, response);
+      }else {
+        //ToastMessage.show(context, loginDeatils.message!);
+        showCustomToast(context, loginDeatils.message!, Icons.clear, Colors.red);
+      }
       showCustomToast(context, "Emp Edit Success", Icons.check, Colors.green);
     }
 

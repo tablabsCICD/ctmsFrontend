@@ -267,7 +267,7 @@ class _LoginScreen extends State<LoginScreen> {
               right: 79.w,
               child: getRightWidget(),
             ),
-            Positioned(bottom: -25.h, left: -60.w, child: getBottomWidget()),
+            Positioned(bottom: -25.h, left: -100.w, child: getBottomWidget()),
           ],
         ),
       ),
@@ -439,6 +439,25 @@ class _LoginScreen extends State<LoginScreen> {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);*/
                   _submitForm();
                 }),
+          ),
+          Tooltip(
+            richMessage: TextSpan(
+              text: 'For forgot password, Please contact to ',
+              style: TextStyle(color: Colors.white),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: 'Admin +918379939930',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            child: Textview(
+                TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.blue),
+                title: "Forgot Password?"),
           ),
           /* Textview(
               TextStyle(
@@ -639,7 +658,7 @@ class _LoginScreen extends State<LoginScreen> {
                     Textview(
                         TextStyle(
                           color: Colors.white,
-                          fontSize: 35.sp,
+                          fontSize: 26.sp,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w600,
                         ),
@@ -647,7 +666,7 @@ class _LoginScreen extends State<LoginScreen> {
                     Textview(
                         TextStyle(
                           color: Color(0xffCBCBCB),
-                          fontSize: 23.sp,
+                          fontSize: 16.sp,
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w300,
                         ),
@@ -700,14 +719,14 @@ class _LoginScreen extends State<LoginScreen> {
         children: [
           SvgPicture.asset(
             "assets/images/bottomContainer.svg",
-            width: 585.w,
+            width: 700.w,
             height: 135.h,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 60.0.w),
+                padding: EdgeInsets.only(left: 100.0.w),
                 child: SvgPicture.asset(
                   "assets/images/logo_black.svg",
                   width: 70.w,

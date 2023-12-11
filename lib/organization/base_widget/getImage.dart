@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
 getImage(String src, {double? height, double? width}) {
-  return src == "" ?Container(
+  return src == "" || src =="string" ?Container(
       width: height==null ? 35 : height,
       height: width==null ? 35 : width,
       decoration: BoxDecoration(

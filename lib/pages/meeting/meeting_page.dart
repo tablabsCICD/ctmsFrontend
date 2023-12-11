@@ -248,9 +248,19 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                   Container(
                       margin:
                           EdgeInsets.symmetric(horizontal: 33, vertical: 10),
-                      child:  filteredMeetingList.isEmpty
-                          ? Expanded(
-                          child: Container(
+                      child:  isLoad
+                          ? Container(
+                        height: MediaQuery.of(context).size.height - 400,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                            child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                          )
+                          : filteredMeetingList.isEmpty
+                          ? Container(
                               height: MediaQuery.of(context).size.height - 400,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -261,7 +271,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                                       title: "No Record Found",
                                       fontSize: 16.sp,
                                       color: Colors.black,
-                                      fontWeight: FontWeight.w900))))
+                                      fontWeight: FontWeight.w900)))
                           : StaggeredGridView.countBuilder(
                           controller: _scrollController,
                           physics: ScrollPhysics(),

@@ -804,6 +804,9 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
               } else{
                 _submitForm(stateSetter);
               }
+              if(LeadActivityState.abRefresh != null){
+                LeadActivityState.abRefresh!.refreshPage();
+              }
               stateSetter(() {
                 isActivity=false;
               });

@@ -138,7 +138,7 @@ class _BuySellListState extends State<BuySellList> {
                                           ),
                                           Row(
                                             children: [
-                                              InkWell(
+                                             /* InkWell(
                                                 onTap: () {},
                                                 child: getIconData(
                                                     'assets/call.svg', 'Phone',
@@ -149,12 +149,42 @@ class _BuySellListState extends State<BuySellList> {
                                                   onTap: () {}),
                                               SizedBox(
                                                 width: 5.w,
-                                              ),
+                                              ),*/
                                               SizedBox(
                                                 width: 119.w,
                                                 height: 40.h,
                                                 child: ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (_) => new CupertinoAlertDialog(
+                                                          title: Column(
+                                                            children: [
+                                                              Text(
+                                                                  'Contact Number : ${model.finalBuySellList[0].contactNumber}',
+                                                                  style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 18,
+                                                                      fontWeight: FontWeight.bold)),
+                                                            ],
+                                                          ),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              child: Padding(
+                                                                padding:
+                                                                const EdgeInsets.all(10.0),
+                                                                child: Text('Ok',
+                                                                    style: TextStyle(
+                                                                        color: Colors.green,
+                                                                        fontSize: 18)),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ));
+                                                  },
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                     primary:
@@ -168,17 +198,17 @@ class _BuySellListState extends State<BuySellList> {
                                                                     5.r))),
                                                   ),
                                                   child: TextView(
-                                                    title: model.selectedTab == "Sell Vehicle"?"Sell Now":"Buy Now",
+                                                    title: "Contact",
                                                     fontSize: 15.sp,
                                                     fontWeight: FontWeight.w400,
                                                     color: Color(0xffffffff),
                                                   ),
                                                 ),
                                               ),
-                                              getIconData(
+                                              /*getIconData(
                                                   'assets/more_icon.svg',
                                                   'more',
-                                                  onTap: () {}),
+                                                  onTap: () {}),*/
                                             ],
                                           )
                                         ],
@@ -597,7 +627,7 @@ class _BuySellListState extends State<BuySellList> {
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 14.sp,
             fontFamily: GoogleFonts.poppins().fontFamily,
             fontWeight: FontWeight.w500,
             color: Colors.black),

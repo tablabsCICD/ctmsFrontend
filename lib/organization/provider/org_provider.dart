@@ -468,15 +468,21 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     orgFullLoadList.clear();
-    String myUrl = AppConstants.FULL_LOAD_ALL_CARD +
-        '?nameOfPerson=${name}&source=${source}&destination=${dest}';
-    print(myUrl);
+    /*String myUrl = AppConstants.FULL_LOAD_ALL_CARD +
+        '?nameOfPerson=${name}&source=${source}&destination=${dest}';*/
+    String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${1}&source=${source}&destination=${dest}&page=0&size=10";
+    print("Get Data By Source and Destination : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading == false;
     response = json.decode(req.body);
     print(response);
-    LoadListModel loadListModel = LoadListModel.fromJson(response);
-    orgFullLoadList = loadListModel.content!;
+    FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+    orgFullLoadList = fullLoadModel.data!;
+    /* orgFullLoadList = List<OrgFullLoadModel>.from(
+          response.map((json) => OrgFullLoadModel.fromJson(json)));*/
+    orgAllFullLoadList.clear();
+    orgAllFullLoadList.addAll(orgFullLoadList);
+
     // orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
     notifyListeners();
   }

@@ -140,15 +140,25 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
-                    Container(
+                    isLoad
+                        ? Container(
+                      height: MediaQuery.of(context).size.height - 400,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                        : Container(
                       decoration: BoxDecoration(
                           color: AppColor.white,
                           borderRadius: BorderRadius.circular(5)),
                       padding: EdgeInsets.all(20),
 
                       child: finalEmpData.isEmpty
-                          ? Expanded(
-                          child: Container(
+                          ? Container(
                               height: MediaQuery.of(context)
                                   .size
                                   .height -
@@ -159,7 +169,7 @@ class _DashboardState extends State<Dashboard> {
                                       fontSize: 16.sp,
                                       color: Colors.black,
                                       fontWeight:
-                                      FontWeight.w900))))
+                                      FontWeight.w900)))
                           : Table(
                         columnWidths: {
                           0: FlexColumnWidth(70),
@@ -312,78 +322,91 @@ class _DashboardState extends State<Dashboard> {
               },
             );
           },
-          child: Icon(Icons.download_for_offline,size: 20,color: Colors.blue,)
+         // child: Icon(Icons.download_for_offline,size: 20,color: Colors.blue,),
+          child: Text(
+            "View Report",
+            style: TextStyle(
+              color: Colors.blue,
+              fontSize: 15.sp,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              fontWeight: FontWeight.w300,
+              decoration: TextDecoration.underline
+
+            ),
+          ),
         ),
       ),
-      Container(
+      InkWell(
+        onTap: () {
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return Dialog(
+                alignment: Alignment.center,
+                backgroundColor: Colors.transparent,
+                insetAnimationDuration: Duration(milliseconds: 200),
+                insetAnimationCurve: Curves.easeOutExpo,
+                // <-- SEE HERE
+                child: StatefulBuilder(builder:
+                    (BuildContext context, StateSetter setState) {
+                  return Container(
+                    width: 450.w,
+                    // height: 650.h,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 450.w,
+                          padding: EdgeInsets.only(bottom: 10),
+                          alignment: Alignment.topRight,child: InkWell(
+                          child: Icon(Icons.close,size: 20,),
+                          onTap: (){
+                            Navigator.of(context).pop();
+                          },
+                        ),),
+                        Align(alignment: Alignment.center,
+                            child: CustomerGrpah(id: emData[index].id!,)),
+                      ],
+                    ),
+                  );
+                }),
+              );
+            },
+          );
+        },
+        child: Text(
+          "Chart Report",
+          style: TextStyle(
+            color: Colors.blue,
+            fontSize: 15.sp,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w300,
+              decoration: TextDecoration.underline
+          ),
+        ),
+      ),
+      /*Container(
         height: 27.h,
         width: 83.w,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: isSelected! ? Colors.amber.shade50 : Colors.blue.shade50),
-        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 0.h),
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            /* Icon(Icons.download,size: 15,color: isSelected!?Colors.amber :Colors.blue),
-                SizedBox(width: 10.w,),*/
-            InkWell(
-              onTap: () {
-                showDialog<void>(
-                  context: context,
-                  barrierDismissible: false, // user must tap button!
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      alignment: Alignment.center,
-                      backgroundColor: Colors.transparent,
-                      insetAnimationDuration: Duration(milliseconds: 200),
-                      insetAnimationCurve: Curves.easeOutExpo,
-                      // <-- SEE HERE
-                      child: StatefulBuilder(builder:
-                          (BuildContext context, StateSetter setState) {
-                        return Container(
-                          width: 450.w,
-                          height: 450.h,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 450.w,
-                                padding: EdgeInsets.only(bottom: 10),
-                                alignment: Alignment.topRight,child: InkWell(
-                                child: Icon(Icons.close,size: 20,),
-                                onTap: (){
-                                  Navigator.of(context).pop();
-                                },
-                              ),),
-                              Align(alignment: Alignment.center,
-                                  child: CustomerGrpah(id: emData[index].id!,)),
-                            ],
-                          ),
-                        );
-                      }),
-                    );
-                  },
-                );
-              },
-              child: Text(
-                "Chart Report",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 15.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-            ),
+            *//* Icon(Icons.download,size: 15,color: isSelected!?Colors.amber :Colors.blue),
+                SizedBox(width: 10.w,),*//*
+
           ],
         ),
-      )
+      )*/
     ]);
   }
 
@@ -400,8 +423,13 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  bool isLoad = false;
   Future<void> ApiGetData(String URL, int selectedPage) async {
     EasyLoading.show(status: "Loading");
+    isLoad = true;
+    setState(() {
+
+    });
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     print("Token:" + token);
@@ -418,6 +446,7 @@ class _DashboardState extends State<Dashboard> {
       'Authorization': 'Bearer ${ApiConstant.token}',}));*/
     print(response);
     EasyLoading.dismiss();
+    isLoad= false;
     if (req.statusCode == 200) {
       emData.clear();
       finalEmpData.clear();

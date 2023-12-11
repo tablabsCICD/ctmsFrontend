@@ -45,116 +45,111 @@ class _BidListState extends State<BidList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(29),
       child:Consumer<OrgProvider>(
         builder: (context, model, child) => SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 40,
-                margin: EdgeInsets.all(30),
-                child: Row(
-                  children: [
-                    getCircularContainer(
-                        "Placed Quotes",
-                        (selectedTab == "Placed Quotes"),
-                        0,
-                        model),
-                    SizedBox(width: 10.w,),
-                    getCircularContainer(
-                        "Received Quotes",
-                        (selectedTab == "Received Quotes"),
-                        1,
-                        model),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.h,),
-              Row(
-                mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                children: [
-                  TextView(
-                    title:'Total Quote : ${model.orgBigingList.length}',
-                    color: Colors.black,
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w600,
-                  ) ,
-                  Row(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 33.0.w,vertical: 20.h),
+            child: Column(
+              children: [
+                Container(
+                  height: 40,
+                  child: Row(
                     children: [
-                      filterIcon(model),
+                      getCircularContainer(
+                          "Placed Quotes",
+                          (selectedTab == "Placed Quotes"),
+                          0,
+                          model),
                       SizedBox(width: 10.w,),
-                      SvgPicture.asset('assets/more_icon.svg')
+                      getCircularContainer(
+                          "Received Quotes",
+                          (selectedTab == "Received Quotes"),
+                          1,
+                          model),
                     ],
-                  )
-                ],
-              ),
-              SizedBox(height: 32.h,),
-              Container(
-                decoration: BoxDecoration(
-                    color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-                padding: EdgeInsets.all(20),
-                child: model.orgBigingList.isEmpty
-                    ? Expanded(
-                    child: Container(
-                        height:
-                        MediaQuery.of(context).size.height - 400,
-                        child: Center(
-                            child: TextView(
-                                title: "No Record Found",
-                                fontSize: 16.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w900))))
-                    : Table(
-                  columnWidths: {
-                    0: FlexColumnWidth(60),
-                    1: FlexColumnWidth(40),
-                    2: FlexColumnWidth(40),
-                    3: FlexColumnWidth(40),
-                    4: FlexColumnWidth(40),
-                    5: FlexColumnWidth(40),
-                    6: FlexColumnWidth(40),
-                    7: FlexColumnWidth(40),
-                    8: FlexColumnWidth(30),
-                    9: FlexColumnWidth(70),
-                  },
-                  textBaseline: TextBaseline.ideographic,
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  ),
+                ),
+                SizedBox(height: 26.h,),
+                Row(
+                  mainAxisAlignment:MainAxisAlignment.spaceBetween,
                   children: [
-                    /// Table Header
-                    TableRow(
-                      children: [
-                        tableHeader("Material"),
-                        tableHeader("Routes"),
-                        tableHeader("Km"),
-                        tableHeader("Total Quotes"),
-                        tableHeader("Best Match"),
-                        tableHeader("End Time"),
-                        tableHeader("Status"),
-                        tableHeader("Price"),
-                        tableHeader("Action"),
-                      ],
-                    ),
-                    for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
-                        context,
-                        material: model.orgBigingList[i].genericCardsDto!.companyName,
-                        route1: model.orgBigingList[i].genericCardsDto!.source,
-                        route2: model.orgBigingList[i].genericCardsDto!.destination,
-                        km: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
-                        totalBids: model.orgBigingList[i].bidingList!.length.toString(),
-                        bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
-                        endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
-                        status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
-                        price: '${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
-                    ),
-
+                    TextView(
+                      title:'Total Quote : ${model.orgBigingList.length}',
+                      color: Colors.black,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                    ) ,
+                    filterIcon(model)
                   ],
                 ),
-              ),
+                SizedBox(height: 32.h,),
+                Container(
+                  decoration: BoxDecoration(
+                      color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                  padding: EdgeInsets.all(20),
+                  child: model.orgBigingList.isEmpty
+                      ? Expanded(
+                      child: Container(
+                          height:
+                          MediaQuery.of(context).size.height - 400,
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900))))
+                      : Table(
+                    columnWidths: {
+                      0: FlexColumnWidth(60),
+                      1: FlexColumnWidth(40),
+                      2: FlexColumnWidth(40),
+                      3: FlexColumnWidth(40),
+                      4: FlexColumnWidth(40),
+                      5: FlexColumnWidth(40),
+                      6: FlexColumnWidth(40),
+                      7: FlexColumnWidth(40),
+                      8: FlexColumnWidth(30),
+                      9: FlexColumnWidth(70),
+                    },
+                    textBaseline: TextBaseline.ideographic,
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      /// Table Header
+                      TableRow(
+                        children: [
+                          tableHeader("Material"),
+                          tableHeader("Routes"),
+                          tableHeader("Km"),
+                          tableHeader("Total Quotes"),
+                          tableHeader("Best Match"),
+                          tableHeader("End Time"),
+                          tableHeader("Status"),
+                          tableHeader("Price"),
+                         // tableHeader("Action"),
+                        ],
+                      ),
+                      for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
+                          context,
+                          material: model.orgBigingList[i].genericCardsDto!.companyName,
+                          route1: model.orgBigingList[i].genericCardsDto!.source,
+                          route2: model.orgBigingList[i].genericCardsDto!.destination,
+                          km: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
+                          totalBids: model.orgBigingList[i].bidingList!.length.toString(),
+                          bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
+                          endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
+                          status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
+                          price: '${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
+                      ),
+
+                    ],
+                  ),
+                ),
 
 
 
-              //  getEmpTable(),
-            ],
+                //  getEmpTable(),
+              ],
+            ),
           ),
         ),
       ),
@@ -210,7 +205,7 @@ class _BidListState extends State<BidList> {
       ) {
     return PopupMenuItem(
       child: Text(title,style: TextStyle(
-      fontSize: 16.sp,
+      fontSize: 14.sp,
           fontFamily: GoogleFonts.poppins().fontFamily,
         fontWeight: FontWeight.w500,
         color: Colors.black),),
@@ -348,7 +343,7 @@ class _BidListState extends State<BidList> {
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(
+          /*SizedBox(
            // width: 93.w,
             height: 26.h,
             child: ElevatedButton(
@@ -368,7 +363,7 @@ class _BidListState extends State<BidList> {
                 color: Color(0xffffffff),
               ),
             ),
-          ),
+          ),*/
         ]);
   }
 

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
+import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
@@ -33,6 +35,30 @@ class JobListProvider extends ChangeNotifier {
       selectedPage++;
       notifyListeners();
     } else {}
+  }
+
+  List<ApplicantList> jobApplicantList = [];
+  getAllJobApplicantsByJobId(int jobId) async {
+    EasyLoading.show(status: "Loading");
+    String myUrl = AppConstants.BASE_URL +'getApplicantsByJobId?jobId=${jobId}&page=0&size=10&latest=yes';
+    print("Get All Job Applicants : " + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    var response = json.decode(req.body);
+    print(response);
+    jobApplicantList.clear();
+    EasyLoading.dismiss();
+
+      if(response['success']==false){
+        jobApplicantList = [];
+      }else{
+        JobApplicantsModel jobApplicantsModel = JobApplicantsModel.fromJson(response);
+        debugPrint(jobApplicantsModel.data!.noOfApplicants.toString());
+        jobApplicantList.addAll(jobApplicantsModel.data!.applicantList! as Iterable<ApplicantList>);
+        print(jobApplicantList.length);
+        selectedPage++;
+      }
+      notifyListeners();
+
   }
 
   deleteJob(JobData jobData) async {

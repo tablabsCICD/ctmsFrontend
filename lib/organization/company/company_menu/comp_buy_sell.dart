@@ -85,16 +85,16 @@ class _CompBuySellState extends State<CompBuySell> {
               ],
             ),
             Positioned(
-              top: 115.h,
-              left: 255.w,
+              top: 105.h,
+              left: 265.w,
               child: InkWell(
                 onTap: () {
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
                 },
                 child: SvgPicture.asset(
                   "assets/back_button.svg",
-                  height: 66.h,
-                  width: 66.w,
+                  height: 80.h,
+                  width: 80.w,
                 ),
               ),
             ),

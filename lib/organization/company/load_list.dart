@@ -311,8 +311,7 @@ class _LoadListState extends State<LoadList> {
               child: Center(
                   child: CircularProgressIndicator()))):*/
       model.orgAllFullLoadList.isEmpty
-          ? Expanded(
-          child: Container(
+          ? Container(
               height:
               MediaQuery.of(context).size.height - 400,
               child: Center(
@@ -320,7 +319,20 @@ class _LoadListState extends State<LoadList> {
                       title: "No Record Found",
                       fontSize: 16.sp,
                       color: Colors.black,
-                      fontWeight: FontWeight.w900)*/)))
+                      fontWeight: FontWeight.w900)*/))
+          :model.orgAllFullLoadList.isEmpty && model.isLoading==false
+          ? Container(
+              height:
+              MediaQuery.of(context).size.height - 400,
+          decoration: BoxDecoration(
+              color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+          margin: EdgeInsets.all(20),
+              child: Center(
+                  child: TextView(
+                      title: "No Record Found",
+                      fontSize: 16.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900)))
           :Expanded(
             child: StaggeredGridView.countBuilder(
             controller: _scrollController,
@@ -516,12 +528,22 @@ class _LoadListState extends State<LoadList> {
                         showDialog(
                             context: context,
                             builder: (_) => new CupertinoAlertDialog(
-                              title: Text(
-                                  'Contact Number : ${model.orgFullLoadList[index].contactNumber}',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
+                              title: Column(
+                                children: [
+                                  Text(
+                                      'Contact Number : ${model.orgFullLoadList[index].contactNumber}',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                      'Email_Id : ${model.orgFullLoadList[index].emailId}',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
                               actions: <Widget>[
                                 TextButton(
                                   child: Padding(
@@ -678,7 +700,7 @@ class _LoadListState extends State<LoadList> {
       ) {
     return PopupMenuItem(
       child: Text(title, style: TextStyle(
-          fontSize: 16.sp,
+          fontSize: 14.sp,
           fontFamily: GoogleFonts.poppins().fontFamily,
           fontWeight: FontWeight.w500,
           color: Colors.black),),
