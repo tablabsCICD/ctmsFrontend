@@ -6,7 +6,7 @@ class ApiConstant {
  // static String BASE_URL = 'http://ec2-13-126-179-190.ap-south-1.compute.amazonaws.com:8080/ctms/';
   static String BASE_URL = 'http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/ctms/';
   static String BILTY_URL = 'http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading';
-  static String HRMS_URL = 'http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/';
+  static String HRMS_URL = 'http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee';
   static String SAVE_EMP = BASE_URL + "Employee/save";
   static String EDIT_EMP = BASE_URL + "api/Employee/update";
   static String GET_ALL_LEAD = BASE_URL + "api/Lead/getAll";
