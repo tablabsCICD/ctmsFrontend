@@ -245,7 +245,7 @@ class OrgProvider extends ChangeNotifier {
   }
 
   getCompanyDetails(int id) async {
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/1';
+    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
     // String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
     print("GetOrg Details:" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -331,18 +331,17 @@ class OrgProvider extends ChangeNotifier {
 
   getOrgBidingList(int id) async {
     isLoading = true;
-   // notifyListeners();
-   /* String myUrl = "https://api.tkdost.com/tkd2/api/getBiding/ForOrganisation?organizationId=${id}";*/
-   // String myUrl = AppConstants.BASE_URL+ "GetbidBycompanyId?company_id=${id}";
     String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
-    print("Get Biding Data by OrgId - " + myUrl);
+    print("Get Received Quote Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     orgBigingList.clear();
+    receivedBigingList.clear();
     if (req.statusCode == 200) {
       final response = json.decode(req.body);
       OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
-        orgBigingList.addAll(orgQuoteModel.content!);
+      receivedBigingList.addAll(orgQuoteModel.content!);
+      orgBigingList.addAll(receivedBigingList);
       print('Low to high in biding amount: $orgBigingList');
       bidCont = orgBigingList.length;
       orgBigingList.forEach((element) {
@@ -350,6 +349,42 @@ class OrgProvider extends ChangeNotifier {
       });
       notifyListeners();
     }
+  }
+
+  getPlacedQuoteList(int id) async {
+    isLoading = true;
+
+    String myUrl = AppConstants.BASE_URL+ "getBidderPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
+    print("Get Placed Quote Data by OrgId - " + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    isLoading = false;
+    orgBigingList.clear();
+    placedBigingList.clear();
+    if (req.statusCode == 200) {
+      final response = json.decode(req.body);
+      OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
+      placedBigingList.addAll(orgQuoteModel.content!);
+      orgBigingList.addAll(placedBigingList);
+      print('Low to high in biding amount: $orgBigingList');
+      bidCont = orgBigingList.length;
+      orgBigingList.forEach((element) {
+        debugPrint("total bids : ${element.bidingList!.length}");
+      });
+      notifyListeners();
+    }
+  }
+
+  String selectedQuoteTab = "Placed Quotes";
+  getFinalQuoteList(String title) {
+    selectedQuoteTab = title;
+    orgBigingList.clear();
+    if(selectedQuoteTab=="Placed Quotes"){
+      orgBigingList.addAll(placedBigingList);
+    }else{
+      orgBigingList.addAll(receivedBigingList);
+    }
+    print(selectedQuoteTab +"List"+finalBuySellList.length.toString());
+    notifyListeners();
   }
 
   getBuyVehicles(int id) async {
@@ -465,23 +500,27 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getSearchByNameList(String name, String source, String dest) async {
+  getSearchByNameList(int id,String name, String source, String dest) async {
     isLoading = true;
     notifyListeners();
     orgFullLoadList.clear();
     /*String myUrl = AppConstants.FULL_LOAD_ALL_CARD +
         '?nameOfPerson=${name}&source=${source}&destination=${dest}';*/
-    String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${1}&source=${source}&destination=${dest}&page=0&size=10";
+    String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${id}&source=${source}&destination=${dest}&page=0&size=10";
     print("Get Data By Source and Destination : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     response = json.decode(req.body);
     print(response);
+    if(response['success']==false){
+      orgAllFullLoadList = [];
+      orgFullLoadList=[];
+    }else{
     FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
     orgFullLoadList.clear();
     orgFullLoadList = fullLoadModel.data!;
     orgAllFullLoadList.clear();
-    orgAllFullLoadList.addAll(orgFullLoadList);
+    orgAllFullLoadList.addAll(orgFullLoadList);}
     notifyListeners();
   }
 

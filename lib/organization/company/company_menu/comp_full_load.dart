@@ -152,7 +152,7 @@ class _CompLoadScreenState extends State<CompLoadScreen> {
                 ),
               ],
             ),
-            Positioned(
+            if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -165,7 +165,7 @@ class _CompLoadScreenState extends State<CompLoadScreen> {
                   width: 80.w,
                 ),
               ),
-            ),
+            ) else SizedBox.shrink(),
           ],
         ));
 

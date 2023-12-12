@@ -299,7 +299,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
   final orgProvider = locator<OrgProvider>();
 
   Future<void> getOrganization() async {
-    organization = await orgProvider.getCompanyDetails(1);
+    organization = await orgProvider.getCompanyDetails(3);
   }
 }
 

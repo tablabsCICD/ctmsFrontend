@@ -84,7 +84,7 @@ class _CompBuySellState extends State<CompBuySell> {
                 ),
               ],
             ),
-            Positioned(
+            if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -97,7 +97,7 @@ class _CompBuySellState extends State<CompBuySell> {
                   width: 80.w,
                 ),
               ),
-            ),
+            ) else SizedBox.shrink(),
           ],
         ));
   }

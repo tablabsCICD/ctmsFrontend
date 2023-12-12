@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
@@ -12,12 +14,20 @@ import 'package:flutter_hr_management/utils/constant.dart';
 class JobListProvider extends ChangeNotifier {
   int selectedPage = 0;
 
+
   ScrollController scrollController = ScrollController();
   List<JobData> listJobs = [];
+  final orgProvider = locator<OrgProvider>();
+  int orgId = 0;
 
   JobListProvider() : super() {
-    getAllJobs(1);
+    getOrgId();
+    getAllJobs(orgId);
     pagenation();
+  }
+
+  getOrgId()async{
+    orgId = (await orgProvider.getCompanyOrgId())!;
   }
 
   getAllJobs(int id) async {

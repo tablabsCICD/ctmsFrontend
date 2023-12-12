@@ -27,6 +27,7 @@ class BidList extends StatefulWidget {
   Organization organization;
   BidList(this.organization,{Key? key}) : super(key: key) {
     bidProvider.getOrgBidingList(organization.id!);
+    bidProvider.getPlacedQuoteList(organization.id!);
   }
 
   @override
@@ -57,13 +58,13 @@ class _BidListState extends State<BidList> {
                     children: [
                       getCircularContainer(
                           "Placed Quotes",
-                          (selectedTab == "Placed Quotes"),
+                          (model.selectedQuoteTab == "Placed Quotes"),
                           0,
                           model),
                       SizedBox(width: 10.w,),
                       getCircularContainer(
                           "Received Quotes",
-                          (selectedTab == "Received Quotes"),
+                          (model.selectedQuoteTab == "Received Quotes"),
                           1,
                           model),
                     ],
@@ -372,8 +373,8 @@ class _BidListState extends State<BidList> {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedTab = title;
-         // model.getFinalBuySellList(title);
+          model.selectedQuoteTab = title;
+          model.getFinalQuoteList(title);
         });
       },
       child: Container(

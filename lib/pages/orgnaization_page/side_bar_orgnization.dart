@@ -60,7 +60,7 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Monitoring",
               icon: Images.monitoring,
               press: () async {
-                List<Organization> organization = await orgProvider.getCompanyDetails(1);
+                List<Organization> organization = await orgProvider.getCompanyDetails(3);
                 print(organization[0].companyName);
                 Navigator.push(
                     context,

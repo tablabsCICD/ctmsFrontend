@@ -118,18 +118,17 @@ class _JobListState extends State<JobListScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 30.w,vertical: 10.h),
                   margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
                   child: model.listJobs.isEmpty
-                      ? Expanded(
-                      child: Container(
+                      ? Container(
                           height: MediaQuery
                               .of(context)
                               .size
-                              .height - 400,
+                              .height - 600,
                           child: Center(
                               child: TextView(
                                   title: "No Record Found",
                                   fontSize: 16.sp,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.w900))))
+                                  fontWeight: FontWeight.w900)))
                       : Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     columnWidths: {

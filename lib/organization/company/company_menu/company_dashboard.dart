@@ -160,7 +160,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              model.getSearchByNameList(
+                                              model.getSearchByNameList(widget.organization.id!,
                                                   '', selectedFromCity!, selectedToCity!);
                                             },
                                             style: ElevatedButton.styleFrom(

@@ -150,7 +150,7 @@ class _LoadListState extends State<LoadList> {
                                       ),
                                       ElevatedButton(
                                         onPressed: () {
-                                          model.getSearchByNameList(
+                                          model.getSearchByNameList(widget.organization.id!,
                                               '', selectedFromCity!, selectedToCity!);
                                         },
                                         style: ElevatedButton.styleFrom(

@@ -50,6 +50,7 @@ class CompanyBidsScreen extends StatefulWidget {
   Organization organization;
   CompanyBidsScreen(this.organization,{Key? key}) : super(key: key) {
     bidProvider.getOrgBidingList(organization.id!);
+    bidProvider.getPlacedQuoteList(organization.id!);
   }
 
   @override
@@ -84,7 +85,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                 ),
               ],
             ),
-            Positioned(
+           if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -97,7 +98,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                   width: 80.w,
                 ),
               ),
-            ),
+            ) else SizedBox.shrink(),
           ],
         ));
   }

@@ -76,8 +76,9 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         SizedBox(width: 38.w,),
                         InkWell(onTap: () async {
                           List<Organization> organization = await orgProvider
-                              .getCompanyDetails(1);
+                              .getCompanyDetails(3);
                           print(organization[0].companyName);
+                          orgProvider.setCompanyOrgId(organization[0].id!);
                           Navigator.push(
                               context,
                               MaterialPageRoute(

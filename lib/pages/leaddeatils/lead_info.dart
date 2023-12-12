@@ -794,15 +794,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
               } else{
                 _submitForm(stateSetter);
               }
-              if(LeadActivityState.abRefresh != null){
-                LeadActivityState.abRefresh!.refreshPage();
-              }
-              stateSetter(() {
-                isActivity=false;
-              });
-              stateSetter(() {
-                isActivity=true;
-              });
+
             },
             child: Container(
               decoration: BoxDecoration(
@@ -1099,7 +1091,14 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
       selectDate = "";
       selectedEmp = 0;
       selectedStatus = "Select Status";
+      if(LeadActivityState.abRefresh != null){
+        LeadActivityState.abRefresh!.refreshPage();
+      }
       stateSetter(() {
+        isActivity=false;
+      });
+      stateSetter(() {
+        isActivity=true;
       });
       Navigator.pop(context);
     } else {

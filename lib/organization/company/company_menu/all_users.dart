@@ -79,7 +79,7 @@ class _AllUsersState extends State<AllUsers> {
                 ),
               ],
             ),
-            Positioned(
+            if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -92,7 +92,7 @@ class _AllUsersState extends State<AllUsers> {
                   width: 80.w,
                 ),
               ),
-            ),
+            ) else SizedBox.shrink(),
           ],
         ));
   }

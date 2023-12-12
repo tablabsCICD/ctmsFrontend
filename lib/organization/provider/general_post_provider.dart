@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/model/general_post_model.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
@@ -15,9 +17,15 @@ class GeneralPostProvider extends ChangeNotifier{
   ScrollController scrollController=ScrollController();
   List<GeneralPost>generalPostList=[];
 
+  GeneralPostProvider() : super() {
+    getOrgId();
+    getAllPost(orgId);
+    pagenation();
+  }
+
   getAllPost(int id)async{
     //ApiResponse apiResponse=await ApiHelper().apiWithoutDecodeGet(ApiConstant.BASE_URL+'postJob?page=$selectedPage');
-    String myUrl = /*AppConstants.JOBS_ALL_CARD +*/'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/GeneralPost/getAll';
+    String myUrl = AppConstants.BASE_URL +'/GetGeneralPostBycompanyId?company_id=${id}';
     print("Get All General Post : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     var  response = json.decode(req.body);
@@ -33,12 +41,16 @@ class GeneralPostProvider extends ChangeNotifier{
 
     }
   }
-
+  final orgProvider = locator<OrgProvider>();
+  int orgId = 0;
+  getOrgId()async{
+    orgId = (await orgProvider.getCompanyOrgId())!;
+  }
   pagenation(){
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        getAllPost(1);
+        getAllPost(orgId);
 
       }
     });
