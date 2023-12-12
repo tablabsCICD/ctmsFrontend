@@ -355,7 +355,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
                               ],
                             ),
                             SizedBox(height: 16.h,),
-                            Row(
+                           /* Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -408,7 +408,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
                                   ],
                                 )
                               ],
-                            ),
+                            ),*/
                           ],
                         ),
                       ],
@@ -544,33 +544,23 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
 
   tab(bool isSelect, String title) {
     return Container(
-      width: 250.w,
-      height: 150.h,
-      child: Stack(
-        children: <Widget>[
-          SvgPicture.asset(
-            Images.red_arrow,
-            alignment: Alignment.center,
-            width: 250.w,
-            height: 100.h,
-            color: isSelect ? Color(0xffC3262C) : Colors.white,
+      width: 200.w,
+      height: 75.h,
+      margin: EdgeInsets.symmetric(vertical: 10.h,horizontal: 16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: isSelect ? Color(0xffC3262C) : Colors.white,
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+            color: isSelect ? Colors.white : Colors.black,
+            fontSize: 20.sp,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
           ),
-          Container(
-            transform: Matrix4.translationValues(-30.w, 0, 0.0),
-            height: 100.h,
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: isSelect ? Colors.white : Colors.black,
-                  fontSize: 20.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     ); /*Container(
       width: 220.w,

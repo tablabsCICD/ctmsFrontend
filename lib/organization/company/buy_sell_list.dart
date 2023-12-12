@@ -89,13 +89,13 @@ class _BuySellListState extends State<BuySellList> {
                           children: [
                             getCircularContainer(
                                 "Buy Vehicle",
-                                (model.selectedTab == "Buy Vehicle"),
+                                (model.selectedBuySellTab == "Buy Vehicle"),
                                 0,
                                 model),
                             SizedBox(width: 10.w,),
                             getCircularContainer(
                                 "Sell Vehicle",
-                                (model.selectedTab == "Sell Vehicle"),
+                                (model.selectedBuySellTab == "Sell Vehicle"),
                                 1,
                                 model),
                           ],

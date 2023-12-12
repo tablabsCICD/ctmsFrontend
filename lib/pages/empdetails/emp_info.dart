@@ -334,39 +334,23 @@ class _EmpInfo extends State<EmpInfo> {
   }
   tab(bool isSelect, String title) {
     return Container(
-      width: 350.w,
-      height: 90.h,
-      child: Stack(
-        children: <Widget>[
-          SvgPicture.asset(
-            Images.red_arrow,
-            alignment: Alignment.center,
-            width: 350.w,
-            height: 90.h,
-            color: isSelect ? Color(0xffC3262C) : Colors.white,
+      width: 250.w,
+      height: 75.h,
+      margin: EdgeInsets.symmetric(vertical: 0.h,horizontal: 16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: isSelect ? Color(0xffC3262C) : Colors.white,
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+            color: isSelect ? Colors.white : Colors.black,
+            fontSize: 20.sp,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+            fontWeight: FontWeight.w500,
           ),
-          // Container(
-          //     transform: Matrix4.translationValues(-24.w, 0, 0.0),
-          //     child: SvgPicture.asset("assets/back_arrow.svg")),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              transform: Matrix4.translationValues(-30.w, 0, 0.0),
-              height: 78.h,
-              child: Center(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelect ? Colors.white : Colors.black,
-                    fontSize: 20.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -310,29 +310,25 @@ class _LoadListState extends State<LoadList> {
               MediaQuery.of(context).size.height - 400,
               child: Center(
                   child: CircularProgressIndicator()))):*/
-      model.orgAllFullLoadList.isEmpty
+      model.orgAllFullLoadList.isEmpty && model.isLoading==false
           ? Container(
               height:
               MediaQuery.of(context).size.height - 400,
-              child: Center(
-                  child: CircularProgressIndicator()/*TextView(
-                      title: "No Record Found",
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900)*/))
-          :model.orgAllFullLoadList.isEmpty && model.isLoading==false
-          ? Container(
-              height:
-              MediaQuery.of(context).size.height - 400,
-          decoration: BoxDecoration(
-              color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.all(20),
               child: Center(
                   child: TextView(
                       title: "No Record Found",
                       fontSize: 16.sp,
                       color: Colors.black,
                       fontWeight: FontWeight.w900)))
+          :model.orgAllFullLoadList.isEmpty
+          ? Container(
+              height:
+              MediaQuery.of(context).size.height - 600,
+          decoration: BoxDecoration(
+              color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+          margin: EdgeInsets.all(20),
+              child: Center(
+                  child: CircularProgressIndicator()))
           :Expanded(
             child: StaggeredGridView.countBuilder(
             controller: _scrollController,

@@ -375,7 +375,6 @@ class _ProfileInfoState extends State<ProfileInfo> {
     var response=await dio.put(ApiConstant.EDIT_EMP,data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response);
-    await LocalSharePreferences().getLoginData();
     if(response.statusCode==200){
       LoginDeatils loginDeatils = LoginDeatils.fromJson(jsonDecode(response.data));
       if (loginDeatils.data != null) {

@@ -112,9 +112,9 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                     // margin: EdgeInsets.all(10),
                     child: Row(
                       children: [
-                        SizedBox(width: 38.w,),
+                       /* SizedBox(width: 38.w,),
                         empCounts("0", "E-Invoices", Images.invoice,
-                            Color(0xFFEAF8F4)),
+                            Color(0xFFEAF8F4)),*/
                         SizedBox(width: 38.w,),
                         InkWell(
                           onTap: () async {

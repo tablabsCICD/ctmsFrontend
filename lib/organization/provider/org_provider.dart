@@ -257,6 +257,7 @@ class OrgProvider extends ChangeNotifier {
   }
 
   getUsersByCompanyId(int id) async {
+    selectedTab = "All Users";
     String myUrl =
         AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
     print("All users by company::" + myUrl);
@@ -304,8 +305,8 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  String selectedTab = "Buy Vehicle";
-
+  String selectedBuySellTab = "Buy Vehicle";
+  String selectedTab = "All Users";
 
 
 
@@ -354,7 +355,7 @@ class OrgProvider extends ChangeNotifier {
   getBuyVehicles(int id) async {
     // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
     String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
-    selectedTab="Buy Vehicle";
+    selectedBuySellTab="Buy Vehicle";
     print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -375,7 +376,7 @@ class OrgProvider extends ChangeNotifier {
           orgSellList.add(element);
         }
       });
-      if(selectedTab=="Buy Vehicle"){
+      if(selectedBuySellTab=="Buy Vehicle"){
         finalBuySellList.addAll(orgBuyList);
       }else{
         finalBuySellList.addAll(orgSellList);
@@ -385,14 +386,14 @@ class OrgProvider extends ChangeNotifier {
   }
 
   getFinalBuySellList(String title) {
-    selectedTab = title;
+    selectedBuySellTab = title;
     finalBuySellList.clear();
-    if(selectedTab=="Buy Vehicle"){
+    if(selectedBuySellTab=="Buy Vehicle"){
       finalBuySellList.addAll(orgBuyList);
     }else{
       finalBuySellList.addAll(orgSellList);
     }
-    print(selectedTab +"List"+finalBuySellList.length.toString());
+    print(selectedBuySellTab +"List"+finalBuySellList.length.toString());
     notifyListeners();
   }
 
@@ -473,17 +474,14 @@ class OrgProvider extends ChangeNotifier {
     String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${1}&source=${source}&destination=${dest}&page=0&size=10";
     print("Get Data By Source and Destination : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
-    isLoading == false;
+    isLoading = false;
     response = json.decode(req.body);
     print(response);
     FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+    orgFullLoadList.clear();
     orgFullLoadList = fullLoadModel.data!;
-    /* orgFullLoadList = List<OrgFullLoadModel>.from(
-          response.map((json) => OrgFullLoadModel.fromJson(json)));*/
     orgAllFullLoadList.clear();
     orgAllFullLoadList.addAll(orgFullLoadList);
-
-    // orgFullLoadList = List<OrgFullLoadModel>.from(response.map((json) => OrgFullLoadModel.fromJson(json)));
     notifyListeners();
   }
 

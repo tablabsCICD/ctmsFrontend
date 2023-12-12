@@ -310,7 +310,11 @@ class _AllUsersListState extends State<AllUsersList> {
                                                         verified: model.userList[index].verified,
                                                       );
                                                       model.selectedTab="All Users";
+                                                      selectedTab = "All Users";
                                                       model.getUsersByCompanyId(1);
+                                                      setState(() {
+
+                                                      });
                                                   },
                                                   child: Text('Approve',
                                                       style:TextStyle(
@@ -385,7 +389,11 @@ class _AllUsersListState extends State<AllUsersList> {
                                                       verified: model.userList[index].verified,
                                                     );
                                                     model.selectedTab="All Users";
+                                                    selectedTab = "All Users";
                                                     model.getUsersByCompanyId(1);
+                                                    setState(() {
+
+                                                    });
                                                   },
                                                   child: Text('Reject',
                                                     style:TextStyle(
