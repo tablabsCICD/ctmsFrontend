@@ -85,7 +85,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     filteredMeetingList.clear();
     debugPrint('Total leads : ${meetingList.length}');
     meetingList.forEach((element) {
-      if (element.title!.contains(query) || element.date!.contains(query)) {
+      if (element.title!.toLowerCase().contains(query.toLowerCase()) || element.date!.contains(query.toLowerCase())) {
         filteredMeetingList.add(element);
       }
     });

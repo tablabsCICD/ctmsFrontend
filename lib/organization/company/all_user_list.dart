@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/model/response/branch_response_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -144,14 +145,15 @@ class _AllUsersListState extends State<AllUsersList> {
                     ),
                   ),
                   model.userList.isEmpty && model.isLoading == false
-                      ? Expanded(
-                          child: Container(
-                              height: MediaQuery.of(context).size.height - 200,
-                              child: Center(
-                                  child: Text(
-                                "No Record Found",
-                                style: Style.heading,
-                              ))))
+                      ? Container(
+                          decoration: BoxDecoration(
+                              color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                          height: MediaQuery.of(context).size.height - 600,
+                          child: Center(
+                              child: Text(
+                            "No Record Found",
+                            style: Style.heading,
+                          )))
                       : Expanded(
                           child: Container(
                             padding: EdgeInsets.symmetric(
@@ -311,10 +313,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                                       );
                                                       model.selectedTab="All Users";
                                                       selectedTab = "All Users";
-                                                      model.getUsersByCompanyId(1);
-                                                      setState(() {
-
-                                                      });
+                                                      model.getUsersByCompanyId(widget.organization.id!);
+                                                      setState(() {});
                                                   },
                                                   child: Text('Approve',
                                                       style:TextStyle(
@@ -390,10 +390,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                                     );
                                                     model.selectedTab="All Users";
                                                     selectedTab = "All Users";
-                                                    model.getUsersByCompanyId(1);
-                                                    setState(() {
-
-                                                    });
+                                                    model.getUsersByCompanyId(widget.organization.id!);
+                                                    setState((){});
                                                   },
                                                   child: Text('Reject',
                                                     style:TextStyle(
@@ -510,9 +508,10 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  List<dynamic> foundEmp = [];
-  List<dynamic> uniqueFoundEmp = [];
-  List<dynamic> EmployeeList = [];
+  List<String> foundEmp = [];
+  List<String> uniqueFoundEmp = [];
+  List<EmpData> EmployeeList = [];
+  List<String> EmpList = [];
   List<User> allUserList = [];
   bool isLoad=false;
 
@@ -549,11 +548,12 @@ class _AllUsersListState extends State<AllUsersList> {
     if (response.statusCode == 200) {
       employeeListResponse =
           EmployeeListResponse.fromJson(jsonDecode(response.data));
+      EmployeeList.addAll(employeeListResponse!.data!.content!);
       employeeListResponse!.data!.content!.forEach((element) {
-        EmployeeList.add(
+        EmpList.add(
             element.firstName.toString() + " " + element.lastName.toString());
       });
-      foundEmp = EmployeeList.toSet().toList();
+      foundEmp = EmpList.toSet().toList();
     }
     isLoad=false;
     setState(() {
@@ -563,11 +563,11 @@ class _AllUsersListState extends State<AllUsersList> {
 
   // This function is called whenever the text field changes
   void _runFilter(String enteredKeyword, StateSetter stateSetter) {
-    List<dynamic> results = [];
+    List<String> results = [];
     if (enteredKeyword.isEmpty) {
-      results = EmployeeList;
+      results = EmpList;
     } else {
-      results = EmployeeList
+      results = EmpList
           .where((user) =>
           user.toLowerCase().contains(enteredKeyword.toLowerCase()))
           .toList();
@@ -607,9 +607,8 @@ class _AllUsersListState extends State<AllUsersList> {
               itemBuilder: (context, index) =>
                   ListTile(
                     onTap: () {
-                      allUserList.forEach((element) {
-                        if (foundEmp[index] ==
-                            "${element.firstName} ${element.lastName}") {
+                      EmployeeList.forEach((element) {
+                        if (foundEmp[index] == "${element.firstName} ${element.lastName}") {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -620,9 +619,10 @@ class _AllUsersListState extends State<AllUsersList> {
                                 actions: [
                                   TextButton(
                                     child: Text("Add"),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      //  await orgProvider.getBranchById(element.);
                                       addToTKDConnect(element, stateSetter);
-                                    },
+                                    }
                                   ),
                                   TextButton(
                                     child: Text("Cancel"),
@@ -654,17 +654,17 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  Future<void> addToTKDConnect(
-      User selectedEmp, StateSetter stateSetter) async {
+  Future<void> addToTKDConnect(EmpData selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
-      "aadharCard": 'string',
-      "aadharCardForVerification": "string",
-      "alternativeNumber": selectedEmp.alternativeNumber,
-      "city": selectedEmp.city,
-      "companyAddress": "pune",
-      "companyId": 1,
-      "companyLogo": "string",
-      "companyName": "string",
+      "aadharCard": selectedEmp.boardingDeatails!.aadharCard,
+      "aadharCardForVerification": selectedEmp.boardingDeatails!.aadharCard,
+      "alternativeNumber": selectedEmp.mobileNumber,
+      "branchName": selectedEmp.branch!.branchName,
+      "city": selectedEmp.address,
+      "companyAddress": widget.organization.companyAddress,
+      "companyId": widget.organization.id,
+      "companyLogo": widget.organization.companyLogo,
+      "companyName": widget.organization.companyName,
       "country": "India",
       "deviceId": "string",
       "emailId": selectedEmp.emailId,
@@ -672,27 +672,27 @@ class _AllUsersListState extends State<AllUsersList> {
       "idOfMainBranch": 0,
       "isPaid": 0,
       "isUserVerifiedByCompany": 0,
-      "landlineNumber": selectedEmp.mobileNumber,
+      "landlineNumber": selectedEmp.contact,
       "lastName": selectedEmp.lastName,
       "loggedTime": GetDateFormat.getCurrentDate(),
-      "loggedUserName": "string",
+      "loggedUserName": "",
       "mainBranch": 0,
-      "mobileNumber": selectedEmp.mobileNumber,
-      "numberOfTimesRating": 3,
+      "mobileNumber": selectedEmp.contact,
+      "numberOfTimesRating": 5,
       "os": "string",
       "otp": "string",
       "paidStartDate": "string",
-      "panCardForVerification": "string",
-      "password": "string",
+      "panCardForVerification": selectedEmp.boardingDeatails!.panCard,
+      "password": selectedEmp.password,
       "preferredRouresEntered": 0,
-      "profilePicture": "string",
-      "ratings": 0,
+      "profilePicture": selectedEmp.image,
+      "ratings": 5,
       "state": "Maharastra",
       "transporterOrAgent": 0,
-      "userName": "string",
+      "userName": "",
       "validTill": "string",
       "verified": 0,
-      "website": "string"
+      "website": widget.organization.website
     };
     print(requestParameter);
     var reqPara = jsonEncode(requestParameter);
@@ -707,9 +707,18 @@ class _AllUsersListState extends State<AllUsersList> {
     print('Save User Response is: ${response.data}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      showCustomToast(
-          context, "Employee added successfully", Icons.check, Colors.green);
-      Navigator.of(context).pop();
+      var resData = jsonDecode(response.data);
+      print(resData);
+      print(resData['errorCode']);
+     if(resData['errorCode'].toString()=="500"){
+       showCustomToast(
+           context, resData['errorMessage'].toString(), Icons.clear, Colors.red);
+     }else{
+       orgProvider.getUsersByCompanyId(widget.organization.id!);
+       showCustomToast(
+           context, "Employee added successfully", Icons.check, Colors.green);
+       Navigator.of(context).pop();
+     }
       // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
     } else {
       showCustomToast(

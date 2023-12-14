@@ -75,15 +75,12 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                       children: [
                         SizedBox(width: 38.w,),
                         InkWell(onTap: () async {
-                          List<Organization> organization = await orgProvider
-                              .getCompanyDetails(3);
-                          print(organization[0].companyName);
-                          orgProvider.setCompanyOrgId(organization[0].id!);
+                         Organization organization = await orgProvider.getOrgDetails();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (builder) =>
-                                      CompanyDashboard(organization[0])));
+                                      CompanyDashboard(organization)));
                         },
                           child: empCounts(
                               "0", "Monitoring", Images.monitoring, Color(

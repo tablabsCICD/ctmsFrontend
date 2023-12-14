@@ -3,6 +3,7 @@ import 'dart:convert';
 
 
 import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/SharedPreferencesConstant.dart';
@@ -38,8 +39,14 @@ class LocalSharePreferences{
 
   Future<LoginDeatils> getLoginData() async{
    String data  = await getString(SharedPreferencesConstant.LoginKey);
-   LoginDeatils datas=LoginDeatils.fromJson(jsonDecode(data));
-   return datas;
+   LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(data));
+   return loginDeatils;
+  }
+
+  Future<Organization> getOrganizationData() async{
+    String data  = await getString(SharedPreferencesConstant.companyKey);
+    Organization orgDetails=Organization.fromJson(jsonDecode(data));
+    return orgDetails;
   }
 
   Future<String> getLoginToken() async{
@@ -51,6 +58,8 @@ class LocalSharePreferences{
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.clear();
     setBool(SharedPreferencesConstant.LoginKeyBool, false);
+    LocalSharePreferences()
+        .setString(SharedPreferencesConstant.AuthToken, "null");
     return true;
   }
 

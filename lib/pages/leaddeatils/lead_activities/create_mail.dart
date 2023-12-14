@@ -41,7 +41,11 @@ class _CreateMail extends State<CreateMail>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    toNameController.text = widget.lead!.emailId!;
+   setData();
+  }
+
+  setData(){
+    toNameController.text = widget.onlyMail?'':widget.lead!.emailId!;
   }
 
   @override

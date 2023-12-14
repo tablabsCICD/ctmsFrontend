@@ -76,11 +76,12 @@ class _LeadDashboard extends State<CustomerList> {
     debugPrint('Query : $query \n Total customer : ${customerList.length}');
     finalCustomerList.clear();
     debugPrint('Total leads : ${customerList.length}');
-    customerList.forEach((element) {
-      if(element.companyName!.contains(query) || element.mobileNumber!.contains(query)){
+    ApiCustomerSearchData('', selectedPageNumber, query);
+    /*customerList.forEach((element) {
+      if(element.companyName!.toLowerCase().contains(query.toLowerCase()) || element.mobileNumber!.contains(query)){
         finalCustomerList.add(element);
       }
-    });
+    });*/
     debugPrint('Final Customer : ${finalCustomerList.length}');
     setState(() {});
   }
@@ -598,6 +599,30 @@ class _LeadDashboard extends State<CustomerList> {
       customerList.clear();
       finalCustomerList.clear();
       customerList.addAll(employeeList.data!.content!);
+      finalCustomerList.addAll(employeeList.data!.content!);
+      print('this is ${finalCustomerList.length}');
+      totalPages = employeeList.data!.totalPages!;
+      totalElements = employeeList.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
+      isLoad = false;
+      setState(() {});
+    }
+  }
+
+  Future<void> ApiCustomerSearchData(String URL,int pno,String query) async {
+    if(query=='') {ApiGetData('', selectedPageNumber);}
+    isLoad = true;
+    setState(() {});
+    final dio = Dio();
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    final response = await dio.get(ApiConstant.BASE_URL+"Customer/getAllByFilter?page=${pno}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    print(response.data);
+    if (response.statusCode == 200) {
+      CustomerListResponse employeeList =
+      CustomerListResponse.fromJson(jsonDecode(response.data));
+      finalCustomerList.clear();
       finalCustomerList.addAll(employeeList.data!.content!);
       print('this is ${finalCustomerList.length}');
       totalPages = employeeList.data!.totalPages!;

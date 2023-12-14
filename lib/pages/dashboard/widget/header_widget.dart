@@ -63,8 +63,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   Organization? organization;
 
   Future<void> getCompanyDetail() async {
-    await orgProvider.getCompanyDetails(3);
-    organization = orgProvider.orgnization[0];
+    organization = await orgProvider.getOrgDetails();
     setupData();
   }
 

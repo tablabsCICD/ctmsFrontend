@@ -46,7 +46,7 @@ class LoadList extends StatefulWidget {
 
 class _LoadListState extends State<LoadList> {
   final bidProvider = locator<BidProvider>();
-  final authProvider = locator<AuthProvider>();
+  final orgProvider = locator<OrgProvider>();
   TextEditingController bidAmtController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -310,17 +310,19 @@ class _LoadListState extends State<LoadList> {
               MediaQuery.of(context).size.height - 400,
               child: Center(
                   child: CircularProgressIndicator()))):*/
-      model.orgAllFullLoadList.isEmpty && model.isLoading==false
-          ? Container(
-              height:
-              MediaQuery.of(context).size.height - 400,
-              child: Center(
-                  child: TextView(
-                      title: "No Record Found",
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900)))
-          :model.orgAllFullLoadList.isEmpty
+      model.orgFullLoadList.isEmpty
+          ?  Container(
+          height:
+          MediaQuery.of(context).size.height - 600,
+          decoration: BoxDecoration(
+              color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+          child: Center(
+              child: TextView(
+                  title: "No Record Found",
+                  fontSize: 16.sp,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w900)))
+         /* :model.orgAllFullLoadList.isEmpty
           ? Container(
               height:
               MediaQuery.of(context).size.height - 600,
@@ -328,7 +330,7 @@ class _LoadListState extends State<LoadList> {
               color: AppColor.white, borderRadius: BorderRadius.circular(10)),
           margin: EdgeInsets.all(20),
               child: Center(
-                  child: CircularProgressIndicator()))
+                  child: CircularProgressIndicator()))*/
           :Expanded(
             child: StaggeredGridView.countBuilder(
             controller: _scrollController,
@@ -674,6 +676,7 @@ class _LoadListState extends State<LoadList> {
                   _buildPopupMenu('Full Load Required',2,model),
                   _buildPopupMenu('Part Load Available',3,model),
                   _buildPopupMenu('Part Load Required',4,model),
+                  _buildPopupMenu('Get Load By Branch Name',5,model),
                 ],
               ),
               Text(
@@ -692,7 +695,7 @@ class _LoadListState extends State<LoadList> {
   }
 
   PopupMenuItem _buildPopupMenu(
-      String title, int? id,OrgProvider model
+      String title, int? index,OrgProvider model
       ) {
     return PopupMenuItem(
       child: Text(title, style: TextStyle(
@@ -701,12 +704,139 @@ class _LoadListState extends State<LoadList> {
           fontWeight: FontWeight.w500,
           color: Colors.black),),
       onTap: (){
-        setState(() {
-          selectedTab = title;
-          model.getFilterFullLoadList(title);
-        });
+        if(index==5){
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return Dialog(
+                alignment: Alignment.center,
+                backgroundColor: Colors.transparent,
+                insetAnimationDuration: Duration(milliseconds: 200),
+                insetAnimationCurve: Curves.easeOutExpo,
+                // <-- SEE HERE
+                child: StatefulBuilder(builder:
+                    (BuildContext context, StateSetter setState) {
+                  return _branchNameWiseDialog(context, setState,index!);
+                }),
+              );
+            },
+          );
+        }else {
+          setState(() {
+            selectedTab = title;
+            model.getFilterFullLoadList(title);
+          });
+        }
       },
     );
   }
 
+  TextEditingController branchNameController = TextEditingController();
+  Widget _branchNameWiseDialog(BuildContext context, StateSetter stateSetter, int index) {
+    return Container(
+      width: 350.w,
+      height: 350.h,
+      padding: EdgeInsets.all(20),
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.close_rounded,size: 20,),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: 300.h,
+              child: Column(
+                children: [
+
+                  SizedBox(
+                    width: 200.w,
+
+                    child:
+                    _buildTextField(
+                        'Branch', 'Please enter branch name', branchNameController),
+                  ),
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text(
+                          "Search",
+                          style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontFamily: GoogleFonts.poppins().fontFamily),
+                        ),
+                      ))
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+      String label, String hint, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Color(0xff1B1B1B),
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        SizedBox(
+          height:52.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: TextField(
+              controller: controller,
+              style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                  overflow: TextOverflow.ellipsis
+              ),
+              maxLines: label=="Description"?5:1,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                hintText: hint,
+                hintStyle: TextStyle(
+                    color: Color(0xffcccccc),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

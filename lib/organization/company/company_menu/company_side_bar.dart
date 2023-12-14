@@ -104,7 +104,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
-                            CompanyDashboard(organization[0])));
+                            CompanyDashboard(organization!)));
               },
             ),
             DrawerListTile(
@@ -124,7 +124,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 //  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
                 Navigator.of(context).restorablePushReplacement(
                     (context, arguments) => MaterialPageRoute(
-                        builder: (builder) => AllUsers(organization[0])));
+                        builder: (builder) => AllUsers(organization!)));
               },
             ),
             DrawerListTile(
@@ -144,7 +144,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 // Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
-                        builder: (builder) => CompLoadScreen(organization[0])));
+                        builder: (builder) => CompLoadScreen(organization!)));
               },
             ),
             DrawerListTile(
@@ -163,7 +163,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
-                        builder: (builder) => CompBuySell(organization[0])));
+                        builder: (builder) => CompBuySell(organization!)));
                 //  Navigator.restorablePushReplacementNamed(context,AppRoutes.meeting);
               },
             ),
@@ -201,7 +201,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
-                            CompanyBidsScreen(organization[0])));
+                            CompanyBidsScreen(organization!)));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),
@@ -222,7 +222,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
-                            CompJobsScreen(organization[0])));
+                            CompJobsScreen(organization!)));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),
@@ -243,7 +243,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
-                            GeneralPostScreen(organization[0])));
+                            GeneralPostScreen(organization!)));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),
@@ -295,11 +295,11 @@ class _CompanySideBarState extends State<CompanySideBar> {
     );
   }
 
-  List<Organization> organization = [];
+  Organization? organization;
   final orgProvider = locator<OrgProvider>();
 
   Future<void> getOrganization() async {
-    organization = await orgProvider.getCompanyDetails(3);
+   organization = await orgProvider.getOrgDetails();
   }
 }
 

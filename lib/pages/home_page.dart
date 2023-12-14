@@ -10,13 +10,19 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/organization/model/organization_model.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_list.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
+import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
@@ -116,65 +122,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Container(
                     margin: EdgeInsets.all(30),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Employee Data',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 30.sp,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                          ),
-                        ),
-                        Spacer(),
-                       /* Row(
-                          children: [
-                            filterIcon(),
-                            SizedBox(
-                              width: 27.w,
-                            ),
-                            SizedBox(
-                              height: 58.h,
-                              width: 180.w,
-                              child: ElevatedButton(
-                                  onPressed: () async {
-                                    final url = Uri.parse(
-                                        "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}");
-                                    debugPrint("Bilty Url : "+url.toString());
-                                    if (!await launchUrl(url,)) {
-                                      throw Exception('Could not launch $url');
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      primary: ThemeColor.theme_blue,
-                                      onPrimary: Colors.white),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.add_circle,
-                                        size: 18,
-                                      ),
-                                      SizedBox(
-                                        width: 6.w,
-                                      ),
-                                      TextView(
-                                        title: "Add Employee",
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white,
-                                      ),
-                                    ],
-                                  )),
-                            )
-                          ],
-                        ),*/
-                        SizedBox(
-                          width: 18,
-                        )
-                      ],
+                    child: Text(
+                      'Employee Data',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30.sp,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w600,
+                        height: 0,
+                      ),
                     ),
                   ),
                   Container(
@@ -476,4 +432,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
 }

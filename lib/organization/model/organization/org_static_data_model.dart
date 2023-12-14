@@ -7,7 +7,7 @@ class OrgStaticDataModel {
 
   OrgStaticDataModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null || json['data'] != ''? new Data.fromJson(json['data']) : null;
     success = json['success'];
   }
 

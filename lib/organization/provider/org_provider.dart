@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/response/branch_response_model.dart';
 import 'package:flutter_hr_management/organization/company/load_list.dart';
 import 'package:flutter_hr_management/organization/model/load_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/org_quote_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/search_load_list.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -164,6 +169,32 @@ class OrgProvider extends ChangeNotifier {
     int? id = await preferences.getInt("c_id")!;
     return id;
   }
+bool isLoad = false;
+  Branch? branch;
+  getBranchById(int branchId) async {
+    isLoad = true;
+    notifyListeners();
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    String myUrl = ApiConstant.BASE_URL +
+        "branch/getBranchById?branchId=${branchId}";
+    print("Get Branch Details :" + myUrl
+    );
+    final dio = Dio();
+    final response = await dio.get(
+        myUrl,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    isLoad = false;
+    if(response.data != null){
+      BranchResponse branchResponse = BranchResponse.fromJson(jsonDecode(response.data));
+      branch = branchResponse.data;
+    }
+    notifyListeners();
+  }
 
   createOrg(
       {String? panCard,
@@ -222,8 +253,8 @@ class OrgProvider extends ChangeNotifier {
     if (type == "User") {
       userList.clear();
       allUserList.forEach((element) {
-        if (element.firstName!.contains(query) ||
-            element.lastName!.contains(query) ||
+        if (element.firstName!.toLowerCase().contains(query.toLowerCase()) ||
+            element.lastName!.toLowerCase().contains(query.toLowerCase()) ||
             element.mobileNumber!.toString().contains(query)) {
           userList.add(element);
         }
@@ -233,8 +264,8 @@ class OrgProvider extends ChangeNotifier {
     } else if (type == "Load") {
       orgFullLoadList.clear();
       orgAllFullLoadList.forEach((element) {
-        if (element.source!.contains(query) ||
-            element.destination!.contains(query) ||
+        if (element.source!.toLowerCase().contains(query.toLowerCase()) ||
+            element.destination!.toLowerCase().contains(query.toLowerCase()) ||
             element.contactNumber!.toString().contains(query)) {
           orgFullLoadList.add(element);
         }
@@ -284,6 +315,13 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  getOrgDetails() async {
+    List<Organization> organization = await getCompanyDetails(3);
+    print(organization[0].companyName);
+    setCompanyOrgId(organization[0].id!);
+    return organization[0];
+  }
+
   getUserList(String title) {
     userList.clear();
 
@@ -312,7 +350,6 @@ class OrgProvider extends ChangeNotifier {
 
   getStaticData(int id) async {
     isLoading = true;
-    notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
     String myUrl = AppConstants.BASE_URL+"/fullTruckStatistics?companyId=${id}";
      //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
@@ -320,12 +357,16 @@ class OrgProvider extends ChangeNotifier {
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     var response = json.decode(req.body);
-    var type = OrgStaticDataModel.fromJson(response);
-    print(response);
-    userCount = type.data!.totalCompanyRegister!;
-    fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!;
-    bidCont = type.data!.totalLoggedUserNameInBiding!;
-    buySellPostCount = type.data!.totalLoggedUserNameInBuySell!;
+    if(response['data']==''){
+
+    }else{
+      var type = OrgStaticDataModel.fromJson(response);
+      print(response);
+      userCount = type.data!.totalCompanyRegister!;
+      fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!;
+      bidCont = type.data!.totalLoggedUserNameInBiding!;
+      buySellPostCount = type.data!.totalLoggedUserNameInBuySell!;
+    }
     notifyListeners();
   }
 
@@ -466,9 +507,27 @@ class OrgProvider extends ChangeNotifier {
       });
       fullLoadCount = orgFLRList.length + orgFLAList.length;
       partLoadCount = orgPLRList.length + orgPLAList.length;
-      notifyListeners();
     }
     isLoading = false;
+    notifyListeners();
+
+  }
+
+  getOrgFullLoadListByBranch(int id,String branchName) async {
+    orgFullLoadList.clear();
+    isLoading = true;
+    notifyListeners();
+    String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyIdAndBranchName?companyId=${id}&branchName=${branchName}";
+    print("Get All Load Truck Data By Branch - " + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    final response = json.decode(req.body);
+    print(response);
+    if (req.statusCode == 200) {
+      FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+      orgFullLoadList.addAll(fullLoadModel.data!);
+    }
+    isLoading = false;
+    notifyListeners();
   }
 
   getFilterFullLoadList(String title) {

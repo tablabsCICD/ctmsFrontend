@@ -1,3 +1,5 @@
+import 'package:flutter_hr_management/model/response/branch_response_model.dart';
+
 class EmployeeListResponse {
   String? message;
   Data? data;
@@ -168,6 +170,7 @@ class EmpData {
   int? departmentId;
   BoardingDeatails? boardingDeatails;
   Role? role;
+  Branch? branch;
   int? isActive;
   String? otp;
   String? password;
@@ -195,6 +198,7 @@ class EmpData {
         this.departmentId,
         this.boardingDeatails,
         this.role,
+        this.branch,
         this.isAdmin,
         this.isActive,
         this.otp,
@@ -226,6 +230,9 @@ class EmpData {
     role = json['role'] != null
         ? new Role.fromJson(json['role'])
         : null;
+    branch = json['branch'] != null
+        ? new Branch.fromJson(json['branch'])
+        : null;
      isAdmin = json['is_admin']??false;
     isActive = json['isActive']??1;
     otp = json['otp']??'';
@@ -256,7 +263,12 @@ class EmpData {
     if (this.boardingDeatails != null) {
       data['boardingDeatails'] = this.boardingDeatails!.toJson();
     }
-    data['role'] = this.role;
+    if (this.branch != null) {
+      data['branch'] = this.branch!.toJson();
+    }
+    if (this.role != null) {
+      data['role'] = this.role!.toJson();
+    }
     data['is_admin'] = this.isAdmin;
     data['isActive'] = this.isActive;
     data['otp'] = this.otp;

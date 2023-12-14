@@ -196,12 +196,14 @@ class _LeadDashboard extends State<LeadDashboard> {
     debugPrint('Query : $query \n Total leads : ${leadData.length}');
     finalLeadData.clear();
     debugPrint('Total leads : ${leadData.length}');
-    leadData.forEach((element) {
-      if (element.lead!.companyName!.contains(query) ||
+    ApiLeadSearchData("", selectedPageNumber, query);
+
+    /*leadData.forEach((element) {
+      if (element.lead!.companyName!.toLowerCase().contains(query.toLowerCase()) ||
           element.lead!.mobileNumber!.contains(query)) {
         finalLeadData.add(element);
       }
-    });
+    });*/
     debugPrint('Final Leads : ${finalLeadData.length}');
     setState(() {});
   }
@@ -223,6 +225,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           'Authorization': 'Bearer ${token}',
         }));
     print(response.data);
+    isLoad = false;
     if (response.statusCode == 200) {
       LeadListResponse leadList =
       LeadListResponse.fromJson(jsonDecode(response.data));
@@ -251,8 +254,44 @@ class _LeadDashboard extends State<LeadDashboard> {
       });
       print('this is ${leadData.length}');
 
-      isLoad = false;
+
     }
+    setState(() {});
+  }
+
+  Future<void> ApiLeadSearchData(String URL, int pageNo,String query) async {
+    if(query=='') {ApiGetData('', selectedPageNumber);}
+    isLoad = true;
+    setState(() {});
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    String myUrl = ApiConstant.BASE_URL +
+        "api/Lead/getAll/byFilter?page=${pageNo}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc";
+    print("Get All Leads :" + myUrl
+    );
+    final dio = Dio();
+    final response = await dio.get(
+        myUrl,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    isLoad = false;
+    if (response.statusCode == 200) {
+      LeadListResponse leadList =
+      LeadListResponse.fromJson(jsonDecode(response.data));
+      finalLeadData.clear();
+
+      finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
+      totalPages = leadList.data!.totalPages!;
+      totalElements = leadList.data!.totalElements!;
+      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
+      print('this is ${leadData.length}');
+
+
+    }
+    setState(() {});
   }
 
   Future<void> GetFilterdLeadData(int pageNo,String fromDate, String toDate) async {

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization/model/organization_model.dart';
 import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
+import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
@@ -44,10 +47,12 @@ class EntryState extends State<EntryScreen>{
     );
   }
 
+  final orgProvider = locator<OrgProvider>();
+
   void checkIsLoggedIn()async {
     bool isLogin =await LocalSharePreferences().getBool(SharedPreferencesConstant.LoginKeyBool);
     if(isLogin==true){
-     // getToken();
+      Organization organization = await orgProvider.getOrgDetails();
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }else{
       Navigator.pushReplacementNamed(context, AppRoutes.login);

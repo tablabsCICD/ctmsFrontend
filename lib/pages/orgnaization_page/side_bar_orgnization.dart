@@ -60,13 +60,13 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Monitoring",
               icon: Images.monitoring,
               press: () async {
-                List<Organization> organization = await orgProvider.getCompanyDetails(3);
-                print(organization[0].companyName);
+                Organization organization = await orgProvider.getOrgDetails();
+                print(organization.companyName);
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (builder) =>
-                            CompanyDashboard(organization[0])));
+                            CompanyDashboard(organization)));
               },
             ),
             DrawerListTile(

@@ -123,14 +123,14 @@ class _ProfileInfoState extends State<ProfileInfo> {
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w300,),
                               ),
-                              SizedBox(height: 20.h,),
+                             /* SizedBox(height: 20.h,),
                               Row(
                                 children: [
                                   SvgPicture.asset('assets/images/fb_logo.svg',height: 25.h,width: 25.h,),
                                   SizedBox(width: 25.w,),
                                   SvgPicture.asset('assets/images/gmail_logo.svg',height: 25.h,width: 25.h,),
                                 ],
-                              )
+                              )*/
                             ],
                           ),
                         ),
@@ -196,7 +196,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                 /* Text(
                     "About",
                     style: TextStyle(color: Colors.black,
                       fontSize: 20.sp,
@@ -249,7 +249,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                   ),
                   SizedBox(
                     height: 24,
-                  ),
+                  ),*/
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -387,8 +387,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
       }
       showCustomToast(context, "Emp Edit Success", Icons.check, Colors.green);
     }
-
   }
+
   getIconData(String icon, {required  Function() onTap}) {
     return Container(
       height: 54.h,

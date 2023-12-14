@@ -11,6 +11,7 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/roles.dart';
+import 'package:flutter_hr_management/model/response/search_emp_response.dart';
 import 'package:flutter_hr_management/organization/model/all_user_model.dart';
 import 'package:flutter_hr_management/organization/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
@@ -349,16 +350,18 @@ class _EmpDashboard extends State<EmpDashboard> {
     );
   }
 
-  void filterSearchResults(String query) {
+  Future<void> filterSearchResults(String query) async {
     debugPrint('Query : $query \n Total leads : ${empData.length}');
     finalEmData.clear();
     debugPrint('Total leads : ${empData.length}');
-    empData.forEach((element) {
-      if (element.firstName!.contains(query) ||
+
+    ApiEmpSearchData('',selectedPageNumber,query);
+   /* empData.forEach((element) {
+      if (element.firstName!.toLowerCase().contains(query.toLowerCase()) ||
           element.mobileNumber!.contains(query)) {
         finalEmData.add(element);
       }
-    });
+    });*/
     debugPrint('Final Leads : ${finalEmData.length}');
     setState(() {});
   }
@@ -412,6 +415,32 @@ class _EmpDashboard extends State<EmpDashboard> {
       });
       Constants.allEmployee.clear();
       Constants.allEmployee.addAll(employeeListResponse!.data!.content!);
+      isLoad = false;
+      setState(() {});
+    }
+  }
+
+  Future<void> ApiEmpSearchData(String URL, int pNo,String query) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    if(query=='') {ApiGetDataDashbord('', selectedPageNumber);}
+    isLoad = true;
+    setState(() {});
+    Dio dio = Dio();
+    finalEmData.clear();
+    final response = await dio.get(
+        ApiConstant.BASE_URL + "api/search?keyword=${query}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      SearchEmpResponse searchEmpResponse =
+          SearchEmpResponse.fromJson(jsonDecode(response.data));
+      searchEmpResponse.data!.forEach((element) {
+        finalEmData.add(element.employeeDetails!);
+      });
       isLoad = false;
       setState(() {});
     }
@@ -957,11 +986,11 @@ class _EmpDashboard extends State<EmpDashboard> {
       bool isSelected) {
     return InkWell(
       onTap: () {
-        if (name == "Active Employee") {
+        if (name == "Active Employees") {
           finalEmData.clear();
           finalEmData.addAll(activeEmpData);
           selectedEmpList = "Active";
-        } else if (name == "Inactive Employee") {
+        } else if (name == "Inactive Employees") {
           finalEmData.clear();
           finalEmData.addAll(inActiveEmpData);
           selectedEmpList = "InActive";

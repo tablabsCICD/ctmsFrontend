@@ -59,6 +59,7 @@ class User {
   String? emailId;
   int? mobileNumber;
   String? companyName;
+  String? branchName;
   String? companyAddress;
   String? city;
   String? state;
@@ -100,6 +101,7 @@ class User {
         this.emailId,
         this.mobileNumber,
         this.companyName,
+        this.branchName,
         this.companyAddress,
         this.city,
         this.state,
@@ -140,6 +142,7 @@ class User {
     emailId = json['emailId']?? '';
     mobileNumber = json['mobileNumber']?? 0;
     companyName = json['companyName']?? '';
+    branchName = json['branchName']?? '';
     companyAddress = json['companyAddress']?? '';
     city = json['city']?? '';
     state = json['state']?? '';
@@ -183,6 +186,7 @@ class User {
     data['emailId'] = this.emailId;
     data['mobileNumber'] = this.mobileNumber;
     data['companyName'] = this.companyName;
+    data['branchName'] = this.branchName;
     data['companyAddress'] = this.companyAddress;
     data['city'] = this.city;
     data['state'] = this.state;

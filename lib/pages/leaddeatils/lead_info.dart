@@ -72,7 +72,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
           color: Color(0xffF6F6F6),
           child: Column(
             children: [
-              HeaderWidget(isSearchVisible:true,),
+              HeaderWidget(isSearchVisible:false,),
               SizedBox(
                 height: 26.h,
               ),

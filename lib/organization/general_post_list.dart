@@ -107,6 +107,8 @@ class _GeneralPostListState extends State<GeneralPostList> {
           child: Container(
               height:
               MediaQuery.of(context).size.height - 400,
+              decoration: BoxDecoration(
+                  color: AppColor.white, borderRadius: BorderRadius.circular(5)),
               child: Center(
                   child: TextView(
                       title: "No Record Found",

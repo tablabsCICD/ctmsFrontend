@@ -42,7 +42,7 @@ class _EmpInfo extends State<EmpInfo> {
           color: ThemeColor.baground,
           child: Column(
             children: [
-              HeaderWidget(isSearchVisible:true,),
+              HeaderWidget(isSearchVisible:false,),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(left: 30.w, bottom: 10.h, top: 20.h),
@@ -129,8 +129,8 @@ class _EmpInfo extends State<EmpInfo> {
                           ],
                         ),
                         Spacer(),
-                        icons(Images.add_circle),
-                        SizedBox(width: 19.w,),
+                        /*icons(Images.add_circle),
+                        SizedBox(width: 19.w,),*/
                         InkWell(
                           onTap: () {
                             showDialog(

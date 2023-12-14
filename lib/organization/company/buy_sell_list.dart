@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
@@ -103,7 +104,17 @@ class _BuySellListState extends State<BuySellList> {
                       ),
                       SizedBox(height: 10.h),
                       model.finalBuySellList.isEmpty
-                          ? SizedBox.shrink()
+                          ?  Container(
+                          height:
+                          MediaQuery.of(context).size.height - 600,
+                          decoration: BoxDecoration(
+                              color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                          child: Center(
+                              child: TextView(
+                                  title: "No Record Found",
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900)))
                           : Container(
                                   height: 433.h,
                                   width: 1052.w,

@@ -99,6 +99,7 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
     "Pending Leads": "Pending Leads",
     "Rejected Leads": "Rejected Leads",
     "Total Leads": "Total Leads",
+    "No Leads": "No Leads"
   };
 
   final colorList = <Color>[
@@ -106,6 +107,7 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
     const Color(0xfffc9e10),
     const Color(0xfff5120b),
     const Color(0xff5581e1),
+    Colors.grey,
   ];
 
   final gradientList = <List<Color>>[
