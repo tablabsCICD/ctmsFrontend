@@ -319,6 +319,7 @@ bool isLoad = false;
     List<Organization> organization = await getCompanyDetails(3);
     print(organization[0].companyName);
     setCompanyOrgId(organization[0].id!);
+    notifyListeners();
     return organization[0];
   }
 

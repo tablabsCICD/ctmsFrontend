@@ -65,6 +65,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   Future<void> getCompanyDetail() async {
     organization = await orgProvider.getOrgDetails();
     setupData();
+    setState(() {
+    });
   }
 
   setupData() {
@@ -617,10 +619,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   void submitEditForm() async {
-    String token = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.AuthToken);
-    LoginDeatils loginDeatils =
-        await LocalSharePreferences.localSharePreferences.getLoginData();
 
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
@@ -632,7 +630,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       "companyName": _companyNameController.text,
       "gstNumber": organization!.gstNumber,
       "gstNumber2": organization!.gstNumber2,
-      "id": 1,
+      "id": organization!.id,
       "isVerified": organization!.isVerified,
       "landlineNumber": organization!.landlineNumber,
       "numberOfRatings": organization!.numberOfRatings,
@@ -656,6 +654,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     print('the body ${response.data}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
+      orgProvider.getOrgDetails();
+      setState(() {
+
+      });
       showCustomToast(context, "Profile updated", Icons.check, Colors.green);
     } else {
       showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
