@@ -154,7 +154,7 @@ class _BidListState extends State<BidList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -184,7 +184,7 @@ class _BidListState extends State<BidList> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

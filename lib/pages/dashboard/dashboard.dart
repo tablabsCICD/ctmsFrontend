@@ -40,6 +40,8 @@ import 'dart:html' as html;
 
 
 class Dashboard extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  Dashboard(this.scaffoldKey);
   @override
   _DashboardState createState() => _DashboardState();
 }
@@ -62,6 +64,7 @@ class _DashboardState extends State<Dashboard> {
       child: Column(
         children: [
           HeaderWidget(
+            scaffoldKey: widget.scaffoldKey,
             isSearchVisible: true,
             onSearchTap: (value) {
               filterSearchResults(value);
@@ -492,7 +495,7 @@ class _DashboardState extends State<Dashboard> {
 
   filterIcon() {
     return Container(
-        width: 120.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
@@ -521,7 +524,7 @@ class _DashboardState extends State<Dashboard> {
               "Filter",
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 20.sp,
+                fontSize: 18.sp,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w400,
               ),

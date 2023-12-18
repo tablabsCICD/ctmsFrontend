@@ -42,11 +42,12 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
     super.initState();
    getLoginDetail();
   }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: SideBarOrganization(),
       backgroundColor: AppColor.bgColor,
       body: SafeArea(
@@ -66,7 +67,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
               flex: 4,
               child: Column(
                 children: [
-                  HeaderWidget(isSearchVisible: false),
+                  HeaderWidget(scaffoldKey:_scaffoldKey,isSearchVisible: false),
                   SizedBox(height: 38.h,),
                   Container(
                     color: AppColor.bgColor,

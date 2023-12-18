@@ -15,6 +15,9 @@ import '../dashboard/widget/header_widget.dart';
 import 'dart:math';
 
 class ReportDataScreen extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  ReportDataScreen(this.scaffoldKey);
+
   @override
   State<StatefulWidget> createState() {
     return _ReportDataScreen();
@@ -57,6 +60,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeaderWidget(
+              scaffoldKey: widget.scaffoldKey,
               isSearchVisible: false,
             ),
             SizedBox(

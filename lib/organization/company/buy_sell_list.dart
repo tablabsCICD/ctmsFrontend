@@ -117,7 +117,7 @@ class _BuySellListState extends State<BuySellList> {
                                   fontWeight: FontWeight.w900)))
                           : Container(
                                   height: 433.h,
-                                  width: 1052.w,
+                                  width: 1100.w,
                                   padding: EdgeInsets.all(29),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
@@ -304,11 +304,16 @@ class _BuySellListState extends State<BuySellList> {
                               SizedBox(
                                 width: 10.w,
                               ),
-                              TextView(
-                                title: 'View All',
-                                color: ThemeColor.theme_blue,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w400,
+                              InkWell(
+                                onTap: (){
+                                  model.getBuyVehicles(widget.organization.id!);
+                                },
+                                child: TextView(
+                                  title: 'View All',
+                                  color: ThemeColor.theme_blue,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               SizedBox(
                                 width: 20.w,
@@ -588,7 +593,7 @@ class _BuySellListState extends State<BuySellList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -618,7 +623,7 @@ class _BuySellListState extends State<BuySellList> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

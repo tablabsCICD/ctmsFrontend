@@ -38,6 +38,9 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 
 class MeetingPageScreen extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  MeetingPageScreen(this.scaffoldKey);
+
   @override
   _MeetingPageScreen createState() => _MeetingPageScreen();
 }
@@ -108,7 +111,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
         child: Column(
           children: [
             /// Header Part
-            HeaderWidget(isSearchVisible:true,
+            HeaderWidget(
+              scaffoldKey: widget.scaffoldKey,
+              isSearchVisible:true,
               onSearchTap: (value) {
                 filterSearchResults(value);
               },
@@ -139,7 +144,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                             ),
                             SizedBox(
                               height: 50.h,
-                              width: 190.w,
+                              width: 200.w,
                               child: ElevatedButton(
                                   onPressed: () {
                                     _showAlertDialog();
@@ -1270,7 +1275,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   filterIcon() {
     return Container(
-        width: 120.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
@@ -1306,7 +1311,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 "Filter",
                 style:TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

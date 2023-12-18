@@ -90,11 +90,13 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
     super.initState();
 
   }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      key: _scaffoldKey,
+        drawer: CompanySideBar(),
         backgroundColor: ThemeColor.baground,
         body: Stack(
           children: [
@@ -109,6 +111,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                   child: Column(
                     children: [
                       HeaderWidget(
+                        scaffoldKey: _scaffoldKey,
                         isSearchVisible: true,
                         onSearchTap: (value) {
                           orgProvider.filterSearchResults(value,"Load");
@@ -121,7 +124,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                 ),
               ],
             ),
-            Positioned(
+            if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -134,7 +137,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                   width: 80.w,
                 ),
               ),
-            ),
+            ) else SizedBox.shrink(),
           ],
         ));
 

@@ -29,11 +29,14 @@ import '../dashboard/widget/header_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomerList extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  CustomerList(this.scaffoldKey);
+
   @override
-  _LeadDashboard createState() => _LeadDashboard();
+  _CustomerDashboard createState() => _CustomerDashboard();
 }
 
-class _LeadDashboard extends State<CustomerList> {
+class _CustomerDashboard extends State<CustomerList> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -96,7 +99,7 @@ class _LeadDashboard extends State<CustomerList> {
       child: Column(
         children: [
           /// Header Part
-          HeaderWidget(isSearchVisible:true,onSearchTap: (value){filterSearchResults(value);},),
+          HeaderWidget(scaffoldKey:widget.scaffoldKey,isSearchVisible:true,onSearchTap: (value){filterSearchResults(value);},),
           Container(
             margin: EdgeInsets.only(top:33,left: 33,right: 33,bottom: 10),
             child: Row(
@@ -717,7 +720,7 @@ class _LeadDashboard extends State<CustomerList> {
 
   filterIcon() {
     return Container(
-        width: 120.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
@@ -749,7 +752,7 @@ class _LeadDashboard extends State<CustomerList> {
                 "Filter",
                 style:TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

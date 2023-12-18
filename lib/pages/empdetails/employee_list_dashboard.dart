@@ -29,9 +29,12 @@ class _EmloyeeListScreen extends State<EmloyeeListScreen> {
 
     super.initState();
   }
+
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       drawer: SideBar(),
       backgroundColor: AppColor.bgSideMenu,
       body: SafeArea(
@@ -48,7 +51,7 @@ class _EmloyeeListScreen extends State<EmloyeeListScreen> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: EmpDashboard(),
+              child: EmpDashboard(_key),
             ),
           ],
         ),

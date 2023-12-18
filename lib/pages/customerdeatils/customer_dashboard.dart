@@ -15,9 +15,11 @@ class CustomerDashboard extends StatefulWidget {
 }
 
 class _LeadListScreen extends State<CustomerDashboard> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: SideBar(),
       backgroundColor: AppColor.bgSideMenu,
       body: SafeArea(
@@ -34,7 +36,7 @@ class _LeadListScreen extends State<CustomerDashboard> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: CustomerList(),
+              child: CustomerList(_scaffoldKey),
             ),
           ],
         ),

@@ -56,10 +56,13 @@ class CompBuySell extends StatefulWidget {
 }
 
 class _CompBuySellState extends State<CompBuySell> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+        key: _scaffoldKey,
+        drawer: CompanySideBar(),
         backgroundColor: ThemeColor.baground,
         body: Stack(
           children: [
@@ -74,6 +77,7 @@ class _CompBuySellState extends State<CompBuySell> {
                   child: Column(
                     children: [
                       HeaderWidget(
+                        scaffoldKey: _scaffoldKey,
                         isSearchVisible: false,
                         onSearchTap: () {},
                       ),

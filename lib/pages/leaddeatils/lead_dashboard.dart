@@ -15,9 +15,11 @@ class LeadDashboardScreen extends StatefulWidget {
 }
 
 class _LeadListScreen extends State<LeadDashboardScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: SideBar(),
       backgroundColor: AppColor.bgSideMenu,
       body: SafeArea(
@@ -34,7 +36,7 @@ class _LeadListScreen extends State<LeadDashboardScreen> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: LeadListScreen(),
+              child: LeadListScreen(_scaffoldKey),
             ),
           ],
         ),

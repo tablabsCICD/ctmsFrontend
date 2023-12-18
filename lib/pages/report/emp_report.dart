@@ -30,9 +30,12 @@ class _EmployeeReportState extends State<EmployeeReport> {
     // ApiGetData("http://ec2-43-205-143-58.ap-south-1.compute.amazonaws.com:8080/crm/Employee/getAll");
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: SideBar(),
       backgroundColor: ThemeColor.baground,
       body: SafeArea(
@@ -45,7 +48,7 @@ class _EmployeeReportState extends State<EmployeeReport> {
             ),
             Expanded(
               flex: 4,
-              child: Dashboard(),
+              child: Dashboard(_scaffoldKey),
             ),
           ],
         ),

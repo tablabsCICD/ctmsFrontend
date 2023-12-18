@@ -174,30 +174,11 @@ class _LoadListState extends State<LoadList> {
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 10, horizontal: 0),
-                                          child: CustomText("Search",
+                                          child: Text("Search",
                                               style: Style.button),
                                         ),
                                       ),
-                                      /*ElevatedButton(
-                                  onPressed: () {
-                                    model.getSearchByNameList('',
-                                        selectedFromCity!, selectedToCity!);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.black,
-                                    onPrimary: Colors.white,
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5))),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 0, horizontal: 0),
-                                    child: CustomText("Search",
-                                        style: Style.button),
-                                  ),
-                                ),*/
+
                                     ],
                                   ),
                                 ),
@@ -241,29 +222,7 @@ class _LoadListState extends State<LoadList> {
   }
   Set<int>? selectedValues = [1, 2, 3, 4, 5].toSet();
 
-  void _showMultiSelect(BuildContext context) async {
-    final items = <MultiSelectDialogItem<int>>[
-      MultiSelectDialogItem(1, 'All Requirements'),
-      MultiSelectDialogItem(2, 'Required - Full load vehicle'),
-      MultiSelectDialogItem(3, 'Required - Part load vehicle'),
-      MultiSelectDialogItem(4, 'Available - Full load vehicle'),
-      MultiSelectDialogItem(5, 'Available - Part load vehicle'),
-    ];
-
-    selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-          initialSelectedValues: selectedValues,
-        );
-      },
-    );
-    print(selectedValues!.length);
-    print(selectedValues);
-  }
-
-  String getText(Set<int>? selectedValues) {
+    String getText(Set<int>? selectedValues) {
     int count = selectedValues!.length;
     String message = 'All Requirements';
     if (count == 5)
@@ -275,51 +234,15 @@ class _LoadListState extends State<LoadList> {
   var selectedTab = 'All Loads';
   late List<int> selectedValuesList = <int>[];
 
- /* getCircularContainer(String title, bool isSelected,int i) {
-    return Consumer<OrgProvider>(
-      builder: (context, model, child) =>InkWell(
-        onTap: (){
-          setState(() {
-            selectedTab = title;
-            model.getFilterFullLoadList(title);
-          });
-        },
-        child: Card(
-          margin: EdgeInsets.symmetric(horizontal: 2.7),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Container(
-            height: 30,
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 20),
-            child: CustomText(title,style: Style.filterHeading,textAlign: TextAlign.center,),
-            decoration: BoxDecoration(
-              color: isSelected? Colors.white :Color(0xffe6e0d7),
-              border: isSelected? null : Border.all(color: Color(0xffd1ccc4)),
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 0),
-                  blurRadius: 5,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }*/
+
 
   getPostList(OrgProvider model,BuildContext context) {
-    return /* model.isLoading==true?Expanded(
+    return  model.isLoading==true?Expanded(
           child: Container(
               height:
-              MediaQuery.of(context).size.height - 400,
+              MediaQuery.of(context).size.height - 600,
               child: Center(
-                  child: CircularProgressIndicator()))):*/
+                  child: CircularProgressIndicator()))):
       model.orgFullLoadList.isEmpty
           ?  Container(
           height:
@@ -656,7 +579,7 @@ class _LoadListState extends State<LoadList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -693,7 +616,7 @@ class _LoadListState extends State<LoadList> {
                 "Filter",
                 style:TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

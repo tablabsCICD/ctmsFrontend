@@ -52,12 +52,12 @@ class _HomePageState extends State<HomePage> {
     ApiGetAllEmployee("", 0);
   }
 
-
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SideBar(),
-
+      key: _key,
       backgroundColor: ThemeColor.baground,
       body: SafeArea(
         child: Row(
@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   HeaderWidget(
                     isSearchVisible: false,
+                    scaffoldKey: _key,
                   ),
                   Container(
                     margin: EdgeInsets.all(33),
@@ -121,16 +122,21 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(30),
-                    child: Text(
-                      'Employee Data',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
+                    margin: EdgeInsets.all(33),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Employee Data',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30.sp,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
+                        ),
+                        Spacer(),
+                      ],
                     ),
                   ),
                   Container(

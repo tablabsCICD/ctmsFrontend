@@ -58,9 +58,13 @@ class CompanyBidsScreen extends StatefulWidget {
 }
 
 class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+        key: _scaffoldKey,
+        drawer: CompanySideBar(),
         backgroundColor: ThemeColor.baground,
         body: Stack(
           children: [
@@ -75,6 +79,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                   child: Column(
                     children: [
                       HeaderWidget(
+                        scaffoldKey: _scaffoldKey,
                         isSearchVisible: false,
                         onSearchTap: () {},
                       ),

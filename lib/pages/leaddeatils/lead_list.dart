@@ -43,6 +43,9 @@ import '../widget/employee_dialog.dart';
 import '../widget/one_emp_dilaog.dart';
 
 class LeadListScreen extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  LeadListScreen(this.scaffoldKey);
+
   @override
   _LeadDashboard createState() => _LeadDashboard();
 }
@@ -97,6 +100,7 @@ class _LeadDashboard extends State<LeadListScreen> {
 
           /// Header Part
           HeaderWidget(
+            scaffoldKey: widget.scaffoldKey,
             isSearchVisible: true,
             onSearchTap: (value) {
               filterSearchResults(value);
@@ -857,7 +861,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts
                       .poppins()
                       .fontFamily,
@@ -1880,7 +1884,46 @@ class _LeadDashboard extends State<LeadListScreen> {
                               }),
                             ),
                             SizedBox(height: 20.h,),
-
+                            SizedBox(
+                              height: 50.h,
+                              child: ElevatedButton(
+                                  onPressed: () async{
+                                    isLoad = true;
+                                    setState(() {});
+                                    String token = await LocalSharePreferences()
+                                        .getString(SharedPreferencesConstant.AuthToken);
+                                    String myUrl = ApiConstant.BASE_URL +
+                                        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
+                                    print("Get All Leads :" + myUrl
+                                    );
+                                    final dio = Dio();
+                                    final response = await dio.get(
+                                        myUrl,
+                                        options: Options(headers: {
+                                          "Content-Type": "application/json",
+                                          'Authorization': 'Bearer ${token}',
+                                        }));
+                                    print(response.data);
+                                    isLoad = false;
+                                    if (response.statusCode == 200) {
+                                      LeadListResponse leadList =
+                                      LeadListResponse.fromJson(jsonDecode(response.data));
+                                      finalLeadData.clear();
+                                      finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
+                                      print('this is ${leadData.length}');
+                                    }
+                                    setState(() {});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: ThemeColor.theme_blue,
+                                      onPrimary: Colors.white),
+                                  child: TextView(
+                                    title: "Search",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  )),
+                            ),
                           ],
                         ),
                       ),

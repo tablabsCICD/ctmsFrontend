@@ -27,13 +27,14 @@ class _CreateMeetingDashbord extends State<CreateMeetingDashbord> {
   @override
   void initState() {
     // TODO: implement initState
-
-
     super.initState();
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: ThemeColor.baground,
       drawer: SideBar(),
       body: SafeArea(
@@ -50,7 +51,7 @@ class _CreateMeetingDashbord extends State<CreateMeetingDashbord> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: MeetingPageScreen(),
+              child: MeetingPageScreen(_scaffoldKey),
             ),
           ],
         ),

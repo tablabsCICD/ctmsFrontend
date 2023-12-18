@@ -72,7 +72,10 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     container = LoadList(widget.organization,index: 0,);
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: CompanySideBar(),
       backgroundColor: ThemeColor.baground,
       body: Consumer<OrgProvider>(
           builder: (context, model, child) => SizedBox(
@@ -91,7 +94,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                       flex: 4,
                       child: Column(
                         children: [
-                          HeaderWidget(isSearchVisible:false),
+                          HeaderWidget(isSearchVisible:false,scaffoldKey: _scaffoldKey,),
                           SizedBox(height: 35.h,),
                           SizedBox(
                               height: 60,

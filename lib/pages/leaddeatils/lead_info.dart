@@ -177,7 +177,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
                         ),
                         Row(
                           children: [
-                            InkWell(
+                            widget.leadData.status!.toLowerCase()=="converted"?SizedBox.shrink():InkWell(
                               onTap: () {
                                 _showAlertDialog();
                               },

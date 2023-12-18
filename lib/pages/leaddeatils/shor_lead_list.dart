@@ -43,11 +43,14 @@ import '../widget/employee_dialog.dart';
 import '../widget/one_emp_dilaog.dart';
 
 class ShortLeadListScreen extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  ShortLeadListScreen(this.scaffoldKey);
+
   @override
-  _LeadDashboard createState() => _LeadDashboard();
+  _ShortLeadListScreen createState() => _ShortLeadListScreen();
 }
 
-class _LeadDashboard extends State<ShortLeadListScreen> {
+class _ShortLeadListScreen extends State<ShortLeadListScreen> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -97,6 +100,7 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
 
           /// Header Part
           HeaderWidget(
+            scaffoldKey: widget.scaffoldKey,
             isSearchVisible: true,
             onSearchTap: (value) {
               filterSearchResults(value);
@@ -126,8 +130,8 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                       width: 27.w,
                     ),
                     SizedBox(
-                      height: 58.h,
-                      width: 200.w,
+                      height: 50.h,
+                      width: 205.w,
                       child: ElevatedButton(
                           onPressed: () async{
                             isRR = await LocalSharePreferences.localSharePreferences.getBool("isRoundRobin");
@@ -148,7 +152,7 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                               ),
                               TextView(
                                 title: "Upload Short Lead",
-                                fontSize: 16.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white,
                               ),
@@ -159,7 +163,7 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                       width: 27.w,
                     ),
                     SizedBox(
-                      height: 58.h,
+                      height: 50.h,
                       width: 180.w,
                       child: ElevatedButton(
                           onPressed: () async{
@@ -181,7 +185,7 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                               ),
                               TextView(
                                 title: "Add Lead",
-                                fontSize: 16.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white,
                               ),
@@ -576,16 +580,11 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
             Center(
                 child: InkWell(
                     onTap: () async {
-                      pickFile(stateSetter, true);
+                      pickXlFile(stateSetter, true);
                     },
-                    child: imgPath == ''
-                        ? SvgPicture.asset('assets/upload_profile.svg',
-                        height: 202.h, width: 202.w)
-                        : CircleAvatar(
-                      radius: 75.0,
-                      backgroundImage: NetworkImage(imgPath.toString()),
-                      backgroundColor: Colors.transparent,
-                    ))),
+                    child: objXlFile == null
+                        ? Icon(Icons.file_copy,size: 100,)
+                        : Icon(Icons.done_outline,color: Colors.green,size: 100,))),
             SizedBox(height: 16.h),
             Center(
               child: SizedBox(
@@ -890,7 +889,7 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts
                       .poppins()
                       .fontFamily,
@@ -1085,9 +1084,10 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
       LeadListResponse leadListResponse =
       LeadListResponse.fromJson(jsonData);
       print(leadListResponse.data!.detailsWithPage!.length);
-      ApiGetData("", selectedPageNumber);
-      Navigator.of(context).pop();
+
     });
+    ApiGetData("", selectedPageNumber);
+    Navigator.of(context).pop();
     EasyLoading.dismiss();
     print('the response is ${response}');
   }
@@ -1946,7 +1946,46 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
                               }),
                             ),
                             SizedBox(height: 20.h,),
-
+                            SizedBox(
+                              height: 50.h,
+                              child: ElevatedButton(
+                                  onPressed: () async{
+                                    isLoad = true;
+                                    setState(() {});
+                                    String token = await LocalSharePreferences()
+                                        .getString(SharedPreferencesConstant.AuthToken);
+                                    String myUrl = ApiConstant.BASE_URL +
+                                        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
+                                    print("Get All Leads :" + myUrl
+                                    );
+                                    final dio = Dio();
+                                    final response = await dio.get(
+                                        myUrl,
+                                        options: Options(headers: {
+                                          "Content-Type": "application/json",
+                                          'Authorization': 'Bearer ${token}',
+                                        }));
+                                    print(response.data);
+                                    isLoad = false;
+                                    if (response.statusCode == 200) {
+                                      LeadListResponse leadList =
+                                      LeadListResponse.fromJson(jsonDecode(response.data));
+                                      finalLeadData.clear();
+                                      finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
+                                      print('this is ${leadData.length}');
+                                    }
+                                    setState(() {});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: ThemeColor.theme_blue,
+                                      onPrimary: Colors.white),
+                                  child: TextView(
+                                    title: "Search",
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  )),
+                            ),
                           ],
                         ),
                       ),

@@ -90,7 +90,7 @@ class _AssignProject extends State<AssignProject>{
 
       child: Center(
         child: ListTile(
-          leading: getImage('${listLeadActivityData[index].lead!.addLogo}',height: 30.h,width: 30.w),
+          leading: getImage('${listLeadActivityData[index].lead!.addLogo}',height: 50.h,width: 50.w),
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

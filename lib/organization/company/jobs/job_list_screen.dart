@@ -492,7 +492,7 @@ class _JobListState extends State<JobListScreen> {
 
   filterIcon(JobListProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -522,7 +522,7 @@ class _JobListState extends State<JobListScreen> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),
@@ -845,18 +845,17 @@ class _JobListState extends State<JobListScreen> {
         padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
         margin: EdgeInsets.symmetric(horizontal: 33.w,vertical: 20.h),
         child: model.jobApplicantList.isEmpty
-            ? Expanded(
-            child: Container(
+            ? Container(
                 height: MediaQuery
                     .of(context)
                     .size
-                    .height - 400,
+                    .height - 600,
                 child: Center(
                     child: TextView(
                         title: "There is no applicant in this job role!!",
                         fontSize: 16.sp,
                         color: Colors.black,
-                        fontWeight: FontWeight.w900))))
+                        fontWeight: FontWeight.w900)))
             : Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           columnWidths: {

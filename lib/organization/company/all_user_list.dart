@@ -109,7 +109,7 @@ class _AllUsersListState extends State<AllUsersList> {
                             ),
                             SizedBox(
                               height: 58.h,
-                              width: 180.w,
+                              width: 200.w,
                               child: ElevatedButton(
                                   onPressed: () {
                                     _showAlertDialog();
@@ -423,7 +423,7 @@ class _AllUsersListState extends State<AllUsersList> {
 
   filterIcon(OrgProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(
@@ -453,7 +453,7 @@ class _AllUsersListState extends State<AllUsersList> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),

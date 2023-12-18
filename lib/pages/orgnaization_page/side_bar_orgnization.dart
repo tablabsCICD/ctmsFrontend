@@ -87,14 +87,14 @@ class _SideBarOrganization extends State<SideBarOrganization> {
                 }
               },
             ),
-            DrawerListTile(
+           /* DrawerListTile(
               isSelect: isCustomer,
               title: "E-Invoices",
               icon: Images.invoice,
               press: () {
 
               },
-            ),
+            ),*/
             DrawerListTile(
               isSelect: isreport,
               title: "E-Bilty",
@@ -179,7 +179,7 @@ class DrawerListTile extends StatelessWidget {
 
       title: Container(
         width: 232.w,
-        height: 74.h,
+        height: 65.h,
         decoration:isSelect? ShapeDecoration(
           color: Color(0xFFC3262C),
           shape: RoundedRectangleBorder(
@@ -206,12 +206,12 @@ class DrawerListTile extends StatelessWidget {
                 title!,
                 style: isSelect?TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w300,
                 ):TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w300,
                 ),

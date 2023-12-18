@@ -37,8 +37,9 @@ import 'package:http/http.dart' as http;
 class HeaderWidget extends StatefulWidget {
   Function? onSearchTap;
   bool? isSearchVisible;
+  GlobalKey<ScaffoldState>? scaffoldKey;
 
-  HeaderWidget({Key? key, this.onSearchTap, required this.isSearchVisible})
+  HeaderWidget({Key? key, this.onSearchTap, required this.isSearchVisible,this.scaffoldKey})
       : super(key: key);
 
   @override
@@ -116,7 +117,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       Icons.menu,
                       color: AppColor.black,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      widget.scaffoldKey!.currentState!.openDrawer();
+                    },
                   ),
                 widget.isSearchVisible == true
                     ? searchBar()

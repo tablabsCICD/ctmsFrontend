@@ -16,9 +16,11 @@ class ReportDashboard extends StatefulWidget {
 }
 
 class _ReportDashboard extends State<ReportDashboard> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: SideBar(),
       backgroundColor: ThemeColor.baground,
       body: SafeArea(
@@ -35,7 +37,7 @@ class _ReportDashboard extends State<ReportDashboard> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: ReportDataScreen(),
+              child: ReportDataScreen(_scaffoldKey),
             ),
           ],
         ),

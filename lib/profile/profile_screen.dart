@@ -25,6 +25,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../common/app_colors.dart';
 
 class ProfileInfo extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  ProfileInfo(this.scaffoldKey);
+
   @override
   _ProfileInfoState createState() => _ProfileInfoState();
 }
@@ -51,7 +54,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            HeaderWidget(isSearchVisible:false,),
+            HeaderWidget(isSearchVisible:false,scaffoldKey: widget.scaffoldKey,),
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 30,vertical: 30),

@@ -13,9 +13,11 @@ class ProfileDashbord extends StatefulWidget {
 }
 
 class _ProfileDashbord extends State<ProfileDashbord> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       drawer: SideBar(),
      // backgroundColor: AppColor.bgSideMenu,
       body: SafeArea(
@@ -32,7 +34,7 @@ class _ProfileDashbord extends State<ProfileDashbord> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: ProfileInfo(),
+              child: ProfileInfo(_key),
             ),
           ],
         ),

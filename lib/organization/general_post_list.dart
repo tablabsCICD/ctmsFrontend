@@ -238,7 +238,7 @@ SizedBox(height: 16.h,),
 
   filterIcon(GeneralPostProvider model) {
     return Container(
-        width: 125.w,
+        width: 130.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: ShapeDecoration(

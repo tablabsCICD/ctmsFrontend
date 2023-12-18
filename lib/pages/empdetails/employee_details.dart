@@ -35,6 +35,9 @@ import '../widget/filter_button.dart';
 import 'package:http/http.dart' as http;
 
 class EmpDashboard extends StatefulWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  EmpDashboard(this.scaffoldKey);
+
   @override
   _EmpDashboard createState() => _EmpDashboard();
 }
@@ -56,7 +59,6 @@ class _EmpDashboard extends State<EmpDashboard> {
   int selectRole = 0;
   String selectedRole = "Select Role";
   EmpData? selectedEmpTOAdd;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -111,10 +113,12 @@ class _EmpDashboard extends State<EmpDashboard> {
       child: Column(
         children: [
           HeaderWidget(
+            scaffoldKey:widget.scaffoldKey,
             isSearchVisible: true,
             onSearchTap: (value) {
               filterSearchResults(value);
             },
+
           ),
           Container(
             margin: EdgeInsets.all(30),
@@ -139,7 +143,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                     ),
                     SizedBox(
                       height: 58.h,
-                      width: 180.w,
+                      width: 185.w,
                       child: ElevatedButton(
                           onPressed: () async {
                             final url = Uri.parse(
@@ -448,7 +452,7 @@ class _EmpDashboard extends State<EmpDashboard> {
 
   filterIcon() {
     return Container(
-        width: 120.w,
+        width: 125.w,
         height: 43.h,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         decoration: ShapeDecoration(
@@ -478,7 +482,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                 "Filter",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w400,
                 ),
