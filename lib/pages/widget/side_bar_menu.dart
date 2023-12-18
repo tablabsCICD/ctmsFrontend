@@ -18,6 +18,7 @@ class _SideBarState extends State<SideBar> {
  static bool  isDashbord=true;
  static bool isEmp=false;
  static bool isLead=false;
+ static bool isShortLead=false;
  static bool isCustomer=false;
  static bool isMeeting=false;
  static bool isreport=false;
@@ -30,221 +31,252 @@ class _SideBarState extends State<SideBar> {
       elevation: 0,
       child: Container(
         color: AppColor.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-           /* InkWell(
-              onTap: (){
-                Navigator.pushReplacementNamed(context, AppRoutes.home);
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: *//*Text("Go To Back Menu",style: TextStyle(
-                    fontSize: 20.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w300,
-                    fontFamily: GoogleFonts.poppins().fontFamily)),*//*
-                SvgPicture.asset(
-                  "assets/back_button.svg",height: 66.h,width: 66.w,
-                )),
-            ),*/
-            InkWell(
-              onTap: (){
-                Navigator.pushReplacementNamed(context, AppRoutes.home);
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-                padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 0.h),
-                height: 47.h,
-                width: 100.w,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: ThemeColor.baground,
-                    borderRadius: BorderRadius.circular(15.r)
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+             /* InkWell(
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: *//*Text("Go To Back Menu",style: TextStyle(
+                      fontSize: 20.sp,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w300,
+                      fontFamily: GoogleFonts.poppins().fontFamily)),*//*
+                  SvgPicture.asset(
+                    "assets/back_button.svg",height: 66.h,width: 66.w,
+                  )),
+              ),*/
+              InkWell(
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 0.h),
+                  height: 47.h,
+                  width: 100.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: ThemeColor.baground,
+                      borderRadius: BorderRadius.circular(15.r)
+                  ),
+                  child: Text("Go Back",style:TextStyle(
+                    fontSize: 16.sp,
+                    fontFamily:
+                    GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w700,
+                  ),),
                 ),
-                child: Text("Go Back",style:TextStyle(
-                  fontSize: 16.sp,
-                  fontFamily:
-                  GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w700,
-                ),),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
-            ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
+              ),
 
-            SizedBox(height: 30.h,),
-            DrawerListTile(
-              isSelect: isDashbord,
-              title: "Dashboard",
-              icon: "assets/menu/dashboard_menu.svg",
-              press: () {
-                 isDashbord=true;
-                 isEmp=false;
-                 isLead=false;
-                 isMeeting=false;
-                 isCustomer = false;
-                 isreport=false;
-                 isProfile=false;
-                 isEmpReport=false;
-                 setState(() {
+              SizedBox(height: 30.h,),
+              DrawerListTile(
+                isSelect: isDashbord,
+                title: "Dashboard",
+                icon: "assets/menu/dashboard_menu.svg",
+                press: () {
+                   isDashbord=true;
+                   isEmp=false;
+                   isLead=false;
+                   isMeeting=false;
+                   isCustomer = false;
+                   isreport=false;
+                   isProfile=false;
+                   isEmpReport=false;
+                   isShortLead = false;
+                   setState(() {
 
-                 });
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
+                   });
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
 
-              },
-            ),
-            DrawerListTile(
-              isSelect: isEmp,
-              title: "Employee",
-              icon: "assets/menu/emp_menu.svg",
-              press: () {
-                isDashbord=false;
-                isEmp=true;
-                isCustomer = false;
-                isLead=false;
-                isMeeting=false;
-                isreport=false;
-                isProfile=false;
-                isEmpReport=false;
-                setState(() {
+                },
+              ),
+              DrawerListTile(
+                isSelect: isEmp,
+                title: "Employee",
+                icon: "assets/menu/emp_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isEmp=true;
+                  isCustomer = false;
+                  isLead=false;
+                  isMeeting=false;
+                  isreport=false;
+                  isProfile=false;
+                  isEmpReport=false;
+                  isShortLead = false;
+                  setState(() {
 
-                });
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
-              },
-            ),
-            DrawerListTile(
-              isSelect: isLead,
-              title: "Leads",
-              icon: "assets/menu/lead_menu.svg",
-              press: () {
-                isDashbord=false;
-                isCustomer = false;
-                isEmp=false;
-                isLead=true;
-                isMeeting=false;
-                isreport=false;
-                isEmpReport=false;
-                isProfile=false;
-                setState(() {
+                  });
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isLead,
+                title: "Leads",
+                icon: "assets/menu/lead_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isCustomer = false;
+                  isEmp=false;
+                  isLead=true;
+                  isMeeting=false;
+                  isreport=false;
+                  isEmpReport=false;
+                  isProfile=false;
+                  isShortLead = false;
+                  setState(() {
 
-                });
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
-              },
-            ), DrawerListTile(
-              isSelect: isMeeting,
-              title: "Meetings",
-              icon: "assets/menu/meeting_menu.svg",
-              press: () {
-                isDashbord=false;
-                isEmp=false;
-                isLead=false;
-                isMeeting=true;
-                isCustomer = false;
-                isreport=false;
-                isEmpReport=false;
-                isProfile=false;
-                setState(() {
+                  });
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isShortLead,
+                title: "Short Leads",
+                icon: "assets/menu/lead_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isCustomer = false;
+                  isEmp=false;
+                  isLead=false;
+                  isShortLead = true;
+                  isMeeting=false;
+                  isreport=false;
+                  isEmpReport=false;
+                  isProfile=false;
+                  setState(() {
 
-                });
+                  });
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.shortLead_dashbord);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isMeeting,
+                title: "Meetings",
+                icon: "assets/menu/meeting_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isEmp=false;
+                  isLead=false;
+                  isMeeting=true;
+                  isCustomer = false;
+                  isreport=false;
+                  isEmpReport=false;
+                  isProfile=false;
+                  isShortLead = false;
+                  setState(() {
+
+                  });
 
 
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.meeting);
-              },
-            ),
-            DrawerListTile(
-              isSelect: isCustomer,
-              title: "Customer",
-              icon: "assets/menu/customer_menu.svg",
-              press: () {
-                isDashbord=false;
-                isEmp=false;
-                isLead=false;
-                isMeeting=false;
-                isCustomer = true;
-                isreport=false;
-                isEmpReport=false;
-                isProfile=false;
-                setState(() {
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.meeting);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isCustomer,
+                title: "Customer",
+                icon: "assets/menu/customer_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isEmp=false;
+                  isLead=false;
+                  isMeeting=false;
+                  isCustomer = true;
+                  isreport=false;
+                  isEmpReport=false;
+                  isShortLead = false;
+                  isProfile=false;
+                  setState(() {
 
-                });
+                  });
 
 
-                Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
-              },
-            ),
-            DrawerListTile(
-              isSelect: isreport,
-              title: "Reports",
-              icon: "assets/menu/report_menu.svg",
-              press: () {
-                isDashbord=false;
-                isEmp=false;
-                isCustomer = false;
-                isLead=false;
-                isMeeting=false;
-                isreport=true;
-                isEmpReport=false;
-                isProfile=false;
-                setState(() {
+                  Navigator.restorablePushReplacementNamed(context,AppRoutes.customer);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isreport,
+                title: "Reports",
+                icon: "assets/menu/report_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isEmp=false;
+                  isCustomer = false;
+                  isLead=false;
+                  isMeeting=false;
+                  isreport=true;
+                  isEmpReport=false;
+                  isShortLead = false;
+                  isProfile=false;
+                  setState(() {
 
-                });
+                  });
 
-                Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
-              },
-            ),
-            DrawerListTile(
-              isSelect: isEmpReport,
-              title: "Employee Reports",
-              icon: "assets/menu/report_menu.svg",
-              press: () {
-                isDashbord=false;
-                isEmp=false;
-                isCustomer = false;
-                isLead=false;
-                isMeeting=false;
-                isreport=false;
-                isEmpReport = true;
-                isProfile=false;
-                setState(() {
-                });
-                Navigator.restorablePushReplacementNamed(context, AppRoutes.empReport);
-              },
-            ),
-            DrawerListTile(
-              isSelect: isProfile,
-              title: "Profile",
-              icon: "assets/menu/profile_menu.svg",
-              press: () {
+                  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isEmpReport,
+                title: "Employee Reports",
+                icon: "assets/menu/report_menu.svg",
+                press: () {
+                  isDashbord=false;
+                  isEmp=false;
+                  isCustomer = false;
+                  isLead=false;
+                  isMeeting=false;
+                  isreport=false;
+                  isEmpReport = true;
+                  isShortLead = false;
+                  isProfile=false;
+                  setState(() {
+                  });
+                  Navigator.restorablePushReplacementNamed(context, AppRoutes.empReport);
+                },
+              ),
+              DrawerListTile(
+                isSelect: isProfile,
+                title: "Profile",
+                icon: "assets/menu/profile_menu.svg",
+                press: () {
 
-                isDashbord=false;
-                isEmp=false;
-                isCustomer = false;
-                isLead=false;
-                isMeeting=false;
-                isreport=false;
-                isEmpReport=false;
-                isProfile=true;
-                setState(() {
+                  isDashbord=false;
+                  isEmp=false;
+                  isCustomer = false;
+                  isLead=false;
+                  isMeeting=false;
+                  isreport=false;
+                  isEmpReport=false;
+                  isShortLead = false;
+                  isProfile=true;
+                  setState(() {
 
-                });
-                Navigator.restorablePushReplacementNamed(context, AppRoutes.profile);
-              },
-            ),
-            DrawerListTile(
-              isSelect: false,
-              title: "Log Out",
-              icon: "assets/menu/logout_menu.svg",
-              press: () {
+                  });
+                  Navigator.restorablePushReplacementNamed(context, AppRoutes.profile);
+                },
+              ),
+              DrawerListTile(
+                isSelect: false,
+                title: "Log Out",
+                icon: "assets/menu/logout_menu.svg",
+                press: () {
 
-                showAlertDialog(context);
+                  showAlertDialog(context);
 
-              },
-            ),
+                },
+              ),
 
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ class AppRoutes{
   static const register = '/register';
   static const employee_dashbord = '/empdash';
   static const lead_dashbord = '/leaddash';
+  static const shortLead_dashbord = '/shortleaddash';
   static const customer="/customer";
   static const report="/report";
   static const empReport="/employeeReport";

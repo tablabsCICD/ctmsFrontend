@@ -18,7 +18,7 @@ class JobListProvider extends ChangeNotifier {
   ScrollController scrollController = ScrollController();
   List<JobData> listJobs = [];
   final orgProvider = locator<OrgProvider>();
-  int orgId = 0;
+  int orgId = 1;
 
   JobListProvider() : super() {
     getOrgId();

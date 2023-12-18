@@ -9,12 +9,12 @@ import '../../common/app_responsive.dart';
 import '../dashboard/dashboard.dart';
 import 'lead_list.dart';
 
-class LeadListScreen extends StatefulWidget {
+class LeadDashboardScreen extends StatefulWidget {
   @override
   _LeadListScreen createState() => _LeadListScreen();
 }
 
-class _LeadListScreen extends State<LeadListScreen> {
+class _LeadListScreen extends State<LeadDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +34,7 @@ class _LeadListScreen extends State<LeadListScreen> {
             /// Main Body Part
             Expanded(
               flex: 4,
-              child: LeadDashboard(),
+              child: LeadListScreen(),
             ),
           ],
         ),

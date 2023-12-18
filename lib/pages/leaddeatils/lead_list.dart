@@ -42,12 +42,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widget/employee_dialog.dart';
 import '../widget/one_emp_dilaog.dart';
 
-class LeadDashboard extends StatefulWidget {
+class LeadListScreen extends StatefulWidget {
   @override
   _LeadDashboard createState() => _LeadDashboard();
 }
 
-class _LeadDashboard extends State<LeadDashboard> {
+class _LeadDashboard extends State<LeadListScreen> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -352,7 +352,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return uploadLead(setState);
+                return addLead(setState);
               }),
         );
       },

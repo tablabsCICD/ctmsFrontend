@@ -5,6 +5,7 @@ import 'package:flutter_hr_management/organization/auth/login_screen.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
+import 'package:flutter_hr_management/pages/leaddeatils/short_lead_dashboard.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/home_orgnization.dart';
 import 'package:flutter_hr_management/pages/report/emp_report.dart';
@@ -40,7 +41,10 @@ class RouteGenerator {
         return buildRoute(EmloyeeListScreen(), settings: settings);
 
       case AppRoutes.lead_dashbord:
-        return buildRoute(LeadListScreen(), settings: settings);
+        return buildRoute(LeadDashboardScreen(), settings: settings);
+
+      case AppRoutes.shortLead_dashbord:
+        return buildRoute(ShortLeadDashboardScreen(), settings: settings);
 
       case AppRoutes.empReport:
         return buildRoute(EmployeeReport(), settings: settings);
