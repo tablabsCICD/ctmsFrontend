@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization/model/organization_model.dart';
@@ -60,21 +61,40 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   final orgProvider = locator<OrgProvider>();
-  Organization? organization;
+  CtmsOrganization? organization;
 
   Future<void> getCompanyDetail() async {
-    organization = await orgProvider.getOrgDetails();
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    String myUrl = ApiConstant.BASE_URL +
+        "api/Organisation/getById?Id=${1}";
+    print("Get All Leads :" + myUrl
+    );
+    final dio = Dio();
+    final response = await dio.get(
+        myUrl,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      CtmsOrganizationResponse ctmsOrganizationResponse =
+      CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
+      organization = ctmsOrganizationResponse.data!;
+      print('this is ${organization}');
+    }
     setupData();
     setState(() {
     });
   }
 
   setupData() {
-    imgPath = organization!.companyLogo!;
-    _companyNameController.text = organization!.companyName!;
+    imgPath = organization!.logo!;
+    _companyNameController.text = organization!.orgName!;
     _emailController.text = organization!.officialEmailId!;
-    _mobileController.text = organization!.companyMobileNumber!;
-    _addressController.text = organization!.companyAddress!;
+    _mobileController.text = organization!.orgMobileNumber!;
+    _addressController.text = organization!.orgAddress!;
   }
 
   @override
@@ -224,7 +244,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                 ),
                               ],
                             )),
-                            PopupMenuItem(
+                           /* PopupMenuItem(
                                 child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -258,8 +278,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                   },
                                 ),
                               ],
-                            )),
-                            PopupMenuItem(
+                            )),*/
+                            isAdmin?PopupMenuItem(
                               child: Text(
                                 "Update Company Profile",
                                 style: TextStyle(
@@ -290,7 +310,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                   },
                                 );
                               },
-                            )
+                            ):PopupMenuItem(child: SizedBox.shrink())
                           ],
                         ),
                       ),
@@ -361,6 +381,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   LoginDeatils? details;
   bool isLoading = false;
+  late bool isAdmin;
 
   void getLoginDetails() async {
     isLoading = true;
@@ -369,6 +390,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     Constants.LOGIN_NAME =
         details!.data!.firstName! + " " + details!.data!.lastName!;
     isLoading = false;
+    isAdmin = details!.data!.isAdmin!;
     setState(() {});
   }
 
@@ -623,33 +645,42 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     Map<String, dynamic> parameter = {
-      "city": organization!.city,
-      "companyAddress": organization!.companyAddress,
-      "companyLogo": imgPath,
-      "companyMobileNumber": _mobileController.text,
-      "companyName": _companyNameController.text,
-      "gstNumber": organization!.gstNumber,
-      "gstNumber2": organization!.gstNumber2,
-      "id": organization!.id,
-      "isVerified": organization!.isVerified,
-      "landlineNumber": organization!.landlineNumber,
-      "numberOfRatings": organization!.numberOfRatings,
-      "officialEmailId": _emailController.text,
-      "otp": "string",
-      "panCardNumber": organization!.panCardNumber,
-      "pointOfContact": organization!.pointOfContact,
-      "rating": organization!.rating,
-      "state": organization!.state,
-      "tanCardNumber": organization!.tanCardNumber,
-      "typeOfRegistration": organization!.typeOfRegistration,
-      "website": organization!.website
+    "active": true,
+    "city": organization!.city,
+    "description": organization!.description,
+    "emailId": _emailController.text,
+    "gstNumber": organization!.gstNumber,
+    "gstNumber2": organization!.gstNumber2,
+    "id": organization!.id,
+    "instructions": organization!.instructions,
+    "invoiceLogo": organization!.invoiceLogo,
+    "isVerified": organization!.isVerified,
+    "landLineNumber": organization!.landLineNumber,
+    "logo": imgPath,
+    "officialEmailId": organization!.emailId,
+    "orgAddress": organization!.orgAddress,
+    "orgMobileNumber": _mobileController.text,
+    "orgName": _companyNameController.text,
+    "panCardNumber": organization!.panCardNumber,
+    "state": organization!.state,
+    "tanCardNumber": organization!.tanCardNumber,
+    "typeOfRegistration": organization!.typeOfRegistration,
+    "unloadingLogo": imgPath,
+    "website": organization!.website
     };
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+
     var para = jsonEncode(parameter);
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails';
+    String myUrl = ApiConstant.BASE_URL + 'api/Organisation/update?Id=${1}';
     print(myUrl);
     var response = await dio.put(
       myUrl,
       data: para,
+      options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+      })
     );
     print('the body ${response.data}');
     EasyLoading.dismiss();

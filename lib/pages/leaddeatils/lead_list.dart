@@ -352,7 +352,7 @@ class _LeadDashboard extends State<LeadDashboard> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return addLead(setState);
+                return uploadLead(setState);
               }),
         );
       },
@@ -463,6 +463,150 @@ class _LeadDashboard extends State<LeadDashboard> {
               pickFile(stateSetter, false);
             }),
             SizedBox(height: 16.h),
+            InkWell(
+              onTap: _submitForm,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ThemeColor.theme_blue,
+                    borderRadius: BorderRadius.circular(5)),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Center(
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: GoogleFonts
+                            .poppins()
+                            .fontFamily,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.white),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  uploadLead(StateSetter stateSetter){
+    return Container(
+      width: 408.w,
+      decoration: BoxDecoration(
+          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(10),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                    )),
+                SizedBox(
+                  width: 5.w,
+                ),
+                Text(
+                  "Back",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: Text(
+                "Upload Lead",
+                style: TextStyle(
+                  fontFamily: GoogleFonts
+                      .poppins()
+                      .fontFamily,
+                  fontWeight: FontWeight.w500,
+                  color: AppColor.black,
+                  fontSize: 25.sp,
+                ),
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Center(
+                child: InkWell(
+                    onTap: () async {
+                      pickFile(stateSetter, true);
+                    },
+                    child: imgPath == ''
+                        ? SvgPicture.asset('assets/upload_profile.svg',
+                        height: 202.h, width: 202.w)
+                        : CircleAvatar(
+                      radius: 75.0,
+                      backgroundImage: NetworkImage(imgPath.toString()),
+                      backgroundColor: Colors.transparent,
+                    ))),
+            SizedBox(height: 16.h),
+            Center(
+              child: SizedBox(
+                height: 45.h,
+                width: 120.w,
+                child: ElevatedButton(
+                    onPressed: () async{
+                      pickFile(stateSetter, true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        primary: ThemeColor.theme_blue,
+                        onPrimary: Colors.white),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.file_upload,
+                          size: 18,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        TextView(
+                          title: "Browse File",
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+            SizedBox(height: 25.h),
+            TextView(
+              title: "Steps to upload the file:",
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+            SizedBox(height: 10.h),
+            TextView(
+              title: "Browse the file from your device",
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+            SizedBox(height: 10.h),
+            TextView(
+              title: 'Click on Submit button to upload the selected file.',
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+            SizedBox(height: 25.h),
             InkWell(
               onTap: _submitForm,
               child: Container(

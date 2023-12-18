@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization/base_widget/custom_button.dart';
@@ -25,6 +27,8 @@ import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,12 +37,13 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 
 class LoadList extends StatefulWidget {
-  final dashboardProvider = locator<OrgProvider>();
+  final orgProvider = locator<OrgProvider>();
   final buySellProvider = locator<BuySellProvider>();
   Organization organization;
   int index;
   LoadList(this.organization,{Key? key, required this.index}) : super(key: key) {
-    dashboardProvider.getOrgFullLoadList(organization.id!);
+    orgProvider.getOrgFullLoadList(organization.id!);
+    orgProvider.getAllBranch();
   }
   @override
   State<LoadList> createState() => _LoadListState();
@@ -58,10 +63,13 @@ class _LoadListState extends State<LoadList> {
   final dashboardProvider = locator<DashboardProvider>();
   ScrollController _scrollController = ScrollController();
   String? selectedFromCity = '', selectedToCity = "";
+  String? dropdownvalue;
 
   @override
   void initState() {
     super.initState();
+    dropdownvalue = orgProvider.branchNameList[0];
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -70,6 +78,8 @@ class _LoadListState extends State<LoadList> {
       }
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -755,15 +765,10 @@ class _LoadListState extends State<LoadList> {
             child: SizedBox(
               height: 300.h,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  SizedBox(
-                    width: 200.w,
-
-                    child:
-                    _buildTextField(
-                        'Branch', 'Please enter branch name', branchNameController),
-                  ),
+                  _buildDropdownField('Branch Name', 'Please select branch', stateSetter),
                   SizedBox(
                     height: 30.h,
                   ),
@@ -771,16 +776,13 @@ class _LoadListState extends State<LoadList> {
                       onPressed: () {
                         orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Search",
-                          style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: GoogleFonts.poppins().fontFamily),
-                        ),
+                      child: Text(
+                        "Search",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
                       ))
                 ],
               ),
@@ -791,10 +793,17 @@ class _LoadListState extends State<LoadList> {
     );
   }
 
-  Widget _buildTextField(
-      String label, String hint, TextEditingController controller) {
+  var items = [
+    'Shreeji',
+    'Marketing',
+    'Test',
+  ];
+
+  Widget _buildDropdownField(
+      String label, String hint, StateSetter stateSetter) {
+    branchNameController.text = dropdownvalue!;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.0.w),
@@ -808,30 +817,52 @@ class _LoadListState extends State<LoadList> {
           ),
         ),
         SizedBox(
-          height: 10.h,
+          height: 16.h,
         ),
         SizedBox(
-          height:52.h,
+          height: 52.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-            child: TextField(
-              controller: controller,
-              style: TextStyle(
-                  color: Color(0xff1B1B1B),
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w500,
-                  overflow: TextOverflow.ellipsis
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.7),
+                borderRadius: BorderRadius.circular(5.0),
               ),
-              maxLines: label=="Description"?5:1,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+              child: DropdownButton(
+                value: dropdownvalue,
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down),
+                borderRadius: BorderRadius.circular(5.0),
+                underline: SizedBox.shrink(),
+                hint: Text(
+                  hint,
+                  style: TextStyle(
+                    color: Color(0xff1B1B1B),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-                hintText: hint,
-                hintStyle: TextStyle(
-                    color: Color(0xffcccccc),
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w300),
+                items: orgProvider.branchNameList.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(
+                        color: Color(0xff1B1B1B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  stateSetter(() {
+                    dropdownvalue = newValue!;
+                    branchNameController.text = dropdownvalue!;
+                  });
+                },
               ),
             ),
           ),
@@ -839,4 +870,5 @@ class _LoadListState extends State<LoadList> {
       ],
     );
   }
+
 }

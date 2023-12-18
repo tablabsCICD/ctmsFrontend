@@ -169,16 +169,17 @@ class OrgProvider extends ChangeNotifier {
     int? id = await preferences.getInt("c_id")!;
     return id;
   }
-bool isLoad = false;
+
+  bool isLoad = false;
   Branch? branch;
-  getBranchById(int branchId) async {
-    isLoad = true;
-    notifyListeners();
+  List<Branch> branchList=[];
+  List<String> branchNameList=['Shreeji'];
+  Future<void> getAllBranch() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
-        "branch/getBranchById?branchId=${branchId}";
-    print("Get Branch Details :" + myUrl
+        "api/branch/getAll?page=0&size=10&sortDir=asc";
+    print("Get All Branch :" + myUrl
     );
     final dio = Dio();
     final response = await dio.get(
@@ -188,10 +189,17 @@ bool isLoad = false;
           'Authorization': 'Bearer ${token}',
         }));
     print(response.data);
-    isLoad = false;
-    if(response.data != null){
-      BranchResponse branchResponse = BranchResponse.fromJson(jsonDecode(response.data));
-      branch = branchResponse.data;
+    if (response.statusCode == 200) {
+      BranchResponse branchResponse =
+      BranchResponse.fromJson(jsonDecode(response.data));
+      branchNameList.clear();
+      branchList.clear();
+      branchList.addAll(branchResponse.data!.content as Iterable<Branch>);
+      debugPrint("Branch List:: ${branchList}\n ");
+      branchList.forEach((element) {
+          branchNameList.add(element.branchName!);
+      });
+      debugPrint("Branch Name List:: ${branchNameList}\n ");
     }
     notifyListeners();
   }
