@@ -1085,7 +1085,8 @@ class _LeadDashboard extends State<ShortLeadListScreen> {
       LeadListResponse leadListResponse =
       LeadListResponse.fromJson(jsonData);
       print(leadListResponse.data!.detailsWithPage!.length);
-
+      ApiGetData("", selectedPageNumber);
+      Navigator.of(context).pop();
     });
     EasyLoading.dismiss();
     print('the response is ${response}');
