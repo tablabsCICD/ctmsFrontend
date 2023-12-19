@@ -251,7 +251,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.GET_ALL_LEAD +
-        "?page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
+        "/shortlead?page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
     print("Get All Leads :" + myUrl
     );
     final dio = Dio();
