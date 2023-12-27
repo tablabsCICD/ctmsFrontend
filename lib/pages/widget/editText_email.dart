@@ -16,9 +16,9 @@ class EditTextEmail extends StatefulWidget {
 
   final TextEditingController controller;
   TextInputType? keybordType=TextInputType.text;
-  Function(String val)? onChange =(val){};
+  //Function(String val) onChange =(val){};
 
-  EditTextEmail({this.onChange,this.keybordType ,required this.width, required this.height, required this.hint, required this.controller,this.prefixIcon,this.suffixIcon,this.isPassword} );
+  EditTextEmail({this.keybordType ,required this.width, required this.height, required this.hint, required this.controller,this.prefixIcon,this.suffixIcon,this.isPassword} );
 
   @override
   State<EditTextEmail> createState() => _EditTextEmailState();
@@ -34,7 +34,7 @@ class _EditTextEmailState extends State<EditTextEmail> {
       child: TextField(
         controller: widget.controller,
         onChanged: (value){
-          widget.onChange!(value);
+        //  widget.onChange(value);
         },
         obscureText: widget.isPassword==true?passwordVisible:false,
         keyboardType: widget.keybordType,

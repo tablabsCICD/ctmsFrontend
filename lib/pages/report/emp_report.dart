@@ -56,10 +56,5 @@ class _EmployeeReportState extends State<EmployeeReport> {
     );
   }
 
-  Future<int> ApiGetData(String URL) async{
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
-    print(response.data);
-    return response.statusCode!;
-  }
+
 }

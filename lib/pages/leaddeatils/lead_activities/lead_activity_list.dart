@@ -7,6 +7,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/lead_update_model.dart';
+import 'package:flutter_hr_management/model/response/lead_assign.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/refresh.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/view_image-dialog.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
@@ -33,7 +35,7 @@ class LeadActivity extends StatefulWidget {
 }
 
 class LeadActivityState extends State<LeadActivity> implements AbRefresh{
-  List<LeadUpdateData> listLeadActivityData = [];
+  List<LeadActivityData> listLeadActivityData = [];
 
   static AbRefresh? abRefresh;
 
@@ -132,7 +134,7 @@ class LeadActivityState extends State<LeadActivity> implements AbRefresh{
                   for (int i=0;i<listLeadActivityData.length;i++)  tableRow(
                       context,
                       image: listLeadActivityData[i].lead!.addLogo!,
-                      comment: listLeadActivityData[i].description!,
+                      comment: listLeadActivityData[i].description,
                       createdBy: listLeadActivityData[i].updatedByUser!.firstName!,
                       assignedTo: listLeadActivityData[i].nextFollowUpBy!.firstName!,
                       status: listLeadActivityData[i].status,

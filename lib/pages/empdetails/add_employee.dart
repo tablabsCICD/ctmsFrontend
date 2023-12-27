@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/request/save_emp.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -17,7 +18,7 @@ import '../../common/app_colors.dart';
 import '../../model/request/update_emp.dart';
 
 class EditEmployee extends StatefulWidget {
-  final EmpData empData;
+  final EmployeeData empData;
 
   const EditEmployee({Key? key, required this.empData}) : super(key: key);
 

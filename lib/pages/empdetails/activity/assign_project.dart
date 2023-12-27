@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/lead_update_model.dart';
 import 'package:flutter_hr_management/model/response/lead_assign.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
@@ -27,7 +28,7 @@ class AssignProject extends StatefulWidget{
 }
 class _AssignProject extends State<AssignProject>{
 
-  List<Data>listLeadActivityData=[];
+  List<LeadAssign>listLeadActivityData=[];
 
   @override
   void initState() {

@@ -15,6 +15,7 @@ class SaveLeadRequest {
   String? pinCode;
   String? sourceOfLead;
   String? typeOfBusiness;
+  int? organisationId;
 
   SaveLeadRequest(
       {this.address,
@@ -31,6 +32,7 @@ class SaveLeadRequest {
         this.mobileNumber,
         this.pinCode,
         this.sourceOfLead,
+        this.organisationId,
         this.typeOfBusiness,this.id});
 
   SaveLeadRequest.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class SaveLeadRequest {
     pinCode = json['pinCode'];
     sourceOfLead = json['sourceOfLead'];
     typeOfBusiness = json['typeOfBusiness'];
+    organisationId = json['organisationId'];
     id = json['id'];
   }
 
@@ -69,6 +72,7 @@ class SaveLeadRequest {
     data['pinCode'] = this.pinCode;
     data['sourceOfLead'] = this.sourceOfLead;
     data['typeOfBusiness'] = this.typeOfBusiness;
+    data['organisationId'] = this.organisationId;
     data['id'] = this.id;
     return data;
   }

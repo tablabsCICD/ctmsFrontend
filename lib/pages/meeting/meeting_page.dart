@@ -11,7 +11,6 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/model/request/create_meeting.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/meeting_list.dart';
-import 'package:flutter_hr_management/model/response/roles.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
@@ -25,6 +24,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/request/save_emp.dart';
 import '../../model/response/employeelist.dart';
@@ -78,8 +78,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetMeeting();
     getLoginDetail();
+    ApiGetMeeting();
+
     super.initState();
   }
 
@@ -129,7 +130,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           'Meeting',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 30.sp,
+                            fontSize: 24.sp,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -212,7 +213,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           selectedMeetingType.toString(),
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 30.sp,
+                            fontSize: 24.sp,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -904,7 +905,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          /*Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
@@ -916,7 +917,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 ),
               ),
             ],
-          ),
+          ),*/
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 14.0.w),
             child: Row(
@@ -982,10 +983,15 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                         ),
                       ),
                     ),
-                    SvgPicture.asset(
-                      'assets/images/share_icon.svg',
-                      width: 30.w,
-                      height: 30.h,
+                    InkWell(
+                      onTap:(){
+                        Share.share("To Join the meeting on Google Meet,click this link:\n"+meetingData.meetingLink.toString(),subject: "Plaese join meet");
+                      },
+                      child: SvgPicture.asset(
+                        'assets/images/share_icon.svg',
+                        width: 30.w,
+                        height: 30.h,
+                      ),
                     )
                   ],
                 ),
@@ -1487,8 +1493,8 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     setState(() {});
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
-    print('the data us ${roleResponse.response}');
-    if (roleResponse.status == 200) {
+    print('the data is: ${roleResponse.response}');
+    if (roleResponse.response["success"] == true) {
       MeetingListResponse meetingResponse = MeetingListResponse.fromJson(roleResponse.response);
       meetingList.addAll(meetingResponse.data!);
       filteredMeetingList.clear();
@@ -1710,10 +1716,9 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     EasyLoading.show(status: "Loading");
-    print('the url is ${ApiConstant.BASE_URL}api/Meetings2/cancle?active=false&id=${id}');
-
+    print('the url is ${ApiConstant.CANCEL_MEETING}?active=false&id=${id}');
     Dio dio = Dio();
-    var response = await dio.put(ApiConstant.BASE_URL+"api/Meetings2/cancle?active=false&id=${id}",
+    var response = await dio.put(ApiConstant.CANCEL_MEETING+"?active=false&id=${id}",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',

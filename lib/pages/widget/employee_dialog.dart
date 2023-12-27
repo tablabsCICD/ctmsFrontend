@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,8 +23,8 @@ class EmpDialog extends StatefulWidget{
 
 class _EmpDialog extends State<EmpDialog>{
 
-  List<EmpData>emData=[];
-  List<EmpData>temData=[];
+  List<EmployeeData>emData=[];
+  List<EmployeeData>temData=[];
   List<int>selectedEmp=[];
 
   @override
@@ -164,8 +167,10 @@ class _EmpDialog extends State<EmpDialog>{
 
 
   Future<void> ApiGetData() async{
+    LoginDeatils loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_EMPLOYEE+"?organisationId=${loginDeatils.data!.organisationId}&page=0&size=10000");
 
-    var response = await ApiHelper().apiGet(ApiConstant.BASE_URL+"api/Employee/getByPages?page=0&size=10000");
     if(response.status==200){
       EmployeeListResponse employeeList =EmployeeListResponse.fromJson(response.response);
       //emData=employeeList.data!;

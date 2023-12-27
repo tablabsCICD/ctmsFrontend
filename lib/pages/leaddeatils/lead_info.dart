@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
+import 'package:flutter_hr_management/model/lead_update_model.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/lead_activity.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
@@ -494,10 +496,10 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
     );
   }
 
-  List<LeadUpdateData> totalLeadActivity = [];
-  List<LeadUpdateData> convertedLeadActivity = [];
-  List<LeadUpdateData> rejectedLeadActivity = [];
-  List<LeadUpdateData> pendingLeadActivity = [];
+  List<LeadActivityData> totalLeadActivity = [];
+  List<LeadActivityData> convertedLeadActivity = [];
+  List<LeadActivityData> rejectedLeadActivity = [];
+  List<LeadActivityData> pendingLeadActivity = [];
   void callGetApi()async {
     print("In get activity function");
     try{
@@ -667,7 +669,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
   TextEditingController _sourceofleadController = TextEditingController();
   String selectDate = "";
   int selectedEmp = 0;
-  String selectedStatus = "Select Status";
+  String selectedStatus = "Converted";
 
   String? uploadedLeadDocument;
   addActivity(StateSetter stateSetter) {
@@ -755,7 +757,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
               'Potential', 'Please Enter potential', _potantialController),
 
           SizedBox(height: 16.h),
-          _buildDropdownField('Source Of Lead', 'Please select', stateSetter),
+          _buildDropdownField('Lead Status', 'Please select', stateSetter),
           /* Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(horizontal: 10),
@@ -791,7 +793,9 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
                 showCustomToast(context, "Please select next followup date", Icons.clear, Colors.red);
               }else if(selectedEmp==0){
                 showCustomToast(context, "Please select employee", Icons.clear, Colors.red);
-              } else{
+              } /*else if(selectedEmp==0){
+                showCustomToast(context, "Please select employee", Icons.clear, Colors.red);
+              }*/ else{
                 _submitForm(stateSetter);
               }
 
@@ -865,7 +869,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
                 borderRadius: BorderRadius.circular(5.0),
                 underline: SizedBox.shrink(),
                 hint: Text(
-                  "Source of Lead",
+                  "Select Status",
                   style: TextStyle(
                     color: Color(0xff1B1B1B),
                     fontSize: 15.sp,

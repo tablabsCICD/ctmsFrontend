@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/create_mail.dart';
@@ -17,7 +18,7 @@ import 'activity/customer_grpah.dart';
 import 'activity/emp_meeting.dart';
 
 class EmpInfo extends StatefulWidget {
-  EmpData empData;
+  EmployeeData empData;
 
   EmpInfo({Key? key, required this.empData}) : super(key: key);
 

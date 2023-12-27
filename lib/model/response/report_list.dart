@@ -23,8 +23,8 @@ class ReportModel {
 }
 
 class ReportData {
-  List<Customer>? customer;
-  List<Employee>? employee;
+  List<CustomerReport>? customer;
+  List<EmployeeReport>? employee;
   List<Lead>? lead;
   List<Quotation>? quotation;
 
@@ -32,15 +32,15 @@ class ReportData {
 
   ReportData.fromJson(Map<String, dynamic> json) {
     if (json['customer'] != null) {
-      customer = <Customer>[];
+      customer = <CustomerReport>[];
       json['customer'].forEach((v) {
-        customer!.add(new Customer.fromJson(v));
+        customer!.add(new CustomerReport.fromJson(v));
       });
     }
     if (json['employee'] != null) {
-      employee = <Employee>[];
+      employee = <EmployeeReport>[];
       json['employee'].forEach((v) {
-        employee!.add(new Employee.fromJson(v));
+        employee!.add(new EmployeeReport.fromJson(v));
       });
     }
     if (json['lead'] != null) {
@@ -75,14 +75,14 @@ class ReportData {
   }
 }
 
-class Customer {
+class CustomerReport {
   int? month;
   int? year;
   int? count;
 
-  Customer({this.month, this.year, this.count});
+  CustomerReport({this.month, this.year, this.count});
 
-  Customer.fromJson(Map<String, dynamic> json) {
+  CustomerReport.fromJson(Map<String, dynamic> json) {
     month = json['month'];
     year = json['year'];
     count = json['count'];
@@ -97,14 +97,14 @@ class Customer {
   }
 }
 
-class Employee {
+class EmployeeReport {
   int? month;
   int? year;
   int? count;
 
-  Employee({this.month, this.year, this.count});
+  EmployeeReport({this.month, this.year, this.count});
 
-  Employee.fromJson(Map<String, dynamic> json) {
+  EmployeeReport.fromJson(Map<String, dynamic> json) {
     month = json['month'];
     year = json['year'];
     count = json['count'];

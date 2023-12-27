@@ -73,7 +73,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
                         Column(
                           children: [
                            // getImage(loginDeatils.data!.image!,height: 200.h,width: 200.w),
-                            CircleAvatar(
+
+                            loginDeatils.data!.image.toString()==''||loginDeatils.data!.image.toString()=="string"?SvgPicture.asset('assets/upload_profile.svg'):CircleAvatar(
                               radius: 80.0,
                               backgroundImage:
                               NetworkImage(imgPath==''?loginDeatils.data!.image.toString():imgPath),
@@ -114,7 +115,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
                               Text(
                                loginDeatils.data!.firstName!+" "+loginDeatils.data!.lastName!,
                                 style: TextStyle(color: Colors.black,
-                                  fontSize: 40.sp,
+                                  fontSize: 30.sp,
                                   fontFamily: GoogleFonts.poppins().fontFamily,
                                   fontWeight: FontWeight.w500,),
                               ),

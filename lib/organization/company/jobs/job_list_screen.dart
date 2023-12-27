@@ -6,6 +6,7 @@ import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization/company/jobs/create_job_screen.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/date.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,6 +52,7 @@ class _JobListState extends State<JobListScreen> {
   TextEditingController jobLocationController = TextEditingController();
   TextEditingController jobDepartmentController = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     return Consumer<JobListProvider>(
@@ -76,7 +79,7 @@ class _JobListState extends State<JobListScreen> {
                         SizedBox(
                           width: 27.w,
                         ),
-                        SizedBox(
+                        model.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
                           height: 58.h,
                           width: 180.w,
                           child: ElevatedButton(
@@ -131,7 +134,15 @@ class _JobListState extends State<JobListScreen> {
                                   fontWeight: FontWeight.w900)))
                       : Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths: {
+                    columnWidths:model.loginDeatils!.data!.isAdmin==false?{
+                      0: FlexColumnWidth(50),
+                      1: FlexColumnWidth(70),
+                      2: FlexColumnWidth(30),
+                      3: FlexColumnWidth(30),
+                      4: FlexColumnWidth(30),
+                      5: FlexColumnWidth(30),
+                      6: FlexColumnWidth(10),
+                    }: {
                       0: FlexColumnWidth(50),
                       1: FlexColumnWidth(70),
                       2: FlexColumnWidth(30),
@@ -152,7 +163,7 @@ class _JobListState extends State<JobListScreen> {
                           tableHeader("Salary"),
                           tableHeader("Date"),
                           tableHeader("Applicants"),
-                          tableHeader(""),
+                          model.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():tableHeader(""),
                         ],
                       ),
                       /// Table Data
@@ -277,7 +288,7 @@ class _JobListState extends State<JobListScreen> {
                   fontFamily: GoogleFonts.poppins().fontFamily,
                 decoration: TextDecoration.underline
               ),)),
-          InkWell(
+          jobProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():InkWell(
               onTap: () {
                 jobProvider.deleteJob(jobData);
               },
@@ -550,11 +561,11 @@ class _JobListState extends State<JobListScreen> {
       onTap: () {
         if (id == 0) {
           model.listJobs.sort(
-              (b, a) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
+              (b, a) => b.postJob!.jobDescription!.compareTo(a.postJob!.jobType!));
           setState(() {});
         } else {
           model.listJobs.sort(
-              (a, b) => b.postJob!.jobType!.compareTo(a.postJob!.jobType!));
+              (a, b) => b.postJob!.jobDescription!.compareTo(a.postJob!.jobType!));
           setState(() {});
         }
       },
@@ -682,8 +693,9 @@ class _JobListState extends State<JobListScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    orgProvider.getUsersByCompanyId(widget.organization.id!);
+    jobProvider.getLoginDetails();
   }
+
   void _submitForm(JobListProvider model) async {
     EasyLoading.show(status: "Loading");
     var status = await model.createJob(

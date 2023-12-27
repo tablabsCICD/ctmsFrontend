@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
@@ -69,7 +70,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
         "api/Organisation/getById?Id=${1}";
-    print("Get All Leads :" + myUrl
+    print("Get Organization Details :" + myUrl
     );
     final dio = Dio();
     final response = await dio.get(
@@ -78,7 +79,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
         }));
-    print(response.data);
+  //  print(response.data);
     if (response.statusCode == 200) {
       CtmsOrganizationResponse ctmsOrganizationResponse =
       CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
@@ -140,9 +141,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         },
                         child: Text('${Constants.LOGIN_NAME}',
                             style: TextStyle(
-                                fontSize: 20.sp,
+                                fontSize: 18.sp,
                                 color: Colors.black,
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w500,
                                 fontFamily: GoogleFonts.poppins().fontFamily)),
                       ),
                       SizedBox(
@@ -367,7 +368,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               suffixIcon: Icon(CupertinoIcons.search, color: Color(0xff7F7E7E)),
               hintStyle: TextStyle(
                 color: Color(0x662C363F),
-                fontSize: 18.sp,
+                fontSize: 14.sp,
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 fontWeight: FontWeight.w400,
               )),
@@ -421,125 +422,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     },
   );
 
-  Widget _settingDialogBuilder(BuildContext context, StateSetter stateSetter) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).pop();
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 20.w),
-        child: Card(
-          elevation: 7,
-          margin: EdgeInsets.only(top: 35.h),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-          child: Container(
-            height: 250.h,
-            width: 220.w,
-            padding: EdgeInsets.symmetric(
-              horizontal: 24.w,
-              vertical: 16.h,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8.r))),
-            child: DefaultTextStyle(
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: AppColor.black,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 14.sp),
-              child: IntrinsicWidth(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Notification"),
-                        Switch(
-                          // This bool value toggles the switch.
-                          value: notificationSwitchValue,
-                          overlayColor: overlayColor,
-                          trackColor: trackColor,
-                          thumbColor: const MaterialStatePropertyAll<Color>(
-                              Colors.white),
-                          onChanged: (bool value) {
-                            print("switch value: ${value}");
-                            stateSetter(() {
-                              notificationSwitchValue = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("RoundRobin"),
-                        Switch(
-                          // This bool value toggles the switch.
-                          value: rrSwitchValue,
-                          /*activeColor: Colors.white,
-                            inactiveThumbColor: Colors.white,
-                            focusColor: Colors.white,
-                            hoverColor: Colors.white,*/
-                          overlayColor: overlayColor,
-                          trackColor: trackColor,
-                          thumbColor: const MaterialStatePropertyAll<Color>(
-                              Colors.white),
-                          onChanged: (bool value) {
-                            print("switch value: ${value}");
-                            LocalSharePreferences.localSharePreferences.setBool("isRoundRobin", value);
-                            stateSetter(() {
-                              rrSwitchValue = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                alignment: Alignment.centerRight,
-                                backgroundColor: Colors.transparent,
-                                insetAnimationDuration:
-                                    Duration(milliseconds: 200),
-                                insetAnimationCurve: Curves.easeOutExpo,
-                                child: StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter setState) {
-                                  return EditCompany(setState);
-                                }),
-                              );
-                            },
-                          );
-                          // editProfileDilaog(organization!);
-                        },
-                        child: Text("Update Company Profile")),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   EditCompany(StateSetter stateSetter) {
     return Container(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
 import 'package:flutter_hr_management/provider/leadprovider/leadprovider.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:provider/provider.dart';
@@ -203,7 +204,7 @@ class _LeadListData extends State<LeadListData> {
 
     });
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD);
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?organisationId=${1}");
     print(response.data);
     if(response.statusCode==200){
       LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));

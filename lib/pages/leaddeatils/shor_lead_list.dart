@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -75,7 +77,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
   List<LeadData> todaysLeadData = [];
   List<LeadData> dateWiseLead = [];
   bool isLoad = false;
-  late EmpData empData = EmpData();
+  late EmployeeData empData = EmployeeData();
   int selectedEmp = 0;
   int editselectedEmp = 0;
   bool isRR = false;
@@ -83,9 +85,16 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    getLoginDetails();
     ApiGetData("", selectedPageNumber);
     //  getAllEmployee();
     super.initState();
+  }
+
+  LoginDeatils? loginDeatils;
+  getLoginDetails() async {
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
   }
 
   @override
@@ -114,7 +123,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                   'Lead Data',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 30.sp,
+                    fontSize: 24.sp,
                     fontFamily: GoogleFonts
                         .poppins()
                         .fontFamily,
@@ -201,7 +210,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             margin: EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Leads', '${leadData.length}', '', true,
+                leadCountCard('Total Leads', '${totalElements}', '', true,
                     Colors.green.shade50),
                 SizedBox(
                   width: 32.w,
@@ -233,7 +242,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     debugPrint('Query : $query \n Total leads : ${leadData.length}');
     finalLeadData.clear();
     debugPrint('Total leads : ${leadData.length}');
-    ApiLeadSearchData("", selectedPageNumber, query);
+    ApiShortLeadSearchData("", selectedPageNumber, query);
 
     /*leadData.forEach((element) {
       if (element.lead!.companyName!.toLowerCase().contains(query.toLowerCase()) ||
@@ -250,8 +259,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.GET_ALL_LEAD +
-        "/shortlead?page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
+    String myUrl = ApiConstant.GET_ALL_SHORTLEAD +
+        "?organisationId=${loginDeatils!.data!.organisationId}&page=${pageNo}&size=10&sortBy=id&sortDir=asc";
     print("Get All Leads :" + myUrl
     );
     final dio = Dio();
@@ -276,8 +285,10 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
       totalElements = leadList.data!.totalElements!;
       debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
       leadData.forEach((element) {
-        if (element.status == null) element.status = "pending";
         finalLeadData.add(element);
+
+        if (element.status == null) element.status = "pending";
+
         if (element.status!.toLowerCase() == "converted") {
           convertedLead.add(element);
         } else {
@@ -296,15 +307,16 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     setState(() {});
   }
 
-  Future<void> ApiLeadSearchData(String URL, int pageNo,String query) async {
+
+  Future<void> ApiShortLeadSearchData(String URL, int pageNo,String query) async {
     if(query=='') {ApiGetData('', selectedPageNumber);}
     isLoad = true;
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL +
-        "api/Lead/getAll/byFilter?page=${pageNo}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc";
-    print("Get All Leads :" + myUrl
+    String myUrl = ApiConstant.LEAD_SEARCH +
+        "?${loginDeatils!.data!.organisationId}&page=${pageNo}&size=10&sortBy=id&sortDir=${"asc"}&searchByKeyword=${query}";
+    print("Get All short Leads :" + myUrl
     );
     final dio = Dio();
     final response = await dio.get(
@@ -319,12 +331,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
       LeadListResponse leadList =
       LeadListResponse.fromJson(jsonDecode(response.data));
       finalLeadData.clear();
-
+      leadData.clear();
       finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
-      totalPages = leadList.data!.totalPages!;
-      totalElements = leadList.data!.totalElements!;
-      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
-      print('this is ${leadData.length}');
 
 
     }
@@ -336,8 +344,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL +
-        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${fromDate}&toDate=${toDate}";
+    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE +
+        "?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${fromDate}&toDate=${toDate}";
     print("Get All Leads :" + myUrl
     );
     final dio = Dio();
@@ -358,23 +366,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     }
   }
 
-  getAllEmployee() async {
-    String token = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.AuthToken);
-    Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",
-        options: Options(headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer ${token}',
-        }));
-    print(response.data);
-    if (response.statusCode == 200) {
-      EmployeeListResponse employeeList =
-      EmployeeListResponse.fromJson(jsonDecode(response.data));
-      Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!.content!);
-    }
-  }
+
 
   Future<void> _showAlertDialog(bool isShortLead) async {
     return showDialog<void>(
@@ -1061,8 +1053,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
         .getString(SharedPreferencesConstant.AuthToken);
     LoginDeatils loginDeatils =
     await LocalSharePreferences.localSharePreferences.getLoginData();
-    String myUrl = ApiConstant.BASE_URL+"api/upload/LeadFromXl";
-    debugPrint(myUrl);
+    String myUrl = ApiConstant.UPLOAD_SHORTLEAD;
+    debugPrint("Upload short Lead::: "+myUrl);
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     var postUri = Uri.parse(myUrl);
@@ -1080,11 +1072,10 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     print(response.statusCode);
     response.stream.transform(utf8.decoder).listen((value) {
       print(value);
-      var jsonData = jsonDecode(value);
+      /*var jsonData = jsonDecode(value);
       LeadListResponse leadListResponse =
       LeadListResponse.fromJson(jsonData);
-      print(leadListResponse.data!.detailsWithPage!.length);
-
+      print(leadListResponse.data!.detailsWithPage!.length);*/
     });
     ApiGetData("", selectedPageNumber);
     Navigator.of(context).pop();
@@ -1111,7 +1102,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                     : "Rejected Leads",
                 fontWeight: FontWeight.w600,
                 color: AppColor.black,
-                fontSize: 30.sp,
+                fontSize: 24.sp,
               ),
               Container(
                 width: 300.w,
@@ -1277,7 +1268,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                     width: 10,
                   ),
                   TextView(
-                      title: name,
+                      title: name??"-",
                       fontSize: 16.sp,
                       color: Colors.black,
                       fontWeight: FontWeight.w300)
@@ -1286,17 +1277,17 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             ),
           ),
           TextView(
-              title: client,
+              title: client??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: project,
+              title: project??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: contact.toString(),
+              title: contact.toString()??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
@@ -1328,7 +1319,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                   width: 5.w,
                 ),
                 Text(
-                  status,
+                  status??"-",
                   style: TextStyle(
                     color: status == "CONVERTED"
                         ? Colors.green
@@ -1954,8 +1945,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                                     setState(() {});
                                     String token = await LocalSharePreferences()
                                         .getString(SharedPreferencesConstant.AuthToken);
-                                    String myUrl = ApiConstant.BASE_URL +
-                                        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
+                                    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE +
+                                        "?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
                                     print("Get All Leads :" + myUrl
                                     );
                                     final dio = Dio();

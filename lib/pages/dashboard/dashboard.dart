@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_hr_management/model/employee_model.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/model/response/search_emp_response.dart';
 import 'package:flutter_hr_management/pages/report/customer_model.dart';
 import 'package:flutter_hr_management/pages/report/pdf_service.dart';
 import 'package:flutter_hr_management/pages/report/saveFile.dart';
@@ -48,8 +51,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   List<int> video = [];
-  List<EmpData> finalEmpData = [];
-  List<EmpData> emData = [];
+  List<EmployeeData> finalEmpData = [];
+  List<EmployeeData> emData = [];
 
   @override
   void initState() {
@@ -85,7 +88,7 @@ class _DashboardState extends State<Dashboard> {
                           Textview(
                               TextStyle(
                                 color: Colors.black,
-                                fontSize: 30.sp,
+                                fontSize: 24.sp,
                                 fontFamily: GoogleFonts.poppins()
                                     .fontFamily,
                                 fontWeight: FontWeight.w600,
@@ -190,8 +193,8 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               tableHeader("Name"),
                               tableHeader("Designation"),
-                              tableHeader("Contact"),
                               tableHeader("Gmail"),
+                              tableHeader("Contact"),
                               tableHeader("Report"),
                               tableHeader("Chart Report"),
                             ],
@@ -229,17 +232,44 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Future<void> ApiEmpSearchData(String URL, int pNo,String query) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    if(query=='') {
+      ApiGetData('', selectedPageNumber);}
+    isLoad = true;
+    setState(() {});
+    Dio dio = Dio();
+    finalEmpData.clear();
+    final response = await dio.get(
+        ApiConstant.SEARCH_EMP + "?keyword=${query}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
+    print(response.data);
+    if (response.statusCode == 200) {
+      SearchEmpResponse searchEmpResponse =
+      SearchEmpResponse.fromJson(jsonDecode(response.data));
+      searchEmpResponse.data!.forEach((element) {
+        finalEmpData.add(element.employeeDetails!);
+      });
+      isLoad = false;
+      setState(() {});
+    }
+  }
   void filterSearchResults(String query) {
     debugPrint('Query : $query \n Total leads : ${emData.length}');
     finalEmpData.clear();
     debugPrint('Total leads : ${emData.length}');
-    emData.forEach((element) {
+    ApiEmpSearchData('',selectedPageNumber,query);
+    /*emData.forEach((element) {
       if (element.firstName!.contains(query) ||
           element.mobileNumber!.contains(query) ||
           element.lastName!.contains(query)) {
         finalEmpData.add(element);
       }
-    });
+    });*/
     debugPrint('Final Leads : ${finalEmpData.length}');
     setState(() {});
   }
@@ -264,7 +294,7 @@ class _DashboardState extends State<Dashboard> {
               width: 10,
             ),
             Text(
-              name,
+              name??"-",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 15.sp,
@@ -276,7 +306,7 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       Text(
-        designation,
+        designation??"-",
         style: TextStyle(
           color: Colors.black,
           fontSize: 15.sp,
@@ -285,7 +315,7 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       Text(
-        gmail,
+        gmail??"-",
         style: TextStyle(
           color: Colors.black,
           fontSize: 15.sp,
@@ -294,7 +324,7 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       Text(
-        contact,
+        contact??"-",
         style: TextStyle(
           color: Colors.black,
           fontSize: 15.sp,
@@ -436,9 +466,10 @@ class _DashboardState extends State<Dashboard> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     print("Token:" + token);
+    LoginDeatils loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
     var req = await http.get(
-        Uri.parse(ApiConstant.BASE_URL +
-            "api/Employee/getByPages?page=${selectedPage}&size=10"),
+        Uri.parse(ApiConstant.GET_ALL_EMPLOYEE +
+            "?organisationId=${loginDeatils.data!.organisationId}&page=${selectedPageNumber}&size=10"),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -588,9 +619,10 @@ class _DashboardState extends State<Dashboard> {
     EasyLoading.show(status: "Loading");
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
+    LoginDeatils loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
     print("Token:" + token);
-    String url = ApiConstant.BASE_URL +
-        "api/getDetailedLeadReportWithEmployeeByEmployeeId?startDate=${selectedFromDate}1&endDate=${selectedToDate}&employeeId=${emData[index].id}";
+    String url = ApiConstant.DATEWISE_EMP_REPORT +
+        "?organisationId=${loginDeatils.data!.organisationId}&startDate=${selectedFromDate}1&endDate=${selectedToDate}&employeeId=${emData[index].id}";
     print("MyUrl:"+url);
     var req = await http.get(
         Uri.parse(url),

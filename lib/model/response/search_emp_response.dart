@@ -1,3 +1,5 @@
+import 'package:flutter_hr_management/model/department_model.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 
 class SearchEmpResponse {
@@ -30,21 +32,21 @@ class SearchEmpResponse {
 }
 
 class Data {
-  EmpData? employeeDetails;
+  EmployeeData? employeeDetails;
   DepartmentDetails? departmentDetails;
-  EmpData? headOfDept;
+  EmployeeData? headOfDept;
 
   Data({this.employeeDetails, this.departmentDetails, this.headOfDept});
 
   Data.fromJson(Map<String, dynamic> json) {
     employeeDetails = json['employeeDetails'] != null
-        ? new EmpData.fromJson(json['employeeDetails'])
+        ? new EmployeeData.fromJson(json['employeeDetails'])
         : null;
     departmentDetails = json['departmentDetails'] != null
         ? new DepartmentDetails.fromJson(json['departmentDetails'])
         : null;
     headOfDept = json['headOfDept'] != null
-        ? new EmpData.fromJson(json['headOfDept'])
+        ? new EmployeeData.fromJson(json['headOfDept'])
         : null;
   }
 
@@ -67,31 +69,3 @@ class Data {
 
 
 
-class DepartmentDetails {
-  int? id;
-  String? name;
-  String? employeeId;
-  String? contact;
-  String? active;
-
-  DepartmentDetails(
-      {this.id, this.name, this.employeeId, this.contact, this.active});
-
-  DepartmentDetails.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    employeeId = json['employeeId'];
-    contact = json['contact'];
-    active = json['active'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['employeeId'] = this.employeeId;
-    data['contact'] = this.contact;
-    data['active'] = this.active;
-    return data;
-  }
-}

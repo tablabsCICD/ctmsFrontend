@@ -8,10 +8,12 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
-import 'package:flutter_hr_management/model/response/roles.dart';
+
 import 'package:flutter_hr_management/model/response/search_emp_response.dart';
+import 'package:flutter_hr_management/model/role_model.dart';
 import 'package:flutter_hr_management/organization/model/all_user_model.dart';
 import 'package:flutter_hr_management/organization/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
@@ -50,23 +52,24 @@ class _EmpDashboard extends State<EmpDashboard> {
   TextEditingController _addLeadController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  List<EmpData> finalEmData = [];
-  List<EmpData> empData = [];
-  List<EmpData> activeEmpData = [];
-  List<EmpData> inActiveEmpData = [];
+  List<EmployeeData> finalEmData = [];
+  List<EmployeeData> empData = [];
+  List<EmployeeData> activeEmpData = [];
+  List<EmployeeData> inActiveEmpData = [];
   bool isLoad = false;
-  List<RoleData> dataRole = [];
+  List<Role> dataRole = [];
   int selectRole = 0;
   String selectedRole = "Select Role";
-  EmpData? selectedEmpTOAdd;
+  EmployeeData? selectedEmpTOAdd;
   @override
   void initState() {
     // TODO: implement initState
+    getLoginDetail();
     ApiGetDataDashbord("", selectedPageNumber);
     getEmployeeName();
     foundEmp = EmployeeList..toSet().toList();
     super.initState();
-    getLoginDetail();
+
   }
 
   LoginDeatils? loginDeatils;
@@ -128,7 +131,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                   'Employee Data',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 30.sp,
+                    fontSize: 24.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w600,
                     height: 0,
@@ -141,7 +144,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                     SizedBox(
                       width: 27.w,
                     ),
-                    SizedBox(
+                   loginDeatils!.data!.isAdmin==true? SizedBox(
                       height: 58.h,
                       width: 185.w,
                       child: ElevatedButton(
@@ -174,7 +177,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                               ),
                             ],
                           )),
-                    )
+                    ):SizedBox.shrink()
                   ],
                 ),
                 SizedBox(
@@ -219,7 +222,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColor.black,
-                    fontSize: 30.sp,
+                    fontSize: 24.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                   ),
                 ),
@@ -301,13 +304,20 @@ class _EmpDashboard extends State<EmpDashboard> {
                                   : Table(
                                       defaultVerticalAlignment:
                                           TableCellVerticalAlignment.middle,
-                                      columnWidths: {
+                                      columnWidths: loginDeatils!.data!.isAdmin==true?{
                                         0: FlexColumnWidth(50),
                                         1: FlexColumnWidth(40),
                                         2: FlexColumnWidth(40),
                                         3: FlexColumnWidth(40),
                                         4: FlexColumnWidth(40),
                                         5: FlexColumnWidth(40),
+                                      }:{
+                                        0: FlexColumnWidth(50),
+                                        1: FlexColumnWidth(40),
+                                        2: FlexColumnWidth(40),
+                                        3: FlexColumnWidth(40),
+                                        4: FlexColumnWidth(40),
+                                        5: FlexColumnWidth(10),
                                       },
                                       children: [
                                         /// Table Header
@@ -322,9 +332,8 @@ class _EmpDashboard extends State<EmpDashboard> {
                                               tableHeader("Mail"),
                                             tableHeader("Contact"),
                                             tableHeader("Details"),
-                                            if (!AppResponsive.isMobile(
-                                                context))
-                                              tableHeader("Action"),
+                                            loginDeatils!.data!.isAdmin==true?
+                                              tableHeader("Action"):SizedBox.shrink(),
                                           ],
                                         ),
                                         for (int i = 0;
@@ -378,20 +387,8 @@ class _EmpDashboard extends State<EmpDashboard> {
     isLoad = true;
     setState(() {});
     Dio dio = Dio();
-    var roleResponse = await dio.get(ApiConstant.GET_ALL_ROLES,
-        options: Options(headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer ${token}',
-        }));
-
-    if (roleResponse.statusCode == 200) {
-      RoleResponse role = RoleResponse.fromJson(jsonDecode(roleResponse.data));
-      dataRole.addAll(role!.data!);
-      print('the data is ${dataRole.length}');
-    }
-
     final response = await dio.get(
-        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${pNo}&size=10",
+        ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${pNo}&size=10",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -427,13 +424,14 @@ class _EmpDashboard extends State<EmpDashboard> {
   Future<void> ApiEmpSearchData(String URL, int pNo,String query) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    if(query=='') {ApiGetDataDashbord('', selectedPageNumber);}
+    if(query=='') {
+      ApiGetDataDashbord('', selectedPageNumber);}
     isLoad = true;
     setState(() {});
     Dio dio = Dio();
     finalEmData.clear();
     final response = await dio.get(
-        ApiConstant.BASE_URL + "api/search?keyword=${query}",
+        ApiConstant.SEARCH_EMP + "?organisationId=${loginDeatils!.data!.organisationId}&keyword=${query}",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -745,44 +743,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     }
   }
 
-  /* empdeatils(){
-    return isLoad?Center(child: CircularProgressIndicator(),) :Container(
-      decoration: BoxDecoration(
-          color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-      child: Column(
-        children: [
-          Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              /// Table Header
-              TableRow(
-                children: [
-                  tableHeader("Name"),
-                  if (!AppResponsive.isMobile(context))
-                    tableHeader("Designation"),
-                  tableHeader("Mail"),
-                  tableHeader("Contact"),
-                  if (!AppResponsive.isMobile(context)) tableHeader("Action"),
-                ],
-              ),
-              for (int i=0;i<finalEmData.length;i++)  tableRow(
-                context,
-                name: finalEmData[i].firstName!+" "+finalEmData[i].lastName!,
-                color: Colors.blue,
-                image: finalEmData[i].image,
-                designation: finalEmData[i].designation,
-                status: finalEmData[i].mobileNumber,
-                index: i,
-                email: finalEmData[i].emailId
-              ),
 
-            ],
-          ),
-
-        ],
-      ),
-    );
-  }*/
 
   TableRow tableRow(context,
       {name, image, designation, status, color, index, email}) {
@@ -808,7 +769,7 @@ class _EmpDashboard extends State<EmpDashboard> {
               SizedBox(
                 width: 10.w,
               ),
-              Center(child: Text(name, style: tableRowStyle()))
+              Center(child: Text(name??"-", style: tableRowStyle()))
             ],
           ),
         ),
@@ -817,12 +778,12 @@ class _EmpDashboard extends State<EmpDashboard> {
       if (!AppResponsive.isMobile(context))
         Center(
             child: Text(
-          designation,
+          designation??"-",
           style: tableRowStyle(),
         )),
       if (!AppResponsive.isMobile(context))
-        Center(child: Text(email, style: tableRowStyle())),
-      Center(child: Text(status, style: tableRowStyle())),
+        Center(child: Text(email??"-", style: tableRowStyle())),
+      Center(child: Text(status??"-", style: tableRowStyle())),
 
       if (!AppResponsive.isMobile(context))
         Center(
@@ -847,7 +808,7 @@ class _EmpDashboard extends State<EmpDashboard> {
           ),
         ),
       // Menu icon
-      Row(
+      loginDeatils!.data!.isAdmin==true?Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -876,7 +837,7 @@ class _EmpDashboard extends State<EmpDashboard> {
             ),
           ),
         ],
-      ),
+      ):SizedBox.shrink(),
     ]);
   }
 
@@ -1103,7 +1064,7 @@ class _EmpDashboard extends State<EmpDashboard> {
   }
 
   Future<void> addToTKDConnect(
-      EmpData selectedEmp, StateSetter stateSetter) async {
+      EmployeeData selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
       "aadharCard": 'string',
       "aadharCardForVerification": "string",

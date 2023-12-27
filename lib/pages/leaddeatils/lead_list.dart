@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -75,7 +77,7 @@ class _LeadDashboard extends State<LeadListScreen> {
   List<LeadData> todaysLeadData = [];
   List<LeadData> dateWiseLead = [];
   bool isLoad = false;
-  late EmpData empData = EmpData();
+  late EmployeeData empData = EmployeeData();
   int selectedEmp = 0;
   int editselectedEmp = 0;
   bool isRR = false;
@@ -83,9 +85,16 @@ class _LeadDashboard extends State<LeadListScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    getLoginDetails();
     ApiGetData("", selectedPageNumber);
     //  getAllEmployee();
     super.initState();
+  }
+
+  LoginDeatils? loginDeatils;
+  getLoginDetails() async {
+    loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
   }
 
   @override
@@ -114,7 +123,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                   'Lead Data',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 30.sp,
+                    fontSize: 24.sp,
                     fontFamily: GoogleFonts
                         .poppins()
                         .fontFamily,
@@ -168,7 +177,7 @@ class _LeadDashboard extends State<LeadListScreen> {
             margin: EdgeInsets.symmetric(horizontal: 33.w, vertical: 20.h),
             child: Row(
               children: [
-                leadCountCard('Total Leads', '${leadData.length}', '', true,
+                leadCountCard('Total Leads', '${totalElements}', '', true,
                     Colors.green.shade50),
                 SizedBox(
                   width: 32.w,
@@ -218,7 +227,7 @@ class _LeadDashboard extends State<LeadListScreen> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.GET_ALL_LEAD +
-        "?page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
+        "?organisationId=${loginDeatils!.data!.organisationId}&page=${pageNo}&size=10&sortBy=id&sortDir=dsc";
     print("Get All Leads :" + myUrl
         );
     final dio = Dio();
@@ -264,13 +273,14 @@ class _LeadDashboard extends State<LeadListScreen> {
   }
 
   Future<void> ApiLeadSearchData(String URL, int pageNo,String query) async {
-    if(query=='') {ApiGetData('', selectedPageNumber);}
+    if(query=='') {
+      ApiGetData('', selectedPageNumber);}
     isLoad = true;
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL +
-        "api/Lead/getAll/byFilter?page=${pageNo}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc";
+    String myUrl = ApiConstant.LEAD_SEARCH +
+        "?page=${pageNo}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc";
     print("Get All Leads :" + myUrl
     );
     final dio = Dio();
@@ -303,8 +313,8 @@ class _LeadDashboard extends State<LeadListScreen> {
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL +
-        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${fromDate}&toDate=${toDate}";
+    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE +
+        "?organisationId=${loginDeatils!.data!.organisationId}&page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${fromDate}&toDate=${toDate}";
     print("Get All Leads :" + myUrl
         );
     final dio = Dio();
@@ -325,11 +335,12 @@ class _LeadDashboard extends State<LeadListScreen> {
     }
   }
 
+/*
   getAllEmployee() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",
+    final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -342,6 +353,7 @@ class _LeadDashboard extends State<LeadListScreen> {
       Constants.allEmployee.addAll(employeeList.data!.content!);
     }
   }
+*/
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
@@ -932,8 +944,7 @@ class _LeadDashboard extends State<LeadListScreen> {
   void _submitForm() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    LoginDeatils loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
+
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
@@ -948,12 +959,12 @@ class _LeadDashboard extends State<LeadListScreen> {
     saveEmploye.address = _addressController.text;
     saveEmploye.city = _addressController.text;
     saveEmploye.companyName = name;
-    saveEmploye.coordinator = loginDeatils.data!.firstName;
+    saveEmploye.coordinator = loginDeatils!.data!.firstName;
     saveEmploye.date = GetDateFormat.getCurrentDate();
     saveEmploye.emailId = email;
     saveEmploye.isEnquiry = 0;
     saveEmploye.leadAssignedTo = selectedEmp;
-    saveEmploye.leadAddedBy = loginDeatils.data!.id;
+    saveEmploye.leadAddedBy = loginDeatils!.data!.id;
     saveEmploye.mobileNumber = phone;
     saveEmploye.pinCode = '000000';
     saveEmploye.sourceOfLead = _sourceofleadController.text;
@@ -964,14 +975,15 @@ class _LeadDashboard extends State<LeadListScreen> {
       "address": _addressController.text,
       "city": _addressController.text,
       "companyName": name,
-      "coordinator": loginDeatils.data!.firstName,
+      "coordinator": loginDeatils!.data!.firstName,
       "date": GetDateFormat.getCurrentDate(),
       "document": documentPath,
       "emailId": email,
       "isEnquiry": 0,
-      "leadAddedBy": loginDeatils.data!.id,
+      "leadAddedBy": loginDeatils!.data!.id,
       "leadAssignedTo": selectedEmp,
       "mobileNumber": phone,
+      "organisationId": loginDeatils!.data!.organisationId,
       "pinCode": "000000",
       "sourceOfLead": _sourceofleadController.text,
       "typeOfBusiness": _typeOfBusinessController.text
@@ -1001,7 +1013,7 @@ class _LeadDashboard extends State<LeadListScreen> {
         "nextFollowupDate": GetDateFormat.getNextDateOfCurrentDate(),
         "potential": 0,
         "status": "pending",
-        "updatedByUser": loginDeatils.data!.id,
+        "updatedByUser": loginDeatils!.data!.id,
       };
       print(parameter);
       var para = jsonEncode(parameter);
@@ -1049,7 +1061,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                     : "Rejected Leads",
                 fontWeight: FontWeight.w600,
                 color: AppColor.black,
-                fontSize: 30.sp,
+                fontSize: 24.sp,
               ),
               Container(
                 width: 300.w,
@@ -1101,7 +1113,7 @@ class _LeadDashboard extends State<LeadListScreen> {
           ),
           isLoad
               ? Container(
-            height: MediaQuery.of(context).size.height - 400,
+            height: MediaQuery.of(context).size.height - 500,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
@@ -1215,7 +1227,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                     width: 10,
                   ),
                   TextView(
-                      title: name,
+                      title: name??"-",
                       fontSize: 16.sp,
                       color: Colors.black,
                       fontWeight: FontWeight.w300)
@@ -1224,17 +1236,17 @@ class _LeadDashboard extends State<LeadListScreen> {
             ),
           ),
           TextView(
-              title: client,
+              title: client??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: project,
+              title: project??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: contact.toString(),
+              title: contact.toString()??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
@@ -1266,7 +1278,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                   width: 5.w,
                 ),
                 Text(
-                  status,
+                  status??"-",
                   style: TextStyle(
                     color: status == "CONVERTED"
                         ? Colors.green
@@ -1712,22 +1724,21 @@ class _LeadDashboard extends State<LeadListScreen> {
   void submitEditForm(LeadData leadData) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    LoginDeatils loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
+
     String name = _editnameController.text.toString();
     String email = _editemailController.text.toString();
     String phone = _editphoneController.text.toString();
     SaveLeadRequest saveEmploye = SaveLeadRequest();
     saveEmploye.id = leadData.lead!.id;
     saveEmploye.companyName = name;
-    saveEmploye.coordinator = loginDeatils.data!.firstName;
+    saveEmploye.coordinator = loginDeatils!.data!.firstName;
     saveEmploye.emailId = email;
     saveEmploye.mobileNumber = phone;
     saveEmploye.address = _editaddressController.text;
     saveEmploye.sourceOfLead = _editsourceofleadController.text;
     saveEmploye.typeOfBusiness = _edittypeOfBusinessController.text;
     saveEmploye.leadAssignedTo = editselectedEmp;
-    saveEmploye.leadAddedBy = loginDeatils.data!.id;
+    saveEmploye.leadAddedBy = loginDeatils!.data!.id;
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     //try{
@@ -1750,7 +1761,7 @@ class _LeadDashboard extends State<LeadListScreen> {
         "nextFollowupDate": GetDateFormat.getNextDateOfCurrentDate(),
         "potential": 0,
         "status": "Pending",
-        "updatedByUser": loginDeatils.data!.id,
+        "updatedByUser": loginDeatils!.data!.id,
       };
       var para = jsonEncode(parameter);
       var leadResponse = await dio.post(ApiConstant.SAVE_LEAD_UPDATe,
@@ -1892,8 +1903,8 @@ class _LeadDashboard extends State<LeadListScreen> {
                                     setState(() {});
                                     String token = await LocalSharePreferences()
                                         .getString(SharedPreferencesConstant.AuthToken);
-                                    String myUrl = ApiConstant.BASE_URL +
-                                        "api/LeadDateBetween/getAll?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
+                                    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE +
+                                        "?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
                                     print("Get All Leads :" + myUrl
                                     );
                                     final dio = Dio();

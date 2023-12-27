@@ -100,8 +100,8 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                           if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
                           }
-                        }, child: empCounts("0", "HRM", Images.crm, Color(
-                            0xFFFFEDF9)),),
+                        }, child: empCounts("0", "HRM", Images.hrm, Color(
+                            0xFFF6E3D1)),),
                         // empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
                       ],
                     ),

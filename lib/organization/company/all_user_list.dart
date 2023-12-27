@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/branch_response_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
@@ -68,9 +70,15 @@ class _AllUsersListState extends State<AllUsersList> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLoginDetails();
     getEmployeeName();
   }
 
+  LoginDeatils? loginDeatils;
+  getLoginDetails() async {
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+  }
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -107,7 +115,7 @@ class _AllUsersListState extends State<AllUsersList> {
                             SizedBox(
                               width: 27.w,
                             ),
-                            SizedBox(
+                            loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
                               height: 58.h,
                               width: 200.w,
                               child: ElevatedButton(
@@ -246,7 +254,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                           getUserDetails('Company Name','${model.userList[index].companyName}'),
                                           getUserDetails('Company Address','${model.userList[index].companyAddress}'),
                                           SizedBox(height: 10.h,),
-                                          Row(
+                                          loginDeatils!.data!.isAdmin==false?SizedBox.shrink():Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
                                               model.userList[index].isUserVerifiedByCompany==0?Padding(
@@ -510,7 +518,7 @@ class _AllUsersListState extends State<AllUsersList> {
 
   List<String> foundEmp = [];
   List<String> uniqueFoundEmp = [];
-  List<EmpData> EmployeeList = [];
+  List<EmployeeData> EmployeeList = [];
   List<String> EmpList = [];
   List<User> allUserList = [];
   bool isLoad=false;
@@ -654,7 +662,7 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  Future<void> addToTKDConnect(EmpData selectedEmp, StateSetter stateSetter) async {
+  Future<void> addToTKDConnect(EmployeeData selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
       "aadharCard": selectedEmp.boardingDeatails!.aadharCard,
       "aadharCardForVerification": selectedEmp.boardingDeatails!.aadharCard,

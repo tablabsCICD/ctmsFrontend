@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/lead_update_model.dart';
 import 'package:flutter_hr_management/model/response/lead_assign.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -35,11 +36,11 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
     callGetApi();
     initializeValue();
   }
-  List<Data>listLeadActivityData=[];
-  List<Data> totalLead = [];
-  List<Data> convertedLead = [];
-  List<Data> rejectedLead = [];
-  List<Data> pendingLead = [];
+  List<LeadAssign>listLeadActivityData=[];
+  List<LeadAssign> totalLead = [];
+  List<LeadAssign> convertedLead = [];
+  List<LeadAssign> rejectedLead = [];
+  List<LeadAssign> pendingLead = [];
 
   void callGetApi()async {
     try{

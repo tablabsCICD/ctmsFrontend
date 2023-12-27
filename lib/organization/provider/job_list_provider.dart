@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
@@ -23,7 +25,14 @@ class JobListProvider extends ChangeNotifier {
   JobListProvider() : super() {
     getOrgId();
     getAllJobs(orgId);
+    getLoginDetails();
     pagenation();
+  }
+
+  LoginDeatils? loginDeatils;
+  getLoginDetails() async {
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
   }
 
   getOrgId()async{

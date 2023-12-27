@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/branch_model.dart';
 import 'package:flutter_hr_management/model/response/branch_response_model.dart';
 import 'package:flutter_hr_management/organization/company/load_list.dart';
 import 'package:flutter_hr_management/organization/model/load_model.dart';

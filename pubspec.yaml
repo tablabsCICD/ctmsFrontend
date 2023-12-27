@@ -84,7 +84,7 @@ dependencies:
   flutter_rating_bar:
   open_filex:
   syncfusion_flutter_pdf: ^20.3.49
-
+  share_plus:
 
 
 

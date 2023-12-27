@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/provider/leadprovider/leadprovider.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/response/employeelist.dart';
@@ -199,12 +202,15 @@ class _LeadListData extends State<CustomerListData> {
 
   Future<void> ApiGetData(String URL) async{
 
+     LoginDeatils loginDeatils =
+      await LocalSharePreferences.localSharePreferences.getLoginData();
+
     isLoad=true;
     setState(() {
 
     });
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD);
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?organisationId=${loginDeatils.data!.organisationId}");
     print(response.data);
     if(response.statusCode==200){
       LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));

@@ -6,6 +6,8 @@ import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
+import 'package:flutter_hr_management/model/customer_model.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/post_lead.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_info.dart';
@@ -46,10 +48,10 @@ class _CustomerDashboard extends State<CustomerList> {
 
   TextEditingController _typeOfBusinessController = TextEditingController();
 
-  List<CustomerData> finalCustomerList = [];
-  List<CustomerData> customerList = [];
+  List<Customer> finalCustomerList = [];
+  List<Customer> customerList = [];
   bool isLoad = false;
-  late EmpData empData = EmpData();
+  late EmployeeData empData = EmployeeData();
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
@@ -71,8 +73,14 @@ class _CustomerDashboard extends State<CustomerList> {
   void initState() {
     // TODO: implement initState
     ApiGetData("",selectedPageNumber);
-    getAllEmployee();
+  //  getAllEmployee();
+    getLoginDetail();
     super.initState();
+  }
+
+  LoginDeatils? loginDeatils;
+  Future<void> getLoginDetail() async {
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
   }
 
   void filterSearchResults(String query) {
@@ -108,7 +116,7 @@ class _CustomerDashboard extends State<CustomerList> {
                   'Customer Data',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 30.sp,
+                    fontSize: 24.sp,
                     fontFamily: GoogleFonts.poppins().fontFamily,
                     fontWeight: FontWeight.w600,
                     height: 0,
@@ -161,50 +169,7 @@ class _CustomerDashboard extends State<CustomerList> {
 
           Expanded(
             child: SingleChildScrollView(
-                child: /* Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          // CountLeadWidget(),
-                          // SizedBox(
-                          //   height: 20,
-                          // ),
-                          //LeadListData(title: 'All Leads',),
-                          leadList(),
-                          if (AppResponsive.isMobile(context)) ...{
-                           // AddLead(),
-                            addLead(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          },
-
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (!AppResponsive.isMobile(context))
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          children: [
-                          // AddLead(),
-                            addLead(),
-                            SizedBox(
-                              height: 20,
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              ),*/
+                child:
                     leadList()),
           ),
         ],
@@ -400,12 +365,7 @@ class _CustomerDashboard extends State<CustomerList> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                   /* TextView(
-                      title: "Customer",
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.black,
-                      fontSize: 30.sp,
-                    ),*/
+
                     Container(
                       width: 300.w,
                       margin: EdgeInsets.symmetric(vertical: 10),
@@ -431,10 +391,7 @@ class _CustomerDashboard extends State<CustomerList> {
                     ),
                   ],
                 ),
-                /*  Divider(
-            thickness: 0.5,
-            color: Colors.grey,
-          ),*/
+
                 SizedBox(
                   height: 25.h,
                 ),
@@ -468,26 +425,16 @@ class _CustomerDashboard extends State<CustomerList> {
                       :  Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
-                      /// Table Header
                       TableRow(
-                        /*decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )),
-                  ),*/
+
                         children: [
                           tableHeader("Company Name"),
                           tableHeader("Type Of Business"),
                           tableHeader("Email"),
                           tableHeader("Contact"),
                           tableHeader("Date"),
-                          tableHeader(""),
-                          /*if (!AppResponsive.isMobile(context))
-                      tableHeader("Email"),
-                    tableHeader("Assign to"),
-                    if (!AppResponsive.isMobile(context)) tableHeader(""),*/
+                          loginDeatils!.data!.isAdmin==true?tableHeader(""):SizedBox.shrink(),
+
                         ],
                       ),
 
@@ -516,14 +463,7 @@ class _CustomerDashboard extends State<CustomerList> {
   TableRow tableRow(context,
       {name, image, client, project, status, color, index, String? contact,String? date}) {
     return TableRow(
-        decoration: BoxDecoration(
-            /* border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 0.5,
-            ),
-          ),*/
-            ),
+
         children: [
           //Full Name
           InkWell(
@@ -539,7 +479,7 @@ class _CustomerDashboard extends State<CustomerList> {
                     width: 10,
                   ),
                   TextView(
-                      title: name,
+                      title: name??"-",
                       fontSize: 16.sp,
                       color: Colors.black,
                       fontWeight: FontWeight.w300)
@@ -549,26 +489,26 @@ class _CustomerDashboard extends State<CustomerList> {
           ),
 
           TextView(
-              title: client,
+              title: client??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: project,
+              title: project??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: contact.toString(),
+              title: contact.toString()??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: date.toString(),
+              title: date.toString()??"-",
               fontSize: 16.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
-          InkWell(
+          loginDeatils!.data!.isAdmin==false?SizedBox.shrink():InkWell(
               onTap: () {
                 callDelete(index);
               },
@@ -596,20 +536,28 @@ class _CustomerDashboard extends State<CustomerList> {
     final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?page=${pno}&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
+    isLoad = false;
+    setState(() {
+
+    });
+    customerList.clear();
+    finalCustomerList.clear();
     if (response.statusCode == 200) {
-      CustomerListResponse employeeList =
-          CustomerListResponse.fromJson(jsonDecode(response.data));
-      customerList.clear();
-      finalCustomerList.clear();
-      customerList.addAll(employeeList.data!.content!);
-      finalCustomerList.addAll(employeeList.data!.content!);
-      print('this is ${finalCustomerList.length}');
-      totalPages = employeeList.data!.totalPages!;
-      totalElements = employeeList.data!.totalElements!;
-      debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
-      isLoad = false;
-      setState(() {});
+      if(response.data["success"]==true){
+        CustomerListResponse employeeList =
+        CustomerListResponse.fromJson(jsonDecode(response.data));
+        customerList.addAll(employeeList.data!.content!);
+        finalCustomerList.addAll(employeeList.data!.content!);
+        print('this is ${finalCustomerList.length}');
+        totalPages = employeeList.data!.totalPages!;
+        totalElements = employeeList.data!.totalElements!;
+        debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
+      }else{
+     }
+
     }
+    setState(() {});
+
   }
 
   Future<void> ApiCustomerSearchData(String URL,int pno,String query) async {
@@ -619,7 +567,7 @@ class _CustomerDashboard extends State<CustomerList> {
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.BASE_URL+"Customer/getAllByFilter?page=${pno}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.SEARCH_CUSTMER+"?page=${pno}&size=10&sortBy=id&searchByKeyword=${query}&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     if (response.statusCode == 200) {
@@ -685,38 +633,7 @@ class _CustomerDashboard extends State<CustomerList> {
     }
   }
 
-  Widget _buildText(String label) {
-    return InkWell(
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Select Employee'),
-                content: setupAlertDialoadContainer(),
-              );
-            });
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 60,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Container(
-            //margin: EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text(label), Icon(Icons.arrow_drop_down_outlined)],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   filterIcon() {
     return Container(
@@ -784,47 +701,7 @@ class _CustomerDashboard extends State<CustomerList> {
     );
   }
 
-  getAllEmployee() async {
-    String token = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.AuthToken);
-    Dio dio = Dio();
-    final response = await dio.get(ApiConstant.BASE_URL + "api/Employee/getAll",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
-    print(response.data);
-    if (response.statusCode == 200) {
-      EmployeeListResponse employeeList =
-          EmployeeListResponse.fromJson(jsonDecode(response.data));
-      Constants.allEmployee.clear();
-      Constants.allEmployee.addAll(employeeList.data!.content!);
-    }
-  }
 
-  Widget setupAlertDialoadContainer() {
-    return Container(
-      height: 300.0, // Change as per your requirement
-      width: 300.0, // Change as per your requirement
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: Constants.allEmployee.length,
-        itemBuilder: (BuildContext context, int index) {
-          return InkWell(
-            onTap: () {
-              // selectRole=dataRole[index].id!;
-              // selectedRole=dataRole[index].name!;
-              empData = Constants.allEmployee[index];
-              Navigator.pop(context);
-              setState(() {});
-            },
-            child: ListTile(
-              title: Text(Constants.allEmployee[index].firstName! +
-                  " " +
-                  Constants.allEmployee[index].lastName!),
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   leadCountCard(
     String title,

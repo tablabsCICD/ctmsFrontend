@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -173,8 +176,9 @@ class _LeadDialog extends State<LeadDialog>{
 
 
   Future<void> ApiGetData() async{
-
-    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD+"?page=0&size=10000&sortBy=id&sortDir=asc");
+    LoginDeatils loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+    var response = await ApiHelper().apiGet(ApiConstant.GET_ALL_LEAD+"?organisationId=${loginDeatils.data!.organisationId}&page=0&size=10000&sortBy=id&sortDir=asc");
     if(response.status==200){
       LeadListResponse employeeList =LeadListResponse.fromJson(response.response);
       //emData=employeeList.data!;

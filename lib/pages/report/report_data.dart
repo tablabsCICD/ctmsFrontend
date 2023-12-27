@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/report_list.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
@@ -29,9 +30,14 @@ class _ReportDataScreen extends State<ReportDataScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLoginDetail();
     GetReportData();
   }
 
+  LoginDeatils? loginDeatils;
+  Future<void> getLoginDetail() async {
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+  }
   String selectedYear = '2023';
   var items = [
     '2010',
@@ -307,8 +313,8 @@ class _ReportDataScreen extends State<ReportDataScreen> {
   }
 
   ReportData? reportData;
-  List<Customer> customerList = [];
-  List<Employee> EmployeeList = [];
+  List<CustomerReport> customerList = [];
+  List<EmployeeReport> EmployeeList = [];
   List<Lead> LeadList = [];
   List<BarChartGroupData> empBarChartList = [];
   List<BarChartGroupData> customerBarChartList = [];
@@ -317,9 +323,9 @@ class _ReportDataScreen extends State<ReportDataScreen> {
   Future<void> GetReportData() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    print("Get All Reports :" + ApiConstant.GET_ALL_LEAD + "?Year=${selectedYear}");
+    print("Get All Reports :" + ApiConstant.GET_ALL_REPORT + "?Year=${selectedYear}&organisationId=${loginDeatils!.data!.organisationId}");
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_REPORT + "?Year=${selectedYear}",
+    final response = await dio.get(ApiConstant.GET_ALL_REPORT + "?Year=${selectedYear}&organisationId=${loginDeatils!.data!.organisationId}",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',

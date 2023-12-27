@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/progress_dialog.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -26,7 +27,7 @@ class RecruitmentDataWidget extends StatefulWidget {
 class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
 
   List<int>video=[];
-  List<EmpData>emData=[];
+  List<EmployeeData>emData=[];
 
   @override
   void initState() {
@@ -316,197 +317,7 @@ class _RecruitmentDataWidgetState extends State<RecruitmentDataWidget> {
   }
 
 
-  getEmpTable(){
-    return Container(
-      width: 809.w,
-      // height: 700.h,
-      margin: EdgeInsets.only(left: 10.w),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 21.w,vertical: 24.h),
-      child: Column(
-        children: [
-          getTitle(),
-          ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: emData.length,
-              itemBuilder: (context,index){
-                return getEmpRecord(emData[index]);
-              }
-          ),
-        ],
-      ),
-    );
-  }
 
-  getTitle(){
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 21.0.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(width: 32.w,),
-          SizedBox(
-            width: 100.w,
-            child: Text(
-              "Name",
-              style:TextStyle(
-                color: Colors.black,
-                fontSize: 16.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(
-            width: 120.w,
-            child: Text(
-              "Designation",
-              style:TextStyle(
-                color: Colors.black,
-                fontSize: 16.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(
-              width: 120.w,
-              child: Text(
-                "Gmail",
-                style:TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              )
-          ),
-          SizedBox(
-              width: 100.w,
-              child: Text(
-                "Contact",
-                style:TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              )
-          ),
-          SizedBox(
-              width: 87.w,
-              child: Text(
-                "Status",
-                style:TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              )
-          ),
 
-        ],
-      ),
-    );
-  }
-  getEmpRecord(EmpData employeeModel){
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 21.0.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(1000),
-            child: Image.asset('assets/user1.jpg',
-              //employeeModel.image.toString(),
-              width: 30,
-            ),
-          ),
-          SizedBox(
-            width: 100.w,
-            child: Text(
-             employeeModel.firstName.toString()+" "+employeeModel.lastName.toString(),
-              style:TextStyle(
-                color: Colors.black,
-                fontSize: 15.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 120.w,
-            child: Text(
-             employeeModel!.designation!,
-              style:TextStyle(
-                color: Colors.black,
-                fontSize: 15.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 120.w,
-            child: Text(
-               employeeModel.emailId!,
-             style: TextStyle(
-                color: Colors.black,
-                fontSize: 15.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 100.w,
-            child: Text(
-               employeeModel.mobileNumber.toString(),
-              style:TextStyle(
-                color: Colors.black,
-                fontSize: 15.sp,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          Container(
-            height: 27.h,
-            width: 83.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: employeeModel.isSelected!?Colors.amber.shade50:Colors.red.shade50
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 6.w,vertical: 0.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(Icons.circle,size: 8,color: employeeModel.isSelected!?Colors.amber :Colors.red),
-                Text(
-                  employeeModel.isSelected!?"Selected":"Pending",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
+
 }

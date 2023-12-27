@@ -1,6 +1,6 @@
 class RoleResponse {
   String? message;
-  List<RoleData>? data;
+  List<Role>? data;
   bool? success;
 
   RoleResponse({this.message, this.data, this.success});
@@ -8,9 +8,9 @@ class RoleResponse {
   RoleResponse.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['data'] != null) {
-      data = <RoleData>[];
+      data = <Role>[];
       json['data'].forEach((v) {
-        data!.add(new RoleData.fromJson(v));
+        data!.add(new Role.fromJson(v));
       });
     }
     success = json['success'];
@@ -27,14 +27,14 @@ class RoleResponse {
   }
 }
 
-class RoleData {
+class Role {
   int? id;
   String? name;
   int? isActive;
 
-  RoleData({this.id, this.name, this.isActive});
+  Role({this.id, this.name, this.isActive});
 
-  RoleData.fromJson(Map<String, dynamic> json) {
+  Role.fromJson(Map<String, dynamic> json) {
     id = json['id']??0;
     name = json['name']??'';
     isActive = json['isActive']??0;

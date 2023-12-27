@@ -15,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../common/app_colors.dart';
+import '../../../model/lead_model.dart';
 import '../../../model/response/lead_list.dart';
 import '../../../utils/constant.dart';
 
@@ -333,7 +334,7 @@ class _CreateMail extends State<CreateMail>{
         .getString(SharedPreferencesConstant.AuthToken);
     EasyLoading.show(status: "Loading");
     Dio dio=Dio();
-    String url = ApiConstant.BASE_URL+"api/Employee/SendCCEmail?cc=${toNameController.text}&cc=${ccNameController.text}&subject=${subjectController.text}&message=${mailController.text}";
+    String url = ApiConstant.SEND_MAIL_CC+"?cc=${toNameController.text}&cc=${ccNameController.text}&subject=${subjectController.text}&message=${mailController.text}";
     print(url);
     var response=await dio.post(url,
         options: Options(headers: {

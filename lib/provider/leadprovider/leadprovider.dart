@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
 
@@ -20,7 +21,7 @@ class LeadProvider extends BaseProvider{
     appState=Constants.stateBusy;
     notifyListeners();
     final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_LEAD);
+    final response = await dio.get(ApiConstant.GET_ALL_LEAD+"?organisationId=${1}");
     print(response.data);
     if(response.statusCode==200){
       LeadListResponse employeeList =LeadListResponse.fromJson(jsonDecode(response.data));

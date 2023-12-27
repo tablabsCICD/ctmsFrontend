@@ -11,6 +11,7 @@ import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/constants.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/lead_list.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
@@ -34,6 +35,7 @@ import 'package:provider/provider.dart';
 
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
+import '../model/lead_model.dart';
 import 'dashboard/dashboard.dart';
 import 'package:http/http.dart'as http;
 
@@ -48,8 +50,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getLoginDetails();
     ApiGetAllLead('',0);
     ApiGetAllEmployee("", 0);
+  }
+
+  LoginDeatils? loginDeatils;
+  getLoginDetails() async {
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
   }
 
   final GlobalKey<ScaffoldState> _key = GlobalKey();
@@ -87,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                           'Lead Data',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 30.sp,
+                            fontSize: 24.sp,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -129,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                           'Employee Data',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 30.sp,
+                            fontSize: 24.sp,
                             fontFamily: GoogleFonts.poppins().fontFamily,
                             fontWeight: FontWeight.w600,
                             height: 0,
@@ -170,12 +179,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Future<int> ApiGetData(String URL) async{
-    final dio = Dio();
-    final response = await dio.get(ApiConstant.GET_ALL_EMPLOYEE);
-     print(response.data);
-    return response.statusCode!;
-  }
+
 
   String selectedLeadType = "total";
 
@@ -252,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.w600),
                 TextView(
                     title: title,
-                    fontSize: 20.sp,
+                    fontSize: 16.sp,
                     color: Color(0xff6C6C6C),
                     fontWeight: FontWeight.w300)
               ],
@@ -275,13 +279,11 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    print("Get All Leads :" +
-        ApiConstant.GET_ALL_LEAD +
-        "?page=${pageNo}&size=10&sortBy=id&sortDir=asc");
+    String myUrl =  ApiConstant.GET_ALL_LEAD +
+        "?organisationId=${loginDeatils!.data!.organisationId}&page=${pageNo}&size=10&sortBy=id&sortDir=asc";
+    print("Get All Leads :" + myUrl );
     final dio = Dio();
-    final response = await dio.get(
-        ApiConstant.GET_ALL_LEAD +
-            "?page=${0}&size=10000&sortBy=id&sortDir=asc",
+    final response = await dio.get(myUrl,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -318,10 +320,10 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  List<EmpData> finalEmData = [];
-  List<EmpData> empData = [];
-  List<EmpData> activeEmpData = [];
-  List<EmpData> inActiveEmpData = [];
+  List<EmployeeData> finalEmData = [];
+  List<EmployeeData> empData = [];
+  List<EmployeeData> activeEmpData = [];
+  List<EmployeeData> inActiveEmpData = [];
   EmployeeListResponse? employeeListResponse;
 
   Future<void> ApiGetAllEmployee(String URL, int pNo) async {
@@ -332,7 +334,7 @@ class _HomePageState extends State<HomePage> {
     Dio dio = Dio();
 
     final response = await dio.get(
-        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${pNo}&size=10000 ",
+        ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${pNo}&size=10000",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -428,7 +430,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Text(name,
                     style: TextStyle(
-                      fontSize: 20.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w300,
                     ))
               ],
