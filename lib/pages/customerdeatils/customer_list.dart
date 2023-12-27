@@ -39,42 +39,17 @@ class CustomerList extends StatefulWidget {
 }
 
 class _CustomerDashboard extends State<CustomerList> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _sourceofleadController = TextEditingController();
-  TextEditingController _coordinatorController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-
-  TextEditingController _typeOfBusinessController = TextEditingController();
 
   List<Customer> finalCustomerList = [];
   List<Customer> customerList = [];
   bool isLoad = false;
   late EmployeeData empData = EmployeeData();
 
-  Future<void> _showAlertDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          // <-- SEE HERE
-          title: const Text(''),
-          content: SingleChildScrollView(
-            child: SizedBox(height: 1024.h, width: 408.w, child: addLead()),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     // TODO: implement initState
-    ApiGetData("",selectedPageNumber);
-  //  getAllEmployee();
     getLoginDetail();
+    ApiGetData("",selectedPageNumber);
     super.initState();
   }
 
@@ -88,11 +63,6 @@ class _CustomerDashboard extends State<CustomerList> {
     finalCustomerList.clear();
     debugPrint('Total leads : ${customerList.length}');
     ApiCustomerSearchData('', selectedPageNumber, query);
-    /*customerList.forEach((element) {
-      if(element.companyName!.toLowerCase().contains(query.toLowerCase()) || element.mobileNumber!.contains(query)){
-        finalCustomerList.add(element);
-      }
-    });*/
     debugPrint('Final Customer : ${finalCustomerList.length}');
     setState(() {});
   }
@@ -129,38 +99,7 @@ class _CustomerDashboard extends State<CustomerList> {
                     SizedBox(
                       width: 27.w,
                     ),
-                    Visibility(
-                      visible:false,
-                      child: SizedBox(
-                        height: 58.h,
-                        width: 180.w,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              _showAlertDialog();
-                            },
-                            style: ElevatedButton.styleFrom(
-                                primary: ThemeColor.theme_blue,
-                                onPrimary: Colors.white),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add_circle,
-                                  size: 18,
-                                ),
-                                SizedBox(
-                                  width: 6.w,
-                                ),
-                                TextView(
-                                  title: "Add Customer",
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            )),
-                      ),
-                    )
+
                   ],
                 ),
               ],
@@ -177,182 +116,7 @@ class _CustomerDashboard extends State<CustomerList> {
     );
   }
 
-  addLead() {
-    return Container(
-      decoration: BoxDecoration(
-          color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-      padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 16,
-                  )),
-              SizedBox(
-                width: 5.w,
-              ),
-              Text(
-                "Back",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.black,
-                  fontSize: 16.sp,
-                ),
-              ),
-            ],
-          ),
-          Center(
-            child: Text(
-              "Add Customer",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: AppColor.black,
-                fontSize: 25.sp,
-              ),
-            ),
-          ),
-          SizedBox(height: 20.h),
-          Center(
-              child: SvgPicture.asset('assets/upload_profile.svg',
-                  height: 202.h, width: 202.w)),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'First Name', 'Please enter your first name', _nameController),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Last Name', 'Please enter your last name', _nameController),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Email', 'Please enter your email ID', _emailController),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Phone', 'Please enter your phone number', _phoneController),
-          SizedBox(height: 16.h),
-          // _buildTextField('Name Coordinator', _coordinatorController),
-          //   _buildText(empData.firstName==null?"Name of Coordinator":empData.firstName!+" "+empData.lastName!),
-          SizedBox(height: 16.h),
-          _buildTextField(
-              'Project Name', 'Please select', _sourceofleadController),
 
-          SizedBox(height: 16.h),
-
-          /*ElevatedButton(
-            onPressed: _submitForm,
-            child: Center(child: Text('Submit')),
-          ),*/
-          InkWell(
-            onTap: _submitForm,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: ThemeColor.theme_blue,
-                  borderRadius: BorderRadius.circular(5)),
-              padding: EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 20,
-              ),
-              child: Center(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: AppColor.white),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-      String label, String hint, TextEditingController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(5.r),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: label,
-            hintText: hint,
-            labelStyle: TextStyle(
-                color: Color(0xff1B1B1B),
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w300),
-            hintStyle: TextStyle(
-                color: Color(0xffcccccc),
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w300),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _submitForm() async {
-    String token = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.AuthToken);
-    LoginDeatils loginDeatils =
-        await LocalSharePreferences.localSharePreferences.getLoginData();
-    String name = _nameController.text.toString();
-    String email = _emailController.text.toString();
-    String phone = _phoneController.text.toString();
-    SaveLeadRequest saveEmploye = SaveLeadRequest();
-    saveEmploye.companyName = name;
-    saveEmploye.coordinator = _coordinatorController.text;
-    saveEmploye.emailId = email;
-    saveEmploye.mobileNumber = phone;
-    saveEmploye.address = _addressController.text;
-    saveEmploye.sourceOfLead = _sourceofleadController.text;
-    saveEmploye.typeOfBusiness = _typeOfBusinessController.text;
-    saveEmploye.leadAssignedTo = empData.id;
-    saveEmploye.leadAddedBy = loginDeatils.data!.id;
-    EasyLoading.show(status: "Loading");
-    Dio dio = Dio();
-    //try{
-    var response = await dio.post(ApiConstant.SAVE_LEAD,
-        data: jsonEncode(saveEmploye.toJson()),options: Options(headers:{ "Content-Type": "application/json",
-          'Authorization': 'Bearer ${token}',}));
-    print('the body ${response.data}');
-    if (response.statusCode == 200) {
-      PostLead postLead = PostLead.fromJson(jsonDecode(response.data));
-      Map<String, dynamic> parameter = {
-        "date": GetDateFormat.getCurrentDate(),
-        "lead": postLead.data!.id,
-        "nextFollowUpBy": empData.id,
-        "potential": "10",
-        "status": "Pending",
-        "updatedByUser": loginDeatils.data!.id,
-        "description": " Lead Created "
-      };
-      var para = jsonEncode(parameter);
-      var leadResponse =
-          await dio.post(ApiConstant.SAVE_LEAD_UPDATe, data: para,options: Options(headers:{ "Content-Type": "application/json",
-            'Authorization': 'Bearer ${token}',}));
-      if (leadResponse.statusCode == 200) {
-        print('done is done ');
-      }
-      ApiGetData("",selectedPageNumber);
-    } else {
-    //  ToastMessage.show(context, "Please try Again");
-      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
-    }
-    EasyLoading.dismiss();
-    // }catch(e){
-    //   EasyLoading.dismiss();
-    // }
-  }
 
   leadList() {
     return Container(
@@ -533,7 +297,7 @@ class _CustomerDashboard extends State<CustomerList> {
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?page=${pno}&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
+    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?organisationId=${loginDeatils!.data!.organisationId}&page=${pno}&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     isLoad = false;
@@ -543,7 +307,7 @@ class _CustomerDashboard extends State<CustomerList> {
     customerList.clear();
     finalCustomerList.clear();
     if (response.statusCode == 200) {
-      if(response.data["success"]==true){
+      if(response.data["data"]!=""){
         CustomerListResponse employeeList =
         CustomerListResponse.fromJson(jsonDecode(response.data));
         customerList.addAll(employeeList.data!.content!);

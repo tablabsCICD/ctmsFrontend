@@ -1295,7 +1295,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                 /*  SizedBox(width: 10.w,),
                 Icon(Icons.arrow_drop_down_outlined,size: 18,
                     color: status =="Converted"?Colors.green:status=="Rejected"?Colors.red:Colors.amber),*/
-                PopupMenuButton(
+                status == "CONVERTED"?SizedBox.shrink():PopupMenuButton(
                   position: PopupMenuPosition.under,
                   padding: EdgeInsets.only(bottom: 20),
                   icon: Icon(Icons.arrow_drop_down_outlined,
@@ -1337,7 +1337,7 @@ class _LeadDashboard extends State<LeadListScreen> {
               SizedBox(
                 width: 5.w,
               ),
-              InkWell(
+              status == "CONVERTED"?SizedBox.shrink():InkWell(
                   onTap: () {
                     //  _showAlertDialog();
                     editleadDilaog(leadData);

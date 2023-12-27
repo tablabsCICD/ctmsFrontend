@@ -1494,7 +1494,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
     print('the data is: ${roleResponse.response}');
-    if (roleResponse.response["success"] == true) {
+    if (roleResponse.response["success"] == true){
       MeetingListResponse meetingResponse = MeetingListResponse.fromJson(roleResponse.response);
       meetingList.addAll(meetingResponse.data!);
       filteredMeetingList.clear();
