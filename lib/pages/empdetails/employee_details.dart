@@ -785,7 +785,7 @@ class _EmpDashboard extends State<EmpDashboard> {
         Center(child: Text(email??"-", style: tableRowStyle())),
       Center(child: Text(status??"-", style: tableRowStyle())),
 
-      if (!AppResponsive.isMobile(context))
+
         Center(
           child: InkWell(
             onTap: () {

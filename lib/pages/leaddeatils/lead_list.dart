@@ -1248,7 +1248,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                   ),*/
                   children: [
                     tableHeader("Name"),
-                    tableHeader("Client"),
+                    if (!AppResponsive.isMobile(context))  tableHeader("Client"),
                     tableHeader("Project"),
                     tableHeader("Contact"),
                     tableHeader("Status"),
@@ -1322,7 +1322,7 @@ class _LeadDashboard extends State<LeadListScreen> {
               ),
             ),
           ),
-          TextView(
+          if (!AppResponsive.isMobile(context))TextView(
               title: client??"-",
               fontSize: 16.sp,
               color: Colors.black,

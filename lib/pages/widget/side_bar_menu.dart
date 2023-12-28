@@ -35,21 +35,6 @@ class _SideBarState extends State<SideBar> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             /* InkWell(
-                onTap: (){
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: *//*Text("Go To Back Menu",style: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: GoogleFonts.poppins().fontFamily)),*//*
-                  SvgPicture.asset(
-                    "assets/back_button.svg",height: 66.h,width: 66.w,
-                  )),
-              ),*/
               InkWell(
                 onTap: (){
                   Navigator.pushReplacementNamed(context, AppRoutes.home);
