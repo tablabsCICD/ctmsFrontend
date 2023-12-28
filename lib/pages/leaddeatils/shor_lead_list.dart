@@ -153,7 +153,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.add_circle,
+                                Icons.file_upload,color: Colors.white,
                                 size: 18,
                               ),
                               SizedBox(
@@ -952,8 +952,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
   void _submitForm() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    LoginDeatils loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
+
     String name = _nameController.text.toString();
     String email = _emailController.text.toString();
     String phone = _phoneController.text.toString();
@@ -968,12 +967,12 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
     saveEmploye.address = _addressController.text;
     saveEmploye.city = _addressController.text;
     saveEmploye.companyName = name;
-    saveEmploye.coordinator = loginDeatils.data!.firstName;
+    saveEmploye.coordinator = loginDeatils!.data!.firstName;
     saveEmploye.date = GetDateFormat.getCurrentDate();
     saveEmploye.emailId = email;
     saveEmploye.isEnquiry = 0;
     saveEmploye.leadAssignedTo = selectedEmp;
-    saveEmploye.leadAddedBy = loginDeatils.data!.id;
+    saveEmploye.leadAddedBy = loginDeatils!.data!.id;
     saveEmploye.mobileNumber = phone;
     saveEmploye.pinCode = '000000';
     saveEmploye.sourceOfLead = _sourceofleadController.text;
@@ -984,14 +983,16 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
       "address": _addressController.text,
       "city": _addressController.text,
       "companyName": name,
-      "coordinator": loginDeatils.data!.firstName,
+      "coordinator": loginDeatils!.data!.firstName,
       "date": GetDateFormat.getCurrentDate(),
       "document": documentPath,
       "emailId": email,
       "isEnquiry": 0,
-      "leadAddedBy": loginDeatils.data!.id,
+      "isShortLead": true,
+      "leadAddedBy": loginDeatils!.data!.id,
       "leadAssignedTo": selectedEmp,
       "mobileNumber": phone,
+      "organisationId": loginDeatils!.data!.organisationId,
       "pinCode": "000000",
       "sourceOfLead": _sourceofleadController.text,
       "typeOfBusiness": _typeOfBusinessController.text
@@ -1021,7 +1022,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
         "nextFollowupDate": GetDateFormat.getNextDateOfCurrentDate(),
         "potential": 0,
         "status": "pending",
-        "updatedByUser": loginDeatils.data!.id,
+        "updatedByUser": loginDeatils!.data!.id,
       };
       print(parameter);
       var para = jsonEncode(parameter);

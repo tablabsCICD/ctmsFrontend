@@ -62,6 +62,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
+  TextEditingController _panController = TextEditingController();
+  TextEditingController _tanController = TextEditingController();
+
   final orgProvider = locator<OrgProvider>();
   CtmsOrganization? organization;
 
@@ -69,7 +72,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
-        "api/Organisation/getById?Id=${1}";
+        "api/Organisation/getById?Id=${details!.data!.organisationId}";
     print("Get Organization Details :" + myUrl
     );
     final dio = Dio();
@@ -97,6 +100,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     _emailController.text = organization!.officialEmailId!;
     _mobileController.text = organization!.orgMobileNumber!;
     _addressController.text = organization!.orgAddress!;
+    _panController.text = organization!.panCardNumber!;
+    _tanController.text = organization!.tanCardNumber!;
   }
 
   @override
@@ -494,6 +499,15 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             _buildTextField(
                 'Phone', 'Please enter your phone number', _mobileController),
             SizedBox(height: 16.h),
+            _buildTextField(
+                'Address', 'Please enter address', _addressController),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Pan Card Number', 'Please enter pan number', _panController),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Tan Card Number', 'Please enter tan number', _tanController),
+            SizedBox(height: 16.h),
             InkWell(
               onTap: () {
                 submitEditForm();
@@ -543,12 +557,12 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     "landLineNumber": organization!.landLineNumber,
     "logo": imgPath,
     "officialEmailId": organization!.emailId,
-    "orgAddress": organization!.orgAddress,
+    "orgAddress": _addressController.text,
     "orgMobileNumber": _mobileController.text,
     "orgName": _companyNameController.text,
-    "panCardNumber": organization!.panCardNumber,
+    "panCardNumber": _panController.text,
     "state": organization!.state,
-    "tanCardNumber": organization!.tanCardNumber,
+    "tanCardNumber": _tanController.text,
     "typeOfRegistration": organization!.typeOfRegistration,
     "unloadingLogo": imgPath,
     "website": organization!.website
@@ -582,6 +596,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   String imgPath = '';
+  String invoiceLogo = '';
+  String unLoadingLogo = '';
   String documentPath = '';
   PlatformFile? objFile;
   Uint8List? imageBytes;

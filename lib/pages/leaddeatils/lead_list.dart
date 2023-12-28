@@ -139,12 +139,45 @@ class _LeadDashboard extends State<LeadListScreen> {
                       width: 27.w,
                     ),
                     SizedBox(
+                      height: 50.h,
+                      width: 175.w,
+                      child: ElevatedButton(
+                          onPressed: () async{
+                            isRR = await LocalSharePreferences.localSharePreferences.getBool("isRoundRobin");
+                            _showAlertDialog(true);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: ThemeColor.theme_blue,
+                              onPrimary: Colors.white),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.file_upload,color: Colors.white,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 6.w,
+                              ),
+                              TextView(
+                                title: "Upload Lead",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                              ),
+                            ],
+                          )),
+                    ),
+                    SizedBox(
+                      width: 27.w,
+                    ),
+                    SizedBox(
                       height: 58.h,
                       width: 180.w,
                       child: ElevatedButton(
                           onPressed: () async{
                             isRR = await LocalSharePreferences.localSharePreferences.getBool("isRoundRobin");
-                            _showAlertDialog();
+                            _showAlertDialog(false);
                           },
                           style: ElevatedButton.styleFrom(
                               primary: ThemeColor.theme_blue,
@@ -355,7 +388,7 @@ class _LeadDashboard extends State<LeadListScreen> {
   }
 */
 
-  Future<void> _showAlertDialog() async {
+  Future<void> _showAlertDialog(bool isShortLead) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -368,7 +401,7 @@ class _LeadDashboard extends State<LeadListScreen> {
           // <-- SEE HERE
           child: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return addLead(setState);
+                return isShortLead?uploadLead(setState):addLead(setState);
               }),
         );
       },
@@ -559,16 +592,11 @@ class _LeadDashboard extends State<LeadListScreen> {
             Center(
                 child: InkWell(
                     onTap: () async {
-                      pickFile(stateSetter, true);
+                      pickXlFile(stateSetter, true);
                     },
-                    child: imgPath == ''
-                        ? SvgPicture.asset('assets/upload_profile.svg',
-                        height: 202.h, width: 202.w)
-                        : CircleAvatar(
-                      radius: 75.0,
-                      backgroundImage: NetworkImage(imgPath.toString()),
-                      backgroundColor: Colors.transparent,
-                    ))),
+                    child: objXlFile == null
+                        ? Icon(Icons.file_copy,size: 100,)
+                        : Icon(Icons.done_outline,color: Colors.green,size: 100,))),
             SizedBox(height: 16.h),
             Center(
               child: SizedBox(
@@ -576,7 +604,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                 width: 120.w,
                 child: ElevatedButton(
                     onPressed: () async{
-                      pickFile(stateSetter, true);
+                      pickXlFile(stateSetter, true);
                     },
                     style: ElevatedButton.styleFrom(
                         primary: ThemeColor.theme_blue,
@@ -624,7 +652,7 @@ class _LeadDashboard extends State<LeadListScreen> {
             ),
             SizedBox(height: 25.h),
             InkWell(
-              onTap: _submitForm,
+              onTap: _submitManualLeadForm,
               child: Container(
                 decoration: BoxDecoration(
                     color: ThemeColor.theme_blue,
@@ -653,6 +681,64 @@ class _LeadDashboard extends State<LeadListScreen> {
     );
   }
 
+  void _submitManualLeadForm() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    LoginDeatils loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+    String myUrl = ApiConstant.UPLOAD_LEAD;
+    debugPrint("Upload short Lead::: "+myUrl);
+    EasyLoading.show(status: "Loading");
+    Dio dio = Dio();
+    var postUri = Uri.parse(myUrl);
+    var request = new http.MultipartRequest("POST", postUri);
+
+    Map<String, String> headers = {
+      "Content-Type": "multipart/form-data",
+      'Authorization': 'Bearer ${token}'
+    };
+    request.files.add(new http.MultipartFile(
+        "file", objXlFile!.readStream!, objXlFile!.size,
+        filename: objXlFile!.name));
+    request.headers.addAll(headers);
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+      /*var jsonData = jsonDecode(value);
+      LeadListResponse leadListResponse =
+      LeadListResponse.fromJson(jsonData);
+      print(leadListResponse.data!.detailsWithPage!.length);*/
+    });
+    ApiGetData("", selectedPageNumber);
+    Navigator.of(context).pop();
+    EasyLoading.dismiss();
+    print('the response is ${response}');
+  }
+  PlatformFile? objXlFile;
+  pickXlFile(StateSetter stateSetter, bool isImg) async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var result = await FilePicker.platform.pickFiles(
+      withReadStream:
+      true, // this will return PlatformFile object with read stream
+    );
+    if (result != null) {
+      stateSetter(() {
+        objXlFile = result.files.single;
+      });
+      try {
+        fileName = result.files.first.name;
+        print(result.files.first.toString());
+        imageBytes = result.files.first.bytes;
+        print(fileName);
+        uploadedDocument = isImg ? null : fileName;
+        showCustomToast(context, "File Uploaded", Icons.check, Colors.green);
+      } catch (ex) {
+        throw Exception("Exception Occurred ${ex.toString()}");
+      }
+    }
+  }
   Widget _buildText(String label, String label1, Function onClick) {
     return InkWell(
       onTap: () {
@@ -980,6 +1066,7 @@ class _LeadDashboard extends State<LeadListScreen> {
       "document": documentPath,
       "emailId": email,
       "isEnquiry": 0,
+      "isShortLead": false,
       "leadAddedBy": loginDeatils!.data!.id,
       "leadAssignedTo": selectedEmp,
       "mobileNumber": phone,
