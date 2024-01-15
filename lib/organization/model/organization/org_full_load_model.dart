@@ -97,26 +97,26 @@ class OrgFullLoadModel {
 
   OrgFullLoadModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    fullLoadChoice = json['fullLoadChoice'];
-    transporterOrCustomerName = json['transporterOrCustomerName'];
-    contactNumber = json['contactNumber'];
-    emailId = json['emailId'];
-    source = json['source'];
-    destination = json['destination'];
-    typeOfCargo = json['typeOfCargo'];
-    otherDetails = json['otherDetails'];
-    vehicleSize = json['vehicleSize'];
-    loadWeight = json['loadWeight'];
-    instructions = json['instructions'];
+    fullLoadChoice = json['fullLoadChoice']??"-";
+    transporterOrCustomerName = json['transporterOrCustomerName']??"-";
+    contactNumber = json['contactNumber']??"-";
+    emailId = json['emailId']??"-";
+    source = json['source']??"-";
+    destination = json['destination']??"-";
+    typeOfCargo = json['typeOfCargo']??"-";
+    otherDetails = json['otherDetails']??"-";
+    vehicleSize = json['vehicleSize']??"-";
+    loadWeight = json['loadWeight']??"-";
+    instructions = json['instructions']??"-";
     partLoad = json['partLoad'];
     date = json['date'];
-    os = json['os'];
-    loggedUserName = json['loggedUserName'];
-    loggedTime = json['loggedTime'];
+    os = json['os']??"-";
+    loggedUserName = json['loggedUserName']??"-";
+    loggedTime = json['loggedTime']??"-";
     privatePost = json['privatePost'];
     dnd = json['dnd'];
     typeOfPayment = json['typeOfPayment'];
-    image = json['image'];
+    image = json['image']??"-";
     tableName = json['tableName'];
     mainTag = json['mainTag'];
     postingTime = json['postingTime'];
@@ -135,9 +135,9 @@ class OrgFullLoadModel {
         images!.add((v));
       });
     }
-    material = json['material']??'';
-    expireDate = json['expireDate']??'';
-    transporterType = json['transporterType']??'';
+    material = json['material']??'-';
+    expireDate = json['expireDate']??'-';
+    transporterType = json['transporterType']??'-';
   }
 
   Map<String, dynamic> toJson() {

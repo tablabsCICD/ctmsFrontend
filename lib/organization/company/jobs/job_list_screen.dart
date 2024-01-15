@@ -52,6 +52,16 @@ class _JobListState extends State<JobListScreen> {
   TextEditingController jobLocationController = TextEditingController();
   TextEditingController jobDepartmentController = TextEditingController();
 
+  final orgProvider = locator<OrgProvider>();
+  final jobProvider = locator<JobListProvider>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    jobProvider.getAllJobs(widget.organization.id!);
+    jobProvider.getLoginDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +89,7 @@ class _JobListState extends State<JobListScreen> {
                         SizedBox(
                           width: 27.w,
                         ),
-                        model.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
+                        orgProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
                           height: 58.h,
                           width: 180.w,
                           child: ElevatedButton(
@@ -134,7 +144,7 @@ class _JobListState extends State<JobListScreen> {
                                   fontWeight: FontWeight.w900)))
                       : Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths:model.loginDeatils!.data!.isAdmin==false?{
+                    columnWidths:orgProvider.loginDeatils!.data!.isAdmin==false?{
                       0: FlexColumnWidth(50),
                       1: FlexColumnWidth(70),
                       2: FlexColumnWidth(30),
@@ -256,7 +266,7 @@ class _JobListState extends State<JobListScreen> {
               color: Colors.black,
               fontWeight: FontWeight.w300),
           TextView(
-              title: date,
+              title: date.toString()??'',
               fontSize: 14.sp,
               color: Colors.black,
               fontWeight: FontWeight.w300),
@@ -288,7 +298,7 @@ class _JobListState extends State<JobListScreen> {
                   fontFamily: GoogleFonts.poppins().fontFamily,
                 decoration: TextDecoration.underline
               ),)),
-          jobProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():InkWell(
+          orgProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():InkWell(
               onTap: () {
                 jobProvider.deleteJob(jobData);
               },
@@ -687,26 +697,19 @@ class _JobListState extends State<JobListScreen> {
       ),
     );
   }
-  final orgProvider = locator<OrgProvider>();
-  final jobProvider = locator<JobListProvider>();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    jobProvider.getLoginDetails();
-  }
+
 
   void _submitForm(JobListProvider model) async {
     EasyLoading.show(status: "Loading");
     var status = await model.createJob(
         widget.organization.companyName,
         widget.organization.companyMobileNumber,
-        orgProvider.userList[0].emailId,
+        orgProvider.loginDeatils!.data!.emailId,
         jobLocationController.text,
         0,
         salaryController.text,
         GetDateFormat.getNextMonthDateOfCurrentDate(),
-        orgProvider.userList[0].userName,
+        orgProvider.loginDeatils!.data!.firstName,
         jobDescController.text,
         "Jobs",
         jobTypeController.text,

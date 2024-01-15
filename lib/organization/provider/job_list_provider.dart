@@ -2,21 +2,16 @@ import 'dart:convert';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
-import 'package:flutter_hr_management/organization/model/job_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/job_applicant_model.dart';
 import 'package:flutter_hr_management/organization/provider/org_provider.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_hr_management/model/api_response.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
 import 'package:flutter_hr_management/organization/util/app_constants.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
 
 class JobListProvider extends ChangeNotifier {
   int selectedPage = 0;
-
-
   ScrollController scrollController = ScrollController();
   List<JobData> listJobs = [];
   final orgProvider = locator<OrgProvider>();
@@ -40,20 +35,21 @@ class JobListProvider extends ChangeNotifier {
   }
 
   getAllJobs(int id) async {
-    //ApiResponse apiResponse=await ApiHelper().apiWithoutDecodeGet(ApiConstant.BASE_URL+'postJob?page=$selectedPage');
-   // String myUrl = 'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkdConnect1/api/postJob';
-   String myUrl = AppConstants.BASE_URL +'GetPostJobBycompanyId?company_id=${id}';
+    getLoginDetails();
+    String myUrl = AppConstants.BASE_URL +'GetPostJobBycompanyId?company_id=${id}';
     print("Get All Jobs : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     var response = json.decode(req.body);
     print(response);
+    listJobs.clear();
     if (response != null) {
       JobList jobList = JobList.fromJson(response);
       listJobs.addAll(jobList.content as Iterable<JobData>);
       print(listJobs.length);
       selectedPage++;
       notifyListeners();
-    } else {}
+    } else {
+    }
   }
 
   List<ApplicantList> jobApplicantList = [];
@@ -66,7 +62,6 @@ class JobListProvider extends ChangeNotifier {
     print(response);
     jobApplicantList.clear();
     EasyLoading.dismiss();
-
       if(response['success']==false){
         jobApplicantList = [];
       }else{
@@ -77,7 +72,6 @@ class JobListProvider extends ChangeNotifier {
         selectedPage++;
       }
       notifyListeners();
-
   }
 
   deleteJob(JobData jobData) async {
@@ -94,7 +88,7 @@ class JobListProvider extends ChangeNotifier {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        getAllJobs(1);
+        getAllJobs(orgId);
       }
     });
   }

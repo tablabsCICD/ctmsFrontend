@@ -430,8 +430,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Text(name,
                     style: TextStyle(
-                      fontSize: 18.sp,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w300,
+                      color: Color(0xff6C6C6C),
                     ))
               ],
             )

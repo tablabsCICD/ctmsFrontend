@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/organization/company/company_menu/company_side_bar.dart';
 import 'package:flutter_hr_management/organization/company/load_list.dart';
-import 'package:flutter_hr_management/organization/general_post_list.dart';
+import 'package:flutter_hr_management/organization/company/general_post_list.dart';
 import 'package:flutter_hr_management/organization/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
@@ -93,7 +93,6 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
         drawer: CompanySideBar(),

@@ -810,37 +810,38 @@ class _LoginScreen extends State<LoginScreen> {
 
       EasyLoading.show(status: "Loading");
       Dio dio = Dio();
-      final req = await http.post(Uri.parse(myUrl));
-      print('the body is ${req.body}');
-      if (req.statusCode == 200) {
-        var jwtResponse = json.decode(req.body);
-        print('the response is ${jwtResponse}');
-        JWTLoginData jwtLoginData =
-            JWTLoginData.fromJson(jwtResponse);
-        if (jwtLoginData.data == '') {
-          showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
-         EasyLoading.dismiss();
-        } else {
-          String token = jwtLoginData.data!;
-          LocalSharePreferences()
-              .setString(SharedPreferencesConstant.AuthToken, token);
-          String finalToken = await LocalSharePreferences()
+          final req = await http.post(Uri.parse(myUrl));
+        print('the body is ${req.body}');
+        if (req.statusCode == 200) {
+          var jwtResponse = json.decode(req.body);
+          print('the response is ${jwtResponse}');
+          JWTLoginData jwtLoginData =
+          JWTLoginData.fromJson(jwtResponse);
+          if (jwtLoginData.data == '') {
+            showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
+            EasyLoading.dismiss();
+          } else {
+            String token = jwtLoginData.data!;
+            LocalSharePreferences()
+                .setString(SharedPreferencesConstant.AuthToken, token);
+            String finalToken = await LocalSharePreferences()
+                .getString(SharedPreferencesConstant.AuthToken);
+            print("Final Token ::"+finalToken);
+          }
+
+          String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
+          debugPrint("Get Current User Url:" + loginUrl);
+
+          String token = await LocalSharePreferences()
               .getString(SharedPreferencesConstant.AuthToken);
-          print("Final Token ::"+finalToken);
-        }
+          final loginResponse =
+          await dio.get(loginUrl,
+              options: Options(headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ${token}',
+              }));
+          print(loginResponse.data);
 
-        String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
-        debugPrint("Get Current User Url:" + loginUrl);
-
-        String token = await LocalSharePreferences()
-            .getString(SharedPreferencesConstant.AuthToken);
-        final loginResponse =
-            await dio.get(loginUrl,
-                options: Options(headers: {
-                  "Content-Type": "application/json",
-                  'Authorization': 'Bearer ${token}',
-                }));
-        print(loginResponse.data);
         EasyLoading.dismiss();
         if (loginResponse.statusCode == 200) {
           LoginDeatils loginDeatils = LoginDeatils.fromJson(jsonDecode(loginResponse.data));

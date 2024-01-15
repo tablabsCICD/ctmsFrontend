@@ -31,6 +31,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
@@ -581,7 +582,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             Center(
               child: SizedBox(
                 height: 45.h,
-                width: 120.w,
+                width: 135.w,
                 child: ElevatedButton(
                     onPressed: () async{
                       pickXlFile(stateSetter, true);
@@ -609,7 +610,33 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                     )),
               ),
             ),
-            SizedBox(height: 25.h),
+            SizedBox(height: 35.h),
+            Row(
+              children: [
+                TextView(
+                  title: "Check format of Excel file:",
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+                SizedBox(width: 5,),
+                InkWell(
+                  onTap: () async {
+                    final url = Uri.parse(
+                      'https://tablabs-images.s3.ap-south-1.amazonaws.com/1704349135893-ShortLead111-up.xlsx',
+                    );
+                    if (await canLaunchUrl(url)) {
+                      launchUrl(url);
+                    } else {
+                      // ignore: avoid_print
+                      print("Can't launch $url");
+                    }
+                  },
+                  child: const Text('Download',style: TextStyle(color: Colors.blue),),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
             TextView(
               title: "Steps to upload the file:",
               fontSize: 12.sp,

@@ -297,7 +297,9 @@ class _CustomerDashboard extends State<CustomerList> {
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.GET_ALL_CUSTMER+"?organisationId=${loginDeatils!.data!.organisationId}&page=${pno}&size=10&sortBy=id&sortDir=asc",options: Options(headers:{ "Content-Type": "application/json",
+    String myurl = ApiConstant.GET_ALL_CUSTMER+"?organisationId=${loginDeatils!.data!.organisationId}&page=${pno}&size=10&sortBy=id&sortDir=asc";
+    print("Customer List : "+myurl);
+    final response = await dio.get(myurl,options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     isLoad = false;

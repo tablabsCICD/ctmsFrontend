@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -6,7 +7,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/branch_model.dart';
+import 'package:flutter_hr_management/model/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/branch_response_model.dart';
+import 'package:flutter_hr_management/model/response/ctms_organization.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization/company/load_list.dart';
 import 'package:flutter_hr_management/organization/model/load_model.dart';
 import 'package:flutter_hr_management/organization/model/organization/org_quote_model.dart';
@@ -285,13 +289,13 @@ class OrgProvider extends ChangeNotifier {
   }
 
   getCompanyDetails(int id) async {
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
+    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/getByID?id=${id}';
     // String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
     print("GetOrg Details:" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
-    var list = OrganizationModel.fromJson(response);
-    orgnization = list.content;
+    Organization organizationModel = Organization.fromJson(response);
+    orgnization.add(organizationModel);
     notifyListeners();
     return orgnization;
   }
@@ -324,8 +328,25 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  LoginDeatils? loginDeatils;
+  CtmsOrganization? ctmsOrganization;
+  getLoginDetails() async {
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+    final dio = Dio();
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    final response = await dio.get(ApiConstant.GET_CTMS_ORG +"?Id=${loginDeatils!.data!.organisationId}",options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    print(response.data);
+    CtmsOrganizationResponse ctmsOrganizationResponse = CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
+    print(ctmsOrganizationResponse.data);
+    ctmsOrganization = ctmsOrganizationResponse.data;
+  }
+
   getOrgDetails() async {
-    List<Organization> organization = await getCompanyDetails(1);
+    getLoginDetails();
+    List<Organization> organization = await getCompanyDetails(ctmsOrganization!.connectOrgId!);
     print(organization[0].companyName);
     setCompanyOrgId(organization[0].id!);
     notifyListeners();
@@ -353,15 +374,16 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  String selectedBuySellTab = "Buy Vehicle";
+  String selectedBuySellTab = "Buy a Vehicle";
   String selectedTab = "All Users";
 
 
 
   getStaticData(int id) async {
     isLoading = true;
+    notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"/fullTruckStatistics?companyId=${id}";
+    String myUrl = AppConstants.BASE_URL+"fullTruckStatistics?companyId=${id}";
      //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
     print("GET Statistics URL : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -380,7 +402,7 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getOrgBidingList(int id) async {
+  getReceivedQuoteList(int id) async {
     isLoading = true;
     String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
     print("Get Received Quote Data by OrgId - " + myUrl);
@@ -391,13 +413,10 @@ class OrgProvider extends ChangeNotifier {
     if (req.statusCode == 200) {
       final response = json.decode(req.body);
       OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
+
       receivedBigingList.addAll(orgQuoteModel.content!);
       orgBigingList.addAll(receivedBigingList);
-      print('Low to high in biding amount: $orgBigingList');
-      bidCont = orgBigingList.length;
-      orgBigingList.forEach((element) {
-        debugPrint("total bids : ${element.bidingList!.length}");
-      });
+      bidCont = receivedBigingList.length;
       notifyListeners();
     }
   }
@@ -426,12 +445,14 @@ class OrgProvider extends ChangeNotifier {
   }
 
   String selectedQuoteTab = "Placed Quotes";
-  getFinalQuoteList(String title) {
+  getFinalQuoteList(String title, int? orgId) {
     selectedQuoteTab = title;
     orgBigingList.clear();
     if(selectedQuoteTab=="Placed Quotes"){
+      getPlacedQuoteList(orgId!);
       orgBigingList.addAll(placedBigingList);
-    }else{
+    }else if(selectedQuoteTab=="Received Quotes"){
+      getReceivedQuoteList(orgId!);
       orgBigingList.addAll(receivedBigingList);
     }
     print(selectedQuoteTab +"List"+finalBuySellList.length.toString());
@@ -441,7 +462,7 @@ class OrgProvider extends ChangeNotifier {
   getBuyVehicles(int id) async {
     // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
     String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
-    selectedBuySellTab="Buy Vehicle";
+    selectedBuySellTab="Buy a Vehicle";
     print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -456,13 +477,13 @@ class OrgProvider extends ChangeNotifier {
       finalBuySellList.clear();
      buySellPostCount = orgBuySellList.length;
      orgBuySellList.forEach((element) {
-        if (element.type == "Buy Vehicle") {
+        if (element.type == "Buy a Vehicle") {
           orgBuyList.add(element);
         } else {
           orgSellList.add(element);
         }
       });
-      if(selectedBuySellTab=="Buy Vehicle"){
+      if(selectedBuySellTab=="Buy a Vehicle"){
         finalBuySellList.addAll(orgBuyList);
       }else{
         finalBuySellList.addAll(orgSellList);
@@ -474,7 +495,7 @@ class OrgProvider extends ChangeNotifier {
   getFinalBuySellList(String title) {
     selectedBuySellTab = title;
     finalBuySellList.clear();
-    if(selectedBuySellTab=="Buy Vehicle"){
+    if(selectedBuySellTab=="Buy a Vehicle"){
       finalBuySellList.addAll(orgBuyList);
     }else{
       finalBuySellList.addAll(orgSellList);
@@ -492,6 +513,8 @@ class OrgProvider extends ChangeNotifier {
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
     print(response);
+    isLoading = false;
+    notifyListeners();
     if (req.statusCode == 200) {
       FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
       orgFullLoadList = fullLoadModel.data!;
@@ -518,9 +541,6 @@ class OrgProvider extends ChangeNotifier {
       fullLoadCount = orgFLRList.length + orgFLAList.length;
       partLoadCount = orgPLRList.length + orgPLAList.length;
     }
-    isLoading = false;
-    notifyListeners();
-
   }
 
   getOrgFullLoadListByBranch(int id,String branchName) async {
@@ -532,11 +552,11 @@ class OrgProvider extends ChangeNotifier {
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
     print(response);
+    isLoading = false;
     if (req.statusCode == 200) {
       FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
       orgFullLoadList.addAll(fullLoadModel.data!);
     }
-    isLoading = false;
     notifyListeners();
   }
 
@@ -573,9 +593,7 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     orgFullLoadList.clear();
-    /*String myUrl = AppConstants.FULL_LOAD_ALL_CARD +
-        '?nameOfPerson=${name}&source=${source}&destination=${dest}';*/
-    String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${id}&source=${source}&destination=${dest}&page=0&size=10";
+        String myUrl = AppConstants.BASE_URL+"getSourceToDestination?companyId=${id}&source=${source}&destination=${dest}&page=0&size=10";
     print("Get Data By Source and Destination : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;

@@ -31,6 +31,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../constant/constants.dart';
 import '../../model/request/save_lead.dart';
 import '../../model/response/employeelist.dart';
@@ -361,8 +362,10 @@ class _LeadDashboard extends State<LeadListScreen> {
       LeadListResponse leadList =
       LeadListResponse.fromJson(jsonDecode(response.data));
       finalLeadData.clear();
-      finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
-      print('this is ${finalLeadData.length}');
+      leadList.data!.detailsWithPage!.forEach((element) {
+        finalLeadData.add(element);
+      });
+      print(finalLeadData[0]);
       setState(() {});
       isLoad = false;
     }
@@ -595,13 +598,13 @@ class _LeadDashboard extends State<LeadListScreen> {
                       pickXlFile(stateSetter, true);
                     },
                     child: objXlFile == null
-                        ? Icon(Icons.file_copy,size: 100,)
+                        ? Icon(Icons.file_copy,size: 75,)
                         : Icon(Icons.done_outline,color: Colors.green,size: 100,))),
             SizedBox(height: 16.h),
             Center(
               child: SizedBox(
                 height: 45.h,
-                width: 120.w,
+                width: 140.w,
                 child: ElevatedButton(
                     onPressed: () async{
                       pickXlFile(stateSetter, true);
@@ -629,7 +632,33 @@ class _LeadDashboard extends State<LeadListScreen> {
                     )),
               ),
             ),
-            SizedBox(height: 25.h),
+            SizedBox(height: 35.h),
+            Row(
+              children: [
+                TextView(
+                  title: "Check format of Excel file:",
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+                SizedBox(width: 5,),
+                InkWell(
+                  onTap: () async {
+                    final url = Uri.parse(
+                      'https://tablabs-images.s3.ap-south-1.amazonaws.com/1704349135893-ShortLead111-up.xlsx',
+                    );
+                    if (await canLaunchUrl(url)) {
+                      launchUrl(url);
+                    } else {
+                      // ignore: avoid_print
+                      print("Can't launch $url");
+                    }
+                  },
+                  child: const Text('Download',style: TextStyle(color: Colors.blue),),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
             TextView(
               title: "Steps to upload the file:",
               fontSize: 12.sp,
@@ -809,26 +838,29 @@ class _LeadDashboard extends State<LeadListScreen> {
         SizedBox(
           height: 10.h,
         ),
-        SizedBox(
-          height: 52.h,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-            child: TextField(
-              controller: controller,
-              style: TextStyle(
-                color: Color(0xff1B1B1B),
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
-              ),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 52.h,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+              child: TextField(
+                controller: controller,
+                style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
                 ),
-                hintText: hint,
-                hintStyle: TextStyle(
-                    color: Color(0xffcccccc),
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w300),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  hintText: hint,
+                  hintStyle: TextStyle(
+                      color: Color(0xffcccccc),
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w300),
+                ),
               ),
             ),
           ),
@@ -1990,25 +2022,24 @@ class _LeadDashboard extends State<LeadListScreen> {
                                     setState(() {});
                                     String token = await LocalSharePreferences()
                                         .getString(SharedPreferencesConstant.AuthToken);
-                                    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE +
-                                        "?page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
-                                    print("Get All Leads :" + myUrl
-                                    );
+                                    String myUrl = ApiConstant.LEAD_BETWEEN_TWO_DATE + "?organisationId=4&page=0&size=10&sortBy=id&sortDir=asc&fromDate=2024-01-01&toDate=2024-01-03";
+                                      //  "?organisationId=${loginDeatils!.data!.organisationId}&page=${selectedPageNumber}&size=10&sortBy=id&sortDir=asc&fromDate=${selectedFromDate}&toDate=${selectedToDate}";
+                                    print("Get All Leads Between Two Date :" + myUrl);
                                     final dio = Dio();
-                                    final response = await dio.get(
+                                    final leadResponse = await dio.get(
                                         myUrl,
                                         options: Options(headers: {
                                           "Content-Type": "application/json",
                                           'Authorization': 'Bearer ${token}',
                                         }));
-                                    print(response.data);
+                                    print(leadResponse.data);
                                     isLoad = false;
-                                    if (response.statusCode == 200) {
+                                    if (leadResponse.statusCode == 200) {
                                       LeadListResponse leadList =
-                                      LeadListResponse.fromJson(jsonDecode(response.data));
+                                      LeadListResponse.fromJson(jsonDecode(leadResponse.data));
                                       finalLeadData.clear();
                                       finalLeadData.addAll(leadList.data!.detailsWithPage! as Iterable<LeadData>);
-                                      print('this is ${leadData.length}');
+                                      print('this is ${finalLeadData.length}');
                                     }
                                     setState(() {});
                                   },

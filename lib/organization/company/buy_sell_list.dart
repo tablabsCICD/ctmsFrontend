@@ -90,13 +90,13 @@ class _BuySellListState extends State<BuySellList> {
                           children: [
                             getCircularContainer(
                                 "Buy Vehicle",
-                                (model.selectedBuySellTab == "Buy Vehicle"),
+                                (model.selectedBuySellTab == "Buy a Vehicle"),
                                 0,
                                 model),
                             SizedBox(width: 10.w,),
                             getCircularContainer(
                                 "Sell Vehicle",
-                                (model.selectedBuySellTab == "Sell Vehicle"),
+                                (model.selectedBuySellTab == "Sell a Vehicle"),
                                 1,
                                 model),
                           ],
@@ -494,7 +494,10 @@ class _BuySellListState extends State<BuySellList> {
       String title, bool isSelected, int i, OrgProvider model) {
     return InkWell(
       onTap: () {
-        model.getFinalBuySellList(title);
+        if(title=="Buy Vehicle"){
+          model.getFinalBuySellList("Buy a Vehicle");
+        }else{
+        model.getFinalBuySellList("Sell a Vehicle");}
       },
       child: Container(
         width: 200.w,

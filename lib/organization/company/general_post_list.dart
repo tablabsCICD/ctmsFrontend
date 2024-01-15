@@ -66,7 +66,7 @@ class _GeneralPostListState extends State<GeneralPostList> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        dashboardProvider.getFullLoadTruckList(currentPage: selectedPageNumber);
+        //widget.generalPostProvider.getAllPost(currentPage: selectedPageNumber);
         selectedPageNumber++;
       }
     });
@@ -78,12 +78,23 @@ class _GeneralPostListState extends State<GeneralPostList> {
     return Consumer<GeneralPostProvider>(
         builder: (context, model, child) => Container(
             padding: ResponsiveWidget.isDesktop(context)
-                ? EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h)
+                ? EdgeInsets.symmetric(horizontal: 33.w, vertical: 10.h)
                 : EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                filterIcon(model),
+                  Row(
+                    mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextView(
+                        title:'Total Post : ${model.generalPostList.length}',
+                        color: Colors.black,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                      ) ,
+                      filterIcon(model)
+                    ],
+                  ),
             SizedBox(height: 30.h,),
                   getPostList(model,context),
                 ]
@@ -143,13 +154,14 @@ class _GeneralPostListState extends State<GeneralPostList> {
                       height: AppResponsive.isDesktop(context)?200.h:100.h,
                       // width: 510.w,
                       decoration: BoxDecoration(
+                        color: Colors.white,
                           borderRadius: BorderRadius.circular(10.r)
                       ),
                       child: Column(
                       //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ListTile(
-                            leading: getImage(''),
+                            leading: getImage("${model.generalPostList[index].images==[]?'':model.generalPostList[index].images![0]}"),
                             title: TextView(
                               title: "${model.generalPostList[index].title}",
                               fontSize:15.sp,

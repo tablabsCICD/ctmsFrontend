@@ -669,7 +669,7 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
   TextEditingController _sourceofleadController = TextEditingController();
   String selectDate = "";
   int selectedEmp = 0;
-  String selectedStatus = "Converted";
+  String selectedStatus = "Pending";
 
   String? uploadedLeadDocument;
   addActivity(StateSetter stateSetter) {
@@ -825,9 +825,9 @@ class _LeadInfo extends State<LeadInfo> implements AbRefresh{
     );
   }
 
-  String dropdownvalue = 'Converted';
+  String dropdownvalue = 'Pending';
   var items = [
-    'Converted',
+    //'Converted',
     'Pending',
     'Rejected',
   ];

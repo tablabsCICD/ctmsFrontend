@@ -40,7 +40,11 @@ class HeaderWidget extends StatefulWidget {
   bool? isSearchVisible;
   GlobalKey<ScaffoldState>? scaffoldKey;
 
-  HeaderWidget({Key? key, this.onSearchTap, required this.isSearchVisible,this.scaffoldKey})
+  HeaderWidget(
+      {Key? key,
+      this.onSearchTap,
+      required this.isSearchVisible,
+      this.scaffoldKey})
       : super(key: key);
 
   @override
@@ -64,6 +68,13 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _panController = TextEditingController();
   TextEditingController _tanController = TextEditingController();
+  TextEditingController _gstNoController = TextEditingController();
+  List<TextEditingController> _rulesListController = [TextEditingController()];
+  List<TextEditingController> _instructionListController = [
+    TextEditingController()
+  ];
+  List<String> _rulesForTaxInvoiceList = [];
+  List<String> instructionList = [];
 
   final orgProvider = locator<OrgProvider>();
   CtmsOrganization? organization;
@@ -73,35 +84,37 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
         "api/Organisation/getById?Id=${details!.data!.organisationId}";
-    print("Get Organization Details :" + myUrl
-    );
+    print("Get Organization Details :" + myUrl);
     final dio = Dio();
-    final response = await dio.get(
-        myUrl,
+    final response = await dio.get(myUrl,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
         }));
-  //  print(response.data);
+    //  print(response.data);
     if (response.statusCode == 200) {
       CtmsOrganizationResponse ctmsOrganizationResponse =
-      CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
+          CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
       organization = ctmsOrganizationResponse.data!;
       print('this is ${organization}');
     }
     setupData();
-    setState(() {
-    });
+    setState(() {});
   }
 
   setupData() {
     imgPath = organization!.logo!;
-    _companyNameController.text = organization!.orgName!;
-    _emailController.text = organization!.officialEmailId!;
-    _mobileController.text = organization!.orgMobileNumber!;
-    _addressController.text = organization!.orgAddress!;
-    _panController.text = organization!.panCardNumber!;
-    _tanController.text = organization!.tanCardNumber!;
+    _companyNameController.text = organization!.orgName ?? '';
+    _emailController.text = organization!.officialEmailId ?? '';
+    _mobileController.text = organization!.orgMobileNumber ?? '';
+    _addressController.text = organization!.orgAddress ?? '';
+    _panController.text = organization!.panCardNumber ?? '';
+    _tanController.text = organization!.tanCardNumber ?? "";
+    _gstNoController.text = organization!.gstNumber ?? "";
+    _rulesForTaxInvoiceList = organization!.rulesForTaxinvoice ?? [];
+    instructionList = organization!.instruction ?? [];
+    invoiceLogo = organization!.invoiceLogo ?? '';
+    unLoadingLogo = organization!.unloadingLogo ?? '';
   }
 
   @override
@@ -170,7 +183,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       SizedBox(
                         width: 27.w,
                       ),
-                     /* Builder(builder: (context) {
+                      /* Builder(builder: (context) {
                         return InkWell(
                           onTap: () {
                             showAlignedDialog(
@@ -253,7 +266,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                 ),
                               ],
                             )),
-                           /* PopupMenuItem(
+                            /* PopupMenuItem(
                                 child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -288,38 +301,41 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                                 ),
                               ],
                             )),*/
-                            isAdmin?PopupMenuItem(
-                              child: Text(
-                                "Update Company Profile",
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black),
-                              ),
-                              onTap: () {
-                                showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      alignment: Alignment.centerRight,
-                                      backgroundColor: Colors.transparent,
-                                      insetAnimationDuration:
-                                          Duration(milliseconds: 200),
-                                      insetAnimationCurve: Curves.easeOutExpo,
-                                      child: StatefulBuilder(builder:
-                                          (BuildContext context,
-                                              StateSetter setState) {
-                                        return EditCompany(setState);
-                                      }),
-                                    );
-                                  },
-                                );
-                              },
-                            ):PopupMenuItem(child: SizedBox.shrink())
+                            isAdmin
+                                ? PopupMenuItem(
+                                    child: Text(
+                                      "Update Company Profile",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontFamily:
+                                              GoogleFonts.poppins().fontFamily,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black),
+                                    ),
+                                    onTap: () {
+                                      showDialog<void>(
+                                        context: context,
+                                        barrierDismissible:
+                                            false, // user must tap button!
+                                        builder: (BuildContext context) {
+                                          return Dialog(
+                                            alignment: Alignment.centerRight,
+                                            backgroundColor: Colors.transparent,
+                                            insetAnimationDuration:
+                                                Duration(milliseconds: 200),
+                                            insetAnimationCurve:
+                                                Curves.easeOutExpo,
+                                            child: StatefulBuilder(builder:
+                                                (BuildContext context,
+                                                    StateSetter setState) {
+                                              return EditCompany(setState);
+                                            }),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  )
+                                : PopupMenuItem(child: SizedBox.shrink())
                           ],
                         ),
                       ),
@@ -427,7 +443,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     },
   );
 
-
   EditCompany(StateSetter stateSetter) {
     return Container(
       width: 408.w,
@@ -476,7 +491,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             Center(
                 child: InkWell(
                     onTap: () async {
-                      pickFile(stateSetter, true);
+                      pickFile(stateSetter, true, false, false);
                     },
                     child: imgPath == ''
                         ? SvgPicture.asset('assets/upload_profile.svg',
@@ -508,10 +523,50 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             _buildTextField(
                 'Tan Card Number', 'Please enter tan number', _tanController),
             SizedBox(height: 16.h),
+            _buildTextField(
+                'GST Number', 'Please enter gst number', _gstNoController),
+            SizedBox(height: 16.h),
+            _rulesForTaxInvoiceList.isNotEmpty
+                ? _buildDisplayList("Rules Fore TaxInvoice", "",
+                    _rulesForTaxInvoiceList, stateSetter, true)
+                : _buildList(
+                    "Rules Fore TaxInvoice", "enter rules", stateSetter, true),
+            SizedBox(height: 16.h),
+            instructionList.isNotEmpty
+                ? _buildDisplayList(
+                    "Instructions", "", instructionList, stateSetter, false)
+                : _buildList(
+                    "Instructions", "enter instructions", stateSetter, false),
+            SizedBox(height: 16.h),
+            _buildText(true,
+                '${invoiceLogo == '' ? "Click here to upload logo" : invoiceLogo}',
+                'Invoice Logo', () async {
+              pickFile(stateSetter, false, true, false);
+            }),
+            SizedBox(height: 16.h),
+            _buildText(false,
+                '${unLoadingLogo == '' ? "Click here to upload logo" : unLoadingLogo}',
+                'UnLoading Logo', () async {
+              pickFile(stateSetter, false, false, true);
+            }),
+            SizedBox(height: 16.h),
             InkWell(
               onTap: () {
+                _rulesListController.forEach((element) {
+                  _rulesForTaxInvoiceList.add(element.text);
+                });
+                _instructionListController.forEach((element) {
+                  instructionList.add(element.text);
+                });
+                if(_mobileController.text==''){
+                  showCustomToast(context, "Please enter mobile Number", Icons.clear, Colors.red);
+                }else if(_companyNameController.text==''){
+                  showCustomToast(context, "Please enter Company Name", Icons.clear, Colors.red);
+                }else if(_emailController.text==''){
+                  showCustomToast(context, "Please enter Email Id", Icons.clear, Colors.red);
+                }else{
                 submitEditForm();
-                Navigator.of(context).pop();
+                Navigator.of(context).pop();}
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -539,33 +594,109 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     );
   }
 
-  void submitEditForm() async {
+  Widget _buildText(bool isInvoiceLogo,String label, String label1, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Text(
+              label1,
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          isInvoiceLogo
+              ? Center(
+                  child: invoiceLogo == ''
+                      ? SvgPicture.asset('assets/upload_profile.svg',
+                          height: 150.h, width: 150.w)
+                      : Container(
+                          height: 150.h,
+                          width: 200.w,
+                          alignment: Alignment.center,
+                          child: Image.network(
+                            invoiceLogo,
+                            width: 150.w,
+                          )))
+              : Center(
+                  child: unLoadingLogo == ''
+                      ? SvgPicture.asset('assets/upload_profile.svg',
+                          height: 150.h, width: 150.w)
+                      : Container(
+                          height: 150.h,
+                          width: 200.w,
+                          alignment: Alignment.center,
+                          child: Image.network(
+                            unLoadingLogo,
+                            width: 150.w,
+                          ))),
+          /*Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+          ),*/
+        ],
+      ),
+    );
+  }
 
+  void submitEditForm() async {
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     Map<String, dynamic> parameter = {
-    "active": true,
-    "city": organization!.city,
-    "description": organization!.description,
-    "emailId": _emailController.text,
-    "gstNumber": organization!.gstNumber,
-    "gstNumber2": organization!.gstNumber2,
-    "id": organization!.id,
-    "instructions": organization!.instructions,
-    "invoiceLogo": organization!.invoiceLogo,
-    "isVerified": organization!.isVerified,
-    "landLineNumber": organization!.landLineNumber,
-    "logo": imgPath,
-    "officialEmailId": organization!.emailId,
-    "orgAddress": _addressController.text,
-    "orgMobileNumber": _mobileController.text,
-    "orgName": _companyNameController.text,
-    "panCardNumber": _panController.text,
-    "state": organization!.state,
-    "tanCardNumber": _tanController.text,
-    "typeOfRegistration": organization!.typeOfRegistration,
-    "unloadingLogo": imgPath,
-    "website": organization!.website
+      "active": true,
+      "city": organization!.city,
+      "description": organization!.description,
+      "emailId": _emailController.text,
+      "gstNumber": _gstNoController.text,
+      "gstNumber2": organization!.gstNumber2,
+      "id": organization!.id,
+      "instruction": instructionList,
+      "invoiceLogo": invoiceLogo,
+      "isVerified": organization!.isVerified,
+      "landLineNumber": organization!.landLineNumber,
+      "logo": imgPath,
+      "officialEmailId": organization!.emailId,
+      "orgAddress": _addressController.text,
+      "orgMobileNumber": _mobileController.text,
+      "orgName": _companyNameController.text,
+      "panCardNumber": _panController.text,
+      "rulesForTaxinvoice": _rulesForTaxInvoiceList,
+      "state": organization!.state,
+      "tanCardNumber": _tanController.text,
+      "typeOfRegistration": organization!.typeOfRegistration,
+      "unloadingLogo": unLoadingLogo,
+      "website": organization!.website
     };
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
@@ -573,26 +704,21 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     var para = jsonEncode(parameter);
     String myUrl = ApiConstant.BASE_URL + 'api/Organisation/update?Id=${1}';
     print(myUrl);
-    var response = await dio.put(
-      myUrl,
-      data: para,
-      options: Options(headers: {
+    var response = await dio.put(myUrl,
+        data: para,
+        options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
-      })
-    );
+        }));
     print('the body ${response.data}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
       orgProvider.getOrgDetails();
-      setState(() {
-
-      });
+      setState(() {});
       showCustomToast(context, "Profile updated", Icons.check, Colors.green);
     } else {
       showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
     }
-
   }
 
   String imgPath = '';
@@ -603,7 +729,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   Uint8List? imageBytes;
   String? fileName;
 
-  pickFile(StateSetter stateSetter, bool isImg) async {
+  pickFile(StateSetter stateSetter, bool isImg, bool isInvoice,
+      bool isUnloading) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     var result = await FilePicker.platform.pickFiles(
@@ -643,13 +770,20 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               ImgUploadResponse.fromJson(jsonData);
           if (isImg) {
             imgPath = imgUploadResponse.data!;
-          } else {
-            documentPath = imgUploadResponse.data!;
+          }
+
+          if (isUnloading) {
+            unLoadingLogo = imgUploadResponse.data!;
+          }
+          if (isInvoice) {
+            invoiceLogo = imgUploadResponse.data!;
           }
           print("Uploaded Img Path From s3 bucket::" +
               imgPath +
-              "\ndocumentPath" +
-              documentPath);
+              "\ninvoiceLogo:" +
+              invoiceLogo +
+              "\nunLoadingLogo:" +
+              unLoadingLogo);
           stateSetter(() {});
         });
         print('the response is ${response}');
@@ -708,6 +842,213 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildDisplayList(String label, String hint, List<String> list,
+      StateSetter stateSetter, bool isRule) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 7.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(
+                height: 25.h,
+                width: 25.w,
+                child: InkWell(
+                    onTap: () {
+                      stateSetter(() {
+                        isRule
+                            ? _rulesForTaxInvoiceList.clear()
+                            : instructionList.clear();
+                        isRule
+                            ? _rulesListController.clear()
+                            : _instructionListController.clear();
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.r),
+                          border: Border.all(color: Colors.red),
+                          color: Colors.red),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: Color(0xffffffff),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    )),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.arrow_right,
+                    color: Colors.orange,
+                    size: 12,
+                  ),
+                  SizedBox(
+                    width: 2,
+                  ),
+                  Text(list[index],
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                          color: AppColor.black)),
+                ],
+              ),
+            );
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _buildList(
+      String label, String hint, StateSetter stateSetter, bool isRule) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 7.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: Color(0xff1B1B1B),
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(
+                height: 25.h,
+                width: 25.w,
+                child: InkWell(
+                    onTap: () {
+                      stateSetter(() {
+                        isRule
+                            ? _rulesListController.add(TextEditingController())
+                            : _instructionListController
+                                .add(TextEditingController());
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.r),
+                          border: Border.all(color: Colors.green),
+                          color: Colors.green),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Add",
+                        style: TextStyle(
+                          color: Color(0xffffffff),
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    )),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: isRule
+                ? _rulesListController.length
+                : _instructionListController.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 52.h,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                          child: TextField(
+                            controller: isRule
+                                ? _rulesListController[index]
+                                : _instructionListController[index],
+                            style: TextStyle(
+                              color: Color(0xff1B1B1B),
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              hintText: hint,
+                              hintStyle: TextStyle(
+                                  color: Color(0xffcccccc),
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w300),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    index != 0
+                        ? InkWell(
+                            onTap: () {
+                              isRule
+                                  ? stateSetter(() {
+                                      _rulesListController[index].clear();
+                                      _rulesListController[index].dispose();
+                                      _rulesListController.removeAt(index);
+                                    })
+                                  : stateSetter(() {
+                                      _instructionListController[index].clear();
+                                      _instructionListController[index]
+                                          .dispose();
+                                      _instructionListController
+                                          .removeAt(index);
+                                    });
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ))
+                        : SizedBox.shrink()
+                  ],
+                ),
+              );
+            })
       ],
     );
   }

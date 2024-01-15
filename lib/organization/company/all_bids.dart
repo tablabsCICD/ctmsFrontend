@@ -26,7 +26,7 @@ class BidList extends StatefulWidget {
 
   Organization organization;
   BidList(this.organization,{Key? key}) : super(key: key) {
-    bidProvider.getOrgBidingList(organization.id!);
+  //  bidProvider.getReceivedQuoteList(organization.id!);
     bidProvider.getPlacedQuoteList(organization.id!);
   }
 
@@ -86,66 +86,68 @@ class _BidListState extends State<BidList> {
               decoration: BoxDecoration(
                   color: AppColor.white, borderRadius: BorderRadius.circular(5)),
               padding: EdgeInsets.all(20),
-              child: model.orgBigingList.isEmpty
-                  ? Container(
-                      height:
-                      MediaQuery.of(context).size.height - 600,
-                      child: Center(
-                          child: TextView(
-                              title: "No Record Found",
-                              fontSize: 16.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900)))
-                  : Table(
-                columnWidths: {
-                  0: FlexColumnWidth(60),
-                  1: FlexColumnWidth(40),
-                  2: FlexColumnWidth(40),
-                  3: FlexColumnWidth(40),
-                  4: FlexColumnWidth(40),
-                  5: FlexColumnWidth(40),
-                  6: FlexColumnWidth(40),
-                  7: FlexColumnWidth(40),
-                  8: FlexColumnWidth(30),
-                  9: FlexColumnWidth(70),
-                },
-                textBaseline: TextBaseline.ideographic,
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  /// Table Header
-                  TableRow(
-                    children: [
-                      tableHeader("Material"),
-                      tableHeader("Routes"),
-                      tableHeader("Km"),
-                      tableHeader("Total Quotes"),
-                      tableHeader("Best Match"),
-                      tableHeader("End Time"),
-                      tableHeader("Status"),
-                      tableHeader("Price"),
-                     // tableHeader("Action"),
-                    ],
-                  ),
-                  for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
-                      context,
-                      material: model.orgBigingList[i].genericCardsDto!.companyName,
-                      route1: model.orgBigingList[i].genericCardsDto!.source,
-                      route2: model.orgBigingList[i].genericCardsDto!.destination,
-                      km: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
-                      totalBids: model.orgBigingList[i].bidingList!.length.toString(),
-                      bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
-                      endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
-                      status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
-                      price: '${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
-                  ),
-
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    model.orgBigingList.isEmpty
+                        ? Container(
+                        height:
+                        MediaQuery.of(context).size.height - 600,
+                        child: Center(
+                            child: TextView(
+                                title: "No Record Found",
+                                fontSize: 16.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w900)))
+                        : Table(
+                      columnWidths: {
+                        0: FlexColumnWidth(60),
+                        1: FlexColumnWidth(40),
+                        2: FlexColumnWidth(40),
+                        3: FlexColumnWidth(40),
+                        4: FlexColumnWidth(40),
+                        5: FlexColumnWidth(40),
+                        6: FlexColumnWidth(40),
+                        7: FlexColumnWidth(40),
+                        8: FlexColumnWidth(30),
+                        9: FlexColumnWidth(70),
+                      },
+                      textBaseline: TextBaseline.ideographic,
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                      children: [
+                        /// Table Header
+                        TableRow(
+                          children: [
+                            tableHeader("Material"),
+                            tableHeader("Routes"),
+                            tableHeader("Km"),
+                            tableHeader("Total Quotes"),
+                            tableHeader("Best Match"),
+                            tableHeader("End Time"),
+                            tableHeader("Status"),
+                            tableHeader("Price"),
+                            // tableHeader("Action"),
+                          ],
+                        ),
+                        for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
+                          context,
+                          material: model.orgBigingList[i].genericCardsDto!.companyName,
+                          route1: model.orgBigingList[i].genericCardsDto!.source,
+                          route2: model.orgBigingList[i].genericCardsDto!.destination,
+                          km: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
+                          totalBids: model.orgBigingList[i].bidingList!.length.toString(),
+                          bestMatch:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
+                          endtime:model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
+                          status: model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
+                          price: '${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+
             ),
-
-
-
-            //  getEmpTable(),
           ],
         ),
       ),
@@ -192,7 +194,8 @@ class _BidListState extends State<BidList> {
               )
             ],
           ),
-        ));
+        )
+    );
   }
 
   PopupMenuItem _buildPopupMenu(
@@ -218,7 +221,6 @@ class _BidListState extends State<BidList> {
       },
     );
   }
-
 
   TableRow tableRow(context, {String? material,String? route1,String? route2,String? km,String? totalBids,String? bestMatch,String? endtime,String?status,String?price}) {
     return TableRow(
@@ -360,7 +362,8 @@ class _BidListState extends State<BidList> {
               ),
             ),
           ),*/
-        ]);
+        ]
+    );
   }
 
   getCircularContainer(
@@ -369,7 +372,7 @@ class _BidListState extends State<BidList> {
       onTap: () {
         setState(() {
           model.selectedQuoteTab = title;
-          model.getFinalQuoteList(title);
+          model.getFinalQuoteList(title,widget.organization!.id);
         });
       },
       child: Container(
@@ -404,14 +407,4 @@ class _BidListState extends State<BidList> {
       ),
     );
   }
-
-
-
-
-
-
-
-
-
-
 }

@@ -154,6 +154,7 @@ class _AllUsersListState extends State<AllUsersList> {
                   ),
                   model.userList.isEmpty && model.isLoading == false
                       ? Container(
+                      margin: EdgeInsets.all(30),
                           decoration: BoxDecoration(
                               color: AppColor.white, borderRadius: BorderRadius.circular(5)),
                           height: MediaQuery.of(context).size.height - 600,
@@ -181,107 +182,190 @@ class _AllUsersListState extends State<AllUsersList> {
                                 return InkWell(
                                   onTap: () {},
                                   child: Card(
+                                      color:Colors.white,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
                                       elevation: 5,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ListTile(
-                                            title: Row(
-                                              children: [
-                                                TextView(
-                                                  title: "${model.userList[index].firstName} ${model.userList[index].lastName}",
-                                                  fontSize:15.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xff000000),
-                                                ),
-                                                SizedBox(width: 5.w,),
-                                                model.userList[index]
-                                                    .isUserVerifiedByCompany ==
-                                                    1
-                                                    ? Tooltip(
-                                                  message:
-                                                  "This user is verified by '${model.userList[index].companyName}'",
-                                                  child: SvgPicture.asset(
-                                                    'assets/org/sheild.svg',
-                                                    width: 5,
-                                                    height: 15,
-                                                  ),
-                                                )
-                                                    : SizedBox.shrink()
-                                              ],
-                                            ),
-                                            subtitle: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 10.w, vertical: 10.h),
-                                              child: StarDisplay(value:int.parse('${/*model.userList[index].ratings.toString()*/5}')),
-                                            ),
-                                            leading: getImage(model.userList[index]
-                                                .profilePicture
-                                                .toString()),
-                                            trailing: model.userList[index].isUserVerifiedByCompany==1?Container(
-                                              width: 100,
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(10.r)
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ListTile(
+                                              title: Row(
                                                 children: [
-                                                  Icon(
-                                                    Icons.circle,
-                                                    size: 10.r,
-                                                    color: Colors.green,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5.w,
-                                                  ),
                                                   TextView(
-                                                   title: 'Approved',
-                                                    fontSize:14.sp,
-                                                    fontWeight: FontWeight.w300,
-                                                    color: Colors.green,
+                                                    title: "${model.userList[index].firstName} ${model.userList[index].lastName}",
+                                                    fontSize:15.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xff000000),
                                                   ),
+                                                  SizedBox(width: 5.w,),
+                                                  model.userList[index]
+                                                      .isUserVerifiedByCompany ==
+                                                      1
+                                                      ? Tooltip(
+                                                    message:
+                                                    "This user is verified by '${model.userList[index].companyName}'",
+                                                    child: SvgPicture.asset(
+                                                      'assets/org/sheild.svg',
+                                                      width: 5,
+                                                      height: 15,
+                                                    ),
+                                                  )
+                                                      : SizedBox.shrink()
                                                 ],
                                               ),
-                                            ):SizedBox.shrink(),
-                                          ),
-                                          SizedBox(height: 10.h,),
-                                          getUserDetails('Email Id','${model.userList[index].emailId}'),
-                                          getUserDetails('Phone','${model.userList[index].mobileNumber}'),
-                                          getUserDetails('Address','${model.userList[index].city}, ${model.userList[index].state}'),
-                                          getUserDetails('Company Name','${model.userList[index].companyName}'),
-                                          getUserDetails('Company Address','${model.userList[index].companyAddress}'),
-                                          SizedBox(height: 10.h,),
-                                          loginDeatils!.data!.isAdmin==false?SizedBox.shrink():Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              model.userList[index].isUserVerifiedByCompany==0?Padding(
-                                                padding: EdgeInsets.all(16.0),
-                                                child: OutlinedButton(
-                                                  style: ButtonStyle(
-                                                    foregroundColor:
-                                                    MaterialStateProperty.resolveWith<Color?>(
-                                                          (Set<MaterialState> states) {
-                                                        if (states.contains(MaterialState.hovered))
+                                              subtitle: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.w, vertical: 10.h),
+                                                child: StarDisplay(value:int.parse('${/*model.userList[index].ratings.toString()*/5}')),
+                                              ),
+                                              leading: getImage(model.userList[index]
+                                                  .profilePicture
+                                                  .toString()),
+                                              trailing: model.userList[index].isUserVerifiedByCompany==1?Container(
+                                                width: 100,
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.circle,
+                                                      size: 10.r,
+                                                      color: Colors.green,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5.w,
+                                                    ),
+                                                    TextView(
+                                                     title: 'Approved',
+                                                      fontSize:14.sp,
+                                                      fontWeight: FontWeight.w300,
+                                                      color: Colors.green,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ):SizedBox.shrink(),
+                                            ),
+                                            SizedBox(height: 10.h,),
+                                            getUserDetails('Email Id','${model.userList[index].emailId}'),
+                                            getUserDetails('Phone','${model.userList[index].mobileNumber}'),
+                                            getUserDetails('Address','${model.userList[index].city}, ${model.userList[index].state}'),
+                                            getUserDetails('Company Name','${model.userList[index].companyName}'),
+                                            getUserDetails('Company Address','${model.userList[index].companyAddress}'),
+                                            SizedBox(height: 10.h,),
+                                            loginDeatils!.data!.isAdmin==false?SizedBox.shrink():Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                model.userList[index].isUserVerifiedByCompany==0?Padding(
+                                                  padding: EdgeInsets.all(16.0),
+                                                  child: OutlinedButton(
+                                                    style: ButtonStyle(
+                                                      foregroundColor:
+                                                      MaterialStateProperty.resolveWith<Color?>(
+                                                            (Set<MaterialState> states) {
+                                                          if (states.contains(MaterialState.hovered))
+                                                            return ThemeColor
+                                                                .white; //<-- SEE HERE
                                                           return ThemeColor
-                                                              .white; //<-- SEE HERE
-                                                        return ThemeColor
-                                                            .white; // Defer to the widget's default.
-                                                      },
+                                                              .white; // Defer to the widget's default.
+                                                        },
+                                                      ),
+                                                      backgroundColor:
+                                                      MaterialStateProperty.resolveWith<Color?>(
+                                                            (Set<MaterialState> states) {
+                                                          if (states.contains(MaterialState.hovered))
+                                                            return ThemeColor.theme_blue; //<-- SEE HERE
+                                                          return ThemeColor
+                                                              .theme_blue; // Defer to the widget's default.
+                                                        },
+                                                      ),
                                                     ),
-                                                    backgroundColor:
-                                                    MaterialStateProperty.resolveWith<Color?>(
-                                                          (Set<MaterialState> states) {
-                                                        if (states.contains(MaterialState.hovered))
-                                                          return ThemeColor.theme_blue; //<-- SEE HERE
-                                                        return ThemeColor
-                                                            .theme_blue; // Defer to the widget's default.
-                                                      },
-                                                    ),
+                                                    onPressed: () async {
+                                                        await authProvider.updateUser(
+                                                          aadharCard: model.userList[index].aadharCard,
+                                                          alternativeNumber: model.userList[index].alternativeNumber,
+                                                          city: model.userList[index].city,
+                                                          companyId: model.userList[index].companyId,
+                                                          companyAddress: model.userList[index].companyAddress,
+                                                          companyLogo: model.userList[index].companyLogo,
+                                                          companyName: model.userList[index].companyName,
+                                                          country: model.userList[index].country,
+                                                          deviceId: model.userList[index].deviceId,
+                                                          emailId: model.userList[index].emailId,
+                                                          firstName: model.userList[index].firstName,
+                                                          id: model.userList[index].id,
+                                                          idOfMainBranch: model.userList[index].idOfMainBranch,
+                                                          isPaid: model.userList[index].isPaid,
+                                                          isUserVerifiedByCompany: 1,
+                                                          landlineNumber: model.userList[index].landlineNumber,
+                                                          lastName: model.userList[index].lastName,
+                                                          loggedTime: model.userList[index].loggedTime.toString(),
+                                                          loggedUserName: model.userList[index].loggedUserName,
+                                                          mainBranch: model.userList[index].mainBranch,
+                                                          mobileNumber: model.userList[index].mobileNumber,
+                                                          numberOfTimesRating: model.userList[index].numberOfTimesRating,
+                                                          os: model.userList[index].os,
+                                                          otp: model.userList[index].otp,
+                                                          paidStartDate: model.userList[index].paidStartDate,
+                                                          password: model.userList[index].password,
+                                                          preferredRouresEntered: model.userList[index].preferredRouresEntered,
+                                                          profilePicture: model.userList[index].profilePicture,
+                                                          rating: model.userList[index].ratings,
+                                                          state: model.userList[index].state,
+                                                          transporterOrAgent: model.userList[index].transporterOrAgent,
+                                                          userName: model.userList[index].userName,
+                                                          validTill: model.userList[index].validTill,
+                                                          website: model.userList[index].website,
+                                                          verified: model.userList[index].verified,
+                                                        );
+                                                        model.selectedTab="All Users";
+                                                        selectedTab = "All Users";
+                                                        model.getUsersByCompanyId(widget.organization.id!);
+                                                        setState(() {});
+                                                    },
+                                                    child: Text('Approve',
+                                                        style:TextStyle(
+                                                          fontSize: 12.sp,
+                                                          fontFamily:
+                                                          GoogleFonts.poppins().fontFamily,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                        ),
                                                   ),
-                                                  onPressed: () async {
+                                                ):
+
+                                                Padding(padding: EdgeInsets.all(16.0),
+                                                  child: OutlinedButton(
+                                                    style: ButtonStyle(
+                                                      foregroundColor:
+                                                      MaterialStateProperty.resolveWith<Color?>(
+                                                            (Set<MaterialState> states) {
+                                                          if (states.contains(MaterialState.hovered))
+                                                            return ThemeColor
+                                                                .white; //<-- SEE HERE
+                                                          return ThemeColor
+                                                              .white; // Defer to the widget's default.
+                                                        },
+                                                      ),
+                                                      backgroundColor:
+                                                      MaterialStateProperty.resolveWith<Color?>(
+                                                            (Set<MaterialState> states) {
+                                                          if (states.contains(MaterialState.hovered))
+                                                            return ThemeColor.red; //<-- SEE HERE
+                                                          return ThemeColor
+                                                              .red; // Defer to the widget's default.
+                                                        },
+                                                      ),
+                                                    ),
+                                                    onPressed: () async {
                                                       await authProvider.updateUser(
                                                         aadharCard: model.userList[index].aadharCard,
                                                         alternativeNumber: model.userList[index].alternativeNumber,
@@ -297,7 +381,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                                         id: model.userList[index].id,
                                                         idOfMainBranch: model.userList[index].idOfMainBranch,
                                                         isPaid: model.userList[index].isPaid,
-                                                        isUserVerifiedByCompany: 1,
+                                                        isUserVerifiedByCompany: 0,
                                                         landlineNumber: model.userList[index].landlineNumber,
                                                         lastName: model.userList[index].lastName,
                                                         loggedTime: model.userList[index].loggedTime.toString(),
@@ -322,98 +406,22 @@ class _AllUsersListState extends State<AllUsersList> {
                                                       model.selectedTab="All Users";
                                                       selectedTab = "All Users";
                                                       model.getUsersByCompanyId(widget.organization.id!);
-                                                      setState(() {});
-                                                  },
-                                                  child: Text('Approve',
+                                                      setState((){});
+                                                    },
+                                                    child: Text('Reject',
                                                       style:TextStyle(
                                                         fontSize: 12.sp,
                                                         fontFamily:
                                                         GoogleFonts.poppins().fontFamily,
                                                         fontWeight: FontWeight.w400,
                                                       ),
-                                                      ),
-                                                ),
-                                              ):
-
-                                              Padding(padding: EdgeInsets.all(16.0),
-                                                child: OutlinedButton(
-                                                  style: ButtonStyle(
-                                                    foregroundColor:
-                                                    MaterialStateProperty.resolveWith<Color?>(
-                                                          (Set<MaterialState> states) {
-                                                        if (states.contains(MaterialState.hovered))
-                                                          return ThemeColor
-                                                              .white; //<-- SEE HERE
-                                                        return ThemeColor
-                                                            .white; // Defer to the widget's default.
-                                                      },
-                                                    ),
-                                                    backgroundColor:
-                                                    MaterialStateProperty.resolveWith<Color?>(
-                                                          (Set<MaterialState> states) {
-                                                        if (states.contains(MaterialState.hovered))
-                                                          return ThemeColor.red; //<-- SEE HERE
-                                                        return ThemeColor
-                                                            .red; // Defer to the widget's default.
-                                                      },
-                                                    ),
-                                                  ),
-                                                  onPressed: () async {
-                                                    await authProvider.updateUser(
-                                                      aadharCard: model.userList[index].aadharCard,
-                                                      alternativeNumber: model.userList[index].alternativeNumber,
-                                                      city: model.userList[index].city,
-                                                      companyId: model.userList[index].companyId,
-                                                      companyAddress: model.userList[index].companyAddress,
-                                                      companyLogo: model.userList[index].companyLogo,
-                                                      companyName: model.userList[index].companyName,
-                                                      country: model.userList[index].country,
-                                                      deviceId: model.userList[index].deviceId,
-                                                      emailId: model.userList[index].emailId,
-                                                      firstName: model.userList[index].firstName,
-                                                      id: model.userList[index].id,
-                                                      idOfMainBranch: model.userList[index].idOfMainBranch,
-                                                      isPaid: model.userList[index].isPaid,
-                                                      isUserVerifiedByCompany: 0,
-                                                      landlineNumber: model.userList[index].landlineNumber,
-                                                      lastName: model.userList[index].lastName,
-                                                      loggedTime: model.userList[index].loggedTime.toString(),
-                                                      loggedUserName: model.userList[index].loggedUserName,
-                                                      mainBranch: model.userList[index].mainBranch,
-                                                      mobileNumber: model.userList[index].mobileNumber,
-                                                      numberOfTimesRating: model.userList[index].numberOfTimesRating,
-                                                      os: model.userList[index].os,
-                                                      otp: model.userList[index].otp,
-                                                      paidStartDate: model.userList[index].paidStartDate,
-                                                      password: model.userList[index].password,
-                                                      preferredRouresEntered: model.userList[index].preferredRouresEntered,
-                                                      profilePicture: model.userList[index].profilePicture,
-                                                      rating: model.userList[index].ratings,
-                                                      state: model.userList[index].state,
-                                                      transporterOrAgent: model.userList[index].transporterOrAgent,
-                                                      userName: model.userList[index].userName,
-                                                      validTill: model.userList[index].validTill,
-                                                      website: model.userList[index].website,
-                                                      verified: model.userList[index].verified,
-                                                    );
-                                                    model.selectedTab="All Users";
-                                                    selectedTab = "All Users";
-                                                    model.getUsersByCompanyId(widget.organization.id!);
-                                                    setState((){});
-                                                  },
-                                                  child: Text('Reject',
-                                                    style:TextStyle(
-                                                      fontSize: 12.sp,
-                                                      fontFamily:
-                                                      GoogleFonts.poppins().fontFamily,
-                                                      fontWeight: FontWeight.w400,
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       )),
                                 );
                               },
@@ -531,8 +539,9 @@ class _AllUsersListState extends State<AllUsersList> {
     setState(() {});
     Dio dio = Dio();
     final response = await dio.get(
-        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${0}&size=1000",
-        options: Options(headers: {
+        ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${0}&size=1000",
+        options: Options(
+            headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
         }));
@@ -664,8 +673,8 @@ class _AllUsersListState extends State<AllUsersList> {
 
   Future<void> addToTKDConnect(EmployeeData selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
-      "aadharCard": selectedEmp.boardingDeatails!.aadharCard,
-      "aadharCardForVerification": selectedEmp.boardingDeatails!.aadharCard,
+      "aadharCard": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.aadharCard,
+      "aadharCardForVerification": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.aadharCard,
       "alternativeNumber": selectedEmp.mobileNumber,
       "branchName": selectedEmp.branch!.branchName,
       "city": selectedEmp.address,
@@ -674,7 +683,7 @@ class _AllUsersListState extends State<AllUsersList> {
       "companyLogo": widget.organization.companyLogo,
       "companyName": widget.organization.companyName,
       "country": "India",
-      "deviceId": "string",
+      "deviceId": "NA",
       "emailId": selectedEmp.emailId,
       "firstName": selectedEmp.firstName,
       "idOfMainBranch": 0,
@@ -683,21 +692,21 @@ class _AllUsersListState extends State<AllUsersList> {
       "landlineNumber": selectedEmp.contact,
       "lastName": selectedEmp.lastName,
       "loggedTime": GetDateFormat.getCurrentDate(),
-      "loggedUserName": "",
+      "loggedUserName": "NA",
       "mainBranch": 0,
       "mobileNumber": selectedEmp.contact,
-      "numberOfTimesRating": 5,
+      "numberOfTimesRating": 0,
       "os": "string",
       "otp": "string",
       "paidStartDate": "string",
-      "panCardForVerification": selectedEmp.boardingDeatails!.panCard,
+      "panCardForVerification": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.panCard,
       "password": selectedEmp.password,
       "preferredRouresEntered": 0,
       "profilePicture": selectedEmp.image,
-      "ratings": 5,
+      "ratings": 0,
       "state": "Maharastra",
       "transporterOrAgent": 0,
-      "userName": "",
+      "userName": "NA",
       "validTill": "string",
       "verified": 0,
       "website": widget.organization.website

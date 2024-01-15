@@ -91,7 +91,7 @@ class _ListMeeting extends State<ListMeeting>{
                 for (int i=0;i<listMeeting.length;i++)  tableRow(
                     context,
                     time: listMeeting[i].date!+" "+listMeeting[i].time!,
-                    guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
+                    guest: listMeeting[i].createdMettingBy!.firstName??''+" "+"${listMeeting[i].createdMettingBy!.lastName==null?'-':listMeeting[i].createdMettingBy!.lastName}",
 
                     image: listMeeting[i].lead!.addLogo,
                     meetinglink: listMeeting[i].meetingLink,
@@ -131,17 +131,17 @@ class _ListMeeting extends State<ListMeeting>{
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  getImage(image,height: 30.h,width: 30.w),
+                  getImage(image??"",height: 30.h,width: 30.w),
                   SizedBox(
                     width: 10,
                   ),
-                  TextView(title:title,fontSize: 18.sp,color: Colors.grey,fontWeight: FontWeight.w400,)
+                  TextView(title:title??"",fontSize: 18.sp,color: Colors.black,fontWeight: FontWeight.w400,)
                 ],
               ),
             ),
           ),
           // Designation
-          if (!AppResponsive.isMobile(context)) TextView(title:guest,fontSize: 16.sp,color: Colors.grey,fontWeight: FontWeight.w400,),
+          if (!AppResponsive.isMobile(context)) TextView(title:guest??'',fontSize: 16.sp,color: Colors.black,fontWeight: FontWeight.w400,),
          Row(
             children: [
               Container(
@@ -155,12 +155,12 @@ class _ListMeeting extends State<ListMeeting>{
               SizedBox(
                 width: 10,
               ),
-              TextView(title:meetinglink,fontSize: 16.sp,color: Colors.grey,fontWeight: FontWeight.w400,)
+              TextView(title:meetinglink??'',fontSize: 16.sp,color: Colors.black,fontWeight: FontWeight.w400,)
             ],
           ),
 
           if (!AppResponsive.isMobile(context))
-            TextView(title:time,fontSize: 16.sp,color: Colors.grey,fontWeight: FontWeight.w400,)
+            TextView(title:time??'',fontSize: 16.sp,color: Colors.black,fontWeight: FontWeight.w400,)
         ]);
   }
 

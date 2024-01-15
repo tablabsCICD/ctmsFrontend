@@ -150,7 +150,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                       child: ElevatedButton(
                           onPressed: () async {
                             final url = Uri.parse(
-                                "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=1&orgId=1&type=AddEmployee");
+                                "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee?token=${token}&empId=${loginDeatils!.data!.id}&orgId=${loginDeatils!.data!.organisationId}&type=AddEmployee");
                             debugPrint("HRMS Url : "+url.toString());
                             if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
@@ -307,16 +307,16 @@ class _EmpDashboard extends State<EmpDashboard> {
                                       columnWidths: loginDeatils!.data!.isAdmin==true?{
                                         0: FlexColumnWidth(50),
                                         1: FlexColumnWidth(40),
-                                        2: FlexColumnWidth(40),
-                                        3: FlexColumnWidth(40),
-                                        4: FlexColumnWidth(40),
-                                        5: FlexColumnWidth(40),
+                                        2: FlexColumnWidth(50),
+                                        3: FlexColumnWidth(30),
+                                        4: FlexColumnWidth(20),
+                                        5: FlexColumnWidth(20),
                                       }:{
                                         0: FlexColumnWidth(50),
                                         1: FlexColumnWidth(40),
-                                        2: FlexColumnWidth(40),
-                                        3: FlexColumnWidth(40),
-                                        4: FlexColumnWidth(40),
+                                        2: FlexColumnWidth(50),
+                                        3: FlexColumnWidth(30),
+                                        4: FlexColumnWidth(20),
                                         5: FlexColumnWidth(10),
                                       },
                                       children: [
@@ -548,7 +548,7 @@ class _EmpDashboard extends State<EmpDashboard> {
     setState(() {});
     Dio dio = Dio();
     final response = await dio.get(
-        ApiConstant.BASE_URL + "api/Employee/getByPages?page=${0}&size=1000",
+        ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${0}&size=1000",
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -765,7 +765,7 @@ class _EmpDashboard extends State<EmpDashboard> {
               SizedBox(
                 width: 35.w,
               ),
-              getImage(image, height: 30.h, width: 30.w),
+              getImage(image??'', height: 30.h, width: 30.w),
               SizedBox(
                 width: 10.w,
               ),
@@ -844,7 +844,7 @@ class _EmpDashboard extends State<EmpDashboard> {
   TextStyle tableRowStyle() {
     return TextStyle(
       color: Colors.black,
-      fontSize: 16.sp,
+      fontSize: 14.sp,
       fontFamily: GoogleFonts.poppins().fontFamily,
       fontWeight: FontWeight.w300,
       height: 0,

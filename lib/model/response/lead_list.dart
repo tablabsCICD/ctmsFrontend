@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:flutter_hr_management/model/lead_model.dart';
 
 class LeadListResponse {

@@ -48,10 +48,7 @@ class CompanyBidsScreen extends StatefulWidget {
 
 
   Organization organization;
-  CompanyBidsScreen(this.organization,{Key? key}) : super(key: key) {
-    bidProvider.getOrgBidingList(organization.id!);
-    bidProvider.getPlacedQuoteList(organization.id!);
-  }
+  CompanyBidsScreen(this.organization,{Key? key}) ;
 
   @override
   _CompanyBidsScreenState createState() => _CompanyBidsScreenState();
@@ -109,7 +106,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
   }
 }
 
-class WebScreenForBid extends StatefulWidget {
+/*class WebScreenForBid extends StatefulWidget {
   @override
   _WebScreenForBidState createState() => _WebScreenForBidState();
 }
@@ -138,7 +135,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                   child: Center(child: Text(getTranslated('no_post', context)!,style: Style.heading,))))
               :Column(
             children: [
-             /* Expanded(
+             *//* Expanded(
                 child: StaggeredGridView.countBuilder(
                   crossAxisCount: ResponsiveWidget.isDesktop(context)
                       ? 3
@@ -216,12 +213,12 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                             : ColorResources
                                             .PLA_TEXT)),
                                   ),
-                                  *//*Padding(
+                                  *//**//*Padding(
                                               padding:
                                                   const EdgeInsets.only(right: 8.0),
                                               child: ConvertStringToDate(
                                                   model.truckLoadTypeList[index].postingTime.toString()),
-                                            ),*//*
+                                            ),*//**//*
                                 ],
                               ),
                               ListTile(
@@ -400,7 +397,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                   child: Text(getTranslated('delete', context)!,style: Style.button,),
                                 ),
                               ),
-                              *//*Center(
+                              *//**//*Center(
                                           child: CustomButton(
                                               onTap: () {
                                                 showDialog(
@@ -462,7 +459,7 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                               },
                                               buttonText: getTranslated(
                                                   'delete', context)!),
-                                        )*//*
+                                        )*//**//*
                             ],
                           ),
                         ),
@@ -473,11 +470,11 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                   shrinkWrap: true,
                   staggeredTileBuilder: (int index) =>
                       StaggeredTile.fit(1),
-                )*/
+                )*//*
 
             ],
           ),
         )
     );
   }
-}
+}*/

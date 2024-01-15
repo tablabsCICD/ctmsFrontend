@@ -2,11 +2,13 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 class ApiConstant {
 
- // static String BASE_URL = 'http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/ctms/';
-  static String BASE_URL = "http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/";
+  static String BASE_URL = 'http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
+ // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
+ // static String BASE_URL = "http://ec2-13-201-134-254.ap-south-1.compute.amazonaws.com:8080/tkd3/";
   static String BILTY_URL = 'http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty';
   static String HRMS_URL = 'http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm';
 
+  static String GET_CTMS_ORG = BASE_URL + 'api/Organisation/getById';
   static String GET_ALL_EMPLOYEE = BASE_URL + "api/Employee/getAllByFilter";
   static String SAVE_EMP = BASE_URL + "Employee/save";
   static String EDIT_EMP = BASE_URL + "api/Employee/update";

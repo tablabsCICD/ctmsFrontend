@@ -95,7 +95,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         InkWell(onTap: () async {
                          await getEmpToken(loginDeatils!.data!.id!);
                           final url = Uri.parse(
-                              ApiConstant.HRMS_URL+"${isAdmin?"/employee":"/leave"}"+"?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${organization!.id }");
+                              ApiConstant.HRMS_URL+"${isAdmin?"/employee":"/leave"}"+"?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
                           debugPrint("HRMS Url : "+url.toString());
                           if (!await launchUrl(url,)) {
                             throw Exception('Could not launch $url');
@@ -119,7 +119,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                           onTap: () async {
                           await  getEmpToken(loginDeatils!.data!.id!);
                             final url = Uri.parse(ApiConstant.BILTY_URL+
-                                "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${organization!.id}");
+                                "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
                             debugPrint("Bilty Url : "+url.toString());
                             if (!await launchUrl(url,)) {
                               throw Exception('Could not launch $url');
@@ -230,7 +230,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
   Organization? organization;
   Future<void> getLoginDetail() async {
     loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
-    isAdmin = loginDeatils!.data!.isAdmin!;
+    isAdmin =  loginDeatils!.data!.isAdmin!;
     organization = await orgProvider.getOrgDetails();
    // getEmpToken(loginDeatils!.data!.id!);
   }

@@ -47,7 +47,7 @@ class _SideBarState extends State<SideBar> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: ThemeColor.baground,
-                      borderRadius: BorderRadius.circular(15.r)
+                      borderRadius: BorderRadius.circular(0.r)
                   ),
                   child: Text("Go Back",style:TextStyle(
                     fontSize: 16.sp,

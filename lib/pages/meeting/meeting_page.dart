@@ -923,7 +923,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                getImage(meetingData.createdMettingBy!.image!,
+                getImage(meetingData.createdMettingBy!.image??'',
                     height: 35.h, width: 35.w),
                 SizedBox(
                   width: 23.w,

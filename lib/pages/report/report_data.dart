@@ -38,7 +38,7 @@ class _ReportDataScreen extends State<ReportDataScreen> {
   Future<void> getLoginDetail() async {
     loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
   }
-  String selectedYear = '2023';
+  String selectedYear = '2024';
   var items = [
     '2010',
     '2011',
@@ -54,7 +54,8 @@ class _ReportDataScreen extends State<ReportDataScreen> {
     '2021',
     '2022',
     '2023',
-
+    '2024',
+    '2025'
   ];
 
   @override

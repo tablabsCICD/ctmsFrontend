@@ -237,14 +237,15 @@ class _LoadListState extends State<LoadList> {
 
 
   getPostList(OrgProvider model,BuildContext context) {
-    return  model.isLoading==true?Expanded(
+    return /* model.isLoading==true?Expanded(
           child: Container(
               height:
               MediaQuery.of(context).size.height - 600,
               child: Center(
-                  child: CircularProgressIndicator()))):
+                  child: CircularProgressIndicator()))):*/
       model.orgFullLoadList.isEmpty
           ?  Container(
+        margin: EdgeInsets.all(30),
           height:
           MediaQuery.of(context).size.height - 600,
           decoration: BoxDecoration(
@@ -283,6 +284,7 @@ class _LoadListState extends State<LoadList> {
        return InkWell(
             onTap: () {},
             child: Card(
+                color:Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius:
                   BorderRadius.circular(10.0.r),
@@ -292,6 +294,7 @@ class _LoadListState extends State<LoadList> {
                   height: 230.h,
                  // width: 510.w,
                   decoration: BoxDecoration(
+                      color:Colors.white,
                     borderRadius: BorderRadius.circular(10.r)
                   ),
                   child: Row(

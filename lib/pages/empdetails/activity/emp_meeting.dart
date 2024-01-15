@@ -88,7 +88,7 @@ class _EmpMeeting extends State<EmpMeeting>{
                for (int i=0;i<listMeeting.length;i++)  tableRow(
                    context,
                    time: listMeeting[i].date!+" "+listMeeting[i].time!,
-                   guest: listMeeting[i].createdMettingBy!.firstName!+" "+listMeeting[i].createdMettingBy!.lastName!,
+                   guest: listMeeting[i].createdMettingBy!.firstName??'-'+" "+"${listMeeting[i].createdMettingBy!.lastName==null?'-':listMeeting[i].createdMettingBy!.lastName}",
 
                    image: listMeeting[i].createdMettingBy!.image,
                    meetinglink: listMeeting[i].meetingLink,
@@ -108,7 +108,7 @@ class _EmpMeeting extends State<EmpMeeting>{
     );
   }
 
-  TableRow tableRow(context, {title, image, guest, meetinglink, time, index}) {
+  TableRow tableRow(context, {String? title,String? image,String? guest,String? meetinglink,String? time,int? index}) {
     return TableRow(
         decoration: BoxDecoration(
           border: Border(
@@ -128,17 +128,17 @@ class _EmpMeeting extends State<EmpMeeting>{
               margin: EdgeInsets.symmetric(vertical: 15),
               child: Row(
                 children: [
-                  getImage(image,height: 30.h,width: 30.w),
+                  getImage(image??'',height: 30.h,width: 30.w),
                   SizedBox(
                     width: 10,
                   ),
-                  Text(title)
+                  Text(title??"")
                 ],
               ),
             ),
           ),
           // Designation
-          if (!AppResponsive.isMobile(context)) Text(guest),
+          if (!AppResponsive.isMobile(context)) Text(guest??''),
           Row(
             children: [
               Container(
@@ -152,12 +152,12 @@ class _EmpMeeting extends State<EmpMeeting>{
               SizedBox(
                 width: 10,
               ),
-              Text(meetinglink),
+              Text(meetinglink??''),
             ],
           ),
 
           if (!AppResponsive.isMobile(context))
-            Text(time)
+            Text(time??'')
         ]);
   }
 

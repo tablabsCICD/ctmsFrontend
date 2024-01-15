@@ -19,33 +19,48 @@ class GeneralPostProvider extends ChangeNotifier{
 
   GeneralPostProvider() : super() {
     getOrgId();
-    getAllPost(orgId);
+    //getAllPost(orgId);
     pagenation();
   }
 
-  getAllPost(int id)async{
-    //ApiResponse apiResponse=await ApiHelper().apiWithoutDecodeGet(ApiConstant.BASE_URL+'postJob?page=$selectedPage');
-    String myUrl = AppConstants.BASE_URL +'/GetGeneralPostBycompanyId?company_id=${id}';
-    print("Get All General Post : "+myUrl);
+  getAllPost(int id)async {
+    String myUrl = AppConstants.BASE_URL +
+        '/GetGeneralPostBycompanyId?company_id=${id}';
+    print("Get All General Post : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
-    var  response = json.decode(req.body);
+    var response = json.decode(req.body);
     print(response);
-    if(response != null){
-      GeneralPostModel _generalPostList=GeneralPostModel.fromJson(response);
+    if (response != null) {
+      List<dynamic>listData = List.from(response);
       generalPostList.clear();
-      generalPostList.addAll(_generalPostList.data!);
-      print(generalPostList.length);
+      for (int i = 0; i < listData.length; i++) {
+        GeneralPost generalPost = GeneralPost();
+        generalPost.title = listData[i]['title'];
+        generalPost.typeName = listData[i]['typeName'];
+
+        generalPost.description = listData[i]['description'];
+        generalPost.likes = listData[i]['likes'];
+
+        generalPost.comment = listData[i]['comment'];
+        generalPost.typeName = listData[i]['typeName'];
+
+        generalPost.userId = listData[i]['userId'];
+        generalPost.id = listData[i]['id'];
+        generalPostList.add(generalPost);
+      }
+      print(listData.length);
       selectedPage++;
       notifyListeners();
-    }else{
-
+    } else {
     }
   }
+
   final orgProvider = locator<OrgProvider>();
   int orgId = 0;
   getOrgId()async{
     orgId = (await orgProvider.getCompanyOrgId())!;
   }
+
   pagenation(){
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
