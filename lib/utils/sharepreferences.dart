@@ -3,7 +3,7 @@ import 'dart:convert';
 
 
 import 'package:flutter_hr_management/model/response/login_data.dart';
-import 'package:flutter_hr_management/organization/model/organization_model.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/SharedPreferencesConstant.dart';

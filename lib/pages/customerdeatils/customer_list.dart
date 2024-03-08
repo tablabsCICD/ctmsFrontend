@@ -309,7 +309,7 @@ class _CustomerDashboard extends State<CustomerList> {
     customerList.clear();
     finalCustomerList.clear();
     if (response.statusCode == 200) {
-      if(response.data["data"]!=""){
+     // if(response.data["data"]!=""){
         CustomerListResponse employeeList =
         CustomerListResponse.fromJson(jsonDecode(response.data));
         customerList.addAll(employeeList.data!.content!);
@@ -318,8 +318,8 @@ class _CustomerDashboard extends State<CustomerList> {
         totalPages = employeeList.data!.totalPages!;
         totalElements = employeeList.data!.totalElements!;
         debugPrint("TotalPages:: ${totalPages}\n TotalRecord:: ${totalElements}");
-      }else{
-     }
+     /* }else{
+     }*/
 
     }
     setState(() {});

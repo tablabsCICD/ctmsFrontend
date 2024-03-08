@@ -14,9 +14,9 @@ import 'package:flutter_hr_management/model/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
-import 'package:flutter_hr_management/organization/model/organization_model.dart';
-import 'package:flutter_hr_management/organization/provider/org_provider.dart';
-import 'package:flutter_hr_management/organization/util/app_constants.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
+import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/widget/editText_email.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -63,6 +63,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   }
 
   TextEditingController _companyNameController = TextEditingController();
+  TextEditingController _companyIdController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _mobileController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
@@ -105,6 +106,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
   setupData() {
     imgPath = organization!.logo!;
     _companyNameController.text = organization!.orgName ?? '';
+    _companyIdController.text = organization!.id!.toString();
     _emailController.text = organization!.officialEmailId ?? '';
     _mobileController.text = organization!.orgMobileNumber ?? '';
     _addressController.text = organization!.orgAddress ?? '';
@@ -506,7 +508,10 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                             )))),
             SizedBox(height: 16.h),
             _buildTextField(
-                'Company Name', 'Please Comapny name', _companyNameController),
+                'Company Id', 'Please Comapny Id', _companyIdController),
+            SizedBox(height: 16.h),
+            _buildTextField(
+                'Company Name', 'Please Company name', _companyNameController),
             SizedBox(height: 16.h),
             _buildTextField(
                 'Email', 'Please enter your email ID', _emailController),
@@ -746,7 +751,16 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         print(result.files.first.toString());
         imageBytes = result.files.first.bytes;
         print(fileName);
+        print(await result.files.first
+            .toString()
+            .length);
         //  uploadedDocument = isImg ? null : fileName;
+        if (await result.files.first
+            .toString()
+            .length >= 500) {
+          showCustomToast(
+              context, "Image Size should be less than 500 KB", Icons.close, Colors.red);
+        } else {
         print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
         var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
         var request = new http.MultipartRequest("POST", postUri);
@@ -767,7 +781,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           print(value);
           var jsonData = jsonDecode(value);
           ImgUploadResponse imgUploadResponse =
-              ImgUploadResponse.fromJson(jsonData);
+          ImgUploadResponse.fromJson(jsonData);
           if (isImg) {
             imgPath = imgUploadResponse.data!;
           }
@@ -793,11 +807,13 @@ class _HeaderWidgetState extends State<HeaderWidget> {
           // ToastMessage.show(context, "Image uploaded");
           showCustomToast(context, "Image Uploaded", Icons.check, Colors.green);
         }
+      }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");
       }
     }
   }
+
 
   Widget _buildTextField(
       String label, String hint, TextEditingController controller) {
@@ -824,6 +840,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             padding: EdgeInsets.symmetric(horizontal: 10.0.w),
             child: TextField(
               controller: controller,
+              readOnly: label=="Company Id"?true:false,
               style: TextStyle(
                 color: Color(0xff1B1B1B),
                 fontSize: 15.sp,

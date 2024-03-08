@@ -1,5 +1,6 @@
 class AppRoutes{
   static const home = '/home';
+
   static const login= '/login';
   static const register = '/register';
   static const employee_dashbord = '/empdash';
@@ -13,6 +14,12 @@ class AppRoutes{
   static const entry="/entryScreen";
   static const meeting="/meeting";
   static const crm="crm";
+
+  static const advertise="advertise";
+  static const advertise_home = '/advertise_home';
+  static const org_advertise = '/org_advertise';
+  static const my_advertise = '/my_advertise';
+  static const save_advertise = '/save_advertise';
 
   static const org="org";
   static const allUser="/allUser";

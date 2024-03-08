@@ -85,6 +85,9 @@ dependencies:
   open_filex:
   syncfusion_flutter_pdf: ^20.3.49
   share_plus:
+  video_player: ^2.4.7
+  path: ^1.8.0
+  chewie: ^1.0.1
 
 
 

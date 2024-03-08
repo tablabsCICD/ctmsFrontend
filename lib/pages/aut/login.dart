@@ -810,7 +810,8 @@ class _LoginScreen extends State<LoginScreen> {
 
       EasyLoading.show(status: "Loading");
       Dio dio = Dio();
-          final req = await http.post(Uri.parse(myUrl));
+      try {
+        final req = await http.post(Uri.parse(myUrl));
         print('the body is ${req.body}');
         if (req.statusCode == 200) {
           var jwtResponse = json.decode(req.body);
@@ -818,7 +819,8 @@ class _LoginScreen extends State<LoginScreen> {
           JWTLoginData jwtLoginData =
           JWTLoginData.fromJson(jwtResponse);
           if (jwtLoginData.data == '') {
-            showCustomToast(context, jwtLoginData.message!, Icons.clear, Colors.red);
+            showCustomToast(
+                context, jwtLoginData.message!, Icons.clear, Colors.red);
             EasyLoading.dismiss();
           } else {
             String token = jwtLoginData.data!;
@@ -826,7 +828,7 @@ class _LoginScreen extends State<LoginScreen> {
                 .setString(SharedPreferencesConstant.AuthToken, token);
             String finalToken = await LocalSharePreferences()
                 .getString(SharedPreferencesConstant.AuthToken);
-            print("Final Token ::"+finalToken);
+            print("Final Token ::" + finalToken);
           }
 
           String loginUrl = ApiConstant.BASE_URL + "api/getCurrentLoggedInJwt";
@@ -842,28 +844,37 @@ class _LoginScreen extends State<LoginScreen> {
               }));
           print(loginResponse.data);
 
-        EasyLoading.dismiss();
-        if (loginResponse.statusCode == 200) {
-          LoginDeatils loginDeatils = LoginDeatils.fromJson(jsonDecode(loginResponse.data));
-          if (loginDeatils.data != null) {
-            String response = jsonEncode(loginDeatils);
-            LocalSharePreferences()
-                .setString(SharedPreferencesConstant.LoginKey, response);
-            LocalSharePreferences()
-                .setBool(SharedPreferencesConstant.LoginKeyBool, true);
+          EasyLoading.dismiss();
+          if (loginResponse.statusCode == 200) {
+            LoginDeatils loginDeatils = LoginDeatils.fromJson(
+                jsonDecode(loginResponse.data));
+            if (loginDeatils.data != null) {
+              String response = jsonEncode(loginDeatils);
+              LocalSharePreferences()
+                  .setString(SharedPreferencesConstant.LoginKey, response);
+              LocalSharePreferences()
+                  .setBool(SharedPreferencesConstant.LoginKeyBool, true);
 
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+            } else {
+              //ToastMessage.show(context, loginDeatils.message!);
+              showCustomToast(
+                  context, loginDeatils.message!, Icons.clear, Colors.red);
+            }
           } else {
-            //ToastMessage.show(context, loginDeatils.message!);
-            showCustomToast(context, loginDeatils.message!, Icons.clear, Colors.red);
+            //  ToastMessage.show(context, "Try Again");
+            showCustomToast(
+                context, "Something went wrong! Please Try Again", Icons.clear,
+                Colors.red);
           }
         } else {
-        //  ToastMessage.show(context, "Try Again");
-          showCustomToast(context, "Something went wrong! Please Try Again", Icons.clear, Colors.red);
+          // ToastMessage.show(context, "Try Again");
+          showCustomToast(
+              context, "Something went wrong! Please Try Again", Icons.clear,
+              Colors.red);
         }
-      } else {
-       // ToastMessage.show(context, "Try Again");
-        showCustomToast(context, "Something went wrong! Please Try Again", Icons.clear, Colors.red);
+      } on Exception catch (_) {
+        throw Exception();
       }
     } else {
      // ToastMessage.show(context, "Please fill correct email and password");

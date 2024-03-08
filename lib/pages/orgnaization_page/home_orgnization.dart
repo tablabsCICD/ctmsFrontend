@@ -4,14 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
-import 'package:flutter_hr_management/organization/company/company_menu/company_dashboard.dart';
-import 'package:flutter_hr_management/organization/company/company_menu_page.dart';
-import 'package:flutter_hr_management/organization/model/organization_model.dart';
-import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_menu/company_dashboard.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_menu_page.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
@@ -129,10 +130,15 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                           empCounts("0", "E-Bilty", Images.bilty, Color(
                               0xFFFFEDF9)),),
                         SizedBox(width: 38.w,),
-                        // empCounts("0","Inactive Employee",Images.emp_tot,Color(0xFFFEF0E5)),
+                        InkWell(onTap: () {
+                          advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
+                          advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
+                          Navigator.pushNamed(context, AppRoutes.advertise);
+                        }, child: empCounts("0", "Advertise Portal", Images.crm, Color(
+                            0xFFFFEDF9)),),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -225,13 +231,13 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
     }
   }
 
+  final advProvider = locator<AdvProvider>();
   bool isAdmin = false;
   LoginDeatils? loginDeatils;
-  Organization? organization;
   Future<void> getLoginDetail() async {
     loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
     isAdmin =  loginDeatils!.data!.isAdmin!;
-    organization = await orgProvider.getOrgDetails();
+    advProvider.getCtmsOrganization();
    // getEmpToken(loginDeatils!.data!.id!);
   }
 }

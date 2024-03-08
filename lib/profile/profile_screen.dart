@@ -327,35 +327,50 @@ class _ProfileInfoState extends State<ProfileInfo> {
         print(result.files.first.toString());
         imageBytes = result.files.first.bytes;
         print(fileName);
-        print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
-        var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
-        var request = new http.MultipartRequest("POST", postUri);
+        print(await result.files.first
+            .toString()
+            .length);
+        //  uploadedDocument = isImg ? null : fileName;
+        if (await result.files.first
+            .toString()
+            .length >= 500) {
+          showCustomToast(
+              context, "Image Size should be less than 500 KB", Icons.close, Colors.red);
+        } else {
+          print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
+          var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
+          var request = new http.MultipartRequest("POST", postUri);
 
-        Map<String, String> headers = {"Content-Type": "multipart/form-data",'Authorization': 'Bearer ${token}'};
-        request.files.add(new http.MultipartFile(
-            "image1", objFile!.readStream!, objFile!.size,
-            filename: objFile!.name));
-        request.headers.addAll(headers);
-        var response = await request.send();
-         print(response.statusCode);
-        response.stream.transform(utf8.decoder).listen((value) async {
-          print(value);
-          var jsonData = jsonDecode(value);
-          ImgUploadResponse imgUploadResponse =
-          ImgUploadResponse.fromJson(jsonData);
-          imgPath = imgUploadResponse.data!;
-          await editEmgProfile(context);
-          print("Uploaded Img Path From s3 bucket::" + imgPath);
-          setState(() {
+          Map<String, String> headers = {
+            "Content-Type": "multipart/form-data",
+            'Authorization': 'Bearer ${token}'
+          };
+          request.files.add(new http.MultipartFile(
+              "image1", objFile!.readStream!, objFile!.size,
+              filename: objFile!.name));
+          request.headers.addAll(headers);
+          var response = await request.send();
+          print(response.statusCode);
+          response.stream.transform(utf8.decoder).listen((value) async {
+            print(value);
+            var jsonData = jsonDecode(value);
+            ImgUploadResponse imgUploadResponse =
+            ImgUploadResponse.fromJson(jsonData);
+            imgPath = imgUploadResponse.data!;
+            await editEmgProfile(context);
+            print("Uploaded Img Path From s3 bucket::" + imgPath);
+            setState(() {
 
+            });
           });
-        });
-        print('the response is ${response}');
+          print('the response is ${response}');
 
-        EasyLoading.dismiss();
-        if (response.statusCode == 200) {
-         // ToastMessage.show(context, "Image uploaded");
-          showCustomToast(context, "Image Updated", Icons.check, Colors.green);
+          EasyLoading.dismiss();
+          if (response.statusCode == 200) {
+            // ToastMessage.show(context, "Image uploaded");
+            showCustomToast(
+                context, "Image Updated", Icons.check, Colors.green);
+          }
         }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");

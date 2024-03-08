@@ -58,7 +58,7 @@ class _AssignProject extends State<AssignProject>{
           ),
           SizedBox(height: 20.h,),
 
-          Container(
+          listLeadActivityData.length > 0 ?Container(
             height: 300.h,
             child: ListView.builder(
               itemCount: listLeadActivityData.length,
@@ -66,7 +66,10 @@ class _AssignProject extends State<AssignProject>{
                 return listTile(context,i);
               },
             ),
-          )
+          ):Container(
+            color: Colors.white,
+              alignment: Alignment.center,
+              width:MediaQuery.of(context).size.width,child: Text("No Any Assigned Lead Found"))
 
         ],
 

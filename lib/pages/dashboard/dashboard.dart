@@ -6,6 +6,7 @@ import 'package:flutter_hr_management/model/response/search_emp_response.dart';
 import 'package:flutter_hr_management/pages/report/customer_model.dart';
 import 'package:flutter_hr_management/pages/report/pdf_service.dart';
 import 'package:flutter_hr_management/pages/report/saveFile.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:open_filex/open_filex.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -787,6 +788,13 @@ class _DashboardState extends State<Dashboard> {
                   height: 20.h,
                 ),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: ThemeColor.red,
+                      textStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontStyle: FontStyle.normal),
+                    ),
                     onPressed: () {
                       getReportApiResponse(index);
                       Navigator.of(context).pop();

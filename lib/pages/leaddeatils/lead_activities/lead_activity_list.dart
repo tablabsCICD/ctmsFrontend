@@ -339,6 +339,7 @@ class LeadActivityState extends State<LeadActivity> implements AbRefresh{
       String token = await LocalSharePreferences()
           .getString(SharedPreferencesConstant.AuthToken);
       EasyLoading.show(status: "Loading");
+      print(ApiConstant.GET_ACTIVITY(widget.id));
       var response = await dio.get(ApiConstant.GET_ACTIVITY(widget.id),
           options: Options(headers: {
             "Content-Type": "application/json",

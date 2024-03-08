@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
-import 'package:flutter_hr_management/organization/base_widget/textview.dart';
+import 'package:flutter_hr_management/organization_portal/base_widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

@@ -117,6 +117,7 @@ class CtmsOrganization {
   List<String>? instruction;
   List<String>? rulesForTaxinvoice;
   int? connectOrgId;
+  int? connectUserId;
 
   CtmsOrganization(
       {this.id,
@@ -142,7 +143,8 @@ class CtmsOrganization {
         this.description,
         this.instruction,
         this.rulesForTaxinvoice,
-        this.connectOrgId});
+        this.connectOrgId,
+      this.connectUserId});
 
   CtmsOrganization.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -179,6 +181,7 @@ class CtmsOrganization {
       });
     }
     connectOrgId = json['connectOrgId'];
+    connectUserId = json['connectUserId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -212,6 +215,7 @@ class CtmsOrganization {
           this.rulesForTaxinvoice!.map((v) => v).toList();
     }
     data['connectOrgId'] = this.connectOrgId;
+    data['connectUserId'] = this.connectUserId;
     return data;
   }
 }

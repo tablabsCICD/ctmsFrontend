@@ -1,27 +1,28 @@
 
-import 'package:flutter_hr_management/organization/model/general_post_model.dart';
-import 'package:flutter_hr_management/organization/provider/general_post_provider.dart';
-import 'package:flutter_hr_management/organization/provider/job_list_provider.dart';
+import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
+import 'package:flutter_hr_management/organization_portal/model/general_post_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/job_list_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
-import 'package:flutter_hr_management/organization/provider/bid_provider.dart';
-import 'package:flutter_hr_management/organization/provider/buy_sell_provider.dart';
-import 'package:flutter_hr_management/organization/provider/dashboard_provider.dart';
-import 'package:flutter_hr_management/organization/provider/fleet_provider.dart';
-import 'package:flutter_hr_management/organization/provider/gallery_provider.dart';
-import 'package:flutter_hr_management/organization/provider/group/groupChatProvider.dart';
-import 'package:flutter_hr_management/organization/provider/group/groupListProvider.dart';
-import 'package:flutter_hr_management/organization/provider/job_provider.dart';
-import 'package:flutter_hr_management/organization/provider/localization_provider.dart';
-import 'package:flutter_hr_management/organization/provider/menu_provider.dart';
-import 'package:flutter_hr_management/organization/provider/more_provider.dart';
-import 'package:flutter_hr_management/organization/provider/org_provider.dart';
-import 'package:flutter_hr_management/organization/provider/plan_provider.dart';
-import 'package:flutter_hr_management/organization/provider/pool_purchase_provider.dart';
-import 'package:flutter_hr_management/organization/provider/repeatProvider.dart';
-import 'package:flutter_hr_management/organization/provider/route_provider.dart';
-import 'package:flutter_hr_management/organization/provider/transport_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/buy_sell_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/fleet_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/gallery_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/group/groupChatProvider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/group/groupListProvider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/job_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/localization_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/menu_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/more_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/plan_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/pool_purchase_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/repeatProvider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/route_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/transport_provider.dart';
 
 //GetIt locator = GetIt.asNewInstance();
 GetIt locator = GetIt.instance;
@@ -46,6 +47,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => GroupChatProvider());
   locator.registerLazySingleton(() => JobListProvider());
   locator.registerLazySingleton(() => GeneralPostProvider());
+  locator.registerLazySingleton(() => AdvProvider());
   locator.registerLazySingleton(() => LocalizationProvider(sharedPreferences: locator()));
 
   final sharedPreferences = await SharedPreferences.getInstance();

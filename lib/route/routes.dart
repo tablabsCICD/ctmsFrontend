@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/advertise_portal/advertise_home_page.dart';
+import 'package:flutter_hr_management/advertise_portal/my_advertise_page.dart';
+import 'package:flutter_hr_management/advertise_portal/save_advertise_page.dart';
 import 'package:flutter_hr_management/entry_screen.dart';
-import 'package:flutter_hr_management/organization/auth/login_screen.dart';
+import 'package:flutter_hr_management/organization_portal/auth/login_screen.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.dart';
 import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
@@ -27,6 +30,21 @@ class RouteGenerator {
 
       case AppRoutes.crm:
         return buildRoute(HomePage(), settings: settings);
+
+      case AppRoutes.advertise:
+        return buildRoute(AdvertiseHomePage(), settings: settings);
+
+      case AppRoutes.advertise_home:
+        return buildRoute(AdvertiseHomePage(), settings: settings);
+
+      case AppRoutes.org_advertise:
+        return buildRoute(AdvertiseHomePage(), settings: settings);
+
+      case AppRoutes.my_advertise:
+        return buildRoute(MyAdvertisePage(), settings: settings);
+
+      case AppRoutes.save_advertise:
+        return buildRoute(SaveAdvertisePage(), settings: settings);
 
       case AppRoutes.org:
         return buildRoute(Login_Screen(), settings: settings);

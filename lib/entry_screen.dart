@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/locator.dart';
-import 'package:flutter_hr_management/organization/model/organization_model.dart';
-import 'package:flutter_hr_management/organization/provider/auth_provider.dart';
-import 'package:flutter_hr_management/organization/provider/org_provider.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
+import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
@@ -48,6 +49,7 @@ class EntryState extends State<EntryScreen>{
   }
 
   final orgProvider = locator<OrgProvider>();
+  LoginDeatils? loginDeatils;
 
   void checkIsLoggedIn()async {
     bool isLogin =await LocalSharePreferences().getBool(SharedPreferencesConstant.LoginKeyBool);

@@ -107,7 +107,7 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
     const Color(0xff1ee30f),
     const Color(0xfffc9e10),
     const Color(0xfff5120b),
-    const Color(0xff5581e1),
+   // const Color(0xff5581e1),
     Colors.grey,
   ];
 
@@ -124,11 +124,11 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
       const Color.fromRGBO(246, 12, 10, 1.0),
       const Color.fromRGBO(161, 29, 5, 1.0),
     ],
-    [
+   /* [
       const Color.fromRGBO(21, 107, 236, 1.0),
       const Color.fromRGBO(45, 166, 241, 1.0),
     ],
-
+*/
   ];
 
   ChartType? _chartType = ChartType.disc;
@@ -166,10 +166,10 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
   @override
   Widget build(BuildContext context) {
     final dataMap = <String, double>{
-      "Converted Leads": double.parse("${convertedLead.length}"),
-      "Pending Leads": double.parse("${pendingLead.length}"),
-      "Rejected Leads": double.parse("${rejectedLead.length}"),
-      "Total Leads": double.parse("${totalLead.length}"),
+      "Converted Leads : ${convertedLead.length}": double.parse("${convertedLead.length}"),
+      "Pending Leads : ${pendingLead.length}": double.parse("${pendingLead.length}"),
+      "Rejected Leads : ${rejectedLead.length}": double.parse("${rejectedLead.length}"),
+    //  "Total Leads : ${totalLead.length}": double.parse("${totalLead.length}"),
     };
     final chart = PieChart(
       key: ValueKey(key),
@@ -490,7 +490,14 @@ class _CustomerGrpahState extends State<CustomerGrpah> {
         SizedBox(
           height: 30,
         ),
-        chart
+        chart,
+        SizedBox(
+          height: 30,
+        ),
+        Text(
+            "Total Leads : ${totalLead.length}",
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.sp,fontFamily: GoogleFonts.poppins().fontFamily,),
+        ),
       ]),
     );
   }

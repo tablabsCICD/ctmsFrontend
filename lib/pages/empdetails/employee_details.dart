@@ -14,8 +14,8 @@ import 'package:flutter_hr_management/model/response/login_data.dart';
 
 import 'package:flutter_hr_management/model/response/search_emp_response.dart';
 import 'package:flutter_hr_management/model/role_model.dart';
-import 'package:flutter_hr_management/organization/model/all_user_model.dart';
-import 'package:flutter_hr_management/organization/util/app_constants.dart';
+import 'package:flutter_hr_management/organization_portal/model/all_user_model.dart';
+import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/empdetails/add_employee.dart';
 import 'package:flutter_hr_management/pages/empdetails/emp_info.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';

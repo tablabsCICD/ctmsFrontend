@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_hr_management/model/request/create_meeting.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/meeting_list.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
+import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
@@ -284,7 +286,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           staggeredTileBuilder: (int index) =>
                               StaggeredTile.fit(1),
                           shrinkWrap: true,
-                          crossAxisCount: 3,
+                          crossAxisCount: ResponsiveWidget.isMobile(context)? 1: 3,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 12,
                           itemCount: filteredMeetingList.length,
@@ -657,7 +659,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   void _submitForm() async {
     LocalSharePreferences localSharePreferences = LocalSharePreferences();
     LoginDeatils deatils = await localSharePreferences.getLoginData();
-
+    selectedEmpList.add(deatils.data!.id!);
     String title = _meetingTitleController.text;
     String dec = _meetingDecController.text;
     String link = _meetingLinkController.text;
@@ -672,6 +674,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = selectedLead[0];
     createMeeting.employeeId = selectedEmpList;
+    createMeeting.organisationId = deatils.data!.organisationId;
     var response = await ApiHelper()
         .postParameter(ApiConstant.CREATE_MEETING, createMeeting.toJson());
     print('the response is ${response.response}');
@@ -701,6 +704,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     createMeeting.createdMettingBy = deatils.data!.id;
     createMeeting.leadId = 1;
     createMeeting.employeeId = editSelectedEmpList!;
+    createMeeting.organisationId = deatils.data!.organisationId;
     Map<String, dynamic> parameter = {
       "active": true,
       "date": editSelectDate,
@@ -984,8 +988,18 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                       ),
                     ),
                     InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(ClipboardData(text:meetingData.meetingLink.toString() ));
+                        // copied successfully
+                      },
+                      child: Tooltip(
+                        message: "Copy Link",
+                          child: Icon(Icons.copy,color: Colors.blue,)
+                      ),
+                    ),
+                    InkWell(
                       onTap:(){
-                        Share.share("To Join the meeting on Google Meet,click this link:\n"+meetingData.meetingLink.toString(),subject: "Plaese join meet");
+                        Share.share("To Join the meeting on Google Meet,click this link:\n"+meetingData.meetingLink.toString(),subject: "Please join meet");
                       },
                       child: SvgPicture.asset(
                         'assets/images/share_icon.svg',
@@ -1404,7 +1418,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     Uri _url = Uri.parse(url);
     await launchUrl(
       _url,
-      mode: LaunchMode.externalApplication,
+     // mode: LaunchMode.externalApplication,
     );
   }
 
@@ -1491,6 +1505,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     meetingList.clear();
     filteredMeetingList.clear();
     setState(() {});
+    print(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
     print('the data is: ${roleResponse.response}');

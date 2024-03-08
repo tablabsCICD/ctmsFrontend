@@ -10,6 +10,7 @@ class CreateMeeting {
   String? time;
   String? title;
   int? id;
+  int? organisationId;
 
   CreateMeeting(
 
@@ -23,6 +24,7 @@ class CreateMeeting {
         this.meetingLink,
         this.status,
         this.time,
+        this.organisationId,
         this.title});
 
   CreateMeeting.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class CreateMeeting {
     status = json['status'];
     time = json['time'];
     title = json['title'];
+    organisationId = json['organisationId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +55,7 @@ class CreateMeeting {
     data['status'] = this.status;
     data['time'] = this.time;
     data['title'] = this.title;
+    data['organisationId'] = this.organisationId;
     return data;
   }
 }

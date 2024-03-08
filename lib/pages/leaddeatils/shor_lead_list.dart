@@ -5,7 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/lead_model.dart';
+import 'package:flutter_hr_management/model/response/company_rating_response.dart';
 import 'package:flutter_hr_management/model/response/img_upload_response.dart';
+import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:flutter_hr_management/organization_portal/util/star_display.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'dart:io';
@@ -494,7 +497,21 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             }),
             SizedBox(height: 16.h),
             InkWell(
-              onTap: _submitForm,
+              onTap: (){
+                final bool emailValid =
+                RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(_emailController.text);
+                final bool mobileValid =
+                RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
+                    .hasMatch(_phoneController.text);
+                if(emailValid==false){
+                  showCustomToast(context, "Enter valid email id", Icons.close, Colors.red);
+                }else if(mobileValid==false){
+                  showCustomToast(context, "Enter valid Mobile Number", Icons.close, Colors.red);
+                }else {
+                  _submitForm();
+                }
+              },
               child: Container(
                 decoration: BoxDecoration(
                     color: ThemeColor.theme_blue,
@@ -652,14 +669,18 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             ),
             SizedBox(height: 10.h),
             TextView(
-              title: 'Click on Submit button to upload the selected file.',
+              title: 'Click on submit button to upload the selected file.',
               fontSize: 10.sp,
               fontWeight: FontWeight.w400,
               color: Colors.black,
             ),
             SizedBox(height: 25.h),
             InkWell(
-              onTap: _submitShortLeadForm,
+              onTap: (){
+
+                  objXlFile == null?showCustomToast(context, "Please Select Excel File", Icons.close, Colors.red):_submitShortLeadForm();
+
+              },
               child: Container(
                 decoration: BoxDecoration(
                     color: ThemeColor.theme_blue,
@@ -670,7 +691,7 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    "Submit",
+                    "Upload File",
                     style: TextStyle(
                         fontSize: 20.sp,
                         fontFamily: GoogleFonts
@@ -1412,6 +1433,10 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                     editleadDilaog(leadData);
                   },
                   child: Icon(Icons.edit, color: Colors.grey)),
+              SizedBox(
+                width: 10.w,
+              ),
+              getDetails(context,leadData.lead!.companyName!),
             ],
           )
         ]);
@@ -1760,7 +1785,20 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
             SizedBox(height: 16.h),
             InkWell(
               onTap: () {
-                submitEditForm(leadData);
+                final bool emailValid =
+                RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(_emailController.text);
+                final bool mobileValid =
+                RegExp(r'(^(?:[+0]9)?[0-9]{10,10}$)')
+                    .hasMatch(_phoneController.text);
+                if(emailValid==false){
+                  showCustomToast(context, "Enter valid email id", Icons.close, Colors.red);
+                }else if(mobileValid==false){
+                  showCustomToast(context, "Enter valid Mobile Number", Icons.close, Colors.red);
+                }else {
+                  submitEditForm(leadData);
+                }
+              //  submitEditForm(leadData);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -2040,45 +2078,57 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
         print(result.files.first.toString());
         imageBytes = result.files.first.bytes;
         print(fileName);
-        uploadedDocument = isImg ? null : fileName;
-        print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
-        var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
-        var request = new http.MultipartRequest("POST", postUri);
+        print(await result.files.first
+            .toString()
+            .length);
+        //  uploadedDocument = isImg ? null : fileName;
+        if (await result.files.first
+            .toString()
+            .length >= 500) {
+          showCustomToast(
+              context, "Image Size should be less than 500 KB", Icons.close, Colors.red);
+        } else {
+          uploadedDocument = isImg ? null : fileName;
+          print('the url is ${ApiConstant.UPLOAD_LEAD_IMG}');
+          var postUri = Uri.parse(ApiConstant.UPLOAD_LEAD_IMG);
+          var request = new http.MultipartRequest("POST", postUri);
 
-        Map<String, String> headers = {
-          "Content-Type": "multipart/form-data",
-          'Authorization': 'Bearer ${token}'
-        };
-        request.files.add(new http.MultipartFile(
-            "image1", objFile!.readStream!, objFile!.size,
-            filename: objFile!.name));
-        /* request.files.add(new http.MultipartFile(
+          Map<String, String> headers = {
+            "Content-Type": "multipart/form-data",
+            'Authorization': 'Bearer ${token}'
+          };
+          request.files.add(new http.MultipartFile(
+              "image1", objFile!.readStream!, objFile!.size,
+              filename: objFile!.name));
+          /* request.files.add(new http.MultipartFile(
         "imageFile",filename: objectFile.name));*/
-        request.headers.addAll(headers);
-        var response = await request.send();
-        print(response.statusCode);
-        response.stream.transform(utf8.decoder).listen((value) {
-          print(value);
-          var jsonData = jsonDecode(value);
-          ImgUploadResponse imgUploadResponse =
-          ImgUploadResponse.fromJson(jsonData);
-          if (isImg) {
-            imgPath = imgUploadResponse.data!;
-          } else {
-            documentPath = imgUploadResponse.data!;
-          }
-          print("Uploaded Img Path From s3 bucket::" +
-              imgPath +
-              "\ndocumentPath" +
-              documentPath);
-          stateSetter(() {});
-        });
-        print('the response is ${response}');
+          request.headers.addAll(headers);
+          var response = await request.send();
+          print(response.statusCode);
+          response.stream.transform(utf8.decoder).listen((value) {
+            print(value);
+            var jsonData = jsonDecode(value);
+            ImgUploadResponse imgUploadResponse =
+            ImgUploadResponse.fromJson(jsonData);
+            if (isImg) {
+              imgPath = imgUploadResponse.data!;
+            } else {
+              documentPath = imgUploadResponse.data!;
+            }
+            print("Uploaded Img Path From s3 bucket::" +
+                imgPath +
+                "\ndocumentPath" +
+                documentPath);
+            stateSetter(() {});
+          });
+          print('the response is ${response}');
 
-        EasyLoading.dismiss();
-        if (response.statusCode == 200) {
-          // ToastMessage.show(context, "Image uploaded");
-          showCustomToast(context, "Image Uploaded", Icons.check, Colors.green);
+          EasyLoading.dismiss();
+          if (response.statusCode == 200) {
+            // ToastMessage.show(context, "Image uploaded");
+            showCustomToast(
+                context, "Image Uploaded", Icons.check, Colors.green);
+          }
         }
       } catch (ex) {
         throw Exception("Exception Occurred ${ex.toString()}");
@@ -2130,5 +2180,253 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
       ApiGetData("", selectedPageNumber);
       setState(() {});
     }
+  }
+
+  List<CompanyRating> companyRatingList = [];
+  Future<CompanyRating?> getCompanyRatingData(String companyName) async {
+    String myUrl = AppConstants.BASE_URL +
+        "ratings-reviews/average-rating/getByCompanyName?companyName=$companyName";
+    print("Get Company Rating :" + myUrl
+    );
+
+    var req = await http.get(Uri.parse(myUrl),headers: {
+      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Accept': '*/*'
+    });
+    print(req.body);
+    if (req.statusCode == 200) {
+      var response = json.decode(req.body);
+      CompanyRatingResponse companyRatingResponse =
+      CompanyRatingResponse.fromJson(response);
+      companyRatingList.clear();
+      companyRatingList.addAll(companyRatingResponse.data as Iterable<CompanyRating>);
+      print('this is company rating list${companyRatingList.length}');
+      setState(() {});
+
+      return companyRatingList.isNotEmpty ?companyRatingList[0]:null;
+    }else{
+      return null;
+    }
+
+  }
+
+  viewCompanyRatings(CompanyRating companyRating) {
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.centerRight,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 600.w,
+                  decoration: BoxDecoration(
+                      color: AppColor.white, borderRadius: BorderRadius.circular(10)),
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                size: 16,
+                              )),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Text(
+                            "Back",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: AppColor.black,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.h,),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              getImage(companyRating.comanyDetails!.logo??'',height: 150,width: 150),
+                              StarDisplay(value:4)
+                            ],
+                          ),
+                          SizedBox(width: 20.h,),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  "${companyRating.comanyDetails!.companyName}",
+                                  style: TextStyle(
+                                    fontFamily: GoogleFonts
+                                        .poppins()
+                                        .fontFamily,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColor.black,
+                                    fontSize: 25.sp,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+                              getOrgData(Icons.info_outline,"${companyRating.comanyDetails!.typeOfRegistration}"),
+                              getOrgData(Icons.language,"${companyRating.comanyDetails!.website}"),
+                              //   getOrgData(Icons.quick_contacts_dialer_outlined,"${companyRating.comanyDetails!.pointOfContact}"),
+                              getOrgData(Icons.phone,"${companyRating.comanyDetails!.landlineNumber}"),
+                              getOrgData(Icons.email_outlined,"${companyRating.comanyDetails!.officialEmailId}"),
+                              getOrgData(Icons.location_on_outlined,"${companyRating.comanyDetails!.companyAddress}, ${companyRating.comanyDetails!.city}"),
+
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        "Employees: ${companyRating.companyRegistrations==null?0:companyRating.companyRegistrations!.length}",
+                        style: TextStyle(
+                          fontFamily: GoogleFonts
+                              .poppins()
+                              .fontFamily,
+                          fontWeight: FontWeight.w500,
+                          color: AppColor.black,
+                          fontSize: 17.sp,
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      companyRating.list==null?SizedBox.shrink():Text(
+                        "Company Review",
+                        style: TextStyle(
+                          fontFamily: GoogleFonts
+                              .poppins()
+                              .fontFamily,
+                          fontWeight: FontWeight.w500,
+                          color: AppColor.black,
+                          fontSize: 17.sp,
+                        ),
+                      ),
+                      companyRating.list==null?SizedBox.shrink():SizedBox(height: 16.h),
+                      companyRating.list==null?SizedBox.shrink():getReviewList(companyRating.list),
+                    ],
+                  ),
+                );
+              }),
+        );
+      },
+    );
+  }
+
+  getReviewList(List<Rating>? ratingList) {
+
+    return Expanded(
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: ratingList!.length,
+          itemBuilder: (BuildContext context, int index) {
+            DateTime formattedDate = DateTime.fromMillisecondsSinceEpoch(ratingList[index].date!);
+            print(formattedDate);
+            String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(formattedDate);
+
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      StarDisplay(
+                          value: ratingList[index].rating!),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                          formattedDateTime.toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 12))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(ratingList[index].review.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal, fontSize: 12)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Divider(
+                    thickness: 2,
+                  )
+                ],
+              ),
+            );
+          }),
+
+    );
+  }
+
+  getDetails(context,String name) {
+    return SizedBox(
+      width: 50.w,
+      child: InkWell(
+          onTap: () async{
+            CompanyRating? companyRating = await getCompanyRatingData(name);
+            if(companyRating==null){
+              print("No data");
+              showCustomToast(
+                  context, "Sorry,$name is not registered in our portal..", Icons.clear,
+                  Colors.red);
+            }else{
+              viewCompanyRatings(companyRating);
+              print("data");
+            }
+          },
+          child: Tooltip(
+              richMessage: TextSpan(
+                text: 'Click to view Company Details',
+                style: TextStyle(color: Colors.white),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Icon(Icons.info, color: Colors.green),
+              ))),
+    );
+  }
+
+  getOrgData(IconData icon, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 7 ,vertical: 5),
+      child: Row(
+        children: [
+          Icon(icon,size: 20,),
+          SizedBox(width: 10,),
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: GoogleFonts
+                  .poppins()
+                  .fontFamily,
+              fontWeight: FontWeight.w400,
+              color: AppColor.black,
+              fontSize: 16.sp,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
