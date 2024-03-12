@@ -168,7 +168,7 @@ class AdvProvider extends ChangeNotifier {
   deleteAdv(AdvertiseData advertiseData) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL + 'api/my-ads/deleteAdvertisement/${advertiseData.id}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/deleteAdvertisement/${advertiseData.id}';
     print(myUrl);
     Dio dio = Dio();
     final response = await dio.delete(

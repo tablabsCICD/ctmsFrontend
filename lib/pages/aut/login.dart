@@ -855,7 +855,7 @@ class _LoginScreen extends State<LoginScreen> {
               LocalSharePreferences()
                   .setBool(SharedPreferencesConstant.LoginKeyBool, true);
 
-              Navigator.pushReplacementNamed(context, AppRoutes.home);
+              Navigator.pushReplacementNamed(context, AppRoutes.advertise_home);
             } else {
               //ToastMessage.show(context, loginDeatils.message!);
               showCustomToast(
