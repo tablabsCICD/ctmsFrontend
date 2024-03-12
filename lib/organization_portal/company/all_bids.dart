@@ -349,8 +349,8 @@ class _BidListState extends State<BidList> {
 
               },
               style: ElevatedButton.styleFrom(
-                primary: ThemeColor.theme_blue,
-                onPrimary: Colors.white,
+                backgroundColor: ThemeColor.theme_blue,
+                foregroundColor: Colors.white,
                 elevation: 3,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
               ),

@@ -111,8 +111,8 @@ class _ReceivedBidsDialogBoxState extends State<ReceivedBidsDialogBox> {
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                    onPrimary: Colors.white,
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
                     elevation: 3,
                     side: BorderSide(color: Colors.black, width: 2),
                   ),

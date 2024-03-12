@@ -151,8 +151,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                             _showAlertDialog(true);
                           },
                           style: ElevatedButton.styleFrom(
-                              primary: ThemeColor.theme_blue,
-                              onPrimary: Colors.white),
+                              backgroundColor: ThemeColor.theme_blue,
+                              foregroundColor: Colors.white),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -184,8 +184,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                             _showAlertDialog(false);
                           },
                           style: ElevatedButton.styleFrom(
-                              primary: ThemeColor.theme_blue,
-                              onPrimary: Colors.white),
+                              backgroundColor: ThemeColor.theme_blue,
+                              foregroundColor: Colors.white),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -605,8 +605,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                       pickXlFile(stateSetter, true);
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: ThemeColor.theme_blue,
-                        onPrimary: Colors.white),
+                        backgroundColor: ThemeColor.theme_blue,
+                        foregroundColor: Colors.white),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -2034,8 +2034,8 @@ class _ShortLeadListScreen extends State<ShortLeadListScreen> {
                                     setState(() {});
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: ThemeColor.theme_blue,
-                                      onPrimary: Colors.white),
+                                      backgroundColor: ThemeColor.theme_blue,
+                                      foregroundColor: Colors.white),
                                   child: TextView(
                                     title: "Search",
                                     fontSize: 14.sp,

@@ -789,7 +789,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: ThemeColor.red,
+                      backgroundColor: ThemeColor.red,
                       textStyle: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,

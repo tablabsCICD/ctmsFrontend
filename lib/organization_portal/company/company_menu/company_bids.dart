@@ -390,8 +390,8 @@ class _WebScreenForBidState extends State<WebScreenForBid> {
                                         ));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors.red[200],
-                                    onPrimary: Colors.white,
+                                    backgroundColor: Colors.red[200],
+                                    foregroundColor: Colors.white,
                                     elevation: 3,
                                   ),
                                   child: Text(getTranslated('delete', context)!,style: Style.button,),

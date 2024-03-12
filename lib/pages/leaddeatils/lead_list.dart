@@ -152,8 +152,8 @@ class _LeadDashboard extends State<LeadListScreen> {
                             _showAlertDialog(true);
                           },
                           style: ElevatedButton.styleFrom(
-                              primary: ThemeColor.theme_blue,
-                              onPrimary: Colors.white),
+                              backgroundColor: ThemeColor.theme_blue,
+                              foregroundColor: Colors.white),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -185,8 +185,8 @@ class _LeadDashboard extends State<LeadListScreen> {
                             _showAlertDialog(false);
                           },
                           style: ElevatedButton.styleFrom(
-                              primary: ThemeColor.theme_blue,
-                              onPrimary: Colors.white),
+                              backgroundColor: ThemeColor.theme_blue,
+                              foregroundColor: Colors.white),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -667,8 +667,8 @@ class _LeadDashboard extends State<LeadListScreen> {
                       pickXlFile(stateSetter, true);
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: ThemeColor.theme_blue,
-                        onPrimary: Colors.white),
+                        backgroundColor: ThemeColor.theme_blue,
+                        foregroundColor: Colors.white),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -2287,8 +2287,8 @@ class _LeadDashboard extends State<LeadListScreen> {
                                     setState(() {});
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: ThemeColor.theme_blue,
-                                      onPrimary: Colors.white),
+                                      backgroundColor: ThemeColor.theme_blue,
+                                      foregroundColor: Colors.white),
                                   child: TextView(
                                     title: "Search",
                                     fontSize: 14.sp,

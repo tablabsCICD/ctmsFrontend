@@ -131,8 +131,8 @@ class _JobListState extends State<JobListScreen> {
                                   _showAlertDialog(model);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                    primary: ThemeColor.theme_blue,
-                                    onPrimary: Colors.white),
+                                    backgroundColor: ThemeColor.theme_blue,
+                                    foregroundColor: Colors.white),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -498,7 +498,7 @@ class _JobListState extends State<JobListScreen> {
           SizedBox(height: 8.h),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFD25D5D), onPrimary: Colors.white),
+                  backgroundColor: Color(0xFFD25D5D), foregroundColor: Colors.white),
               onPressed: () {
                 model.deleteJob(jobData);
               },

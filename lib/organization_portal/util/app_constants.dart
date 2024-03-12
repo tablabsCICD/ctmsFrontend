@@ -10,8 +10,8 @@ class AppConstants {
 
   static final String APP_VERSION="2.0.6";
  // static String BASE_URL = "https://api.tkdost.com/tkdConnect/api/"; //Production Url
-  static String BASE_URL = "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkd3/api/"; //Test Url
- // static String BASE_URL = "http://ec2-13-235-70-174.ap-south-1.compute.amazonaws.com:8080/tkdConnect/api/"; //Test Url
+ // static String BASE_URL = "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkd3/api/"; //Test Url
+ static String BASE_URL = "http://ec2-13-201-5-172.ap-south-1.compute.amazonaws.com:8080/tkd3/api/"; //Test Url
   static String LOGIN = BASE_URL + "authLogin/emailId";
   static String REGISTRATION = BASE_URL + "companyRegistration";
   static String GENERIC_DATA = BASE_URL + "/get/allCards";

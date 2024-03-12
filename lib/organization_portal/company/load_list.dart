@@ -165,8 +165,8 @@ class _LoadListState extends State<LoadList> {
                                               '', selectedFromCity!, selectedToCity!);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: Colors.black,
-                                          onPrimary: Colors.white,
+                                          backgroundColor: Colors.black,
+                                          foregroundColor: Colors.white,
                                           elevation: 3,
                                           shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(
@@ -502,8 +502,8 @@ class _LoadListState extends State<LoadList> {
                             ));
                       },
                         style: ElevatedButton.styleFrom(
-                          primary: ThemeColor.theme_blue,
-                          onPrimary: Colors.white,
+                          backgroundColor: ThemeColor.theme_blue,
+                          foregroundColor: Colors.white,
                           elevation: 3,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
                         ),
