@@ -50,8 +50,8 @@ class AdvProvider extends ChangeNotifier {
     if (currentPage == 0) {
       advertiseListByOrgId.clear();
     }
-    String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-  //  String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/${int.parse(ctmsOrganization!.connectOrgId.toString())}';
+  //  String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
+    String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/0';//${int.parse(ctmsOrganization!.connectOrgId.toString())}';
     print("My Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -84,8 +84,8 @@ class AdvProvider extends ChangeNotifier {
     if (currentPage == 0) {
       advertiseListByUserId.clear();
     }
-    String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-   // String myUrl = AppConstants.BASE_URL + 'my-ads/${int.parse(ctmsOrganization!.connectUserId.toString())}';
+   // String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
+    String myUrl = AppConstants.BASE_URL + 'my-ads/0';//${int.parse(ctmsOrganization!.connectUserId.toString())}';
     print("Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(

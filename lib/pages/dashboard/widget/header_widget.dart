@@ -156,7 +156,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
                       InkWell(
                         onTap: () {
-                          Navigator.restorablePushReplacementNamed(
+                          widget.isSearchVisible==false?null:Navigator.restorablePushReplacementNamed(
                               context, AppRoutes.profile);
                         },
                         child: Text('${Constants.LOGIN_NAME}',
@@ -222,7 +222,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       SizedBox(
                         width: 27.w,
                       ),*/
-                      Container(
+                      widget.isSearchVisible==false?SizedBox.shrink(): Container(
                         width: 50.w,
                         height: 50.h,
                         alignment: Alignment.center,

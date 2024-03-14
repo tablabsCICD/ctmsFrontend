@@ -136,15 +136,15 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Title', "Enter title",
                                   _bannerNameController),
                               SizedBox(height: 16.h),
-                             /* _buildTextField('Company Name', "Enter company name",
+                              _buildTextField('Company Name', "Enter company name",
                                   _companyNameController),
-                              SizedBox(height: 16.h),*/
+                              SizedBox(height: 16.h),
                               _buildTextField('Advertise Link', "Enter link",
                                   _hyperLinkController),
                               SizedBox(height: 16.h),
                               _buildText(
                                   '${uploadedDocument == ""
-                                      ? "Click here to upload Image/Video"
+                                      ? "Click here to upload Image"
                                       : uploadedDocument}',
                                   'Advertise Image/Video', () async {
                                 pickFile(setState, false);
@@ -207,7 +207,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      startDate: selectedFromDate,
                                      endDate: selectedToDate,
                                      numberOfDays: _noOfDaysController.text,
-                                     companyName: ctmsOrganization!.orgName,
+                                     companyName: _companyNameController.text,
                                      bannerHyperlink: _hyperLinkController.text,
                                      bannerName: _bannerNameController.text,
                                      adImage: documentPath

@@ -6,6 +6,7 @@ import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/advertise_portal/advertise_side_bar_menu.dart';
 import 'package:flutter_hr_management/advertise_portal/model/advertise_model.dart';
@@ -40,6 +41,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
@@ -96,7 +98,7 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
                 flex: 4,
                 child: Column(
                   children: [
-                    HeaderWidget(
+                   HeaderWidget(
                       isSearchVisible: false,
                       scaffoldKey: _key,
                     ),
@@ -226,7 +228,12 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        Uri _url = Uri.parse(advertiseData.bannerHyperlink.toString());
+                        await launchUrl(
+                        _url,
+                         mode: LaunchMode.externalApplication,
+                        );
                       },
                       child: Text(
                         advertiseData.bannerHyperlink.toString() ?? '',
@@ -241,7 +248,7 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
                     ),
                     InkWell(
                       onTap: () async {
-                      //  await Clipboard.setData(ClipboardData(text:meetingData.meetingLink.toString() ));
+                        await Clipboard.setData(ClipboardData(text:advertiseData.bannerHyperlink.toString() ));
                         // copied successfully
                       },
                       child: Tooltip(
