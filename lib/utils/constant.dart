@@ -5,13 +5,14 @@ class ApiConstant {
   //static String BASE_URL = 'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
  // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
   static String BASE_URL = "http://ec2-13-201-5-172.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/";
-  static String BILTY_URL = 'http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty';
+ // static String BILTY_URL = 'http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty';
+  static String BILTY_URL = "http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty";
   static String HRMS_URL = 'http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm';
 
   static String GET_CTMS_ORG = BASE_URL + 'api/Organisation/getById';
   static String GET_ALL_EMPLOYEE = BASE_URL + "api/Employee/getAllByFilter";
   static String SAVE_EMP = BASE_URL + "Employee/save";
-  static String EDIT_EMP = BASE_URL + "api/Employee/update";
+  static String EDIT_EMP = BASE_URL + "api/updateEmployees";
   static String EMP_DELTEB = BASE_URL + "api/Employee/deleteById?";
   static String SEARCH_EMP = BASE_URL + "api/search";
   static String DATEWISE_EMP_REPORT = BASE_URL +"api/getDetailedLeadReportWithEmployeeByEmployeeId";

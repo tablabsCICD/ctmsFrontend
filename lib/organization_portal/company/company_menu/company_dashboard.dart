@@ -223,7 +223,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                     ),
                   ],
                 ),
-                ResponsiveWidget.isDesktop(context)?Positioned(
+               /* ResponsiveWidget.isDesktop(context)?Positioned(
                   top: 105.h,
                   left: 265.w,
                   child: InkWell(
@@ -236,7 +236,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                       width: 80.w,
                     ),
                   ),
-                ):SizedBox.shrink(),
+                ):SizedBox.shrink(),*/
               ],
             ),
           )),

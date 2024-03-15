@@ -1358,7 +1358,7 @@ class _LeadDashboard extends State<LeadListScreen> {
                   tableRow(context, finalLeadData[i],
                       name: finalLeadData[i].lead!.companyName,
                       color: Colors.blue,
-                      image: leadData[i].lead!.addLogo,
+                      image: finalLeadData[i].lead!.addLogo,
                       client: finalLeadData[i].lead!.companyName,
                       project: finalLeadData[i].lead!.typeOfBusiness,
                       contact: finalLeadData[i].lead!.mobileNumber,
@@ -1918,6 +1918,7 @@ class _LeadDashboard extends State<LeadListScreen> {
     _editcoordinatorController.text = leadData.lead!.coordinator!;
     _editaddressController.text = leadData.lead!.address!;
     _edittypeOfBusinessController.text = leadData.lead!.typeOfBusiness!;
+     imgPath = leadData.lead!.addLogo!;
 
     return showDialog<void>(
       context: context,
@@ -2093,6 +2094,7 @@ class _LeadDashboard extends State<LeadListScreen> {
     SaveLeadRequest saveEmploye = SaveLeadRequest();
     saveEmploye.id = leadData.lead!.id;
     saveEmploye.companyName = name;
+    saveEmploye.addLogo = imgPath;
     saveEmploye.coordinator = loginDeatils!.data!.firstName;
     saveEmploye.emailId = email;
     saveEmploye.mobileNumber = phone;

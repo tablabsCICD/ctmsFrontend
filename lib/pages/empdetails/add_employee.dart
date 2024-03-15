@@ -174,7 +174,7 @@ class _EditEmployeeState extends State<EditEmployee> {
     saveEmploye.lastName=lastName;
     saveEmploye.emailId=email;
     saveEmploye.address=addLead;
-    saveEmploye.mobileNumber=phone;
+    saveEmploye.contact=phone;
     saveEmploye.id=widget.empData.id;
     print(saveEmploye.toJson());
     Dio dio=Dio();

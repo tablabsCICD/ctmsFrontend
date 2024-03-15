@@ -123,7 +123,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                 ),
               ],
             ),
-            if (ResponsiveWidget.isDesktop(context)) Positioned(
+            /*if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -136,7 +136,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                   width: 80.w,
                 ),
               ),
-            ) else SizedBox.shrink(),
+            ) else SizedBox.shrink(),*/
           ],
         ));
 

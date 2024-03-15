@@ -130,12 +130,15 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                           empCounts("0", "E-Bilty", Images.bilty, Color(
                               0xFFFFEDF9)),),
                         SizedBox(width: 38.w,),
-                        InkWell(onTap: () {
-                          advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
-                          advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
-                          Navigator.pushNamed(context, AppRoutes.advertise);
-                        }, child: empCounts("0", "Advertise Portal", Images.crm, Color(
-                            0xFFFFEDF9)),),
+                        Visibility(
+                          visible: false,
+                          child: InkWell(onTap: () {
+                            advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
+                            advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
+                            Navigator.pushNamed(context, AppRoutes.advertise);
+                          }, child: empCounts("0", "Advertise Portal", Images.crm, Color(
+                              0xFFFFEDF9)),),
+                        ),
                       ],
                     ),
                   ),

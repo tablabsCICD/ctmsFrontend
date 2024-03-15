@@ -857,17 +857,22 @@ class _LoginScreen extends State<LoginScreen> {
 
               Navigator.pushReplacementNamed(context, AppRoutes.home);
             } else {
+              EasyLoading.dismiss();
+              
               //ToastMessage.show(context, loginDeatils.message!);
               showCustomToast(
                   context, loginDeatils.message!, Icons.clear, Colors.red);
             }
           } else {
+            EasyLoading.dismiss();
+
             //  ToastMessage.show(context, "Try Again");
             showCustomToast(
                 context, "Something went wrong! Please Try Again", Icons.clear,
                 Colors.red);
           }
         } else {
+          EasyLoading.dismiss();
           // ToastMessage.show(context, "Try Again");
           showCustomToast(
               context, "Something went wrong! Please Try Again", Icons.clear,

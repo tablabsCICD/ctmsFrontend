@@ -307,6 +307,7 @@ class OrgProvider extends ChangeNotifier {
         AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
     print("All users by company::" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
+    print("All User response:"+req.body);
     response = await json.decode(req.body);
     var list = AuthApi.fromJson(response);
     userList.clear();

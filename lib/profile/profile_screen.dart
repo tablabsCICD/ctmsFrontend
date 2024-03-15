@@ -387,7 +387,7 @@ class _ProfileInfoState extends State<ProfileInfo> {
     saveEmploye.image = imgPath;
     saveEmploye.emailId=loginDeatils.data!.emailId;
     saveEmploye.address=loginDeatils.data!.address;
-    saveEmploye.mobileNumber=loginDeatils.data!.mobileNumber;
+    saveEmploye.contact=loginDeatils.data!.mobileNumber;
     saveEmploye.id=loginDeatils.data!.id;
     print(saveEmploye.toJson());
     Dio dio=Dio();

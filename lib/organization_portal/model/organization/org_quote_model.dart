@@ -102,7 +102,7 @@ class GenericCardsDto {
   String? reminderUserName;
   String? sharableLink;
   String? deviceId;
-  int? ratings;
+  double? ratings;
   int? mobileNumber;
   String? source;
   String? destination;

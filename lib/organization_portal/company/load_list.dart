@@ -392,15 +392,15 @@ class _LoadListState extends State<LoadList> {
                             SizedBox(height: 30.h,),
                             TextView(
                               title: "${model.orgFullLoadList[index].source}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
+                              fontSize:14.sp,
+                              fontWeight: FontWeight.w500,
                               color: Color(0xff000000),
                             ),
                             Container(color: Colors.black,width: 1.w,height: 48.h,),
                             TextView(
                               title: "${model.orgFullLoadList[index].destination}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
+                              fontSize:14.sp,
+                              fontWeight: FontWeight.w500,
                               color: Color(0xff000000),
                             ),
                             SizedBox(height: 20.h,),
@@ -437,7 +437,7 @@ class _LoadListState extends State<LoadList> {
                                      "${model.orgFullLoadList[index].transporterOrCustomerName}",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      fontSize:15.sp,
+                                      fontSize:14.sp,
                                       fontWeight: FontWeight.w600,
                                       color: Color(0xff000000),
                                     ),
@@ -474,13 +474,13 @@ class _LoadListState extends State<LoadList> {
                                       'Contact Number : ${model.orgFullLoadList[index].contactNumber}',
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 18,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold)),
                                   Text(
                                       'Email_Id : ${model.orgFullLoadList[index].emailId}',
                                       style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 18,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),

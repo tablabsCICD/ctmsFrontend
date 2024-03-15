@@ -81,13 +81,13 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                         onSearchTap: () {},
                       ),
                       SizedBox(height: 16.h,),
-                      BidList(widget.organization),
+                      Expanded(child: BidList(widget.organization)),
                     ],
                   ),
                 ),
               ],
             ),
-           if (ResponsiveWidget.isDesktop(context)) Positioned(
+           /*if (ResponsiveWidget.isDesktop(context)) Positioned(
               top: 105.h,
               left: 265.w,
               child: InkWell(
@@ -100,7 +100,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                   width: 80.w,
                 ),
               ),
-            ) else SizedBox.shrink(),
+            ) else SizedBox.shrink(),*/
           ],
         ));
   }

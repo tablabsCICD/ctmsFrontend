@@ -228,7 +228,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                 ),
                 Container(
                   width: 300.w,
-                  height: 50.h,
+                  height: 60.h,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   alignment: Alignment.centerRight,
                   child: Container(
@@ -347,7 +347,7 @@ class _EmpDashboard extends State<EmpDashboard> {
                                               image: finalEmData[i].image,
                                               designation:
                                                   finalEmData[i].designation,
-                                              status:
+                                              contact:
                                                   finalEmData[i].contact,
                                               index: i,
                                               email: finalEmData[i].emailId),
@@ -746,7 +746,7 @@ class _EmpDashboard extends State<EmpDashboard> {
 
 
   TableRow tableRow(context,
-      {name, image, designation, status, color, index, email}) {
+      {name, image, designation, contact, color, index, email}) {
     return TableRow(children: [
       //Full Name
       InkWell(
@@ -783,7 +783,7 @@ class _EmpDashboard extends State<EmpDashboard> {
         )),
       if (!AppResponsive.isMobile(context))
         Center(child: Text(email??"-", style: tableRowStyle())),
-      Center(child: Text(status??"-", style: tableRowStyle())),
+      Center(child: Text(contact??"-", style: tableRowStyle())),
 
 
         Center(

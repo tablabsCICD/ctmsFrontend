@@ -10,7 +10,7 @@ class UpdateEMP {
   /*int? isActive;
   bool? isAdmin;*/
   String? lastName;
-  String? mobileNumber;
+  String? contact;
   /*String? os;
   String? otp;
   String? password;
@@ -28,7 +28,7 @@ class UpdateEMP {
         //this.isActive,
         //this.isAdmin,
         this.lastName,
-        this.mobileNumber,
+        this.contact,
       //  this.os,
        // this.otp,
        // this.password,
@@ -47,7 +47,7 @@ class UpdateEMP {
    // isActive = json['isActive'];
     //isAdmin = json['is_admin'];
     lastName = json['lastName'];
-    mobileNumber = json['mobileNumber'];
+    contact = json['contact'];
   //  os = json['os'];
    // otp = json['otp'];
     //password = json['password'];
@@ -67,7 +67,7 @@ class UpdateEMP {
     //data['isActive'] = this.isActive;
    // data['is_admin'] = this.isAdmin;
     data['lastName'] = this.lastName;
-    data['mobileNumber'] = this.mobileNumber;
+    data['contact'] = this.contact;
    // data['os'] = this.os;
     //data['otp'] = this.otp;
     //data['password'] = this.password;

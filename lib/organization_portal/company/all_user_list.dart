@@ -718,14 +718,17 @@ class _AllUsersListState extends State<AllUsersList> {
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     print("Add User Url :" + AppConstants.REGISTRATION);
-    var response = await dio.post(
-      AppConstants.REGISTRATION,
-      data: reqPara,
+    var response = await http.post(
+      Uri.parse(AppConstants.REGISTRATION),body:
+      reqPara,
+        headers: {
+          "Content-Type": "application/json",
+        }
     );
-    print('Save User Response is: ${response.data}');
+    print('Save User Response is: ${response.body}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      var resData = jsonDecode(response.data);
+      var resData = jsonDecode(response.body);
       print(resData);
       print(resData['errorCode']);
      if(resData['errorCode'].toString()=="500"){
@@ -740,7 +743,7 @@ class _AllUsersListState extends State<AllUsersList> {
       // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
     } else {
       showCustomToast(
-          context, response.statusMessage.toString(), Icons.clear, Colors.red);
+          context, "Something went wrong", Icons.clear, Colors.red);
       Navigator.of(context).pop();
     }
   }
