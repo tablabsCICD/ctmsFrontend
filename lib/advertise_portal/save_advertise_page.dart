@@ -43,7 +43,6 @@ import 'package:provider/provider.dart';
 
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
-import '../model/lead_model.dart';
 import 'package:http/http.dart'as http;
 
 class SaveAdvertisePage extends StatefulWidget {
@@ -55,6 +54,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
 
   TextEditingController _bannerNameController = TextEditingController();
   TextEditingController _companyNameController = TextEditingController();
+  TextEditingController _mobileNumberController = TextEditingController();
   TextEditingController _hyperLinkController = TextEditingController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
@@ -142,6 +142,9 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Advertise Link', "Enter link",
                                   _hyperLinkController),
                               SizedBox(height: 16.h),
+                              _buildTextField('Contact Number', "Enter mobile Number",
+                                  _mobileNumberController),
+                              SizedBox(height: 16.h),
                               _buildText(
                                   '${uploadedDocument == ""
                                       ? "Click here to upload Image"
@@ -210,7 +213,8 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      companyName: _companyNameController.text,
                                      bannerHyperlink: _hyperLinkController.text,
                                      bannerName: _bannerNameController.text,
-                                     adImage: documentPath
+                                     adImage: documentPath,
+                                    contact: _mobileNumberController.text
                                    );
                                    if(model.isLoading==false) EasyLoading.dismiss();
                                    if(code==200){
@@ -221,6 +225,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      _noOfDaysController.clear();
                                      _bannerNameController.clear();
                                      _companyNameController.clear();
+                                     _mobileNumberController.clear();
                                      documentPath='';
                                      selectedToDate='';
                                      selectedFromDate='';

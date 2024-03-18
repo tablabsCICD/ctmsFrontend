@@ -117,6 +117,7 @@ class AdvProvider extends ChangeNotifier {
         String? bannerName,
         String? bannerHyperlink,
         String? adImage,
+        String? contact,
        }) async {
     isLoading = true;
     notifyListeners();
@@ -144,6 +145,7 @@ class AdvProvider extends ChangeNotifier {
       "startDate": startDate,
       "transactionId": transactionId,
       "userId": 0,//ctmsOrganization!.connectUserId
+      "conatctNumber":contact
     };
     var body = json.encode(data);
     print(data);

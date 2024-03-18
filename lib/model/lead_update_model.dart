@@ -1,5 +1,4 @@
 import 'package:flutter_hr_management/model/employee_model.dart';
-import 'package:flutter_hr_management/model/lead_model.dart';
 
 class LeadUpdates {
   int? id;
