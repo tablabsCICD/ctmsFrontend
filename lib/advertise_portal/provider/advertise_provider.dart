@@ -51,7 +51,7 @@ class AdvProvider extends ChangeNotifier {
       advertiseListByOrgId.clear();
     }
   //  String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-    String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/0';//${int.parse(ctmsOrganization!.connectOrgId.toString())}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/3';//${int.parse(ctmsOrganization!.connectOrgId.toString())}';
     print("My Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -85,7 +85,7 @@ class AdvProvider extends ChangeNotifier {
       advertiseListByUserId.clear();
     }
    // String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-    String myUrl = AppConstants.BASE_URL + 'my-ads/0';//${int.parse(ctmsOrganization!.connectUserId.toString())}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/73';//${int.parse(ctmsOrganization!.connectUserId.toString())}';
     print("Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -141,11 +141,11 @@ class AdvProvider extends ChangeNotifier {
       "companyName": companyName,
       "endDate": endDate,
       "numberOfDays": numberOfDays,
-      "organisationId": 0,//ctmsOrganization!.connectOrgId,
+      "organisationId": 3,//ctmsOrganization!.connectOrgId,
       "startDate": startDate,
       "transactionId": transactionId,
-      "userId": 0,//ctmsOrganization!.connectUserId
-      "conatctNumber":contact
+      "userId": 73,//ctmsOrganization!.connectUserId
+      "conatctNumber":int.parse(contact.toString())
     };
     var body = json.encode(data);
     print(data);

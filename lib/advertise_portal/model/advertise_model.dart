@@ -40,7 +40,7 @@ class AdvertiseData {
   String? bannerHyperlink;
   int? organisationId;
   int? userId;
-  String? conatctNumber;
+  int? conatctNumber;
 
   AdvertiseData(
       {this.id,
@@ -70,7 +70,7 @@ class AdvertiseData {
     bannerHyperlink = json['bannerHyperlink']??'';
     organisationId = json['organisationId'];
     userId = json['userId'];
-    conatctNumber = json['conatctNumber'];
+    conatctNumber = json['conatctNumber']??0;
   }
 
   Map<String, dynamic> toJson() {

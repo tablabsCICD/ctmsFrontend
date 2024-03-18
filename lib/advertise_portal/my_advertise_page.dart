@@ -197,19 +197,21 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
                       advertiseData.bannerName.toString() ?? '',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 20.sp,
+                        fontSize: 16.sp,
                         fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       advertiseData.companyName.toString() ?? '',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -277,6 +279,7 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w300,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     advertiseData.bannerHyperlink.toString()=='' ?SizedBox.shrink():InkWell(

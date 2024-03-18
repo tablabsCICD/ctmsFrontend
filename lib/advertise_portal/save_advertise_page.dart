@@ -197,13 +197,23 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               SizedBox(height: 16.h),
                               InkWell(
                                 onTap: () async {
-                                  if(selectedFromDate==""){
-                                    showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
-                                  }else if(selectedToDate==''){
-                                    showCustomToast(context, "Enter valid end date", Icons.close, Colors.red);
-                                  }else if(_bannerNameController.text==''){
+                                  final bool mobileValid =
+                                  RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                      .hasMatch(_mobileNumberController.text);
+                                  if(_bannerNameController.text==''){
                                     showCustomToast(context, "Enter Title", Icons.close, Colors.red);
-                                  }else {
+                                  } else if(documentPath==""){
+                                    showCustomToast(context, "First upload image", Icons.close, Colors.red);
+                                  }else  if(_mobileNumberController==""){
+                                    showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
+                                  }else if(mobileValid==false){
+                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);
+                                  }else
+                                    if(selectedFromDate==""){
+                                      showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
+                                    }else if(selectedToDate==''){
+                                      showCustomToast(context, "Enter valid end date", Icons.close, Colors.red);
+                                    }else {
                                     EasyLoading.show(status: "Loading");
                                   int code = await model.createAdvertise(
                                      transactionId: _transactionIdController.text,
