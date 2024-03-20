@@ -225,7 +225,7 @@ class _LoginScreen extends State<LoginScreen> {
   List<Onboarding> imageList = [
     Onboarding("assets/images/img1.svg", 'Welcome Back!',
         'Welcome back to the best. We are\nalways here, waiting for you!'),
-    Onboarding("assets/images/img3.svg", 'Safe eliable Logistics Solutions',
+    Onboarding("assets/images/img3.svg", 'Safe Eligible Logistics Solutions',
         'Road transportation has a crucial role.\nCoordinated transportation in the countries\nof origin destination makes all the difference.'),
     Onboarding("assets/images/img2.svg", 'Efficient Cargo Delivery Services',
         'We operate all India, connecting major cities and remote\nlocations alike. No matter where your cargo needs to go,\nwe have the infrastructure to deliver it efficiently.')
