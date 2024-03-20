@@ -225,7 +225,7 @@ class _LoginScreen extends State<LoginScreen> {
   List<Onboarding> imageList = [
     Onboarding("assets/images/img1.svg", 'Welcome Back!',
         'Welcome back to the best. We are\nalways here, waiting for you!'),
-    Onboarding("assets/images/img3.svg", 'Safe eliable Logistics Solutions',
+    Onboarding("assets/images/img3.svg", 'Safe Eligible Logistics Solutions',
         'Road transportation has a crucial role.\nCoordinated transportation in the countries\nof origin destination makes all the difference.'),
     Onboarding("assets/images/img2.svg", 'Efficient Cargo Delivery Services',
         'We operate all India, connecting major cities and remote\nlocations alike. No matter where your cargo needs to go,\nwe have the infrastructure to deliver it efficiently.')
@@ -836,18 +836,21 @@ class _LoginScreen extends State<LoginScreen> {
 
           String token = await LocalSharePreferences()
               .getString(SharedPreferencesConstant.AuthToken);
-          final loginResponse =
-          await dio.get(loginUrl,
-              options: Options(headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Bearer ${token}',
-              }));
-          print(loginResponse.data);
-
+          print("Token : "+token);
+          final loginResponse = await http.get(Uri.parse(loginUrl),headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ${token}',
+          });
+           /* await dio.get(loginUrl,
+                options: Options(headers: {
+                  "Content-Type": "application/json",
+                  'Authorization': 'Bearer ${token}',
+                }));*/
+            print(loginResponse.statusCode);
           EasyLoading.dismiss();
           if (loginResponse.statusCode == 200) {
             LoginDeatils loginDeatils = LoginDeatils.fromJson(
-                jsonDecode(loginResponse.data));
+                jsonDecode(loginResponse.body));
             if (loginDeatils.data != null) {
               String response = jsonEncode(loginDeatils);
               LocalSharePreferences()
@@ -863,10 +866,14 @@ class _LoginScreen extends State<LoginScreen> {
             }
           } else {
             //  ToastMessage.show(context, "Try Again");
+          /*  showCustomToast(
+                context, "Something went wrong! Please Try Again(${loginResponse.statusCode})", Icons.clear,
+                Colors.red);*/
             showCustomToast(
                 context, "Something went wrong! Please Try Again", Icons.clear,
                 Colors.red);
           }
+
         } else {
           // ToastMessage.show(context, "Try Again");
           showCustomToast(
