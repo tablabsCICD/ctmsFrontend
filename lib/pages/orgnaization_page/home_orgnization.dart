@@ -116,19 +116,22 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         empCounts("0", "E-Invoices", Images.invoice,
                             Color(0xFFEAF8F4)),*/
                         SizedBox(width: 38.w,),
-                        InkWell(
-                          onTap: () async {
-                          await  getEmpToken(loginDeatils!.data!.id!);
-                            final url = Uri.parse(ApiConstant.BILTY_URL+
-                                "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
-                            debugPrint("Bilty Url : "+url.toString());
-                            if (!await launchUrl(url,)) {
-                              throw Exception('Could not launch $url');
-                            }
-                          },
-                          child:
-                          empCounts("0", "E-Bilty", Images.bilty, Color(
-                              0xFFFFEDF9)),),
+                        Visibility(
+                          visible: false,
+                          child: InkWell(
+                            onTap: () async {
+                            await  getEmpToken(loginDeatils!.data!.id!);
+                              final url = Uri.parse(ApiConstant.BILTY_URL+
+                                  "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
+                              debugPrint("Bilty Url : "+url.toString());
+                              if (!await launchUrl(url,)) {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
+                            child:
+                            empCounts("0", "E-Bilty", Images.bilty, Color(
+                                0xFFFFEDF9)),),
+                        ),
                         SizedBox(width: 38.w,),
                         Visibility(
                           visible: false,
