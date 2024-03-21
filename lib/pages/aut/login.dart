@@ -836,18 +836,22 @@ class _LoginScreen extends State<LoginScreen> {
 
           String token = await LocalSharePreferences()
               .getString(SharedPreferencesConstant.AuthToken);
-          final loginResponse =
-          await dio.get(loginUrl,
-              options: Options(headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Bearer ${token}',
-              }));
-          print(loginResponse.data);
-
+          print("Token : "+token);
+          final loginResponse = await http.get(Uri.parse(loginUrl),headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ${token}',
+          });
+           /* await dio.get(loginUrl,
+                options: Options(headers: {
+                  "Content-Type": "application/json",
+                  'Authorization': 'Bearer ${token}',
+                }));*/
+            print(loginResponse.statusCode);
           EasyLoading.dismiss();
           if (loginResponse.statusCode == 200) {
             LoginDeatils loginDeatils = LoginDeatils.fromJson(
-                jsonDecode(loginResponse.data));
+                jsonDecode(loginResponse.body));
+            EasyLoading.dismiss();
             if (loginDeatils.data != null) {
               String response = jsonEncode(loginDeatils);
               LocalSharePreferences()
@@ -855,30 +859,32 @@ class _LoginScreen extends State<LoginScreen> {
               LocalSharePreferences()
                   .setBool(SharedPreferencesConstant.LoginKeyBool, true);
 
-              Navigator.pushReplacementNamed(context, AppRoutes.home);
+              Navigator.pushReplacementNamed(context, AppRoutes.advertise_home);
             } else {
               EasyLoading.dismiss();
-              
               //ToastMessage.show(context, loginDeatils.message!);
               showCustomToast(
                   context, loginDeatils.message!, Icons.clear, Colors.red);
             }
           } else {
-            EasyLoading.dismiss();
-
             //  ToastMessage.show(context, "Try Again");
+          /*  showCustomToast(
+                context, "Something went wrong! Please Try Again(${loginResponse.statusCode})", Icons.clear,
+                Colors.red);*/
             showCustomToast(
                 context, "Something went wrong! Please Try Again", Icons.clear,
                 Colors.red);
           }
+
         } else {
-          EasyLoading.dismiss();
           // ToastMessage.show(context, "Try Again");
+          EasyLoading.dismiss();
           showCustomToast(
               context, "Something went wrong! Please Try Again", Icons.clear,
               Colors.red);
         }
       } on Exception catch (_) {
+        EasyLoading.dismiss();
         throw Exception();
       }
     } else {
