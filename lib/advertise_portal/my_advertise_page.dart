@@ -6,6 +6,7 @@ import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/advertise_portal/advertise_side_bar_menu.dart';
 import 'package:flutter_hr_management/advertise_portal/model/advertise_model.dart';
@@ -41,9 +42,9 @@ import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
-import '../model/lead_model.dart';
 import 'package:http/http.dart'as http;
 
 import 'provider/advertise_provider.dart';
@@ -176,7 +177,7 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
 
   advDetailCard(BuildContext context,AdvertiseData advertiseData) {
     return Container(
-      height: 400.h,
+      height: 450.h,
       width: 330.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r), color: Colors.white),
@@ -189,28 +190,32 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      advertiseData.bannerName.toString() ?? '',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w400,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        advertiseData.bannerName.toString() ?? '',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      advertiseData.companyName.toString() ?? '',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w400,
+                      Text(
+                        advertiseData.companyName.toString() ?? '',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.sp,
+                          fontFamily: GoogleFonts.poppins().fontFamily,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 InkWell(
                     onTap: () {
@@ -229,6 +234,25 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
             height: 2.h,
           ),
          getImage_Video(advertiseData.adImage.toString()),
+          SizedBox(
+            height: 5.h,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child: Text(
+              "contact : "+advertiseData.conatctNumber.toString() ?? '-',
+              // "https:www.googlemeetjk75",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 15.sp,
+                fontFamily: GoogleFonts.poppins().fontFamily,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
             child: Column(
@@ -238,7 +262,15 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        Uri _url = Uri.parse(advertiseData.bannerHyperlink.toString());
+                        Uri url = Uri.parse(advertiseData.bannerHyperlink.toString());
+                        if (!await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        )) {
+                          throw Exception('Could not launch $url');
+                        }
                       },
                       child: Text(
                         advertiseData.bannerHyperlink.toString() ?? '',
@@ -249,11 +281,12 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w300,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    InkWell(
+                    advertiseData.bannerHyperlink.toString()=='' ?SizedBox.shrink():InkWell(
                       onTap: () async {
-                        //  await Clipboard.setData(ClipboardData(text:meetingData.meetingLink.toString() ));
+                        await Clipboard.setData(ClipboardData(text:advertiseData.bannerHyperlink.toString() ));
                         // copied successfully
                       },
                       child: Tooltip(

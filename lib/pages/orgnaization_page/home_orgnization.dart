@@ -132,9 +132,9 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                             empCounts("0", "E-Bilty", Images.bilty, Color(
                                 0xFFFFEDF9)),),
                         ),
-                        SizedBox(width: 38.w,),
+                     //   SizedBox(width: 38.w,),
                         Visibility(
-                          visible: false,
+                          visible: true,
                           child: InkWell(onTap: () {
                             advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
                             advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);

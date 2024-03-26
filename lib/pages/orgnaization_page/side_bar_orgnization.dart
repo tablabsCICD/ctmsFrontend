@@ -94,7 +94,7 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               press: () {
 
               },
-            ),*/
+            ),
             DrawerListTile(
               isSelect: isreport,
               title: "E-Bilty",
@@ -105,7 +105,7 @@ class _SideBarOrganization extends State<SideBarOrganization> {
                 throw Exception('Could not launch $url');
                 }
               },
-            ),
+            ),*/
             DrawerListTile(
               isSelect: false,
               title: "Log Out",

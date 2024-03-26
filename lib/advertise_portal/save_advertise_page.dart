@@ -43,7 +43,6 @@ import 'package:provider/provider.dart';
 
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
-import '../model/lead_model.dart';
 import 'package:http/http.dart'as http;
 
 class SaveAdvertisePage extends StatefulWidget {
@@ -55,6 +54,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
 
   TextEditingController _bannerNameController = TextEditingController();
   TextEditingController _companyNameController = TextEditingController();
+  TextEditingController _mobileNumberController = TextEditingController();
   TextEditingController _hyperLinkController = TextEditingController();
   TextEditingController _startDateController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
@@ -136,15 +136,18 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Title', "Enter title",
                                   _bannerNameController),
                               SizedBox(height: 16.h),
-                             /* _buildTextField('Company Name', "Enter company name",
+                              _buildTextField('Company Name', "Enter company name",
                                   _companyNameController),
-                              SizedBox(height: 16.h),*/
+                              SizedBox(height: 16.h),
                               _buildTextField('Advertise Link', "Enter link",
                                   _hyperLinkController),
                               SizedBox(height: 16.h),
+                              _buildTextField('Contact Number', "Enter mobile Number",
+                                  _mobileNumberController),
+                              SizedBox(height: 16.h),
                               _buildText(
                                   '${uploadedDocument == ""
-                                      ? "Click here to upload Image/Video"
+                                      ? "Click here to upload Image"
                                       : uploadedDocument}',
                                   'Advertise Image/Video', () async {
                                 pickFile(setState, false);
@@ -194,23 +197,34 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               SizedBox(height: 16.h),
                               InkWell(
                                 onTap: () async {
-                                  if(selectedFromDate==""){
-                                    showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
-                                  }else if(selectedToDate==''){
-                                    showCustomToast(context, "Enter valid end date", Icons.close, Colors.red);
-                                  }else if(_bannerNameController.text==''){
+                                  final bool mobileValid =
+                                  RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                      .hasMatch(_mobileNumberController.text);
+                                  if(_bannerNameController.text==''){
                                     showCustomToast(context, "Enter Title", Icons.close, Colors.red);
-                                  }else {
+                                  } else if(documentPath==""){
+                                    showCustomToast(context, "First upload image", Icons.close, Colors.red);
+                                  }else  if(_mobileNumberController==""){
+                                    showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
+                                  }else if(mobileValid==false){
+                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);
+                                  }else
+                                    if(selectedFromDate==""){
+                                      showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
+                                    }else if(selectedToDate==''){
+                                      showCustomToast(context, "Enter valid end date", Icons.close, Colors.red);
+                                    }else {
                                     EasyLoading.show(status: "Loading");
                                   int code = await model.createAdvertise(
                                      transactionId: _transactionIdController.text,
                                      startDate: selectedFromDate,
                                      endDate: selectedToDate,
                                      numberOfDays: _noOfDaysController.text,
-                                     companyName: ctmsOrganization!.orgName,
+                                     companyName: _companyNameController.text,
                                      bannerHyperlink: _hyperLinkController.text,
                                      bannerName: _bannerNameController.text,
-                                     adImage: documentPath
+                                     adImage: documentPath,
+                                    contact: _mobileNumberController.text
                                    );
                                    if(model.isLoading==false) EasyLoading.dismiss();
                                    if(code==200){
@@ -221,6 +235,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      _noOfDaysController.clear();
                                      _bannerNameController.clear();
                                      _companyNameController.clear();
+                                     _mobileNumberController.clear();
                                      documentPath='';
                                      selectedToDate='';
                                      selectedFromDate='';

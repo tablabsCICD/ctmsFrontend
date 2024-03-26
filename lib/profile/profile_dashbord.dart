@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/profile/profile_screen.dart';
+import 'package:flutter_hr_management/utils/colors.dart';
 
 import '../common/app_colors.dart';
 import '../common/app_responsive.dart';
@@ -19,7 +20,7 @@ class _ProfileDashbord extends State<ProfileDashbord> {
     return Scaffold(
       key: _key,
       drawer: SideBar(),
-     // backgroundColor: AppColor.bgSideMenu,
+      backgroundColor: ThemeColor.baground,
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

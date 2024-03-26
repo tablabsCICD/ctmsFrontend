@@ -51,7 +51,7 @@ class AdvProvider extends ChangeNotifier {
       advertiseListByOrgId.clear();
     }
   //  String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-    String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/${int.parse(ctmsOrganization!.connectOrgId.toString())}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/organisation/3';//${int.parse(ctmsOrganization!.connectOrgId.toString())}';
     print("My Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -85,7 +85,7 @@ class AdvProvider extends ChangeNotifier {
       advertiseListByUserId.clear();
     }
    // String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-    String myUrl = AppConstants.BASE_URL + 'my-ads/${int.parse(ctmsOrganization!.connectUserId.toString())}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/73';//${int.parse(ctmsOrganization!.connectUserId.toString())}';
     print("Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -117,6 +117,7 @@ class AdvProvider extends ChangeNotifier {
         String? bannerName,
         String? bannerHyperlink,
         String? adImage,
+        String? contact,
        }) async {
     isLoading = true;
     notifyListeners();
@@ -140,10 +141,11 @@ class AdvProvider extends ChangeNotifier {
       "companyName": companyName,
       "endDate": endDate,
       "numberOfDays": numberOfDays,
-      "organisationId": ctmsOrganization!.connectOrgId,
+      "organisationId": 3,//ctmsOrganization!.connectOrgId,
       "startDate": startDate,
       "transactionId": transactionId,
-      "userId": ctmsOrganization!.connectUserId
+      "userId": 73,//ctmsOrganization!.connectUserId
+      "conatctNumber":int.parse(contact.toString())
     };
     var body = json.encode(data);
     print(data);
@@ -168,7 +170,7 @@ class AdvProvider extends ChangeNotifier {
   deleteAdv(AdvertiseData advertiseData) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL + 'api/my-ads/deleteAdvertisement/${advertiseData.id}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/deleteAdvertisement/${advertiseData.id}';
     print(myUrl);
     Dio dio = Dio();
     final response = await dio.delete(

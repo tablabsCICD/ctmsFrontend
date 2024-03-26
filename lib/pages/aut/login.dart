@@ -446,7 +446,7 @@ class _LoginScreen extends State<LoginScreen> {
               style: TextStyle(color: Colors.white),
               children: <InlineSpan>[
                 TextSpan(
-                  text: 'Admin +918379939930',
+                  text: 'Admin (+91) 8123006888 r/ (+91) 8123004666 ',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -859,7 +859,7 @@ class _LoginScreen extends State<LoginScreen> {
               LocalSharePreferences()
                   .setBool(SharedPreferencesConstant.LoginKeyBool, true);
 
-              Navigator.pushReplacementNamed(context, AppRoutes.advertise_home);
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
             } else {
               EasyLoading.dismiss();
               //ToastMessage.show(context, loginDeatils.message!);
@@ -867,6 +867,7 @@ class _LoginScreen extends State<LoginScreen> {
                   context, loginDeatils.message!, Icons.clear, Colors.red);
             }
           } else {
+            EasyLoading.dismiss();
             //  ToastMessage.show(context, "Try Again");
           /*  showCustomToast(
                 context, "Something went wrong! Please Try Again(${loginResponse.statusCode})", Icons.clear,
