@@ -139,8 +139,8 @@ class _CompanyMenuPageState extends State<CompanyMenuPage> {
                                 ));
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                        onPrimary: Colors.white,
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
                         elevation: 3,
                       ),
                       child: Text(

@@ -187,9 +187,9 @@ class _BuySellListState extends State<BuySellList> {
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                    primary:
+                                                    backgroundColor:
                                                         ThemeColor.theme_blue,
-                                                    onPrimary: Colors.white,
+                                                    foregroundColor: Colors.white,
                                                     elevation: 3,
                                                     shape: RoundedRectangleBorder(
                                                         borderRadius:

@@ -164,8 +164,8 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                                   '', selectedFromCity!, selectedToCity!);
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.black,
-                                              onPrimary: Colors.white,
+                                              backgroundColor: Colors.black,
+                                              foregroundColor: Colors.white,
                                               elevation: 3,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.all(

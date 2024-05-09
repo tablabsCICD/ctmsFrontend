@@ -87,8 +87,8 @@ class _CreateMail extends State<CreateMail>{
 
                       },
                       style: ElevatedButton.styleFrom(
-                          primary: ThemeColor.theme_blue,
-                          onPrimary: Colors.white
+                          backgroundColor: ThemeColor.theme_blue,
+                          foregroundColor: Colors.white
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

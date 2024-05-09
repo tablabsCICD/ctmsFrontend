@@ -114,8 +114,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                     _showAlertDialog();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: ThemeColor.theme_blue,
-                                      onPrimary: Colors.white),
+                                       backgroundColor: ThemeColor.theme_blue,
+                                      foregroundColor: Colors.white),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
