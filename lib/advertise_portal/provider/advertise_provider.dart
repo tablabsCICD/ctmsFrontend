@@ -145,7 +145,7 @@ class AdvProvider extends ChangeNotifier {
       "startDate": startDate,
       "transactionId": transactionId,
       "userId": 73,//ctmsOrganization!.connectUserId
-      "conatctNumber":int.parse(contact.toString())
+      "conatctNumber":contact
     };
     var body = json.encode(data);
     print(data);

@@ -198,7 +198,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               InkWell(
                                 onTap: () async {
                                   final bool mobileValid =
-                                  RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                  RegExp(r'^\+?\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{6,10}$')
                                       .hasMatch(_mobileNumberController.text);
                                   if(_bannerNameController.text==''){
                                     showCustomToast(context, "Enter Title", Icons.close, Colors.red);
@@ -206,8 +206,8 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                     showCustomToast(context, "First upload image", Icons.close, Colors.red);
                                   }else  if(_mobileNumberController==""){
                                     showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
-                                  }else if(mobileValid==false){
-                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);
+                                 /* }else if(mobileValid==false){
+                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);*/
                                   }else
                                     if(selectedFromDate==""){
                                       showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
