@@ -113,6 +113,7 @@ class AdvProvider extends ChangeNotifier {
         String? startDate,
         String? numberOfDays,
         String? endDate,
+        String? category,
         String? companyName,
         String? bannerName,
         String? bannerHyperlink,
@@ -138,6 +139,7 @@ class AdvProvider extends ChangeNotifier {
       "adImage": adImage,
       "bannerHyperlink": bannerHyperlink,
       "bannerName": bannerName,
+      "category": category,
       "companyName": companyName,
       "endDate": endDate,
       "numberOfDays": numberOfDays,
@@ -166,6 +168,68 @@ class AdvProvider extends ChangeNotifier {
     notifyListeners();
     return createResponse.statusCode;
   }
+
+
+  editAdvertise(
+      { int? id,
+        String? transactionId,
+        String? startDate,
+        String? numberOfDays,
+        String? endDate,
+        String? category,
+        String? companyName,
+        String? bannerName,
+        String? bannerHyperlink,
+        String? adImage,
+        String? contact,
+      }) async {
+    isLoading = true;
+    notifyListeners();
+    LoginDeatils loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+
+    /* String connectUserId = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.connectUserId);
+    String connectOrgId = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.connectOrganizationId);*/
+
+
+    String myUrl = "http://ec2-13-127-77-140.ap-south-1.compute.amazonaws.com:8080/tkd2/api/my-ads/updateAdvertisement";
+    print("Edit advertise Api : "+myUrl);
+    Uri uri = Uri.parse(myUrl);
+    Map<String, dynamic> data = {
+      "id" : id,
+      "companyName" : companyName,
+      "adImage" : adImage,
+      "numberOfDays" : numberOfDays,
+      "transactionId" : transactionId,
+      "active" : "true",
+      "startDate" : startDate,
+      "endDate" : endDate,
+      "bannerName" : bannerName,
+      "bannerHyperlink" : bannerHyperlink,
+      "organisationId" : 3,
+      "userId" : 73,
+      "conatctNumber" : contact
+    };
+    var body = json.encode(data);
+    print(data);
+    var createResponse = await http.put(uri,
+        headers: {
+          "Content-Type": "application/json",
+        }, body: body);
+    isLoading = false;
+    print("${createResponse.statusCode}" +
+        " --- " +
+        createResponse.body.toString());
+    if(createResponse.statusCode == 200){
+      var jsonData = jsonDecode(createResponse.body);
+      SaveAdvertise advertiseData = SaveAdvertise.fromJson(jsonData);
+    }
+    notifyListeners();
+    return createResponse.statusCode;
+  }
+
 
   deleteAdv(AdvertiseData advertiseData) async {
     String token = await LocalSharePreferences()

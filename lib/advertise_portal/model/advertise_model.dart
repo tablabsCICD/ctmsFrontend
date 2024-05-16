@@ -37,10 +37,11 @@ class AdvertiseData {
   String? startDate;
   String? endDate;
   String? bannerName;
+  String? category;
   String? bannerHyperlink;
   int? organisationId;
   int? userId;
-  int? conatctNumber;
+  String? conatctNumber;
 
   AdvertiseData(
       {this.id,
@@ -52,6 +53,7 @@ class AdvertiseData {
         this.startDate,
         this.endDate,
         this.bannerName,
+        this.category,
         this.bannerHyperlink,
         this.organisationId,
         this.conatctNumber,
@@ -67,6 +69,7 @@ class AdvertiseData {
     startDate = json['startDate']??'';
     endDate = json['endDate']??'';
     bannerName = json['bannerName']??"";
+    category = json['category']??"";
     bannerHyperlink = json['bannerHyperlink']??'';
     organisationId = json['organisationId'];
     userId = json['userId'];
@@ -84,6 +87,7 @@ class AdvertiseData {
     data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;
     data['bannerName'] = this.bannerName;
+    data['category'] = this.category;
     data['bannerHyperlink'] = this.bannerHyperlink;
     data['organisationId'] = this.organisationId;
     data['userId'] = this.userId;

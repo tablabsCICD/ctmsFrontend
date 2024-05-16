@@ -60,6 +60,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
   TextEditingController _endDateController = TextEditingController();
   TextEditingController _transactionIdController = TextEditingController();
   TextEditingController _imgController = TextEditingController();
+  TextEditingController _categoryController = TextEditingController();
   TextEditingController _noOfDaysController = TextEditingController();
   String selectedFromDate='',selectedToDate='',uploadedDocument='';
   final orgProvider = locator<OrgProvider>();
@@ -145,6 +146,9 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Contact Number', "Enter mobile Number",
                                   _mobileNumberController),
                               SizedBox(height: 16.h),
+                              _buildTextField('Category', "Enter advertise category",
+                                  _categoryController),
+                              SizedBox(height: 16.h),
                               _buildText(
                                   '${uploadedDocument == ""
                                       ? "Click here to upload Image"
@@ -219,6 +223,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      transactionId: _transactionIdController.text,
                                      startDate: selectedFromDate,
                                      endDate: selectedToDate,
+                                     category: _categoryController.text,
                                      numberOfDays: _noOfDaysController.text,
                                      companyName: _companyNameController.text,
                                      bannerHyperlink: _hyperLinkController.text,

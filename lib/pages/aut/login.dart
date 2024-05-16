@@ -748,7 +748,7 @@ class _LoginScreen extends State<LoginScreen> {
                   Textview(
                       TextStyle(
                         color: Colors.black54,
-                        fontSize: 12.sp,
+                        fontSize: 11.sp,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
