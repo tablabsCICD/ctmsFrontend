@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/advertise_portal/advertise_home_page.dart';
+import 'package:flutter_hr_management/advertise_portal/edit_adv.dart';
 import 'package:flutter_hr_management/advertise_portal/my_advertise_page.dart';
 import 'package:flutter_hr_management/advertise_portal/save_advertise_page.dart';
 import 'package:flutter_hr_management/entry_screen.dart';
@@ -45,6 +46,7 @@ class RouteGenerator {
 
       case AppRoutes.save_advertise:
         return buildRoute(SaveAdvertisePage(), settings: settings);
+
 
       case AppRoutes.org:
         return buildRoute(Login_Screen(), settings: settings);

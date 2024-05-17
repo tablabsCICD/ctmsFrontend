@@ -1,6 +1,6 @@
 import 'package:flutter_hr_management/model/customer_model.dart';
 import 'package:flutter_hr_management/model/employee_model.dart';
-import '../lead_model.dart';
+import 'package:flutter_hr_management/model/lead_model.dart';
 import 'employeelist.dart';
 
 class CustomerListResponse {

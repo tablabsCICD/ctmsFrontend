@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/advertise_portal/advertise_side_bar_menu.dart';
+import 'package:flutter_hr_management/advertise_portal/edit_adv.dart';
 import 'package:flutter_hr_management/advertise_portal/model/advertise_model.dart';
 import 'package:flutter_hr_management/advertise_portal/video_player_exp.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
@@ -217,12 +218,21 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
                     ],
                   ),
                 ),
-                InkWell(
-                    onTap: () {
-                      print("OnTap");
-                      showAlertDialog(context,advertiseData);
-                    },
-                    child: Icon(Icons.delete, color: Colors.red)),
+                Row(
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          showEditDialog(context,advertiseData);
+                        },
+                        child: Icon(Icons.edit_outlined, color: Colors.orange)),
+                    InkWell(
+                        onTap: () {
+                          print("OnTap");
+                          showAlertDialog(context,advertiseData);
+                        },
+                        child: Icon(Icons.delete, color: Colors.red)),
+                  ],
+                ),
               ],
             ),
           ),
@@ -236,6 +246,28 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
          getImage_Video(advertiseData.adImage.toString()),
           SizedBox(
             height: 5.h,
+          ),
+          Visibility(
+            visible: false,
+            child: SizedBox(
+              height: 5.h,
+            ),
+          ),
+          Visibility(
+            visible: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: Text(
+                "category : "+advertiseData.category.toString() ?? '-',
+                // "https:www.googlemeetjk75",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -342,6 +374,30 @@ class _MyAdvertisePageState extends State<MyAdvertisePage> {
       },
     );
   }
+
+  showEditDialog(BuildContext context, AdvertiseData advData) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Dialog(
+          alignment: Alignment.center,
+          backgroundColor: Colors.transparent,
+          insetAnimationDuration: Duration(milliseconds: 200),
+          insetAnimationCurve: Curves.easeOutExpo,
+          // <-- SEE HERE
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Container(
+                  width: 550,
+                    color: Colors.white,
+                    child: EditAdvertisePage(advData));
+              }),
+        );
+      },
+    );
+  }
+
 }
 
 Widget getImage_Video(String url) {

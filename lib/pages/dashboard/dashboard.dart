@@ -30,8 +30,6 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:universal_html/html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widget/calender_widget.dart';

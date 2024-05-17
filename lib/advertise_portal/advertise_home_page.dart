@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/advertise_portal/advertise_side_bar_menu.dart';
 import 'package:flutter_hr_management/advertise_portal/model/advertise_model.dart';
@@ -177,7 +178,7 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
 
   advDetailCard(AdvertiseData advertiseData) {
     return Container(
-      height: 450.h,
+      height: 465.h,
       width: 330.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r), color: Colors.white),
@@ -221,6 +222,28 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
             height: 2.h,
           ),
           getImage_Video(advertiseData.adImage.toString()),
+          Visibility(
+            visible: false,
+            child: SizedBox(
+              height: 5.h,
+            ),
+          ),
+          Visibility(
+            visible: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: Text(
+                "category : "+advertiseData.category.toString() ?? '-',
+                // "https:www.googlemeetjk75",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: 5.h,
           ),

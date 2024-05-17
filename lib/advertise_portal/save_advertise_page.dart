@@ -60,6 +60,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
   TextEditingController _endDateController = TextEditingController();
   TextEditingController _transactionIdController = TextEditingController();
   TextEditingController _imgController = TextEditingController();
+  TextEditingController _categoryController = TextEditingController();
   TextEditingController _noOfDaysController = TextEditingController();
   String selectedFromDate='',selectedToDate='',uploadedDocument='';
   final orgProvider = locator<OrgProvider>();
@@ -145,6 +146,9 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Contact Number', "Enter mobile Number",
                                   _mobileNumberController),
                               SizedBox(height: 16.h),
+                              _buildTextField('Category', "Enter advertise category",
+                                  _categoryController),
+                              SizedBox(height: 16.h),
                               _buildText(
                                   '${uploadedDocument == ""
                                       ? "Click here to upload Image"
@@ -198,7 +202,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               InkWell(
                                 onTap: () async {
                                   final bool mobileValid =
-                                  RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)')
+                                  RegExp(r'^\+?\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{6,10}$')
                                       .hasMatch(_mobileNumberController.text);
                                   if(_bannerNameController.text==''){
                                     showCustomToast(context, "Enter Title", Icons.close, Colors.red);
@@ -206,8 +210,8 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                     showCustomToast(context, "First upload image", Icons.close, Colors.red);
                                   }else  if(_mobileNumberController==""){
                                     showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
-                                  }else if(mobileValid==false){
-                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);
+                                 /* }else if(mobileValid==false){
+                                    showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);*/
                                   }else
                                     if(selectedFromDate==""){
                                       showCustomToast(context, "Enter valid start date", Icons.close, Colors.red);
@@ -219,6 +223,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      transactionId: _transactionIdController.text,
                                      startDate: selectedFromDate,
                                      endDate: selectedToDate,
+                                     category: _categoryController.text,
                                      numberOfDays: _noOfDaysController.text,
                                      companyName: _companyNameController.text,
                                      bannerHyperlink: _hyperLinkController.text,
