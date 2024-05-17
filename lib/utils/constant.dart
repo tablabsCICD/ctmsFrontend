@@ -2,9 +2,9 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 class ApiConstant {
 
-  //static String BASE_URL = 'http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
+  static String BASE_URL = 'http://ec2-13-127-77-140.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
  // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
-  static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
+ // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
  // static String BILTY_URL = 'http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty';
   static String BILTY_URL = "http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty";
   static String HRMS_URL = 'http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm';

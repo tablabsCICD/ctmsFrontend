@@ -435,9 +435,10 @@ class  AuthProvider extends ChangeNotifier{
     print("${createResponse.statusCode}" + " --- " + createResponse.body.toString());
     print(createResponse.body);
     var response = await json.decode(createResponse.body);
-    var list = AuthApi.fromJson(response);
-    userDetailList = list.content!;
+    AuthApi authApi = AuthApi.fromJson(response);
+    userDetailList = authApi.content!;
     notifyListeners();
+    return authApi;
   }
 
   deleteUser(User user) async {

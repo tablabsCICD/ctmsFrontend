@@ -1047,19 +1047,19 @@
     },
     {
       "name": "video_player",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player-2.8.3",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player-2.8.6",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.2"
     },
     {
       "name": "video_player_android",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player_android-2.4.12",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player_android-2.4.14",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "video_player_avfoundation",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player_avfoundation-2.5.6",
+      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/video_player_avfoundation-2.6.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -1166,7 +1166,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-03-21T06:02:29.769309Z",
+  "generated": "2024-05-16T12:16:25.962873Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }

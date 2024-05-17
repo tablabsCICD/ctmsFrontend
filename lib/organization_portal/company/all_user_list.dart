@@ -289,47 +289,46 @@ class _AllUsersListState extends State<AllUsersList> {
                                                       ),
                                                     ),
                                                     onPressed: () async {
-                                                        await authProvider.updateUser(
-                                                          aadharCard: model.userList[index].aadharCard,
-                                                          alternativeNumber: model.userList[index].alternativeNumber,
-                                                          city: model.userList[index].city,
-                                                          companyId: model.userList[index].companyId,
-                                                          companyAddress: model.userList[index].companyAddress,
-                                                          companyLogo: model.userList[index].companyLogo,
-                                                          companyName: model.userList[index].companyName,
-                                                          country: model.userList[index].country,
-                                                          deviceId: model.userList[index].deviceId,
-                                                          emailId: model.userList[index].emailId,
-                                                          firstName: model.userList[index].firstName,
-                                                          id: model.userList[index].id,
-                                                          idOfMainBranch: model.userList[index].idOfMainBranch,
-                                                          isPaid: model.userList[index].isPaid,
-                                                          isUserVerifiedByCompany: 1,
-                                                          landlineNumber: model.userList[index].landlineNumber,
-                                                          lastName: model.userList[index].lastName,
-                                                          loggedTime: model.userList[index].loggedTime.toString(),
-                                                          loggedUserName: model.userList[index].loggedUserName,
-                                                          mainBranch: model.userList[index].mainBranch,
-                                                          mobileNumber: model.userList[index].mobileNumber,
-                                                          numberOfTimesRating: model.userList[index].numberOfTimesRating,
-                                                          os: model.userList[index].os,
-                                                          otp: model.userList[index].otp,
-                                                          paidStartDate: model.userList[index].paidStartDate,
-                                                          password: model.userList[index].password,
-                                                          preferredRouresEntered: model.userList[index].preferredRouresEntered,
-                                                          profilePicture: model.userList[index].profilePicture,
-                                                          rating: model.userList[index].ratings,
-                                                          state: model.userList[index].state,
-                                                          transporterOrAgent: model.userList[index].transporterOrAgent,
-                                                          userName: model.userList[index].userName,
-                                                          validTill: model.userList[index].validTill,
-                                                          website: model.userList[index].website,
-                                                          verified: model.userList[index].verified,
-                                                        );
-                                                        model.selectedTab="All Users";
-                                                        selectedTab = "All Users";
-                                                        model.getUsersByCompanyId(widget.organization.id!);
-                                                        setState(() {});
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return AlertDialog(
+                                                            title: Text('User Verification',style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 16.sp,
+                                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),),
+                                                            content: Text('Are you sure you want to approve this user?',style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 12.sp,
+                                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop(); // Close the dialog
+                                                                },
+                                                                child: Text('No',style: TextStyle(color: ThemeColor.theme_blue, fontSize: 12.sp,
+                                                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                                                  fontWeight: FontWeight.w600,),),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  userApproval(model,index,true);
+                                                                },
+                                                                child: Text(
+                                                                  'Yes',
+                                                                  style: TextStyle(color: Colors.green, fontSize: 12.sp,
+                                                                    fontFamily: GoogleFonts.poppins().fontFamily,
+                                                                    fontWeight: FontWeight.w600,),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );                                                      
                                                     },
                                                     child: Text('Approve',
                                                         style:TextStyle(
@@ -366,47 +365,46 @@ class _AllUsersListState extends State<AllUsersList> {
                                                       ),
                                                     ),
                                                     onPressed: () async {
-                                                      await authProvider.updateUser(
-                                                        aadharCard: model.userList[index].aadharCard,
-                                                        alternativeNumber: model.userList[index].alternativeNumber,
-                                                        city: model.userList[index].city,
-                                                        companyId: model.userList[index].companyId,
-                                                        companyAddress: model.userList[index].companyAddress,
-                                                        companyLogo: model.userList[index].companyLogo,
-                                                        companyName: model.userList[index].companyName,
-                                                        country: model.userList[index].country,
-                                                        deviceId: model.userList[index].deviceId,
-                                                        emailId: model.userList[index].emailId,
-                                                        firstName: model.userList[index].firstName,
-                                                        id: model.userList[index].id,
-                                                        idOfMainBranch: model.userList[index].idOfMainBranch,
-                                                        isPaid: model.userList[index].isPaid,
-                                                        isUserVerifiedByCompany: 0,
-                                                        landlineNumber: model.userList[index].landlineNumber,
-                                                        lastName: model.userList[index].lastName,
-                                                        loggedTime: model.userList[index].loggedTime.toString(),
-                                                        loggedUserName: model.userList[index].loggedUserName,
-                                                        mainBranch: model.userList[index].mainBranch,
-                                                        mobileNumber: model.userList[index].mobileNumber,
-                                                        numberOfTimesRating: model.userList[index].numberOfTimesRating,
-                                                        os: model.userList[index].os,
-                                                        otp: model.userList[index].otp,
-                                                        paidStartDate: model.userList[index].paidStartDate,
-                                                        password: model.userList[index].password,
-                                                        preferredRouresEntered: model.userList[index].preferredRouresEntered,
-                                                        profilePicture: model.userList[index].profilePicture,
-                                                        rating: model.userList[index].ratings,
-                                                        state: model.userList[index].state,
-                                                        transporterOrAgent: model.userList[index].transporterOrAgent,
-                                                        userName: model.userList[index].userName,
-                                                        validTill: model.userList[index].validTill,
-                                                        website: model.userList[index].website,
-                                                        verified: model.userList[index].verified,
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return AlertDialog(
+                                                            title: Text('User Verification',style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 16.sp,
+                                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),),
+                                                            content: Text('Are you sure you want to reject this user?',style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize: 12.sp,
+                                                              fontFamily: GoogleFonts.poppins().fontFamily,
+                                                              fontWeight: FontWeight.w400,
+                                                            ),),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop(); // Close the dialog
+                                                                },
+                                                                child: Text('No',style: TextStyle(color: ThemeColor.theme_blue, fontSize: 12.sp,
+                                                                  fontFamily: GoogleFonts.poppins().fontFamily,
+                                                                  fontWeight: FontWeight.w600,),),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  userApproval(model,index,false);
+                                                                },
+                                                                child: Text(
+                                                                  'Yes',
+                                                                  style: TextStyle(color: Colors.green, fontSize: 12.sp,
+                                                                    fontFamily: GoogleFonts.poppins().fontFamily,
+                                                                    fontWeight: FontWeight.w600,),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
-                                                      model.selectedTab="All Users";
-                                                      selectedTab = "All Users";
-                                                      model.getUsersByCompanyId(widget.organization.id!);
-                                                      setState((){});
                                                     },
                                                     child: Text('Reject',
                                                       style:TextStyle(
@@ -635,7 +633,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                 Text("You want to add employee?"),
                                 actions: [
                                   TextButton(
-                                    child: Text("Add"),
+                                    child: Text("Add",style: TextStyle(color: Colors.green),),
                                     onPressed: () async {
                                       //  await orgProvider.getBranchById(element.);
                                       addToTKDConnect(element, stateSetter);
@@ -643,7 +641,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                     }
                                   ),
                                   TextButton(
-                                    child: Text("Cancel"),
+                                    child: Text("Cancel",style: TextStyle(color: Colors.red),),
                                     onPressed: () {
                                       /*showCustomToast(
                                           context, "", Icons.clear, Colors.red);*/
@@ -816,5 +814,63 @@ class _AllUsersListState extends State<AllUsersList> {
 
       ),
     );
+  }
+
+  Future<void> userApproval(OrgProvider model, int index, bool isApprove) async {
+   AuthApi authApi =  await authProvider.updateUser(
+      aadharCard: model.userList[index].aadharCard,
+      alternativeNumber: model.userList[index].alternativeNumber,
+      city: model.userList[index].city,
+      companyId: model.userList[index].companyId,
+      companyAddress: model.userList[index].companyAddress,
+      companyLogo: model.userList[index].companyLogo,
+      companyName: model.userList[index].companyName,
+      country: model.userList[index].country,
+      deviceId: model.userList[index].deviceId,
+      emailId: model.userList[index].emailId,
+      firstName: model.userList[index].firstName,
+      id: model.userList[index].id,
+      idOfMainBranch: model.userList[index].idOfMainBranch,
+      isPaid: model.userList[index].isPaid,
+      isUserVerifiedByCompany: isApprove?1:0,
+      landlineNumber: model.userList[index].landlineNumber,
+      lastName: model.userList[index].lastName,
+      loggedTime: model.userList[index].loggedTime.toString(),
+      loggedUserName: model.userList[index].loggedUserName,
+      mainBranch: model.userList[index].mainBranch,
+      mobileNumber: model.userList[index].mobileNumber,
+      numberOfTimesRating: model.userList[index].numberOfTimesRating,
+      os: model.userList[index].os,
+      otp: model.userList[index].otp,
+      paidStartDate: model.userList[index].paidStartDate,
+      password: model.userList[index].password,
+      preferredRouresEntered: model.userList[index].preferredRouresEntered,
+      profilePicture: model.userList[index].profilePicture,
+      rating: model.userList[index].ratings,
+      state: model.userList[index].state,
+      transporterOrAgent: model.userList[index].transporterOrAgent,
+      userName: model.userList[index].userName,
+      validTill: model.userList[index].validTill,
+      website: model.userList[index].website,
+      verified: model.userList[index].verified,
+    );
+    if(authApi.content!.isNotEmpty) {
+      model.selectedTab =
+      "All Users";
+      selectedTab =
+      "All Users";
+      model
+          .getUsersByCompanyId(
+          widget.organization
+              .id!);
+      isApprove?showCustomToast(
+          context, "User Approved Successfully", Icons.check, Colors.green):showCustomToast(
+          context, "User Rejected Successfully", Icons.check, Colors.green);
+      setState(() {});
+    }else{
+      isApprove?showCustomToast(
+          context, "User Approval not done, something went wrong!!", Icons.clear, Colors.red):showCustomToast(
+          context, "something went wrong!!", Icons.clear, Colors.red);
+    }
   }
 }
