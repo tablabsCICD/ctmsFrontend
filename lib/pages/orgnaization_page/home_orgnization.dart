@@ -78,6 +78,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         SizedBox(width: 38.w,),
                         InkWell(onTap: () async {
                          Organization organization = await orgProvider.getOrgDetails();
+                         print("Connect Organization : ${organization.id},${organization.companyName}");
                           Navigator.push(
                               context,
                               MaterialPageRoute(

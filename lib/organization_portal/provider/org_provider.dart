@@ -279,7 +279,7 @@ class OrgProvider extends ChangeNotifier {
       orgAllFullLoadList.forEach((element) {
         if (element.source!.toLowerCase().contains(query.toLowerCase()) ||
             element.destination!.toLowerCase().contains(query.toLowerCase()) ||
-            element.contactNumber!.toString().contains(query)) {
+            element.mobileNumber!.toString().contains(query)) {
           orgFullLoadList.add(element);
         }
       });
@@ -425,8 +425,14 @@ class OrgProvider extends ChangeNotifier {
       OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
 
       receivedBigingList.addAll(orgQuoteModel.content!);
-      orgBigingList.addAll(receivedBigingList);
-      bidCont = receivedBigingList.length;
+      receivedBigingList.forEach((element) {
+        if(element.bidingList!.length == 0 || element.bidingList==[]){
+
+        }else{
+          orgBigingList.addAll(receivedBigingList);
+          bidCont = receivedBigingList.length;
+        }
+      });
       notifyListeners();
     }
   }
@@ -487,13 +493,13 @@ class OrgProvider extends ChangeNotifier {
       finalBuySellList.clear();
      buySellPostCount = orgBuySellList.length;
      orgBuySellList.forEach((element) {
-        if (element.type == "Buy a Vehicle") {
+        if (element.type == "Buy") {
           orgBuyList.add(element);
         } else {
           orgSellList.add(element);
         }
       });
-      if(selectedBuySellTab=="Buy a Vehicle"){
+      if(selectedBuySellTab=="Buy"){
         finalBuySellList.addAll(orgBuyList);
       }else{
         finalBuySellList.addAll(orgSellList);
@@ -518,7 +524,8 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     //String myUrl = "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
-     String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}";
+    // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}";
+    String myUrl = AppConstants.BASE_URL + "getFullLoadByCompanyIdForMonitoring?companyId=${id}";
     print("Get All Load Truck Data - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);

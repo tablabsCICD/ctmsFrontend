@@ -17,7 +17,7 @@ class TextView extends StatelessWidget{
       color: color,
       fontWeight: fontWeight,
       fontFamily: GoogleFonts.poppins().fontFamily
-    ),);
+    ),overflow: TextOverflow.ellipsis,);
   }
 
 

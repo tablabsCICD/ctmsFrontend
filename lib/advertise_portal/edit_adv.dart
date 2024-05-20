@@ -82,11 +82,14 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
       _bannerNameController.text = widget.advData.bannerName!;
       _companyNameController.text = widget.advData.companyName!;
       _categoryController.text = widget.advData.category!;
-      _mobileNumberController.text = widget.advData.companyName!;
+      _mobileNumberController.text = widget.advData.conatctNumber!;
       _noOfDaysController.text =  widget.advData.numberOfDays!.toString();
       _hyperLinkController.text = widget.advData.bannerHyperlink!;
       _transactionIdController.text = widget.advData.transactionId!;
+      selectedFromDate = widget.advData.startDate!;
+      selectedToDate = widget.advData.endDate!;
       uploadedDocument = widget.advData.adImage!;
+      documentPath = widget.advData.adImage!;
   }
 
   LoginDeatils? loginDeatils;
@@ -220,8 +223,8 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
                       int code = await model.editAdvertise(
                           id: widget.advData.id,
                           transactionId: _transactionIdController.text,
-                          startDate: selectedFromDate,
-                          endDate: selectedToDate,
+                          startDate: trimDateTime(selectedFromDate),
+                          endDate: trimDateTime(selectedToDate),
                           category: _categoryController.text,
                           numberOfDays: _noOfDaysController.text,
                           companyName: _companyNameController.text,
@@ -232,7 +235,7 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
                       );
                       if(model.isLoading==false) EasyLoading.dismiss();
                       if(code==200){
-                        showCustomToast(context, "Advertisement updated successfully", Icons.clear, Colors.red);
+                        showCustomToast(context, "Advertisement updated successfully", Icons.check, Colors.green);
                        // Navigator.of(context).pop();
                         Navigator.pushReplacementNamed(context, AppRoutes.advertise_home);
                       }else{
@@ -391,7 +394,7 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
                 .size
                 .width,
             margin: EdgeInsets.symmetric(horizontal: 10),
-            height: 52.h,
+            height: label1=="Advertise Image/Video"?100.h:52.h,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(5.r),
@@ -463,6 +466,11 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
         ),
       ],
     );
+  }
+
+  String trimDateTime(String dateTime) {
+    DateTime parsedDate = DateTime.parse(dateTime);
+    return DateFormat('yyyy-MM-dd').format(parsedDate);
   }
 
 

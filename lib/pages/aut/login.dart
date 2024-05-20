@@ -748,7 +748,7 @@ class _LoginScreen extends State<LoginScreen> {
                   Textview(
                       TextStyle(
                         color: Colors.black54,
-                        fontSize: 12.sp,
+                        fontSize: 11.sp,
                         fontFamily: GoogleFonts.poppins().fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
@@ -807,7 +807,6 @@ class _LoginScreen extends State<LoginScreen> {
       String myUrl = ApiConstant.BASE_URL +
           "api/Login/emailId/jwt?emailId=${email}&password=${password}";
       debugPrint("Login Url:" + myUrl);
-
       EasyLoading.show(status: "Loading");
       Dio dio = Dio();
       try {
@@ -886,6 +885,9 @@ class _LoginScreen extends State<LoginScreen> {
         }
       } on Exception catch (_) {
         EasyLoading.dismiss();
+        showCustomToast(
+            context, "Something went wrong! Please Try Again and check your internet connection...", Icons.clear,
+            Colors.red);
         throw Exception();
       }
     } else {

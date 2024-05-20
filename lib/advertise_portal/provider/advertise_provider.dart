@@ -60,7 +60,7 @@ class AdvProvider extends ChangeNotifier {
           "Content-Type": "application/json",
         //  'Authorization': 'Bearer ${token}',
         }));
-    print(response.data);
+  //  print(response.data);
     isLoading = false;
     var type = Advertise_Model.fromJson(jsonDecode(response.data));
     advertiseListByOrgId.clear();
@@ -94,7 +94,7 @@ class AdvProvider extends ChangeNotifier {
           "Content-Type": "application/json",
          // 'Authorization': 'Bearer ${token}',
         }));
-    print(response.data);
+//    print(response.data);
     isLoading = false;
     var type = Advertise_Model.fromJson(jsonDecode(response.data));
     advertiseListByUserId.clear();
@@ -170,6 +170,7 @@ class AdvProvider extends ChangeNotifier {
   }
 
 
+
   editAdvertise(
       { int? id,
         String? transactionId,
@@ -183,27 +184,19 @@ class AdvProvider extends ChangeNotifier {
         String? adImage,
         String? contact,
       }) async {
-    isLoading = true;
-    notifyListeners();
-    LoginDeatils loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
 
-    /* String connectUserId = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.connectUserId);
-    String connectOrgId = await LocalSharePreferences()
-        .getString(SharedPreferencesConstant.connectOrganizationId);*/
+    final url = AppConstants.BASE_URL+"my-ads/updateAdvertisement";
+    print("New Edit advertise Api : "+url);
 
-
-    String myUrl = "http://ec2-13-127-77-140.ap-south-1.compute.amazonaws.com:8080/tkd2/api/my-ads/updateAdvertisement";
-    print("Edit advertise Api : "+myUrl);
-    Uri uri = Uri.parse(myUrl);
-    Map<String, dynamic> data = {
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
       "id" : id,
       "companyName" : companyName,
+      "amount": 0,
       "adImage" : adImage,
       "numberOfDays" : numberOfDays,
       "transactionId" : transactionId,
-      "active" : "true",
+      "active" : true,
       "startDate" : startDate,
       "endDate" : endDate,
       "bannerName" : bannerName,
@@ -211,23 +204,24 @@ class AdvProvider extends ChangeNotifier {
       "organisationId" : 3,
       "userId" : 73,
       "conatctNumber" : contact
-    };
-    var body = json.encode(data);
-    print(data);
-    var createResponse = await http.put(uri,
-        headers: {
-          "Content-Type": "application/json",
-        }, body: body);
-    isLoading = false;
-    print("${createResponse.statusCode}" +
-        " --- " +
-        createResponse.body.toString());
-    if(createResponse.statusCode == 200){
-      var jsonData = jsonDecode(createResponse.body);
-      SaveAdvertise advertiseData = SaveAdvertise.fromJson(jsonData);
+    });
+    print("Requset body:"+body);
+    try {
+      final response = await http.put(Uri.parse(url), headers: headers, body: body);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+      } else {
+        print('Server error: ${response.statusCode}');
+      }
+      notifyListeners();
+      return response.statusCode;
+    } catch (e) {
+      print('Request failed with error: $e');
+      notifyListeners();
+      return 500;
     }
-    notifyListeners();
-    return createResponse.statusCode;
+
   }
 
 

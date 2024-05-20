@@ -302,10 +302,10 @@ class _LoadListState extends State<LoadList> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 174.w,
+                        width: 180.w,
                         child: Column(
                           children: [
-                            Image.asset('assets/org/container.png',height: 162.h,width: 174.w,),
+                            Image.asset('assets/org/container.png',height: 150.h,width: 174.w,),
                             Padding(
                               padding: EdgeInsets.only(left: 5),
                               child: TextView(
@@ -434,7 +434,7 @@ class _LoadListState extends State<LoadList> {
                                 SizedBox(width: 10.w,),
                                 Expanded(
                                   child: Text(
-                                     "${model.orgFullLoadList[index].transporterOrCustomerName}",
+                                     "${model.orgFullLoadList[index].nameOfPerson}",
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize:14.sp,
@@ -451,11 +451,14 @@ class _LoadListState extends State<LoadList> {
                                 SizedBox(width: 15.w,),
                                 SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
                                 SizedBox(width: 20.w,),
-                                TextView(
-                                  title: "${model.orgFullLoadList[index].transporterType}",
-                                  fontSize:15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xff000000),
+                                SizedBox(
+                                  width: 100.w,
+                                  child: Text(
+                                     "${model.orgFullLoadList[index].companyName}",
+                                    style:TextStyle(fontSize:15.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff000000),),overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                             ),
@@ -471,13 +474,13 @@ class _LoadListState extends State<LoadList> {
                               title: Column(
                                 children: [
                                   Text(
-                                      'Contact Number : ${model.orgFullLoadList[index].contactNumber}',
+                                      'Contact Number : ${model.orgFullLoadList[index].mobileNumber}',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),
                                   Text(
-                                      'Email_Id : ${model.orgFullLoadList[index].emailId}',
+                                      'Email_Id : ${model.orgFullLoadList[index].mobileNumber}',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 14,
