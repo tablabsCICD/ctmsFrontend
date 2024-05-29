@@ -799,6 +799,7 @@ class _LoginScreen extends State<LoginScreen> {
     return isSignIn ? getLoginWidget() : getSignUpWidget();
   }
 
+
   void _submitForm() async {
     String email = _emailController.text;
     String password = _passwordController.text;

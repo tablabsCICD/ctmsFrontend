@@ -6,7 +6,9 @@ import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/branch_response_model.dart';
 import 'package:flutter_hr_management/model/response/employeelist.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
+import 'package:flutter_hr_management/organization_portal/model/tkd_emp_list_response.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:http/http.dart' as http;
@@ -524,20 +526,23 @@ class _AllUsersListState extends State<AllUsersList> {
 
   List<String> foundEmp = [];
   List<String> uniqueFoundEmp = [];
-  List<EmployeeData> EmployeeList = [];
+  List<User> EmployeeList = [];
   List<String> EmpList = [];
   List<User> allUserList = [];
   bool isLoad=false;
 
-  EmployeeListResponse? employeeListResponse;
+  TKDEmployeeListResponse? employeeListResponse;
   getEmployeeName() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     isLoad = true;
     setState(() {});
     Dio dio = Dio();
+  //  String myUrl = ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${0}&size=100000";
+    String myUrl = AppConstants.BASE_URL + "companyRegistration/ByName8?firstName=a&page=0&size=1000";
+    print("Get All Emp : "+ myUrl);
     final response = await dio.get(
-        ApiConstant.GET_ALL_EMPLOYEE + "?organisationId=${loginDeatils!.data!.organisationId}&page=${0}&size=1000",
+        myUrl,
         options: Options(
             headers: {
           "Content-Type": "application/json",
@@ -562,17 +567,19 @@ class _AllUsersListState extends State<AllUsersList> {
 
     if (response.statusCode == 200) {
       employeeListResponse =
-          EmployeeListResponse.fromJson(jsonDecode(response.data));
-      EmployeeList.addAll(employeeListResponse!.data!.content!);
-      employeeListResponse!.data!.content!.forEach((element) {
+          TKDEmployeeListResponse.fromJson(jsonDecode(response.data));
+      EmployeeList.addAll(employeeListResponse!.data!);
+      employeeListResponse!.data!.forEach((element) {
         EmpList.add(
             element.firstName.toString() + " " + element.lastName.toString());
       });
       foundEmp = EmpList.toSet().toList();
+      setState(() {
+
+      });
     }
     isLoad=false;
     setState(() {
-
     });
   }
 
@@ -589,6 +596,9 @@ class _AllUsersListState extends State<AllUsersList> {
     }
     stateSetter(() {
       foundEmp = results.toSet().toList();
+    });
+    stateSetter(() {
+
     });
   }
 
@@ -636,7 +646,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                     child: Text("Add",style: TextStyle(color: Colors.green),),
                                     onPressed: () async {
                                       //  await orgProvider.getBranchById(element.);
-                                      addToTKDConnect(element, stateSetter);
+                                    //  addToTKDConnect(element, stateSetter);
+                                      addToCTMS(element, stateSetter);
                                       Navigator.of(context).pop();
                                     }
                                   ),
@@ -670,13 +681,14 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  Future<void> addToTKDConnect(EmployeeData selectedEmp, StateSetter stateSetter) async {
+  Future<void> addToTKDConnect(User selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
-      "aadharCard": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.aadharCard,
-      "aadharCardForVerification": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.aadharCard,
+      "id": selectedEmp.id,
+      "aadharCard": selectedEmp.aadharCard==null?'NA':selectedEmp.aadharCard,
+      "aadharCardForVerification": selectedEmp.aadharCard==null?'NA':selectedEmp.aadharCard,
       "alternativeNumber": selectedEmp.mobileNumber,
-      "branchName": selectedEmp.branch!.branchName,
-      "city": selectedEmp.address,
+      "branchName": selectedEmp.branchName,
+      "city": selectedEmp.city,
       "companyAddress": widget.organization.companyAddress,
       "companyId": widget.organization.id,
       "companyLogo": widget.organization.companyLogo,
@@ -688,20 +700,20 @@ class _AllUsersListState extends State<AllUsersList> {
       "idOfMainBranch": 0,
       "isPaid": 0,
       "isUserVerifiedByCompany": 0,
-      "landlineNumber": selectedEmp.contact,
+      "landlineNumber": selectedEmp.mobileNumber,
       "lastName": selectedEmp.lastName,
       "loggedTime": GetDateFormat.getCurrentDate(),
       "loggedUserName": "NA",
       "mainBranch": 0,
-      "mobileNumber": selectedEmp.contact,
+      "mobileNumber": selectedEmp.mobileNumber,
       "numberOfTimesRating": 0,
       "os": "string",
       "otp": "string",
       "paidStartDate": "string",
-      "panCardForVerification": selectedEmp.boardingDeatails==null?'NA':selectedEmp.boardingDeatails!.panCard,
+      "panCardForVerification": selectedEmp.panCardForVerification==null?'NA':selectedEmp.panCardForVerification,
       "password": selectedEmp.password,
       "preferredRouresEntered": 0,
-      "profilePicture": selectedEmp.image,
+      "profilePicture": selectedEmp.profilePicture,
       "ratings": 0,
       "state": "Maharastra",
       "transporterOrAgent": 0,
@@ -716,14 +728,14 @@ class _AllUsersListState extends State<AllUsersList> {
     EasyLoading.show(status: "Loading");
     Dio dio = Dio();
     print("Add User Url :" + AppConstants.REGISTRATION);
-    var response = await http.post(
+    var response = await http.put(
       Uri.parse(AppConstants.REGISTRATION),body:
       reqPara,
         headers: {
           "Content-Type": "application/json",
         }
     );
-    print('Save User Response is: ${response.body}');
+    print('Save User in Tkd Response : ${response.body}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
       var resData = jsonDecode(response.body);
@@ -738,6 +750,88 @@ class _AllUsersListState extends State<AllUsersList> {
            context, "Employee added successfully", Icons.check, Colors.green);
        Navigator.of(context).pop();
      }
+      // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
+    } else {
+      showCustomToast(
+          context, "Something went wrong", Icons.clear, Colors.red);
+      Navigator.of(context).pop();
+    }
+  }
+  Future<void> addToCTMS(User selectedEmp, StateSetter stateSetter) async {
+
+    Map<String, dynamic> requestParameter = {
+        "aadharNo": selectedEmp.aadharCard,
+        "active": selectedEmp.isSelected,
+        "address": selectedEmp.companyAddress,
+        "birthdate": '',
+        "boardingDeatails": {
+          "aadharCard": selectedEmp.aadharCard,
+          "active": "string",
+          "boardingId": 0,
+          "degreeCertificate": "string",
+          "experienceCertificate": "string",
+          "otherDocuments": [
+            "string"
+          ],
+          "panCard": "string",
+          "tenthDCertificate": "string",
+          "twelthCertificate": "string"
+        },
+        "branchId": loginDeatils!.data!.branch!.id,
+        "connectOrgId": widget.organization.id,
+        "contact": selectedEmp.mobileNumber,
+        "createdDate": '',
+        "departmentId": loginDeatils!.data!.departmentId,
+        "designation": selectedEmp.transporterOrAgent,
+        "deviceId": selectedEmp.deviceId,
+        "emailId": selectedEmp.emailId,
+        "employeeLocation": "ONSITE",
+        "esiNO": '',
+        "firstName": selectedEmp.firstName,
+        "image": selectedEmp.profilePicture,
+        "isActive": 0,
+        "is_admin": false,
+        "lastName": selectedEmp.lastName,
+        "mobileNumber": selectedEmp.mobileNumber,
+        "organisationId": loginDeatils!.data!.organisationId,
+        "os": selectedEmp.os,
+        "otp": selectedEmp.otp,
+        "panNo": selectedEmp.panCardForVerification,
+        "password": selectedEmp.password,
+        "roleId": 0,
+        "securityAnswer": loginDeatils!.data!.securityAnswer,
+        "securityQuestion": loginDeatils!.data!.securityQuestion,
+        "status":loginDeatils!.data!.status
+
+    };
+    print(requestParameter);
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var reqPara = jsonEncode(requestParameter);
+    print(reqPara);
+    EasyLoading.show(status: "Loading");
+    Dio dio = Dio();
+    print("Add User Url :" + ApiConstant.SAVE_EMP);
+   var response = await http.post(
+        Uri.parse(ApiConstant.SAVE_EMP),body:
+    reqPara,
+        headers: { "Content-Type": "application/json"}
+    );
+    /*final response = await dio.post(ApiConstant.SAVE_EMP,data:reqPara,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));*/
+    print('Save User Response is: ${response.body}');
+    EasyLoading.dismiss();
+    if (response.statusCode == 200) {
+      var resData = jsonDecode(response.body);
+      print(resData);
+      print(resData['errorCode']);
+      if(resData['errorCode'].toString()=="500"){
+        showCustomToast(
+            context, resData['errorMessage'].toString(), Icons.clear, Colors.red);
+      }else{
+         await addToTKDConnect(selectedEmp, stateSetter);
+        //Navigator.of(context).pop();
+      }
       // AllUserModel postLead = AllUserModel.fromJson(jsonDecode(response.data));
     } else {
       showCustomToast(

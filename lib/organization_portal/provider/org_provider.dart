@@ -301,6 +301,7 @@ class OrgProvider extends ChangeNotifier {
   }
 
   int? connectUserId;
+  List<String> userNameList = [];
   getUsersByCompanyId(int id) async {
     selectedTab = "All Users";
     String myUrl =
@@ -318,6 +319,7 @@ class OrgProvider extends ChangeNotifier {
     pendingUserList.clear();
     rejectedUserList.clear();
     userList.forEach((element) {
+      userNameList.add(element.firstName.toString()+" "+element.lastName.toString());
       if(element.mobileNumber==loginDeatils!.data!.contact){
         connectUserId = element.id;
       }
@@ -577,7 +579,22 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
+  getOrgFullLoadListByEmployee(int id,int userId) async {
+    orgFullLoadList.clear();
+    isLoading = true;
+    notifyListeners();
+    String myUrl = AppConstants.BASE_URL+"GetFullLoadByUserId?userId=${userId}";
+    print("Get All Load Truck Data By UserName - " + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    final response = json.decode(req.body);
+    print(response);
+    isLoading = false;
+    if (req.statusCode == 200) {
+      FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+      orgFullLoadList.addAll(fullLoadModel.data!);
+    }
+    notifyListeners();
+  }
 
   getFilterFullLoadList(String title) {
     orgFullLoadList.clear();

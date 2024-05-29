@@ -64,13 +64,14 @@ class _LoadListState extends State<LoadList> {
   final dashboardProvider = locator<DashboardProvider>();
   ScrollController _scrollController = ScrollController();
   String? selectedFromCity = '', selectedToCity = "";
-  String? dropdownvalue;
+  String? branchNamedropdownvalue;
+  String? userNamedropdownvalue;
 
   @override
   void initState() {
     super.initState();
-    dropdownvalue = orgProvider.branchNameList[0];
-
+    branchNamedropdownvalue = orgProvider.branchNameList[0];
+    userNamedropdownvalue = "${orgProvider.userList[0].firstName} ${orgProvider.userList[0].firstName}";
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -622,6 +623,7 @@ class _LoadListState extends State<LoadList> {
                   _buildPopupMenu('Part Load Available',3,model),
                   _buildPopupMenu('Part Load Required',4,model),
                   _buildPopupMenu('Get Load By Branch Name',5,model),
+                  _buildPopupMenu('Get Load By User',6,model),
                 ],
               ),
               Text(
@@ -667,6 +669,25 @@ class _LoadListState extends State<LoadList> {
               );
             },
           );
+        }else
+        if(index==6){
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return Dialog(
+                alignment: Alignment.center,
+                backgroundColor: Colors.transparent,
+                insetAnimationDuration: Duration(milliseconds: 200),
+                insetAnimationCurve: Curves.easeOutExpo,
+                // <-- SEE HERE
+                child: StatefulBuilder(builder:
+                    (BuildContext context, StateSetter setState) {
+                  return _userNameWiseDialog(context, setState,index!,model);
+                }),
+              );
+            },
+          );
         }else {
           setState(() {
             selectedTab = title;
@@ -703,13 +724,68 @@ class _LoadListState extends State<LoadList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  _buildDropdownField('Branch Name', 'Please select branch', stateSetter),
+                  _buildDropdownField('Branch Name', 'Please select branch', stateSetter,true),
                   SizedBox(
                     height: 30.h,
                   ),
                   ElevatedButton(
                       onPressed: () {
                         orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);
+                      },
+                      child: Text(
+                        "Search",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
+                      ))
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextEditingController userNameController = TextEditingController();
+  Widget _userNameWiseDialog(BuildContext context, StateSetter stateSetter, int index, OrgProvider model) {
+    return Container(
+      width: 350.w,
+      height: 350.h,
+      padding: EdgeInsets.all(20),
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.close_rounded,size: 20,),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              height: 300.h,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  _buildDropdownField('Employee Name', 'Please select employee name', stateSetter,false),
+                  SizedBox(
+                    height: 30.h,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        model.userList.forEach((element) {
+                          if("${element.firstName} ${element.lastName}" == userNameController.text){
+                            orgProvider.getOrgFullLoadListByEmployee(widget.organization.id!, element.id!);
+                          }
+                        });
                       },
                       child: Text(
                         "Search",
@@ -735,8 +811,9 @@ class _LoadListState extends State<LoadList> {
   ];
 
   Widget _buildDropdownField(
-      String label, String hint, StateSetter stateSetter) {
-    branchNameController.text = dropdownvalue!;
+      String label, String hint, StateSetter stateSetter, bool isBranch) {
+    branchNameController.text = branchNamedropdownvalue!;
+    userNameController.text = userNamedropdownvalue!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -766,7 +843,7 @@ class _LoadListState extends State<LoadList> {
                 borderRadius: BorderRadius.circular(5.0),
               ),
               child: DropdownButton(
-                value: dropdownvalue,
+                value: isBranch?branchNamedropdownvalue:userNamedropdownvalue,
                 isExpanded: true,
                 icon: const Icon(Icons.arrow_drop_down),
                 borderRadius: BorderRadius.circular(5.0),
@@ -779,7 +856,19 @@ class _LoadListState extends State<LoadList> {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                items: orgProvider.branchNameList.map((String items) {
+                items: isBranch?orgProvider.branchNameList.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(
+                        color: Color(0xff1B1B1B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }).toList():orgProvider.userNameList.map((String items) {
                   return DropdownMenuItem(
                     value: items,
                     child: Text(
@@ -794,8 +883,12 @@ class _LoadListState extends State<LoadList> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   stateSetter(() {
-                    dropdownvalue = newValue!;
-                    branchNameController.text = dropdownvalue!;
+                    if(isBranch){
+                    branchNamedropdownvalue = newValue!;
+                    branchNameController.text = branchNamedropdownvalue!;}else{
+                      userNamedropdownvalue = newValue!;
+                      userNameController.text = userNamedropdownvalue!;
+                    }
                   });
                 },
               ),
