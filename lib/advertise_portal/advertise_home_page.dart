@@ -178,7 +178,7 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
 
   advDetailCard(AdvertiseData advertiseData) {
     return Container(
-      height: 465.h,
+      height: 500.h,
       width: 330.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.r), color: Colors.white),
@@ -234,6 +234,25 @@ class _AdvertiseHomePageState extends State<AdvertiseHomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
               child: Text(
                 "category : "+advertiseData.category.toString() ?? '-',
+                // "https:www.googlemeetjk75",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15.sp,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
+          Visibility(
+            visible: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: Text(
+                "location : "+advertiseData.location.toString() ?? '-',
                 // "https:www.googlemeetjk75",
                 style: TextStyle(
                   color: Colors.black,

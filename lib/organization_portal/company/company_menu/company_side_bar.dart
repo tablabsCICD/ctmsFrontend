@@ -9,6 +9,8 @@ import 'package:flutter_hr_management/organization_portal/company/company_menu/c
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_dashboard.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_general_post.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_jobs.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_menu/create_org_menu.dart';
+import 'package:flutter_hr_management/organization_portal/company/createt_ctms_organization.dart';
 import 'package:flutter_hr_management/organization_portal/company/jobs/job_list_screen.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
@@ -35,6 +37,8 @@ class _CompanySideBarState extends State<CompanySideBar> {
   static bool isJob = false;
   static bool isGeneralPost = false;
   static bool isBid = false;
+  static bool isCreateOrg = false;
+
 
   @override
   void initState() {
@@ -62,6 +66,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isGeneralPost = false;
                 isJob=false;
+                isCreateOrg=false;
                 Navigator.pushReplacementNamed(context, AppRoutes.home);
               },
               child: Container(
@@ -107,6 +112,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isGeneralPost = false;
                 isJob=false;
+                isCreateOrg=false;
                 setState(() {});
                 //Navigator.restorablePushReplacementNamed(context,AppRoutes.crm);
                 Navigator.of(context).restorablePush((context, arguments) =>
@@ -128,6 +134,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isGeneralPost = false;
                 isJob=false;
+                isCreateOrg=false;
                 setState(() {});
                 //  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
                 Navigator.of(context).restorablePushReplacement(
@@ -148,6 +155,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isGeneralPost = false;
                 isJob=false;
+                isCreateOrg=false;
                 setState(() {});
                 // Navigator.restorablePushReplacementNamed(context,AppRoutes.lead_dashbord);
                 Navigator.of(context).restorablePush((context, arguments) =>
@@ -168,6 +176,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isGeneralPost = false;
                 isJob=false;
                 isBid = false;
+                isCreateOrg=false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
@@ -205,6 +214,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = true;
                 isJob=false;
                 isGeneralPost=false;
+                isCreateOrg=false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
@@ -216,7 +226,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
             DrawerListTile(
               isSelect: isJob,
               title: "Jobs",
-              icon: "assets/org/bid.svg",
+              icon: "assets/org/job.svg",
               press: () {
                 isDashbord = false;
                 isAllUser = false;
@@ -226,6 +236,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isGeneralPost = false;
                 isJob=true;
+                isCreateOrg=false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
@@ -237,7 +248,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
             DrawerListTile(
               isSelect: isGeneralPost,
               title: "General Post",
-              icon: "assets/org/bid.svg",
+              icon: "assets/org/directory.svg",
               press: () {
                 isDashbord = false;
                 isAllUser = false;
@@ -247,11 +258,34 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 isBid = false;
                 isJob=false;
                 isGeneralPost= true;
+                isCreateOrg=false;
                 setState(() {});
                 Navigator.of(context).restorablePush((context, arguments) =>
                     MaterialPageRoute(
                         builder: (builder) =>
                             GeneralPostScreen(organization!)));
+                //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
+              },
+            ),
+            DrawerListTile(
+              isSelect: isCreateOrg,
+              title: "Create Company",
+              icon: "assets/org/add_org.svg",
+              press: () {
+                isDashbord = false;
+                isAllUser = false;
+                isBuySell = false;
+                isFullLoad = false;
+                isDiscussion = false;
+                isBid = false;
+                isJob=false;
+                isGeneralPost= false;
+                isCreateOrg=true;
+                setState(() {});
+                Navigator.of(context).restorablePush((context, arguments) =>
+                    MaterialPageRoute(
+                        builder: (builder) =>
+                            CreateOrgMenu()));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),

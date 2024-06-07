@@ -42,6 +42,7 @@ class AdvertiseData {
   int? organisationId;
   int? userId;
   String? conatctNumber;
+  String? location;
 
   AdvertiseData(
       {this.id,
@@ -57,6 +58,7 @@ class AdvertiseData {
         this.bannerHyperlink,
         this.organisationId,
         this.conatctNumber,
+        this.location,
         this.userId});
 
   AdvertiseData.fromJson(Map<String, dynamic> json) {
@@ -73,6 +75,7 @@ class AdvertiseData {
     bannerHyperlink = json['bannerHyperlink']??'';
     organisationId = json['organisationId'];
     userId = json['userId'];
+    location = json['location']??'';
     conatctNumber = json['conatctNumber']??0;
   }
 
@@ -91,6 +94,7 @@ class AdvertiseData {
     data['bannerHyperlink'] = this.bannerHyperlink;
     data['organisationId'] = this.organisationId;
     data['userId'] = this.userId;
+    data['location'] = this.location;
     data['conatctNumber'] = this.conatctNumber;
     return data;
   }

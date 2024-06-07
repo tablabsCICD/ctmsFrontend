@@ -119,6 +119,7 @@ class AdvProvider extends ChangeNotifier {
         String? bannerHyperlink,
         String? adImage,
         String? contact,
+        String? location
        }) async {
     isLoading = true;
     notifyListeners();
@@ -147,7 +148,8 @@ class AdvProvider extends ChangeNotifier {
       "startDate": startDate,
       "transactionId": transactionId,
       "userId": 73,//ctmsOrganization!.connectUserId
-      "conatctNumber":contact
+      "conatctNumber":contact,
+      "location": location
     };
     var body = json.encode(data);
     print(data);
@@ -183,6 +185,7 @@ class AdvProvider extends ChangeNotifier {
         String? bannerHyperlink,
         String? adImage,
         String? contact,
+        String? location
       }) async {
 
     final url = AppConstants.BASE_URL+"my-ads/updateAdvertisement";
@@ -203,7 +206,8 @@ class AdvProvider extends ChangeNotifier {
       "bannerHyperlink" : bannerHyperlink,
       "organisationId" : 3,
       "userId" : 73,
-      "conatctNumber" : contact
+      "conatctNumber" : contact,
+      "location": location
     });
     print("Requset body:"+body);
     try {

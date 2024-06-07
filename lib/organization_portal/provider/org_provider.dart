@@ -179,11 +179,11 @@ class OrgProvider extends ChangeNotifier {
   Branch? branch;
   List<Branch> branchList=[];
   List<String> branchNameList=['Shreeji'];
-  Future<void> getAllBranch() async {
+  Future<void> getAllBranch(int orgId) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
-        "api/branch/getAll?page=0&size=10&sortDir=asc";
+        "api/branch/getAll?organisationId=${orgId}&page=0&size=10&sortDir=asc";
     print("Get All Branch :" + myUrl
     );
     final dio = Dio();
@@ -294,6 +294,7 @@ class OrgProvider extends ChangeNotifier {
     print("GetOrg Details:" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     response = await json.decode(req.body);
+    print("Org Response : "+req.body);
     Organization organizationModel = Organization.fromJson(response);
     orgnization.add(organizationModel);
     notifyListeners();
@@ -302,6 +303,7 @@ class OrgProvider extends ChangeNotifier {
 
   int? connectUserId;
   List<String> userNameList = [];
+
   getUsersByCompanyId(int id) async {
     selectedTab = "All Users";
     String myUrl =
@@ -317,6 +319,7 @@ class OrgProvider extends ChangeNotifier {
     allUserList.addAll(userList);
     approvedUserList.clear();
     pendingUserList.clear();
+    userNameList.clear();
     rejectedUserList.clear();
     userList.forEach((element) {
       userNameList.add(element.firstName.toString()+" "+element.lastName.toString());
@@ -462,6 +465,29 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
+  getPlacedQuoteListByDate(String fromDate,String toDate,int id) async {
+    isLoading = true;
+
+    String myUrl = AppConstants.BASE_URL+ "getBidderPostAndBidByCompanyIdWithDateFilter?companyId=${1}&latestPost=yes&startDate=${fromDate}&endDate=${toDate}";
+    print("Get Placed Quote Data by Date - " + myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    isLoading = false;
+    orgBigingList.clear();
+    placedBigingList.clear();
+    if (req.statusCode == 200) {
+      final response = json.decode(req.body);
+      OrgQuoteModel orgQuoteModel = OrgQuoteModel.fromJson(response);
+      placedBigingList.addAll(orgQuoteModel.content!);
+      orgBigingList.addAll(placedBigingList);
+      print('Low to high in biding amount: $orgBigingList');
+      bidCont = orgBigingList.length;
+      orgBigingList.forEach((element) {
+        debugPrint("total bids : ${element.bidingList!.length}");
+      });
+      notifyListeners();
+    }
+  }
+
   String selectedQuoteTab = "Placed Quotes";
   getFinalQuoteList(String title, int? orgId) {
     selectedQuoteTab = title;
@@ -583,7 +609,7 @@ class OrgProvider extends ChangeNotifier {
     orgFullLoadList.clear();
     isLoading = true;
     notifyListeners();
-    String myUrl = AppConstants.BASE_URL+"GetFullLoadByUserId?userId=${userId}";
+    String myUrl = AppConstants.BASE_URL+"getFullLoadByUserIdForMonitoring?userId=${userId}";
     print("Get All Load Truck Data By UserName - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);

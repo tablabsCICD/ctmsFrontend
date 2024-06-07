@@ -66,6 +66,7 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
   TextEditingController _imgController = TextEditingController();
   TextEditingController _categoryController = TextEditingController();
   TextEditingController _noOfDaysController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
   String selectedFromDate='',selectedToDate='',uploadedDocument='';
   final orgProvider = locator<OrgProvider>();
 
@@ -90,6 +91,7 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
       selectedToDate = widget.advData.endDate!;
       uploadedDocument = widget.advData.adImage!;
       documentPath = widget.advData.adImage!;
+      _locationController.text = widget.advData.location!;
   }
 
   LoginDeatils? loginDeatils;
@@ -200,6 +202,9 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
                 _buildTextField('Transaction Id', "Enter transaction Id",
                     _transactionIdController),
                 SizedBox(height: 16.h),
+                _buildTextField('Location', "Enter Location",
+                    _locationController),
+                SizedBox(height: 16.h),
                 InkWell(
                   onTap: () async {
                     final bool mobileValid =
@@ -231,7 +236,8 @@ class _EditAdvertisePageState extends State<EditAdvertisePage> {
                           bannerHyperlink: _hyperLinkController.text,
                           bannerName: _bannerNameController.text,
                           adImage: documentPath,
-                          contact: _mobileNumberController.text
+                          contact: _mobileNumberController.text,
+                        location: _locationController.text
                       );
                       if(model.isLoading==false) EasyLoading.dismiss();
                       if(code==200){

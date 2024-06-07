@@ -9,9 +9,11 @@ import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
+import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/progress_dialog.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -37,7 +39,7 @@ class BidList extends StatefulWidget {
 class _BidListState extends State<BidList> {
 
 
-  String selectedTab = "Placed Quotes";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -173,10 +175,20 @@ class _BidListState extends State<BidList> {
                   width: 20.w,
                 ),
                 onSelected: (value) {},
-                itemBuilder: (ctx) => [
-                  _buildPopupMenu('Sort By Company Name A to Z', 0,model),
-                  _buildPopupMenu('Sort By Company Name Z to A', 1,model),
-                ],
+                itemBuilder: (ctx) {
+                  if(model.selectedQuoteTab=="Placed Quotes"){
+                    return [
+                      _buildPopupMenu('Sort By Company Name A to Z', 0,model),
+                      _buildPopupMenu('Sort By Company Name Z to A', 1,model),
+                      _buildPopupMenu('Sort By Date', 2,model),
+                    ];
+                  }else{
+                    return [
+                      _buildPopupMenu('Sort By Company Name A to Z', 0,model),
+                      _buildPopupMenu('Sort By Company Name Z to A', 1,model),
+                    ];
+                  }
+                  },
               ),
               Text(
                 "Filter",
@@ -209,12 +221,170 @@ class _BidListState extends State<BidList> {
           model.orgBigingList.sort(
                   (b, a) => b!.genericCardsDto!.companyName!.compareTo(a.genericCardsDto!.companyName!));
           setState(() {});
-        } else {
+        }else if (id == 1) {
           model.orgBigingList.sort(
                   (a, b) => b.genericCardsDto!.companyName!.compareTo(a.genericCardsDto!.companyName!));
           setState(() {});
+        }else{
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return Dialog(
+                alignment: Alignment.center,
+                backgroundColor: Colors.transparent,
+                insetAnimationDuration: Duration(milliseconds: 200),
+                insetAnimationCurve: Curves.easeOutExpo,
+                // <-- SEE HERE
+                child: StatefulBuilder(builder:
+                    (BuildContext context, StateSetter setState) {
+                  return _showDateWiseDialog(context, setState,model);
+                }),
+              );
+            },
+          );
         }
       },
+    );
+  }
+
+  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter,OrgProvider model) {
+    return Container(
+      width: 350.w,
+      height: 350.h,
+      padding: EdgeInsets.all(20),
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.close_rounded,size: 20,),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 200.w,
+                  child: _buildText(context, selectedFromDate, "Select From Date",
+                          () async {
+                        selectedFromDate =
+                        await DateTimePickerDialog().pickBeforeDateDialog(context);
+                        if (selectedFromDate == null) {
+                          selectedFromDate = "Select From Date";
+                        }
+                        stateSetter(() {});
+                      }),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                SizedBox(
+                  width: 200.w,
+                  child:
+                  _buildText(context, selectedToDate, "Select To Date", () async {
+                    selectedToDate =
+                    await DateTimePickerDialog().pickDateDialog(context);
+                    if (selectedToDate == '') {
+                      selectedToDate = "Select To Date";
+                    }
+                    stateSetter(() {});
+                  }),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ThemeColor.red,
+                      textStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontStyle: FontStyle.normal),
+                    ),
+                    onPressed: () {
+                     if(selectedFromDate.isNotEmpty && selectedToDate.isNotEmpty){
+                       model.getPlacedQuoteListByDate(selectedFromDate,selectedToDate,widget.organization.id!);
+                       Navigator.of(context).pop();
+                     }else{
+                       showCustomToast(
+                           context, "Please select date", Icons.clear, Colors.red);
+                     }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Text(
+                        "Search",
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: GoogleFonts.poppins().fontFamily),
+                      ),
+                    ))
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  String selectedFromDate = '';
+  String selectedToDate = '';
+
+  Widget _buildText(
+      BuildContext context, String label, String label1, Function onClick) {
+    return InkWell(
+      onTap: () {
+        onClick();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+            child: Text(
+              label1,
+              style: TextStyle(
+                color: Color(0xff1B1B1B),
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            height: 52.h,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5.r),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: Color(0xff1B1B1B),
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

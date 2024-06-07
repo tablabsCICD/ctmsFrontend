@@ -58,10 +58,10 @@ import 'package:flutter_hr_management/organization_portal/util/star_display.dart
 
 class GeneralPostScreen extends StatefulWidget {
   final generalPostProvider = locator<GeneralPostProvider>();
-  Organization organization;
+  Organization? organization;
   final orgProvider = locator<OrgProvider>();
   GeneralPostScreen(this.organization,{Key? key}) : super(key: key) {
-    generalPostProvider.getAllPost(organization.id!);
+    generalPostProvider.getAllPost(organization!.id!);
   }
 
 
@@ -117,7 +117,7 @@ class _GeneralPostScreenState extends State<GeneralPostScreen> {
                         },
                       ),
                       SizedBox(height: 16.h,),
-                      Expanded(child: GeneralPostList(widget.organization, )),
+                      Expanded(child: GeneralPostList(widget.organization!, )),
                     ],
                   ),
                 ),

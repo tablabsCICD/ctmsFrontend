@@ -966,5 +966,6 @@ class _AllUsersListState extends State<AllUsersList> {
           context, "User Approval not done, something went wrong!!", Icons.clear, Colors.red):showCustomToast(
           context, "something went wrong!!", Icons.clear, Colors.red);
     }
+    Navigator.of(context).pop();
   }
 }

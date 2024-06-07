@@ -26,6 +26,7 @@ import 'package:flutter_hr_management/organization_portal/util/star_display.dart
 import 'package:flutter_hr_management/organization_portal/util/style.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
@@ -44,7 +45,8 @@ class LoadList extends StatefulWidget {
   int index;
   LoadList(this.organization,{Key? key, required this.index}) : super(key: key) {
     orgProvider.getOrgFullLoadList(organization.id!);
-    orgProvider.getAllBranch();
+    orgProvider.getUsersByCompanyId(organization.id!);
+    orgProvider.getAllBranch(organization.id!);
   }
   @override
   State<LoadList> createState() => _LoadListState();
@@ -70,8 +72,6 @@ class _LoadListState extends State<LoadList> {
   @override
   void initState() {
     super.initState();
-    branchNamedropdownvalue = orgProvider.branchNameList[0];
-    userNamedropdownvalue = "${orgProvider.userList[0].firstName} ${orgProvider.userList[0].firstName}";
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -245,7 +245,7 @@ class _LoadListState extends State<LoadList> {
               MediaQuery.of(context).size.height - 600,
               child: Center(
                   child: CircularProgressIndicator()))):*/
-      model.orgFullLoadList.isEmpty
+      model.orgFullLoadList.isEmpty && model.isLoading==false
           ?  Container(
         margin: EdgeInsets.all(30),
           height:
@@ -258,7 +258,7 @@ class _LoadListState extends State<LoadList> {
                   fontSize: 16.sp,
                   color: Colors.black,
                   fontWeight: FontWeight.w900)))
-         /* :model.orgAllFullLoadList.isEmpty
+          :model.orgAllFullLoadList.isEmpty
           ? Container(
               height:
               MediaQuery.of(context).size.height - 600,
@@ -266,7 +266,7 @@ class _LoadListState extends State<LoadList> {
               color: AppColor.white, borderRadius: BorderRadius.circular(10)),
           margin: EdgeInsets.all(20),
               child: Center(
-                  child: CircularProgressIndicator()))*/
+                  child: CircularProgressIndicator()))
           :Expanded(
             child: StaggeredGridView.countBuilder(
             controller: _scrollController,
@@ -623,7 +623,7 @@ class _LoadListState extends State<LoadList> {
                   _buildPopupMenu('Part Load Available',3,model),
                   _buildPopupMenu('Part Load Required',4,model),
                   _buildPopupMenu('Get Load By Branch Name',5,model),
-                  _buildPopupMenu('Get Load By User',6,model),
+                  _buildPopupMenu('Get Load By User Name',6,model),
                 ],
               ),
               Text(
@@ -729,8 +729,19 @@ class _LoadListState extends State<LoadList> {
                     height: 30.h,
                   ),
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ThemeColor.red,
+                        textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontStyle: FontStyle.normal),
+                      ),
                       onPressed: () {
-                        orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);
+                        if(branchNameController.text.isNotEmpty){
+                        orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);}else{
+                          showCustomToast(
+                              context, "Please select branch name", Icons.clear, Colors.red);
+                        }
                       },
                       child: Text(
                         "Search",
@@ -780,12 +791,27 @@ class _LoadListState extends State<LoadList> {
                     height: 30.h,
                   ),
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ThemeColor.red,
+                        textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontStyle: FontStyle.normal),
+                      ),
                       onPressed: () {
-                        model.userList.forEach((element) {
-                          if("${element.firstName} ${element.lastName}" == userNameController.text){
-                            orgProvider.getOrgFullLoadListByEmployee(widget.organization.id!, element.id!);
-                          }
-                        });
+                        if(userNameController.text.isNotEmpty){
+                        if(model.userList.isNotEmpty){
+                          model.userList.forEach((element) async {
+                            if("${element.firstName} ${element.lastName}" == userNameController.text){
+                              await orgProvider.getOrgFullLoadListByEmployee(widget.organization.id!, element.id!);
+                              Navigator.of(context).pop();
+                            }
+                          });
+                        }}
+                        else{
+                          showCustomToast(
+                              context, "Please select username", Icons.clear, Colors.red);
+                        }
                       },
                       child: Text(
                         "Search",
@@ -812,8 +838,8 @@ class _LoadListState extends State<LoadList> {
 
   Widget _buildDropdownField(
       String label, String hint, StateSetter stateSetter, bool isBranch) {
-    branchNameController.text = branchNamedropdownvalue!;
-    userNameController.text = userNamedropdownvalue!;
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -885,7 +911,8 @@ class _LoadListState extends State<LoadList> {
                   stateSetter(() {
                     if(isBranch){
                     branchNamedropdownvalue = newValue!;
-                    branchNameController.text = branchNamedropdownvalue!;}else{
+                    branchNameController.text = branchNamedropdownvalue!;
+                    }else{
                       userNamedropdownvalue = newValue!;
                       userNameController.text = userNamedropdownvalue!;
                     }

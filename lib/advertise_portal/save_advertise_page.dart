@@ -62,6 +62,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
   TextEditingController _imgController = TextEditingController();
   TextEditingController _categoryController = TextEditingController();
   TextEditingController _noOfDaysController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
   String selectedFromDate='',selectedToDate='',uploadedDocument='';
   final orgProvider = locator<OrgProvider>();
 
@@ -199,6 +200,9 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                               _buildTextField('Transaction Id', "Enter transaction Id",
                                   _transactionIdController),
                               SizedBox(height: 16.h),
+                              _buildTextField('Location', "Enter Location",
+                                  _locationController),
+                              SizedBox(height: 16.h),
                               InkWell(
                                 onTap: () async {
                                   final bool mobileValid =
@@ -229,7 +233,8 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      bannerHyperlink: _hyperLinkController.text,
                                      bannerName: _bannerNameController.text,
                                      adImage: documentPath,
-                                    contact: _mobileNumberController.text
+                                    contact: _mobileNumberController.text,
+                                    location: _locationController.text
                                    );
                                    if(model.isLoading==false) EasyLoading.dismiss();
                                    if(code==200){
@@ -241,6 +246,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                      _bannerNameController.clear();
                                      _companyNameController.clear();
                                      _mobileNumberController.clear();
+                                     _locationController.clear();
                                      documentPath='';
                                      selectedToDate='';
                                      selectedFromDate='';

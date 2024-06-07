@@ -47,7 +47,7 @@ class CompanyBidsScreen extends StatefulWidget {
   final bidProvider = locator<OrgProvider>();
 
 
-  Organization organization;
+  Organization? organization;
   CompanyBidsScreen(this.organization,{Key? key}) ;
 
   @override
@@ -81,7 +81,7 @@ class _CompanyBidsScreenState extends State<CompanyBidsScreen> {
                         onSearchTap: () {},
                       ),
                       SizedBox(height: 16.h,),
-                      Expanded(child: BidList(widget.organization)),
+                      Expanded(child: BidList(widget.organization!)),
                     ],
                   ),
                 ),
