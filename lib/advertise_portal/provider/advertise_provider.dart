@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/model/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
@@ -143,13 +144,14 @@ class AdvProvider extends ChangeNotifier {
       "category": category,
       "companyName": companyName,
       "endDate": endDate,
+      "location": location,
       "numberOfDays": numberOfDays,
       "organisationId": 3,//ctmsOrganization!.connectOrgId,
       "startDate": startDate,
       "transactionId": transactionId,
       "userId": 73,//ctmsOrganization!.connectUserId
-      "conatctNumber":contact,
-      "location": location
+      "conatctNumber":contact
+
     };
     var body = json.encode(data);
     print(data);
@@ -162,13 +164,18 @@ class AdvProvider extends ChangeNotifier {
     print("${createResponse.statusCode}" +
         " --- " +
         createResponse.body.toString());
+
     if(createResponse.statusCode == 200){
-    var jsonData = jsonDecode(createResponse.body);
-    SaveAdvertise advertiseData = SaveAdvertise.fromJson(jsonData);
-    advertiseList.add(advertiseData.data!);
+      var jsonData = jsonDecode(createResponse.body);
+    if(jsonData["success"]==true){
+      SaveAdvertise advertiseData = SaveAdvertise.fromJson(jsonData);
+      advertiseList.add(advertiseData.data!);
+    }else{
+      //showCustomToast(context, jsonData["message"], Icons.check, Colors.green);
+    }
     }
     notifyListeners();
-    return createResponse.statusCode;
+    return createResponse;
   }
 
 

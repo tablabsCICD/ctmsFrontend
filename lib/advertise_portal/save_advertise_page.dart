@@ -212,7 +212,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                     showCustomToast(context, "Enter Title", Icons.close, Colors.red);
                                   } else if(documentPath==""){
                                     showCustomToast(context, "First upload image", Icons.close, Colors.red);
-                                  }else  if(_mobileNumberController==""){
+                                  }else  if(_mobileNumberController.text==""){
                                     showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
                                  /* }else if(mobileValid==false){
                                     showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);*/
@@ -223,7 +223,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                       showCustomToast(context, "Enter valid end date", Icons.close, Colors.red);
                                     }else {
                                     EasyLoading.show(status: "Loading");
-                                  int code = await model.createAdvertise(
+                                  var res = await model.createAdvertise(
                                      transactionId: _transactionIdController.text,
                                      startDate: selectedFromDate,
                                      endDate: selectedToDate,
@@ -237,22 +237,30 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
                                     location: _locationController.text
                                    );
                                    if(model.isLoading==false) EasyLoading.dismiss();
-                                   if(code==200){
-                                     showCustomToast(context, "Advertise Created", Icons.check, Colors.green);
-                                     _transactionIdController.clear();
-                                     _noOfDaysController.clear();
-                                     _hyperLinkController.clear();
-                                     _noOfDaysController.clear();
-                                     _bannerNameController.clear();
-                                     _companyNameController.clear();
-                                     _mobileNumberController.clear();
-                                     _locationController.clear();
-                                     documentPath='';
-                                     selectedToDate='';
-                                     selectedFromDate='';
-                                     setState(() {
+                                   if(res.statusCode==200){
+                                     var jsonData = jsonDecode(res.body);
+                                     if(jsonData['success']==true) {
+                                       showCustomToast(
+                                           context, "Advertise Created",
+                                           Icons.check, Colors.green);
+                                       _transactionIdController.clear();
+                                       _noOfDaysController.clear();
+                                       _hyperLinkController.clear();
+                                       _noOfDaysController.clear();
+                                       _bannerNameController.clear();
+                                       _companyNameController.clear();
+                                       _mobileNumberController.clear();
+                                       _locationController.clear();
+                                       documentPath = '';
+                                       selectedToDate = '';
+                                       selectedFromDate = '';
+                                       setState(() {
 
-                                     });
+                                       });
+                                     }
+                                     else{
+                                       showCustomToast(context, jsonData["message"], Icons.clear, Colors.red);
+                                     }
                                    }else{
                                      showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
                                    }
