@@ -20,6 +20,7 @@ import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import '../../common/app_colors.dart';
@@ -76,18 +77,22 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                     child: Row(
                       children: [
                         SizedBox(width: 38.w,),
-                        InkWell(onTap: () async {
-                         Organization organization = await orgProvider.getOrgDetails();
-                         print("Connect Organization : ${organization.id},${organization.companyName}");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) =>
-                                      CompanyDashboard(organization)));
-                        },
-                          child: empCounts(
-                              "0", "Monitoring", Images.monitoring, Color(
-                              0xFFEAF8F4)),),
+                        Consumer<OrgProvider>(
+                          builder: (context, model, child) => InkWell(onTap: () async {
+                           Organization organization = await orgProvider.getOrgDetails();
+                           if(organization==''){
+                           }else{
+                           print("Connect Organization : ${organization.id},${organization.companyName}");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (builder) =>
+                                        CompanyDashboard(organization)));}
+                          },
+                            child: empCounts(
+                                "0", "Monitoring", Images.monitoring, Color(
+                                0xFFEAF8F4)),),
+                        ),
                         SizedBox(width: 38.w,),
                         InkWell(onTap: () {
                           Navigator.pushNamed(context, AppRoutes.crm);
@@ -118,7 +123,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                             Color(0xFFEAF8F4)),*/
                         SizedBox(width: 38.w,),
                         Visibility(
-                          visible: false,
+                          visible: true,
                           child: InkWell(
                             onTap: () async {
                             await  getEmpToken(loginDeatils!.data!.id!);
@@ -133,7 +138,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                             empCounts("0", "E-Bilty", Images.bilty, Color(
                                 0xFFFFEDF9)),),
                         ),
-                     //   SizedBox(width: 38.w,),
+                        SizedBox(width: 38.w,),
                         Visibility(
                           visible: true,
                           child: InkWell(onTap: () {

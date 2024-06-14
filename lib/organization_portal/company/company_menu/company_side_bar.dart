@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/all_users.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/comp_buy_sell.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/comp_discussion_screen.dart';
@@ -45,6 +46,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
     // TODO: implement initState
     super.initState();
     getOrganization();
+
   }
 
   @override
@@ -267,7 +269,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
             ),
-            DrawerListTile(
+            orgProvider.loginDeatils!.data!.id==9?DrawerListTile(
               isSelect: isCreateOrg,
               title: "Create Company",
               icon: "assets/org/add_org.svg",
@@ -288,7 +290,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                             CreateOrgMenu()));
                 //  Navigator.restorablePushReplacementNamed(context, AppRoutes.report);
               },
-            ),
+            ):SizedBox.shrink(),
             DrawerListTile(
               isSelect: false,
               title: "Log Out",

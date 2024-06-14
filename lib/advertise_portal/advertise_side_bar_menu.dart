@@ -50,7 +50,7 @@ class _AdvertiseSideBarState extends State<AdvertiseSideBar> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           /* InkWell(
+            InkWell(
               onTap: (){
                 isHomeAdv = false;
                 isSaveAdv = false;
@@ -75,7 +75,7 @@ class _AdvertiseSideBarState extends State<AdvertiseSideBar> {
                   fontWeight: FontWeight.w700,
                 ),),
               ),
-            ),*/
+            ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Center(

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/branch_model.dart';
 import 'package:flutter_hr_management/model/ctms_organization.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_hr_management/organization_portal/company/load_list.dart
 import 'package:flutter_hr_management/organization_portal/model/load_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/org_quote_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/search_load_list.dart';
+import 'package:flutter_hr_management/organization_portal/model/tkd_user_mobile_response.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,11 +40,11 @@ class OrgProvider extends ChangeNotifier {
   List<Organization> orgList = [];
   List<Organization> orgnization = [];
 
-  List<User> userList = [];
-  List<User> allUserList = [];
-  List<User> rejectedUserList = [];
-  List<User> approvedUserList = [];
-  List<User> pendingUserList = [];
+  List<ConnectUser> userList = [];
+  List<ConnectUser> allUserList = [];
+  List<ConnectUser> rejectedUserList = [];
+  List<ConnectUser> approvedUserList = [];
+  List<ConnectUser> pendingUserList = [];
 
   List<OrgFullLoadModel> orgFullLoadList = [];
   List<OrgFullLoadModel> orgAllFullLoadList = [];
@@ -288,17 +291,27 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
+  bool isOrgLoading = false;
+
   getCompanyDetails(int id) async {
+    isOrgLoading=true;
+    notifyListeners();
     String myUrl = AppConstants.BASE_URL + 'CompanyDetails/getByID?id=${id}';
     // String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
     print("GetOrg Details:" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
-    response = await json.decode(req.body);
-    print("Org Response : "+req.body);
-    Organization organizationModel = Organization.fromJson(response);
-    orgnization.add(organizationModel);
-    notifyListeners();
-    return orgnization;
+    isOrgLoading=false;
+   if(req.statusCode==200){
+     response = await json.decode(req.body);
+     print("Org Response : "+req.body);
+     Organization organizationModel = Organization.fromJson(response);
+     orgnization.add(organizationModel);
+     notifyListeners();
+     return orgnization;
+   }else{
+     notifyListeners();
+     return null;
+   }
   }
 
   int? connectUserId;
@@ -359,11 +372,32 @@ class OrgProvider extends ChangeNotifier {
     setCompanyOrgId(ctmsOrganization!.connectOrgId!);
   }
 
+  ConnectUser? connectUser;
+  getTkdUserByMobile(BuildContext context,String mobileNumber) async {
+    String myUrl = AppConstants.BASE_URL +'/getByMobileNumber?mobileNumber=${mobileNumber}';
+    print(myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    if(req.statusCode==200){
+      var response = await json.decode(req.body);
+      if(response["success"]==true){
+        var list = TkdUserByMobileResponse.fromJson(response);
+        connectUser = list.data;
+      }else{
+        showCustomToast(context, response["message"], Icons.check, Colors.green);
+      }
+    }else{
+      showCustomToast(context, "Please try again!!", Icons.close, Colors.red);
+    }
+    notifyListeners();
+    return req;
+  }
+
   getOrgDetails() async {
     getCtmsOrganization();
     List<Organization> organization = await getCompanyDetails(ctmsOrganization!.connectOrgId!);
     print(organization[0].companyName);
     setCompanyOrgId(organization[0].id!);
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
     notifyListeners();
     return organization[0];
   }

@@ -83,7 +83,7 @@ class AppConstants {
  static String SEND_GROUP_CHAT_MEASSAGE=BASE_URL+'save/chat';
  static String GROUP_MEMBER_LIST=BASE_URL+'groupMembers/byGroupId/';
  static String GROUP_MEMBER_DELETE=BASE_URL+'groupMembers?id=';
- static User USER_OBJECT=User();
+ static ConnectUser USER_OBJECT=ConnectUser();
 
 
 

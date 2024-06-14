@@ -10,7 +10,7 @@ import 'package:flutter_hr_management/organization_portal/util/app_constants.dar
 
 class DashboardProvider extends ChangeNotifier{
   String? selectedSampleData = '';
-  List<User> allUserList = [];
+  List<ConnectUser> allUserList = [];
   List<int> selectedUserList = List<int>.empty(growable: true);
   List<String> allUserNameList = [];
   List<String> searchingList = [];
@@ -90,7 +90,7 @@ class DashboardProvider extends ChangeNotifier{
   }
 
 
-  savePost({int? mobile,String? destination,int? dnd,String? email,String? fullLoadChoice,int? id,String? instruction,User? userList,
+  savePost({int? mobile,String? destination,int? dnd,String? email,String? fullLoadChoice,int? id,String? instruction,ConnectUser? userList,
     String? loadWeight,String? name,String? mainTag,String? os,String? otherDetails,String? source,int? partLoad,
     int? privatePost,double? rating,String? customerName, String? type,String? typeOfCargo,String? vehicleSize, String? typeOfPayment,int? userId}) async {
 

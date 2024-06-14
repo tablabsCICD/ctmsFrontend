@@ -20,9 +20,9 @@ import '../../util/app_constants.dart';
 class GroupListProvider extends ChangeNotifier{
   bool isLoading=false;
   bool isFirstLoading=false;
-  List<User> allUserList = [];
-  List<User>filterByName=[];
-  List<User>selectedUsers=[];
+  List<ConnectUser> allUserList = [];
+  List<ConnectUser>filterByName=[];
+  List<ConnectUser>selectedUsers=[];
   List<GroupMemberContent>listAddedMember=[];
   bool createGroup=false;
   String imageUrl='https://cdn.pixabay.com/photo/2016/03/23/22/26/user-1275780_1280.png';
@@ -90,7 +90,7 @@ class GroupListProvider extends ChangeNotifier{
   notifyListeners();
   }
 
-  selectedUser(bool? value,User userObj){
+  selectedUser(bool? value,ConnectUser userObj){
     userObj.isSelected=value;
 
     if(value==true){

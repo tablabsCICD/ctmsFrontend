@@ -52,7 +52,7 @@ class _CreateOrgScreenState extends State<CreateOrgScreen> {
                     Center(
                         child: InkWell(
                             onTap: () async {
-                              pickFile(true, false, false);
+                              pickFile(true, false, false,provider);
                             },
                             child: imgPath == ''
                                 ? SvgPicture.asset('assets/upload_profile.svg',
@@ -94,29 +94,51 @@ class _CreateOrgScreenState extends State<CreateOrgScreen> {
                     _buildText(true,
                         '${invoiceLogo == '' ? "Click here to upload logo" : invoiceLogo}',
                         'Invoice Logo', () async {
-                          pickFile(false, true, false);
+                          pickFile(false, true, false,provider);
                         }),
                     SizedBox(height: 16.h),
                     _buildText(false,
                         '${unLoadingLogo == '' ? "Click here to upload logo" : unLoadingLogo}',
                         'UnLoading Logo', () async {
-                          pickFile(false, false, true);
+                          pickFile(false, false, true,provider);
                         }),
                     SizedBox(height: 16.h),
                     InkWell(
                       onTap: () async {
+                        final bool mobileValid =
+                        RegExp(r'^\+?\d{1,3}[\s-]?\(?\d{1,4}\)?[\s-]?\d{6,10}$')
+                            .hasMatch(provider.ctmsMobileController.text);
+                        if(provider.ctmsOrgNameController.text==''){
+                          showCustomToast(context, "Enter Company Name", Icons.close, Colors.red);
+                        }else  if(provider.ctmsMobileController.text==""){
+                          showCustomToast(context, "Enter mobile number", Icons.close, Colors.red);
+                        }else if(mobileValid==false){
+                          showCustomToast(context, "Enter valid mobile number", Icons.close, Colors.red);
+                        }else
+                        if(provider.ctmsOrgEmailIdController.text==""){
+                          showCustomToast(context, "Enter valid email id", Icons.close, Colors.red);
+                        }else {
                         var res = await provider.createOrg(context);
                           if(res.statusCode == 200){
+                            showCustomToast(context, "Tkd Organization created successfully..", Icons.check, Colors.green);
+                            var response = await provider.saveTkdUser(context);
+                            await provider.getTkdUserByMobile(context);
                             var res1 = await provider.submitCtmsOrgDetails(context);
+                            provider.getOrganizationList();
                             if (res1.statusCode == 200) {
-                              showCustomToast(context, "Organization created successfully..", Icons.check, Colors.green);
+                              showCustomToast(context, "Ctms Organization created successfully..", Icons.check, Colors.green);
+                              var res2 = await provider.createCtmsUser(context,res1);
+                              if(res2.statusCode == 200){
+                                showCustomToast(context, "Account created successfully", Icons.check, Colors.green);
+                              }
                               provider.resetData();
+                              Navigator.of(context).pop();
                             } else {
                               showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
                             }
                           }else {
                             showCustomToast(context, "Please Try Again", Icons.clear, Colors.red);
-                          }
+                          }}
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -263,7 +285,7 @@ class _CreateOrgScreenState extends State<CreateOrgScreen> {
   String? fileName;
 
   pickFile( bool isImg, bool isInvoice,
-      bool isUnloading) async {
+      bool isUnloading, CreateOrgProvider provider) async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     var result = await FilePicker.platform.pickFiles(
@@ -312,13 +334,15 @@ class _CreateOrgScreenState extends State<CreateOrgScreen> {
             ImgUploadResponse.fromJson(jsonData);
             if (isImg) {
               imgPath = imgUploadResponse.data!;
+              provider.ctmsLogoController.text = imgPath;
             }
-
             if (isUnloading) {
               unLoadingLogo = imgUploadResponse.data!;
+              provider.ctmsUnloadingLogoController.text = unLoadingLogo;
             }
             if (isInvoice) {
               invoiceLogo = imgUploadResponse.data!;
+              provider.ctmsInvoiceLogoController.text = invoiceLogo;
             }
             print("Uploaded Img Path From s3 bucket::" +
                 imgPath +

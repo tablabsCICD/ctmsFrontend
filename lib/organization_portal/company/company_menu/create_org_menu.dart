@@ -6,6 +6,7 @@ import 'package:flutter_hr_management/organization_portal/company/company_menu/c
 import 'package:flutter_hr_management/organization_portal/company/createt_ctms_organization.dart';
 import 'package:flutter_hr_management/organization_portal/company/load_list.dart';
 import 'package:flutter_hr_management/organization_portal/company/general_post_list.dart';
+import 'package:flutter_hr_management/organization_portal/company/org_list_screen.dart';
 import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
@@ -60,9 +61,11 @@ import 'package:flutter_hr_management/organization_portal/util/star_display.dart
 
 class CreateOrgMenu extends StatelessWidget {
 
+  final createOrgProvider = locator<CreateOrgProvider>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    createOrgProvider.getOrganizationList();
     return Scaffold(
         key: _scaffoldKey,
         drawer: CompanySideBar(),
@@ -84,7 +87,7 @@ class CreateOrgMenu extends StatelessWidget {
                         isSearchVisible: false,
                       ),
                       SizedBox(height: 16.h,),
-                      Expanded(child: CreateOrgScreen()),
+                      Expanded(child: CtmsOrgListScreen()),
                     ],
                   ),
                 ),

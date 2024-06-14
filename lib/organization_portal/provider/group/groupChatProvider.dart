@@ -32,7 +32,7 @@ class GroupChatProvider extends ChangeNotifier{
    notifyListeners();
   }
 
-  sendMeassage(User user,int groupId,String messageSend)async{
+  sendMeassage(ConnectUser user,int groupId,String messageSend)async{
     String date = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(DateTime.now());
     print('the date is ${date}');
     Map<String,dynamic>parameter={

@@ -707,7 +707,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
         .getString(SharedPreferencesConstant.AuthToken);
 
     var para = jsonEncode(parameter);
-    String myUrl = ApiConstant.BASE_URL + 'api/Organisation/update?Id=${1}';
+    String myUrl = ApiConstant.BASE_URL + 'api/Organisation/update?Id=${organization!.id}';
     print(myUrl);
     var response = await dio.put(myUrl,
         data: para,

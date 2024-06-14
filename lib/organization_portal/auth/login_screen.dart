@@ -52,7 +52,7 @@ class Login_Screen extends StatefulWidget {
 class _Login_ScreenState extends State<Login_Screen> {
   TextEditingController mobileController = new TextEditingController();
   bool visitingFlag = true;
-  List<User> userDetailList = [];
+  List<ConnectUser> userDetailList = [];
   final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgProvider>();
   bool companyLogin=false,userLogin=true;

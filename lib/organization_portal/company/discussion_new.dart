@@ -91,7 +91,7 @@ class _NewDiscussionState extends State<NewDiscussion> {
 
   }
 
-  savePost({int? mobile,String? additionalinfo,String? email,int? id,User? userList,String? name,int? userId}) async {
+  savePost({int? mobile,String? additionalinfo,String? email,int? id,ConnectUser? userList,String? name,int? userId}) async {
 
   /*  APIHelper api=APIHelper();
     var result= await api.ApiPOSTData(AppConstants.GET_DISCUSSION);*/

@@ -8,6 +8,7 @@ import 'package:flutter_hr_management/advertise_portal/provider/advertise_provid
 import 'package:flutter_hr_management/firebase_api.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/job_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/group/groupChatProvider.dart';
@@ -65,6 +66,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => locator<JobListProvider>()),
           ChangeNotifierProvider(create: (_) => locator<GeneralPostProvider>()),
           ChangeNotifierProvider(create: (_) => locator<AdvProvider>()),
+          ChangeNotifierProvider(create: (_) => locator<CreateOrgProvider>()),
         ],
         child: MyApp(),
       )

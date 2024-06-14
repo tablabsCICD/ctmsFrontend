@@ -1,5 +1,5 @@
 class AuthApi {
-  List<User>? content;
+  List<ConnectUser>? content;
   int? totalPages;
   int? totalElements;
   bool? last;
@@ -22,7 +22,7 @@ class AuthApi {
 
   AuthApi.fromJson(Map<String, dynamic> json) {
     if (json['content'] != null) {
-      content = List.from(json['content']).map((e)=>User.fromJson(e)).toList();
+      content = List.from(json['content']).map((e)=>ConnectUser.fromJson(e)).toList();
     }
     totalPages = json['totalPages']??0;
     totalElements = json['totalElements']??0;
@@ -51,7 +51,7 @@ class AuthApi {
   }
 }
 
-class User {
+class ConnectUser {
   int? id;
   String? userName;
   String? firstName;
@@ -93,7 +93,7 @@ class User {
   String? aadharCardForVerification;
   String? panCardForVerification;
 
-  User(
+  ConnectUser(
       {this.addedIngroup,this.isSelected,this.id,
         this.userName,
         this.firstName,
@@ -134,7 +134,7 @@ class User {
         this.panCardForVerification
       });
 
-  User.fromJson(Map<String, dynamic> json) {
+  ConnectUser.fromJson(Map<String, dynamic> json) {
     id = json['id']?? 0;
     userName = json['userName']?? '';
     firstName = json['firstName']?? '';

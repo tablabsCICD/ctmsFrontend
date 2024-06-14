@@ -72,15 +72,11 @@ class _AllUsersListState extends State<AllUsersList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getLoginDetails();
+
     getEmployeeName();
   }
 
-  LoginDeatils? loginDeatils;
-  getLoginDetails() async {
-    loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
-  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -117,7 +113,7 @@ class _AllUsersListState extends State<AllUsersList> {
                             SizedBox(
                               width: 27.w,
                             ),
-                            loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
+                            orgProvider.loginDeatils==null?SizedBox.shrink():orgProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():SizedBox(
                               height: 58.h,
                               width: 200.w,
                               child: ElevatedButton(
@@ -263,7 +259,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                             getUserDetails('Company Name','${model.userList[index].companyName}'),
                                             getUserDetails('Company Address','${model.userList[index].companyAddress}'),
                                             SizedBox(height: 10.h,),
-                                            loginDeatils!.data!.isAdmin==false?SizedBox.shrink():Row(
+                                            orgProvider.loginDeatils!.data!.isAdmin==false?SizedBox.shrink():Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
                                                 model.userList[index].isUserVerifiedByCompany==0?Padding(
@@ -526,9 +522,9 @@ class _AllUsersListState extends State<AllUsersList> {
 
   List<String> foundEmp = [];
   List<String> uniqueFoundEmp = [];
-  List<User> EmployeeList = [];
+  List<ConnectUser> EmployeeList = [];
   List<String> EmpList = [];
-  List<User> allUserList = [];
+  List<ConnectUser> allUserList = [];
   bool isLoad=false;
 
   TKDEmployeeListResponse? employeeListResponse;
@@ -681,7 +677,7 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  Future<void> addToTKDConnect(User selectedEmp, StateSetter stateSetter) async {
+  Future<void> addToTKDConnect(ConnectUser selectedEmp, StateSetter stateSetter) async {
     Map<String, dynamic> requestParameter = {
       "id": selectedEmp.id,
       "aadharCard": selectedEmp.aadharCard==null?'NA':selectedEmp.aadharCard,
@@ -757,7 +753,7 @@ class _AllUsersListState extends State<AllUsersList> {
       Navigator.of(context).pop();
     }
   }
-  Future<void> addToCTMS(User selectedEmp, StateSetter stateSetter) async {
+  Future<void> addToCTMS(ConnectUser selectedEmp, StateSetter stateSetter) async {
 
     Map<String, dynamic> requestParameter = {
         "aadharNo": selectedEmp.aadharCard,
@@ -777,11 +773,11 @@ class _AllUsersListState extends State<AllUsersList> {
           "tenthDCertificate": "string",
           "twelthCertificate": "string"
         },
-        "branchId": loginDeatils!.data!.branch!.id,
+        "branchId": orgProvider.loginDeatils!.data!.branch!.id,
         "connectOrgId": widget.organization.id,
         "contact": selectedEmp.mobileNumber,
         "createdDate": '',
-        "departmentId": loginDeatils!.data!.departmentId,
+        "departmentId": orgProvider.loginDeatils!.data!.departmentId,
         "designation": selectedEmp.transporterOrAgent,
         "deviceId": selectedEmp.deviceId,
         "emailId": selectedEmp.emailId,
@@ -793,15 +789,15 @@ class _AllUsersListState extends State<AllUsersList> {
         "is_admin": false,
         "lastName": selectedEmp.lastName,
         "mobileNumber": selectedEmp.mobileNumber,
-        "organisationId": loginDeatils!.data!.organisationId,
+        "organisationId": orgProvider.loginDeatils!.data!.organisationId,
         "os": selectedEmp.os,
         "otp": selectedEmp.otp,
         "panNo": selectedEmp.panCardForVerification,
         "password": selectedEmp.password,
         "roleId": 0,
-        "securityAnswer": loginDeatils!.data!.securityAnswer,
-        "securityQuestion": loginDeatils!.data!.securityQuestion,
-        "status":loginDeatils!.data!.status
+        "securityAnswer": orgProvider.loginDeatils!.data!.securityAnswer,
+        "securityQuestion": orgProvider.loginDeatils!.data!.securityQuestion,
+        "status":orgProvider.loginDeatils!.data!.status
 
     };
     print(requestParameter);

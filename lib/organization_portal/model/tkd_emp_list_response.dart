@@ -4,7 +4,7 @@ import 'package:flutter_hr_management/organization_portal/model/auth_api.dart';
 
 class TKDEmployeeListResponse {
   String? message;
-  List<User>? data;
+  List<ConnectUser>? data;
   bool? success;
 
   TKDEmployeeListResponse({this.message, this.data, this.success});
@@ -12,9 +12,9 @@ class TKDEmployeeListResponse {
   TKDEmployeeListResponse.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     if (json['data'] != null) {
-      data = <User>[];
+      data = <ConnectUser>[];
       json['data'].forEach((v) {
-        data!.add(new User.fromJson(v));
+        data!.add(new ConnectUser.fromJson(v));
       });
     }
     success = json['success'];

@@ -34,7 +34,7 @@ class EntryScreen extends StatefulWidget {
 class EntryState extends State<EntryScreen> {
 
   bool visitingFlag = true;
-  List<User> userDetailList = [];
+  List<ConnectUser> userDetailList = [];
   final authProvider = locator<AuthProvider>();
   final dashboardProvider = locator<DashboardProvider>();
   final orgProvider = locator<OrgProvider>();

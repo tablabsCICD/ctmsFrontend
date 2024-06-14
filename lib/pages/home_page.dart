@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   HeaderWidget(
-                    isSearchVisible: true,
+                    isSearchVisible: false,
                     scaffoldKey: _key,
                   ),
                   Container(

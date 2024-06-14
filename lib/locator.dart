@@ -1,6 +1,7 @@
 
 import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
 import 'package:flutter_hr_management/organization_portal/model/general_post_model.dart';
+import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/job_list_provider.dart';
 import 'package:get_it/get_it.dart';
@@ -48,6 +49,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => JobListProvider());
   locator.registerLazySingleton(() => GeneralPostProvider());
   locator.registerLazySingleton(() => AdvProvider());
+  locator.registerLazySingleton(() => CreateOrgProvider());
   locator.registerLazySingleton(() => LocalizationProvider(sharedPreferences: locator()));
 
   final sharedPreferences = await SharedPreferences.getInstance();

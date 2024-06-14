@@ -27,7 +27,7 @@ import 'company_menu/company_dashboard.dart';
 class CompanyMenuPage extends StatefulWidget {
   Organization? organization;
   final orgProvider = locator<OrgProvider>();
-  List<User>? userDetailList;
+  List<ConnectUser>? userDetailList;
 
   CompanyMenuPage(
     this.organization, {

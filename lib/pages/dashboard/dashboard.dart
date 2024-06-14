@@ -6,6 +6,7 @@ import 'package:flutter_hr_management/model/response/search_emp_response.dart';
 import 'package:flutter_hr_management/pages/report/customer_model.dart';
 import 'package:flutter_hr_management/pages/report/pdf_service.dart';
 import 'package:flutter_hr_management/pages/report/saveFile.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
 import 'package:open_filex/open_filex.dart';
 import 'dart:io';
@@ -677,6 +678,8 @@ class _DashboardState extends State<Dashboard> {
         await file.writeAsBytes(bytes.buffer.asUint8List());
         debugPrint("${output.path}/example.pdf");
         await OpenFilex.open("${output.path}/example.pdf");*/
+    }else{
+      showCustomToast(context, "Please Try again!!", Icons.close, Colors.red);
     }
 
     setState(() {});

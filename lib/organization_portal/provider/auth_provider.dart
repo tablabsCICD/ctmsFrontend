@@ -38,8 +38,8 @@ extension extString on String {
 }
 
 class  AuthProvider extends ChangeNotifier{
-  List<User> userDetailList = [];
-  List<User> userList = [];
+  List<ConnectUser> userDetailList = [];
+  List<ConnectUser> userList = [];
   var response;
   bool isLoading = false;
   String dropdownValue = 'English';
@@ -86,7 +86,7 @@ class  AuthProvider extends ChangeNotifier{
   //    var list = AuthApi.fromJson(response);
     //  userDetailList = list.content!;
       //print("***********");
-      userDetailList.add(User(id: 2763,userName: "user113146", firstName : "Digvijay",lastName: "z",emailId: "digvijayzite@gmail.com",mobileNumber: 9420455551,
+      userDetailList.add(ConnectUser(id: 2763,userName: "user113146", firstName : "Digvijay",lastName: "z",emailId: "digvijayzite@gmail.com",mobileNumber: 9420455551,
           companyName: "tablas",companyAddress: "kolhapur",city: "Kolhapur",state: "Maharashtra",country: "India",
           landlineNumber: null,
           mainBranch: null,
@@ -441,7 +441,7 @@ class  AuthProvider extends ChangeNotifier{
     return authApi;
   }
 
-  deleteUser(User user) async {
+  deleteUser(ConnectUser user) async {
     String myUrl = AppConstants.REGISTRATION + '?id=${user.id}';
     var req = await http.delete(Uri.parse(myUrl));
     response = json.decode(req.body);
