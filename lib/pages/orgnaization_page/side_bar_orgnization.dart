@@ -1,11 +1,20 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
+import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
+import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_dashboard.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
+import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
+import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,13 +30,20 @@ class SideBarOrganization extends StatefulWidget {
 class _SideBarOrganization extends State<SideBarOrganization> {
 
   static bool  isDashbord=true;
-  static bool isEmp=false;
-  static bool isLead=false;
+  static bool isMonitoring=false;
+  static bool isCRM=false;
   static bool isCustomer=false;
-  static bool isMeeting=false;
-  static bool isreport=false;
-  static bool isProfile=false;
+  static bool isHRM=false;
+  static bool isBuilty=false;
+  static bool isAdv=false;
   final orgProvider = locator<OrgProvider>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getLoginDetail();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +67,32 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Dashboard",
               icon: "assets/menu/dashboard_menu.svg",
               press: () {
+                isMonitoring=false;
+                isCRM=false;
+                isHRM=false;
+                isBuilty=false;
+                isAdv=false;
+                isDashbord=true;
+                setState(() {
 
+                });
 
               },
             ),
             DrawerListTile(
-              isSelect: isEmp,
+              isSelect: isMonitoring,
               title: "Monitoring",
               icon: Images.monitoring,
               press: () async {
+                isMonitoring=true;
+                isCRM=false;
+                isHRM=false;
+                isBuilty=false;
+                isAdv=false;
+                isDashbord=false;
+                setState(() {
+
+                });
                 Organization organization = await orgProvider.getOrgDetails();
                 print(organization.companyName);
                 Navigator.push(
@@ -70,17 +103,35 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               },
             ),
             DrawerListTile(
-              isSelect: isLead,
+              isSelect: isCRM,
               title: "CRM",
               icon: Images.crm,
               press: () {
+                isMonitoring=false;
+                isCRM=true;
+                isHRM=false;
+                isBuilty=false;
+                isAdv=false;
+                isDashbord=false;
+                setState(() {
+
+                });
                 Navigator.pushNamed(context, AppRoutes.crm);
               },
             ), DrawerListTile(
-              isSelect: isMeeting,
+              isSelect: isHRM,
               title: "HRM",
               icon: Images.hrm,
               press: () async {
+                isMonitoring=false;
+                isCRM=false;
+                isHRM=true;
+                isBuilty=false;
+                isAdv=false;
+                isDashbord=false;
+                setState(() {
+
+                });
                 final url =Uri.parse("http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee");
                 if (!await launchUrl(url,)) {
                 throw Exception('Could not launch $url');
@@ -94,18 +145,49 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               press: () {
 
               },
-            ),
+            ),*/
             DrawerListTile(
-              isSelect: isreport,
+              isSelect: isBuilty,
               title: "E-Bilty",
               icon: Images.bilty,
               press: () async {
-                final url =Uri.parse("http://tkd-bilty.s3-website.ap-south-1.amazonaws.com/create-loading");
+                isMonitoring=false;
+                isCRM=false;
+                isHRM=false;
+                isBuilty=true;
+                isAdv=false;
+                isDashbord=false;
+                setState(() {
+
+                });
+                await  getEmpToken(loginDeatils!.data!.id!);
+                final url = Uri.parse(ApiConstant.BILTY_URL+
+                    "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
+                debugPrint("Bilty Url : "+url.toString());
                 if (!await launchUrl(url,)) {
-                throw Exception('Could not launch $url');
+                  throw Exception('Could not launch $url');
                 }
               },
-            ),*/
+            ),
+            DrawerListTile(
+              isSelect: isAdv,
+              title: "Advertise Portal",
+              icon: Images.hrm,
+              press: () async {
+                isMonitoring=false;
+                isCRM=false;
+                isHRM=false;
+                isBuilty=false;
+                isAdv=true;
+                isDashbord=false;
+                setState(() {
+
+                });
+                advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
+                advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
+                Navigator.pushNamed(context, AppRoutes.advertise);
+              },
+            ),
             DrawerListTile(
               isSelect: false,
               title: "Log Out",
@@ -123,6 +205,48 @@ class _SideBarOrganization extends State<SideBarOrganization> {
     );
   }
 
+
+  String? token;
+
+  Future<void> getEmpToken(int empId) async {
+    String authToken = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+
+    String myUrl = ApiConstant.BASE_URL +
+        "api/getTokenByEmployeeId?employeeId=${empId}";
+    debugPrint("Get Token Url:" + myUrl);
+
+    EasyLoading.show(status: "Loading");
+    final req = await http.get(Uri.parse(myUrl), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer ${authToken}',
+    });
+    EasyLoading.dismiss();
+    print('the body is ${req.body}');
+    if (req.statusCode == 200) {
+      var jwtResponse = json.decode(req.body);
+      print('the response is ${jwtResponse}');
+      JWTLoginData jwtLoginData =
+      JWTLoginData.fromJson(jwtResponse);
+      if (jwtLoginData.data != null) {
+        token = jwtLoginData.data!;
+        print("Final Generated Token ::" + token!);
+      } else {
+        showCustomToast(
+            context, jwtLoginData.message!, Icons.clear, Colors.red);
+      }
+    }
+  }
+
+  final advProvider = locator<AdvProvider>();
+  bool isAdmin = false;
+  LoginDeatils? loginDeatils;
+  Future<void> getLoginDetail() async {
+    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
+    isAdmin =  loginDeatils!.data!.isAdmin!;
+    advProvider.getCtmsOrganization();
+    // getEmpToken(loginDeatils!.data!.id!);
+  }
 
 
   showAlertDialog(BuildContext context) {
