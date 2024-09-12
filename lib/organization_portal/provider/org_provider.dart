@@ -82,8 +82,8 @@ class OrgProvider extends ChangeNotifier {
       partLoadCount = 0;
 
   sendOtpByOrgId(String mobile) async {
-    String myUrl = AppConstants.BASE_URL +
-        'sendMobileOTPForCompanyLogin?mobileNumber=${mobile}';
+    String myUrl = AppConstants.send_Otp_ByOrg_Id +
+        '${mobile}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = json.decode(req.body);
@@ -92,8 +92,8 @@ class OrgProvider extends ChangeNotifier {
   }
 
   verifyOtpByOrgId(String mobile, String otp, String deviceId) async {
-    String myUrl = AppConstants.BASE_URL +
-        'verifyOTPForCompany?mobileNumber=${mobile}&otp=${otp}';
+    String myUrl = AppConstants.verify_Otp_By_OrgId +
+        '${mobile}&otp=${otp}';
     print(myUrl);
     var req = await http.post(Uri.parse(myUrl));
     response = await json.decode(req.body);
@@ -296,7 +296,7 @@ class OrgProvider extends ChangeNotifier {
   getCompanyDetails(int id) async {
     isOrgLoading=true;
     notifyListeners();
-    String myUrl = AppConstants.BASE_URL + 'CompanyDetails/getByID?id=${id}';
+    String myUrl = AppConstants.COMPANY_BY_ID + '${id}';
     // String myUrl = AppConstants.BASE_URL + 'CompanyDetails/${id}';
     print("GetOrg Details:" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -319,8 +319,7 @@ class OrgProvider extends ChangeNotifier {
 
   getUsersByCompanyId(int id) async {
     selectedTab = "All Users";
-    String myUrl =
-        AppConstants.BASE_URL + 'companyRegistration/byCompany?companyId=${id}';
+    String myUrl = AppConstants.USER_BY_COMP_ID + '${id}';
     print("All users by company::" + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     print("All User response:"+req.body);
@@ -374,7 +373,7 @@ class OrgProvider extends ChangeNotifier {
 
   ConnectUser? connectUser;
   getTkdUserByMobile(BuildContext context,String mobileNumber) async {
-    String myUrl = AppConstants.BASE_URL +'/getByMobileNumber?mobileNumber=${mobileNumber}';
+    String myUrl = AppConstants.get_TkdUser_By_Mobile +'${mobileNumber}';
     print(myUrl);
     var req = await http.get(Uri.parse(myUrl));
     if(req.statusCode==200){
@@ -432,7 +431,7 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"fullTruckStatistics?companyId=${id}";
+    String myUrl = AppConstants.get_Static_Data+"${id}";
      //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
     print("GET Statistics URL : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -453,7 +452,7 @@ class OrgProvider extends ChangeNotifier {
 
   getReceivedQuoteList(int id) async {
     isLoading = true;
-    String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
+    String myUrl = AppConstants.get_Received_QuoteList+ "${id}&latestPost=yes";
     print("Get Received Quote Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -479,7 +478,7 @@ class OrgProvider extends ChangeNotifier {
   getPlacedQuoteList(int id) async {
     isLoading = true;
 
-    String myUrl = AppConstants.BASE_URL+ "getBidderPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
+    String myUrl = AppConstants.get_Placed_QuoteList+ "${id}&latestPost=yes";
     print("Get Placed Quote Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -502,7 +501,7 @@ class OrgProvider extends ChangeNotifier {
   getPlacedQuoteListByDate(String fromDate,String toDate,int id) async {
     isLoading = true;
 
-    String myUrl = AppConstants.BASE_URL+ "getBidderPostAndBidByCompanyIdWithDateFilter?companyId=${1}&latestPost=yes&startDate=${fromDate}&endDate=${toDate}";
+    String myUrl = AppConstants.get_Placed_QuoteList_ByDate+ "getBidderPostAndBidByCompanyIdWithDateFilter?companyId=${id}&latestPost=yes&startDate=${fromDate}&endDate=${toDate}";
     print("Get Placed Quote Data by Date - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -539,7 +538,7 @@ class OrgProvider extends ChangeNotifier {
 
   getBuyVehicles(int id) async {
     // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
+    String myUrl = AppConstants.get_Buy_Sell_Vehicles + "${id}";
     selectedBuySellTab="Buy a Vehicle";
     print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
@@ -587,7 +586,7 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
     //String myUrl = "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
     // String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}";
-    String myUrl = AppConstants.BASE_URL + "getFullLoadByCompanyIdForMonitoring?companyId=${id}";
+    String myUrl = AppConstants.get_Org_FullLoadList + "${id}";
     print("Get All Load Truck Data - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
@@ -626,7 +625,7 @@ class OrgProvider extends ChangeNotifier {
     orgFullLoadList.clear();
     isLoading = true;
     notifyListeners();
-    String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyIdAndBranchName?companyId=${id}&branchName=${branchName}";
+    String myUrl = AppConstants.get_Org_FullLoadList_ByBranch+"${id}&branchName=${branchName}";
     print("Get All Load Truck Data By Branch - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
@@ -643,7 +642,7 @@ class OrgProvider extends ChangeNotifier {
     orgFullLoadList.clear();
     isLoading = true;
     notifyListeners();
-    String myUrl = AppConstants.BASE_URL+"getFullLoadByUserIdForMonitoring?userId=${userId}";
+    String myUrl = AppConstants.get_Org_FullLoadList_ByEmployee+"${userId}";
     print("Get All Load Truck Data By UserName - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
@@ -689,7 +688,7 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     orgFullLoadList.clear();
-        String myUrl = AppConstants.BASE_URL+"/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=${source}&destination=${dest}&companyId=${id}";
+        String myUrl = AppConstants.get_Search_ByNameList+"${source}&destination=${dest}&companyId=${id}";
     print("Get Data By Source and Destination : "+myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -711,8 +710,8 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     // String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getBulkBuySell/ForOrganisation?organizationId=26";
-    String myUrl = AppConstants.BASE_URL +
-        "getBulkBuySell/ForOrganisation?organizationId=${id}";
+    String myUrl = AppConstants.get_Org_PoolPurchaseList +
+        "${id}";
     print(myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -780,7 +779,7 @@ class OrgProvider extends ChangeNotifier {
   }
 
   deleteFullLoad(OrgFullLoadModel truckLoad) async {
-    String myUrl = AppConstants.BASE_URL + 'fullTruckLoad?id=${truckLoad.id}';
+    String myUrl = AppConstants.delete_FullLoad + '${truckLoad.id}';
     print(myUrl);
 
     var req = await http.delete(Uri.parse(myUrl));

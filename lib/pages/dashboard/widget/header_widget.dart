@@ -84,7 +84,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
     String myUrl = ApiConstant.BASE_URL +
-        "api/Organisation/getById?Id=${details!.data!.organisationId}";
+        "api/Organisation/getById?Id=${loogedInUser!.data!.organisationId}";
     print("Get Organization Details :" + myUrl);
     final dio = Dio();
     final response = await dio.get(myUrl,
@@ -176,9 +176,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                               borderRadius: BorderRadius.circular(50)),
                         ),
                         child: getImage(
-                            details!.data!.image == null
+                            loogedInUser!.data!.image == null
                                 ? ''
-                                : details!.data!.image!,
+                                : loogedInUser!.data!.image!,
                             height: 50.h,
                             width: 50.w),
                       ),
@@ -222,7 +222,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       SizedBox(
                         width: 27.w,
                       ),*/
-                      widget.isSearchVisible==false?SizedBox.shrink(): Container(
+                      loogedInUser!.data!.isAdmin==false?SizedBox.shrink(): Container(
                         width: 50.w,
                         height: 50.h,
                         alignment: Alignment.center,
@@ -406,18 +406,18 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     );
   }
 
-  LoginDeatils? details;
+  LoginDeatils? loogedInUser;
   bool isLoading = false;
   late bool isAdmin;
 
   void getLoginDetails() async {
     isLoading = true;
     setState(() {});
-    details = await LocalSharePreferences().getLoginData();
+    loogedInUser = await LocalSharePreferences().getLoginData();
     Constants.LOGIN_NAME =
-        details!.data!.firstName! + " " + details!.data!.lastName!;
+        loogedInUser!.data!.firstName! + " " + loogedInUser!.data!.lastName!;
     isLoading = false;
-    isAdmin = details!.data!.isAdmin!;
+    isAdmin = loogedInUser!.data!.isAdmin!;
     setState(() {});
   }
 
@@ -701,7 +701,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
       "tanCardNumber": _tanController.text,
       "typeOfRegistration": organization!.typeOfRegistration,
       "unloadingLogo": unLoadingLogo,
-      "website": organization!.website
+      "website": organization!.website,
+      "connectUserId" : organization!.connectUserId,
+      "connectOrgId" : organization!.connectOrgId
     };
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);

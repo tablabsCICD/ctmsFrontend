@@ -827,6 +827,7 @@ class _LeadDashboard extends State<LeadListScreen> {
       }
     }
   }
+
   Widget _buildText(String label, String label1, Function onClick) {
     return InkWell(
       onTap: () {

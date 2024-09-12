@@ -9,8 +9,8 @@ import '../model/auth_api.dart';
 class AppConstants {
 
   static final String APP_VERSION="2.0.6";
-  static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
- // static String BASE_URL = "http://ec2-13-234-76-107.ap-south-1.compute.amazonaws.com:8080/tkd3/api/"; //Test Url
+ // static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
+  static String BASE_URL = "http://ec2-13-127-217-17.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
 // static String BASE_URL = "http://ec2-35-154-166-48.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
   static String LOGIN = BASE_URL + "authLogin/emailId";
   static String REGISTRATION = BASE_URL + "companyRegistration";
@@ -85,6 +85,23 @@ class AppConstants {
  static String GROUP_MEMBER_DELETE=BASE_URL+'groupMembers?id=';
  static ConnectUser USER_OBJECT=ConnectUser();
 
+ //By CompanyId
+  static String USER_BY_COMP_ID =  BASE_URL + 'companyRegistration/byCompany?companyId=';
+  static String COMPANY_BY_ID =  BASE_URL + 'CompanyDetails/getByID?id=';
+  static String send_Otp_ByOrg_Id =  BASE_URL + 'sendMobileOTPForCompanyLogin?mobileNumber=';
+  static String verify_Otp_By_OrgId =  BASE_URL + 'verifyOTPForCompany?mobileNumber=';
+  static String get_TkdUser_By_Mobile =  BASE_URL + '/getByMobileNumber?mobileNumber=';
+  static String get_Static_Data =  BASE_URL + 'fullTruckStatistics?companyId=';
+  static String get_Received_QuoteList =  BASE_URL + 'getOwnPostAndBidByCompanyId?companyId=';
+  static String get_Placed_QuoteList =  BASE_URL + 'getBidderPostAndBidByCompanyId?companyId=';
+  static String get_Placed_QuoteList_ByDate =  BASE_URL + 'getBidderPostAndBidByCompanyIdWithDateFilter?companyId=';
+  static String get_Buy_Sell_Vehicles =  BASE_URL + 'GetbuysellcompanyId?company_id=';
+  static String get_Org_FullLoadList =  BASE_URL + 'getFullLoadByCompanyIdForMonitoring?companyId=';
+  static String get_Org_FullLoadList_ByBranch =  BASE_URL + 'GetFullLoadByCompanyIdAndBranchName?companyId=';
+  static String get_Org_FullLoadList_ByEmployee =  BASE_URL + 'getFullLoadByUserIdForMonitoring?userId=';
+  static String get_Search_ByNameList =  BASE_URL + '/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=';
+  static String get_Org_PoolPurchaseList =  BASE_URL + 'getBulkBuySell/ForOrganisation?organizationId=';
+  static String delete_FullLoad =  BASE_URL + 'fullTruckLoad?id=';
 
 
 
