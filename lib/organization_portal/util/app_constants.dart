@@ -9,8 +9,8 @@ import '../model/auth_api.dart';
 class AppConstants {
 
   static final String APP_VERSION="2.0.6";
- // static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
-  static String BASE_URL = "http://ec2-13-127-217-17.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
+  static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
+  //static String BASE_URL = "http://ec2-13-200-229-164.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
 // static String BASE_URL = "http://ec2-35-154-166-48.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
   static String LOGIN = BASE_URL + "authLogin/emailId";
   static String REGISTRATION = BASE_URL + "companyRegistration";
@@ -28,7 +28,8 @@ class AppConstants {
   static String GET_OWNPOST = BASE_URL + "getOwnPost";
   static String REPORT_API = BASE_URL + "/complaint";
   static String CHAT_BACKUP = BASE_URL + "/chatBackup";
-  static String OTP_VERIFICATION = BASE_URL + "verifyOTP";
+  static String OTP_VERIFICATION(mobile, otp) =>
+      "${BASE_URL}VerifyOtp?mobileNumber=$mobile&otp=$otp";
   static String FORGOT_PASSWORD = BASE_URL + "forgotPassword";
   static String RESET_PASSWORD = BASE_URL + "resetPassword";
   static String LOGIN_USER_NAME = BASE_URL + "authLogin/userName";
@@ -44,10 +45,10 @@ class AppConstants {
   static String CITY_NEW_API_DB = BASE_URL + "/get/cities/db";
   static String SEND_MESSAGE = BASE_URL + "/sendGeneralSMS";
   static String GET_ALL_USER = BASE_URL + "/companyRegistration";
-
+  static String GET_ALL_USER_SEARCH = BASE_URL + "companyRegistration/ByName8?firstName=";
   static String SEND_OTP_ON_MAIL = BASE_URL + "SendOTPOnEmailId";
   static String VERIFY_OTP_ON_MAIL = BASE_URL + "verifyOTPEmail";
-  static String SEND_OTP = BASE_URL + "SendOTP";
+
   static String ADD_CITY = BASE_URL + "/set/cities/db";
   static String DIRECTORY = BASE_URL + "directory";
   static String SHARE_POST_BASE_URL = "http://www.tkdost.com/tkd/";
@@ -102,6 +103,10 @@ class AppConstants {
   static String get_Search_ByNameList =  BASE_URL + '/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=';
   static String get_Org_PoolPurchaseList =  BASE_URL + 'getBulkBuySell/ForOrganisation?organizationId=';
   static String delete_FullLoad =  BASE_URL + 'fullTruckLoad?id=';
+  static String SEND_OTP(mobile) => "${BASE_URL}sendOtp?mobileNos=$mobile";
+
+  static String USER_FIND_BY_MOBILE(mobile) =>
+      "${BASE_URL}DeleteUser/getByMobileNumber?mobileNumber=$mobile";
 
 
 

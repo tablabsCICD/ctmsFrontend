@@ -54,7 +54,6 @@ class EntryState extends State<EntryScreen>{
   void checkIsLoggedIn()async {
     bool isLogin =await LocalSharePreferences().getBool(SharedPreferencesConstant.LoginKeyBool);
     if(isLogin==true){
-      Organization organization = await orgProvider.getOrgDetails();
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }else{
       Navigator.pushReplacementNamed(context, AppRoutes.login);

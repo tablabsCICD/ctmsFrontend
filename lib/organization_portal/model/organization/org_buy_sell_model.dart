@@ -7,12 +7,16 @@ class BuySellModel {
 
   BuySellModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    if (json['data'] != null) {
+    if (json['data'] != null && json['data'] is List) {
       data = <OrgBuySellModel1>[];
       json['data'].forEach((v) {
         data!.add(new OrgBuySellModel1.fromJson(v));
       });
+    } else {
+      data = []; // fallback if data is "", null, or not a list
     }
+
+
     success = json['success'];
   }
 

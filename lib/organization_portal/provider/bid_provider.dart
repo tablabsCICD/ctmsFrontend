@@ -88,7 +88,7 @@ class BidProvider extends ChangeNotifier{
   }
 
 
-  generateBid({int? mobile,String? description,int? id,String? email,String? amount,int? idOfPost,String? bidderUserName,
+  generateBid(BuildContext context, {int? mobile,String? description,int? id,String? email,String? amount,int? idOfPost,String? bidderUserName,
     String? userName,String? type,String? loggedUserName}) async {
     String myUrl = AppConstants.BID_TO_POST;
     Uri uri = Uri.parse(myUrl);

@@ -1,5 +1,7 @@
 
 import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/all_users_provider.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/comp_bid_provider.dart';
 import 'package:flutter_hr_management/organization_portal/model/general_post_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
@@ -17,13 +19,14 @@ import 'package:flutter_hr_management/organization_portal/provider/group/groupLi
 import 'package:flutter_hr_management/organization_portal/provider/job_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/localization_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/menu_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/more_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/plan_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/pool_purchase_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/repeatProvider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/route_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/transport_provider.dart';
+
+import 'organization_portal/company/company_provider/more_provider.dart';
 
 //GetIt locator = GetIt.asNewInstance();
 GetIt locator = GetIt.instance;
@@ -36,7 +39,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => JobProvider());
   locator.registerLazySingleton(() => GalleryProvider());
   locator.registerLazySingleton(() => BuySellProvider());
-  locator.registerLazySingleton(() => PoolPurchaseProvider());
+  locator.registerLazySingleton(() => OrgUserProvider());
   locator.registerLazySingleton(() => MoreProvider());
   locator.registerLazySingleton(() => RouteProvider());
   locator.registerLazySingleton(() => BidProvider());
@@ -50,6 +53,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => GeneralPostProvider());
   locator.registerLazySingleton(() => AdvProvider());
   locator.registerLazySingleton(() => CreateOrgProvider());
+  locator.registerLazySingleton(() => CompanyBidProvider());
   locator.registerLazySingleton(() => LocalizationProvider(sharedPreferences: locator()));
 
   final sharedPreferences = await SharedPreferences.getInstance();

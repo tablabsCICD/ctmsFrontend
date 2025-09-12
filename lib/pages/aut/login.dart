@@ -3,11 +3,9 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
@@ -18,6 +16,7 @@ import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../common/app_colors.dart';
 import '../../constant/images.dart';
 import '../../utils/colors.dart';
@@ -27,185 +26,6 @@ import '../widget/editText_email.dart';
 import '../widget/employee_dialog.dart';
 import '../widget/textviewone.dart';
 import '../widget/toast.dart';
-
-// class Login extends StatefulWidget {
-//   @override
-//   _LeadListScreen createState() => _LeadListScreen();
-// }
-//
-// class _LeadListScreen extends State<Login> {
-//
-//   TextEditingController _passwordController = TextEditingController();
-//   TextEditingController _emailController = TextEditingController();
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return _buildPage(context);
-//   }
-//
-//   _buildPage(context) {
-//     return Scaffold(
-//       backgroundColor: AppColor.bgSideMenu,
-//
-//       body: Column(
-//
-//         children: [
-//
-//           Container(
-//             width: MediaQuery.of(context).size.width,
-//             height: MediaQuery.of(context).size.height,
-//
-//             decoration: BoxDecoration(
-//               image: DecorationImage(
-//                   image: AssetImage("assets/sidebar_image.png"),
-//                   alignment: Alignment.bottomLeft,
-//                   scale: 4.0
-//               ),
-//             ),
-//             child: Center(
-//               child: Row(
-//                 crossAxisAlignment: CrossAxisAlignment.end,
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//
-//                 children: [
-//
-//                   Container(
-//                     width: MediaQuery.of(context).size.width / 2,
-//                     height: null,
-//                     decoration: BoxDecoration(
-//                         color: AppColor.white,
-//                         borderRadius: BorderRadius.circular(10)),
-//                     padding: EdgeInsets.all(10),
-//                     child:
-//                     Column(
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         Center(
-//                             child: Text(
-//                               "Login",
-//                               style: TextStyle(
-//                                 fontWeight: FontWeight.bold,
-//                                 color: AppColor.black,
-//                                 fontSize: 22,
-//                               ),
-//                             )),
-//                         SizedBox(height: 16),
-//
-//                         _buildTextField('Email', _emailController),
-//                         SizedBox(height: 16),
-//                         _buildTextField('Password', _passwordController),
-//                         SizedBox(height: 32),
-//                         InkWell(
-//                           onTap: _submitForm,
-//                           child: Container(
-//                             width: 300,
-//                             decoration: BoxDecoration(
-//                                 color: AppColor.yellow,
-//                                 borderRadius: BorderRadius.circular(100)),
-//                             padding: EdgeInsets.symmetric(
-//                               vertical: 10,
-//                               horizontal: 20,
-//                             ),
-//                             child: Center(
-//                               child: Text(
-//                                 "Submit",
-//                                 style: TextStyle(
-//                                     fontWeight: FontWeight.bold,
-//                                     color: AppColor.black),
-//                               ),
-//                             ),
-//                           ),
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       )
-//
-//       );
-//   }
-//
-//   Widget _buildTextField(String label, TextEditingController controller) {
-//     return Container(
-//       width: 300,
-//       decoration: BoxDecoration(
-//         border: Border.all(color: Colors.black),
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//         child: TextField(
-//           controller: controller,
-//           obscureText: false,
-//           decoration: InputDecoration(
-//             border: InputBorder.none,
-//             labelText: label,
-//             labelStyle: TextStyle(color: Colors.black),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//   void _submitForm() async{
-//
-//
-//     // Navigator.push(
-//     //   context,
-//     //   MaterialPageRoute(builder: (context) => EmpDialog()),);
-//
-//     // var list=await showDialog(context: context, builder: (BuildContext context) {
-//     //   return EmpDialog();
-//     //
-//     // });
-//    // print('the list is ${list}');
-//
-//     String email = _emailController.text;
-//     String password = _passwordController.text;
-//     if(email.isNotEmpty && password.isNotEmpty){
-//       var formData = FormData.fromMap({
-//         'emailId': email,
-//         'password': password,
-//
-//       });
-//       EasyLoading.show(status: "Loading");
-//       Dio dio=Dio();
-//       var response= await dio.post(ApiConstant.LOGIN_DATA+"/emailId",data:formData);
-//       EasyLoading.dismiss();
-//       if(response.statusCode==200){
-//         print('the body is ${response.data}');
-//         LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(response.data));
-//
-//         if(loginDeatils.data!=null){
-//           String response=jsonEncode(loginDeatils);
-//           LocalSharePreferences().setString(SharedPreferencesConstant.LoginKey, response);
-//           LocalSharePreferences().setBool(SharedPreferencesConstant.LoginKeyBool, true);
-//
-//           Navigator.pushReplacementNamed(context, AppRoutes.home);
-//
-//         }else{
-//           ToastMessage.show(context, loginDeatils!.message!);
-//         }
-//       }else{
-//         ToastMessage.show(context, "Try Again");
-//       }
-//     }else{
-//
-//     }
-//   }
-//
-//
-// }
 
 class Onboarding {
   String? img, title, description;
@@ -221,7 +41,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreen extends State<LoginScreen> {
-  final CarouselController _controller = CarouselController();
+  final PageController _pageController = PageController();
+
   List<Onboarding> imageList = [
     Onboarding("assets/images/img1.svg", 'Welcome Back!',
         'Welcome back to the best. We are\nalways here, waiting for you!'),
@@ -386,58 +207,7 @@ class _LoginScreen extends State<LoginScreen> {
                   fontWeight: FontWeight.w600,
                 ),
                 onClick: () async {
-                 /*String response = jsonEncode({
-                    "message": "Current logged in Employee ",
-                    "data": {
-                      "id": 1,
-                      "employeeId": "TKD-1",
-                      "firstName": "Swati",
-                      "lastName": "Navale",
-                      "emailId": "swati@gmail.com",
-                      "mobileNumber": "9809876543",
-                      "address": "string",
-                      "image":
-                          "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696782526-user.png",
-                      "designation": "Devloper",
-                      "contact": "7507873525",
-                      "employeeLocation": "ONSITE",
-                      "departmentId": 1,
-                      "boardingDeatails": {
-                        "boardingId": 1,
-                        "tenthDCertificate":
-                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696820464-Final_Resume.pdf",
-                        "twelthCertificate": "",
-                        "degreeCertificate":
-                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696824118-Final_Resume.pdf",
-                        "aadharCard":
-                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696828499-Final_Resume.pdf",
-                        "panCard":
-                            "https://tablabs-images.s3.ap-south-1.amazonaws.com/1697696832104-Tabrez_Khaisar_Resume_BE.pdf",
-                        "experienceCertificate": null,
-                        "active": "true",
-                        "otherDocuments": ["string"]
-                      },
-                      "active": "true",
-                      "role": {"id": 1, "name": "Developer", "isActive": 1},
-                      "is_admin": null,
-                      "isActive": null,
-                      "otp": "string",
-                      "password": "Tkd@123",
-                      "os": "Web",
-                      "status": "Selected",
-                      "deviceId": "string",
-                      "createdDate": "string",
-                      "securityQuestion": null,
-                      "securityAnswer": null
-                    },
-                    "success": true
-                  });
-                  LocalSharePreferences()
-                      .setString(SharedPreferencesConstant.LoginKey, response);
-                  LocalSharePreferences()
-                      .setBool(SharedPreferencesConstant.LoginKeyBool, true);
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);*/
-                  _submitForm();
+                   _submitForm();
                 }),
           ),
           Tooltip(
@@ -459,45 +229,6 @@ class _LoginScreen extends State<LoginScreen> {
                     color: Colors.blue),
                 title: "Forgot Password?"),
           ),
-          /* Textview(
-              TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black),
-              title: "OR"),
-          SizedBox(
-            height: 28.h,
-          ),
-          socialLogin(),
-          SizedBox(
-            height: 28.h,
-          ),
-          Row(
-            children: [
-              Textview(
-                  TextStyle(
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black),
-                  title: "Don't have an Account? "),
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    isSignIn = false;
-                  });
-                },
-                child: Textview(
-                    TextStyle(
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400,
-                        color: ThemeColor.theme_blue),
-                    title: "Sign Up"),
-              ),
-            ],
-          ),*/
         ],
       ),
     );
@@ -645,16 +376,25 @@ class _LoginScreen extends State<LoginScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CarouselSlider(
-            items: <Widget>[
-              for (var i = 0; i < imageList.length; i++)
-                Column(
+          SizedBox(
+            height: 500.h,
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _current = index;
+                });
+              },
+              itemCount: imageList.length,
+              itemBuilder: (context, index) {
+                return Column(
                   children: [
                     SvgPicture.asset(
-                      "${imageList[i].img}",
+                      "${imageList[index].img}",
                       width: 540.73.w,
                       height: 379.h,
                     ),
+                    SizedBox(height: 16.h),
                     Textview(
                         TextStyle(
                           color: Colors.white,
@@ -662,7 +402,7 @@ class _LoginScreen extends State<LoginScreen> {
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w600,
                         ),
-                        title: imageList[i].title.toString()),
+                        title: imageList[index].title ?? ""),
                     Textview(
                         TextStyle(
                           color: Color(0xffCBCBCB),
@@ -670,40 +410,28 @@ class _LoginScreen extends State<LoginScreen> {
                           fontFamily: GoogleFonts.poppins().fontFamily,
                           fontWeight: FontWeight.w300,
                         ),
-                        title: imageList[i].description.toString()),
+                        title: imageList[index].description ?? ""),
                   ],
-                )
-            ],
-            carouselController: _controller,
-            options: CarouselOptions(
-                height: 550.h,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 1,
-                aspectRatio: 12 / 7,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                }),
+                );
+              },
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: imageList.asMap().entries.map((entry) {
-              return GestureDetector(
-                onTap: () => _controller.animateToPage(entry.key),
-                child: Container(
-                  width: _current == entry.key ? 44.w : 12.0.w,
-                  height: 12.0,
-                  margin: EdgeInsets.only(top: 8.0.h, left: 4.0.w, right: 4.w),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      // shape: _current == entry.key ?BoxShape.rectangle:BoxShape.circle,
-                      color: Colors.white
-                          .withOpacity(_current == entry.key ? 1 : 1)),
-                ),
-              );
-            }).toList(),
+          SizedBox(height: 16.h),
+          SmoothPageIndicator(
+            controller: _pageController,
+            count: imageList.length,
+            effect: ExpandingDotsEffect(
+              activeDotColor: Colors.white,
+              dotColor: Colors.white24,
+              dotHeight: 12,
+              dotWidth: 12,
+              spacing: 8,
+              expansionFactor: 4,
+            ),
+            onDotClicked: (index) {
+              _pageController.animateToPage(index,
+                  duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+            },
           ),
         ],
       ),
@@ -851,6 +579,7 @@ class _LoginScreen extends State<LoginScreen> {
           if (loginResponse.statusCode == 200) {
             LoginDeatils loginDeatils = LoginDeatils.fromJson(
                 jsonDecode(loginResponse.body));
+            print(loginResponse.body);
             EasyLoading.dismiss();
             if (loginDeatils.data != null) {
               String response = jsonEncode(loginDeatils);

@@ -12,6 +12,7 @@ import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdvProvider extends ChangeNotifier {
 
@@ -33,11 +34,12 @@ class AdvProvider extends ChangeNotifier {
       'Authorization': 'Bearer ${token}',}));
     print(response.data);
     CtmsOrganizationResponse ctmsOrganizationResponse = CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
-    print(ctmsOrganizationResponse.data);
+    print(ctmsOrganizationResponse.data!.connectOrgId);
     ctmsOrganization = ctmsOrganizationResponse.data;
-    await LocalSharePreferences().setString(SharedPreferencesConstant.connectOrganizationId, ctmsOrganization!.connectOrgId!.toString());
+   /* await LocalSharePreferences().setString(SharedPreferencesConstant.connectOrganizationId, ctmsOrganizationResponse.data!.connectOrgId.toString());
     await LocalSharePreferences().setString(SharedPreferencesConstant.connectUserId, ctmsOrganization!.connectUserId!.toString());
-    print(ctmsOrganization!.connectOrgId!.toString());
+    print("IN ADV PROVIDER "+ctmsOrganization!.connectOrgId!.toString());*/
+    print("IN ADV PROVIDER "+await LocalSharePreferences().getString(SharedPreferencesConstant.connectOrganizationId));
     print(ctmsOrganization!.connectUserId!.toString());
   }
 
@@ -86,7 +88,7 @@ class AdvProvider extends ChangeNotifier {
       advertiseListByUserId.clear();
     }
    // String myUrl = AppConstants.BASE_URL +"my-ads/getAll";
-    String myUrl = AppConstants.BASE_URL + 'my-ads/73';//${int.parse(ctmsOrganization!.connectUserId.toString())}';
+    String myUrl = AppConstants.BASE_URL + 'my-ads/${int.parse(ctmsOrganization!.connectUserId.toString())}';
     print("Advertise List :"+myUrl);
     Dio dio = Dio();
     final response = await dio.get(
@@ -254,5 +256,6 @@ class AdvProvider extends ChangeNotifier {
     notifyListeners();
     return response.statusCode;
   }
+
 
 }

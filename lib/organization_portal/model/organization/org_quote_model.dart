@@ -1,4 +1,4 @@
-import 'package:flutter_hr_management/organization_portal/model/organization/org_biding_model.dart';
+
 
 class OrgQuoteModel {
   List<QuoteWithPostDetailList>? content;
@@ -13,26 +13,29 @@ class OrgQuoteModel {
 
   OrgQuoteModel(
       {this.content,
-        this.last,
-        this.totalPages,
-        this.totalElements,
-        this.sort,
-        this.first,
-        this.numberOfElements,
-        this.size,
-        this.number});
+      this.last,
+      this.totalPages,
+      this.totalElements,
+      this.sort,
+      this.first,
+      this.numberOfElements,
+      this.size,
+      this.number});
 
   OrgQuoteModel.fromJson(Map<String, dynamic> json) {
-    if (json['content'] != null) {
+    if (json['content'] != null && json['content'] is List) {
       content = <QuoteWithPostDetailList>[];
       json['content'].forEach((v) {
         content!.add(new QuoteWithPostDetailList.fromJson(v));
       });
+    } else {
+      content = []; // fallback if data is "", null, or not a list
     }
+
     last = json['last'];
     totalPages = json['totalPages'];
     totalElements = json['totalElements'];
-    sort = json['sort']??'';
+    sort = json['sort'] ?? '';
     first = json['first'];
     numberOfElements = json['numberOfElements'];
     size = json['size'];
@@ -132,94 +135,94 @@ class GenericCardsDto {
 
   GenericCardsDto(
       {this.id,
-        this.userId,
-        this.type,
-        this.postingTime,
-        this.companyName,
-        this.nameOfPerson,
-        this.companyRating,
-        this.content,
-        this.topicName,
-        this.tableName,
-        this.companyLogo,
-        this.partLoadOrNot,
-        this.reminderUserName,
-        this.sharableLink,
-        this.deviceId,
-        this.ratings,
-        this.mobileNumber,
-        this.source,
-        this.destination,
-        this.mainTag,
-        this.privatePost,
-        this.makerName,
-        this.modelName,
-        this.mfgYear,
-        this.estPrice,
-        this.dnd,
-        this.vehicleSize,
-        this.association,
-        this.isPaid,
-        this.website,
-        this.alterativeNumber,
-        this.companyDetailsName,
-        this.isVerifiedByCompany,
-        this.typeOfPayment,
-        this.typeName,
-        this.images,
-        this.description,
-        this.title,
-        this.likes,
-        this.comment,
-        this.postImages,
-        this.listOfFullLoadImages});
+      this.userId,
+      this.type,
+      this.postingTime,
+      this.companyName,
+      this.nameOfPerson,
+      this.companyRating,
+      this.content,
+      this.topicName,
+      this.tableName,
+      this.companyLogo,
+      this.partLoadOrNot,
+      this.reminderUserName,
+      this.sharableLink,
+      this.deviceId,
+      this.ratings,
+      this.mobileNumber,
+      this.source,
+      this.destination,
+      this.mainTag,
+      this.privatePost,
+      this.makerName,
+      this.modelName,
+      this.mfgYear,
+      this.estPrice,
+      this.dnd,
+      this.vehicleSize,
+      this.association,
+      this.isPaid,
+      this.website,
+      this.alterativeNumber,
+      this.companyDetailsName,
+      this.isVerifiedByCompany,
+      this.typeOfPayment,
+      this.typeName,
+      this.images,
+      this.description,
+      this.title,
+      this.likes,
+      this.comment,
+      this.postImages,
+      this.listOfFullLoadImages});
 
   GenericCardsDto.fromJson(Map<String, dynamic> json) {
-    id = json['id']??1;
-    userId = json['userId']??1;
-    type = json['type']??'';
-    postingTime = json['postingTime']??'';
-    companyName = json['companyName']??'';
-    nameOfPerson = json['nameOfPerson']??'';
-    companyRating = json['companyRating']??'';
-    content = json['content']??'';
-    topicName = json['topicName']??'';
-    tableName = json['tableName']??'';
-    companyLogo = json['companyLogo']??'';
-    partLoadOrNot = json['partLoadOrNot']??0;
-    reminderUserName = json['reminderUserName']??'';
-    sharableLink = json['sharableLink']??'';
-    deviceId = json['deviceId']??'';
-    ratings = json['ratings']??0;
-    mobileNumber = json['mobileNumber']??0;
-    source = json['source']??'';
-    destination = json['destination']??'';
-    mainTag = json['mainTag']??'';
-    privatePost = json['privatePost']??0;
-    makerName = json['makerName']??'';
-    modelName = json['modelName']??'';
-    mfgYear = json['mfgYear']??'';
-    estPrice = json['estPrice']??'';
-    dnd = json['dnd']??0;
-    vehicleSize = json['vehicleSize']??'';
-    association = json['association']??'';
-    isPaid = json['isPaid']??'';
-    website = json['website']??'';
-    alterativeNumber = json['alterativeNumber']??'';
-    companyDetailsName = json['companyDetailsName']??'';
-    isVerifiedByCompany = json['isVerifiedByCompany']??'';
-    typeOfPayment = json['typeOfPayment']??'';
-    typeName = json['typeName']??'';
+    id = json['id'] ?? 1;
+    userId = json['userId'] ?? 1;
+    type = json['type'] ?? '';
+    postingTime = json['postingTime'] ?? '';
+    companyName = json['companyName'] ?? '';
+    nameOfPerson = json['nameOfPerson'] ?? '';
+    companyRating = json['companyRating'] ?? '';
+    content = json['content'] ?? '';
+    topicName = json['topicName'] ?? '';
+    tableName = json['tableName'] ?? '';
+    companyLogo = json['companyLogo'] ?? '';
+    partLoadOrNot = json['partLoadOrNot'] ?? 0;
+    reminderUserName = json['reminderUserName'] ?? '';
+    sharableLink = json['sharableLink'] ?? '';
+    deviceId = json['deviceId'] ?? '';
+    ratings = json['ratings'] ?? 0;
+    mobileNumber = json['mobileNumber'] ?? 0;
+    source = json['source'] ?? '';
+    destination = json['destination'] ?? '';
+    mainTag = json['mainTag'] ?? '';
+    privatePost = json['privatePost'] ?? 0;
+    makerName = json['makerName'] ?? '';
+    modelName = json['modelName'] ?? '';
+    mfgYear = json['mfgYear'] ?? '';
+    estPrice = json['estPrice'] ?? '';
+    dnd = json['dnd'] ?? 0;
+    vehicleSize = json['vehicleSize'] ?? '';
+    association = json['association'] ?? '';
+    isPaid = json['isPaid'] ?? '';
+    website = json['website'] ?? '';
+    alterativeNumber = json['alterativeNumber'] ?? '';
+    companyDetailsName = json['companyDetailsName'] ?? '';
+    isVerifiedByCompany = json['isVerifiedByCompany'] ?? '';
+    typeOfPayment = json['typeOfPayment'] ?? '';
+    typeName = json['typeName'] ?? '';
     if (json['images'] != null) {
       images = <String>[];
       json['images'].forEach((v) {
         images!.add(v);
       });
     }
-    description = json['description']??'';
-    title = json['title']??'';
-    likes = json['likes']??'';
-    comment = json['comment']??'';
+    description = json['description'] ?? '';
+    title = json['title'] ?? '';
+    likes = json['likes'] ?? '';
+    comment = json['comment'] ?? '';
     if (json['postImages'] != null) {
       postImages = <String>[];
       json['postImages'].forEach((v) {
@@ -300,16 +303,16 @@ class BidList {
 
   BidList(
       {this.bidings,
-        this.firstName,
-        this.lastName,
-        this.profileImage,
-        this.companyName,
-        this.isVerified,
-        this.isPaid});
+      this.firstName,
+      this.lastName,
+      this.profileImage,
+      this.companyName,
+      this.isVerified,
+      this.isPaid});
 
   BidList.fromJson(Map<String, dynamic> json) {
     bidings =
-    json['bidings'] != null ? new Bidings.fromJson(json['bidings']) : null;
+        json['bidings'] != null ? new Bidings.fromJson(json['bidings']) : null;
     firstName = json['firstName'];
     lastName = json['lastName'];
     profileImage = json['profileImage'];
@@ -353,21 +356,21 @@ class Bidings {
 
   Bidings(
       {this.id,
-        this.emailId,
-        this.userName,
-        this.type,
-        this.idOfPost,
-        this.amount,
-        this.description,
-        this.bidderUserName,
-        this.mobileNumber,
-        this.loggedUserName,
-        this.loggedTime,
-        this.km,
-        this.bestMatch,
-        this.totalBids,
-        this.status,
-        this.endTime});
+      this.emailId,
+      this.userName,
+      this.type,
+      this.idOfPost,
+      this.amount,
+      this.description,
+      this.bidderUserName,
+      this.mobileNumber,
+      this.loggedUserName,
+      this.loggedTime,
+      this.km,
+      this.bestMatch,
+      this.totalBids,
+      this.status,
+      this.endTime});
 
   Bidings.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -92,6 +92,7 @@ class ConnectUser {
   bool? addedIngroup;
   String? aadharCardForVerification;
   String? panCardForVerification;
+  bool? isSendOtp;
 
   ConnectUser(
       {this.addedIngroup,this.isSelected,this.id,
@@ -131,7 +132,8 @@ class ConnectUser {
         this.companyId,
         this.isUserVerifiedByCompany,
         this.aadharCardForVerification,
-        this.panCardForVerification
+        this.panCardForVerification,
+        this.isSendOtp,
       });
 
   ConnectUser.fromJson(Map<String, dynamic> json) {
@@ -175,6 +177,7 @@ class ConnectUser {
     panCardForVerification = json['panCardForVerification']?? '';
     isSelected=false;
     addedIngroup=false;
+    isSendOtp = false;
   }
 
   Map<String, dynamic> toJson() {

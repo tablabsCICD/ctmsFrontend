@@ -7,6 +7,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/advertise_portal/provider/advertise_provider.dart';
 import 'package:flutter_hr_management/firebase_api.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/all_users_provider.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/comp_bid_provider.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/more_provider.dart';
 import 'package:flutter_hr_management/organization_portal/model/job_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
@@ -16,7 +19,6 @@ import 'package:flutter_hr_management/organization_portal/provider/group/groupLi
 import 'package:flutter_hr_management/organization_portal/provider/job_list_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/localization_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/menu_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/more_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/plan_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/pool_purchase_provider.dart';
@@ -43,9 +45,7 @@ Future<void> main() async {
         messagingSenderId: "906632873854",
         appId: "1:906632873854:web:0f4fc50be1f8de4de0952f",
         measurementId: "G-HT44YEF6PL"
-
     ));
-    await FirebaseApi().initNotifications();
   }
 
   await setupLocator();
@@ -55,7 +55,7 @@ Future<void> main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => locator<MenuProvider>()),
           ChangeNotifierProvider(create: (_) => locator<AuthProvider>()),
-          ChangeNotifierProvider(create: (_) => locator<PoolPurchaseProvider>()),
+          ChangeNotifierProvider(create: (_) => locator<OrgUserProvider>()),
           ChangeNotifierProvider(create: (_) => locator<MoreProvider>()),
           ChangeNotifierProvider(create: (_) => locator<RouteProvider>()),
           ChangeNotifierProvider(create: (_) => locator<OrgProvider>()),
@@ -67,6 +67,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (_) => locator<GeneralPostProvider>()),
           ChangeNotifierProvider(create: (_) => locator<AdvProvider>()),
           ChangeNotifierProvider(create: (_) => locator<CreateOrgProvider>()),
+          ChangeNotifierProvider(create: (_) => locator<CompanyBidProvider>()),
         ],
         child: MyApp(),
       )
@@ -75,27 +76,14 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return CheckUserLogin();
-
   }
 
   CheckUserLogin() {
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   initialRoute: AppRoutes.home,
-    //   onGenerateRoute: RouteGenerator.generateRoute,
-    // );
-
-
-   return ScreenUtilInit(
+    return ScreenUtilInit(
       designSize: const Size(1440, 1020),
       minTextAdapt: true,
       splitScreenMode: true,

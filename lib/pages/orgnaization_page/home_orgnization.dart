@@ -10,7 +10,6 @@ import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/model/response/jwt_login_data.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_dashboard.dart';
-import 'package:flutter_hr_management/organization_portal/company/company_menu_page.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
@@ -26,7 +25,10 @@ import 'package:http/http.dart' as http;
 import '../../common/app_colors.dart';
 import '../../common/app_responsive.dart';
 import '../../constant/images.dart';
+import '../../model/ctms_organization.dart';
+import '../../model/response/ctms_organization.dart';
 import '../dashboard/widget/header_widget.dart';
+import '../widget/toast.dart';
 
 class HomeOrganizationScreen extends StatefulWidget{
   @override
@@ -37,14 +39,20 @@ class HomeOrganizationScreen extends StatefulWidget{
 }
 class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
   final orgProvider = locator<OrgProvider>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final advProvider = locator<AdvProvider>();
+
+  String? token;
+  bool isAdmin = false;
+  LoginDeatils? loginDeatils;
+  LoginDeatils? loginDeatil;
+  CtmsOrganization? ctmsOrganization;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-   getLoginDetail();
+    getLoginDetail();
   }
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +64,6 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            /// Side Navigation Menu
-            /// Only show in desktop
             if (AppResponsive.isDesktop(context))
               Expanded(
                 child: SideBarOrganization(),
@@ -69,84 +74,144 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
               flex: 4,
               child: Column(
                 children: [
-                  HeaderWidget(scaffoldKey:_scaffoldKey,isSearchVisible: false),
-                  SizedBox(height: 38.h,),
+                  HeaderWidget(scaffoldKey: _scaffoldKey, isSearchVisible: false),
+                  SizedBox(height: 38.h),
                   Container(
                     color: AppColor.bgColor,
-                    // margin: EdgeInsets.all(10),
                     child: Row(
                       children: [
-                        SizedBox(width: 38.w,),
+                        SizedBox(width: 38.w),
                         Consumer<OrgProvider>(
-                          builder: (context, model, child) => InkWell(onTap: () async {
-                           Organization organization = await orgProvider.getOrgDetails();
-                           if(organization==''){
-                           }else{
-                           print("Connect Organization : ${organization.id},${organization.companyName}");
-                            Navigator.push(
+                          builder: (context, model, child) => InkWell(
+                            onTap: () async {
+                              final Organization? organization =
+                              await orgProvider.getOrgDetails();
+
+                              if (organization == null || organization.id == null) {
+                                ToastMessage.show(
+                                  context,
+                                  "No organisation found. Please contact admin.",
+                                );
+                                return;
+                              }
+
+                              debugPrint(
+                                  "Connect Organization : ${organization.id}, ${organization.companyName}");
+
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (builder) =>
-                                        CompanyDashboard(organization)));}
-                          },
+                                  builder: (builder) =>
+                                      CompanyDashboard(organization),
+                                ),
+                              );
+                            },
                             child: empCounts(
-                                "0", "Monitoring", Images.monitoring, Color(
-                                0xFFEAF8F4)),),
+                              "0",
+                              "Monitoring",
+                              Images.monitoring,
+                              const Color(0xFFEAF8F4),
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 38.w,),
-                        InkWell(onTap: () {
-                          Navigator.pushNamed(context, AppRoutes.crm);
-                        }, child: empCounts("0", "CRM", Images.crm, Color(
-                            0xFFFFEDF9)),),
-                        SizedBox(width: 38.w,),
-                        InkWell(onTap: () async {
-                         await getEmpToken(loginDeatils!.data!.id!);
-                          final url = Uri.parse(
-                              ApiConstant.HRMS_URL+"${isAdmin?"/employee":"/leave"}"+"?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
-                          debugPrint("HRMS Url : "+url.toString());
-                          if (!await launchUrl(url,)) {
-                            throw Exception('Could not launch $url');
-                          }
-                        }, child: empCounts("0", "HRM", Images.hrm, Color(
-                            0xFFF6E3D1)),),
-                        // empCounts("0","HRM",Images.hrm,Color(0xFFFEF0E5)),
+                        SizedBox(width: 38.w),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRoutes.crm);
+                          },
+                          child: empCounts(
+                            "0",
+                            "CRM",
+                            Images.crm,
+                            const Color(0xFFFFEDF9),
+                          ),
+                        ),
+                        SizedBox(width: 38.w),
+                        InkWell(
+                          onTap: () async {
+                            final empId = loginDeatils?.data?.id;
+                            if (empId == null) return;
+
+                            await getEmpToken(empId);
+
+                            final orgId = loginDeatils?.data?.organisationId ?? 0;
+                            final url = Uri.parse(
+                              "${ApiConstant.HRMS_URL}${isAdmin ? "/employee" : "/leave"}"
+                                  "?token=$token&empId=$empId&orgId=$orgId",
+                            );
+
+                            debugPrint("HRMS Url : $url");
+
+                            if (!await launchUrl(url)) {
+                              throw Exception('Could not launch $url');
+                            }
+                          },
+                          child: empCounts(
+                            "0",
+                            "HRM",
+                            Images.hrm,
+                            const Color(0xFFF6E3D1),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 38.h,),
+                  SizedBox(height: 38.h),
                   Container(
-                    // margin: EdgeInsets.all(10),
                     child: Row(
                       children: [
-                       /* SizedBox(width: 38.w,),
-                        empCounts("0", "E-Invoices", Images.invoice,
-                            Color(0xFFEAF8F4)),*/
-                        SizedBox(width: 38.w,),
+                        SizedBox(width: 38.w),
                         Visibility(
                           visible: true,
                           child: InkWell(
                             onTap: () async {
-                            await  getEmpToken(loginDeatils!.data!.id!);
-                              final url = Uri.parse(ApiConstant.BILTY_URL+
-                                  "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
-                              debugPrint("Bilty Url : "+url.toString());
-                              if (!await launchUrl(url,)) {
+                              final empId = loginDeatils?.data?.id;
+                              if (empId == null) return;
+
+                              await getEmpToken(empId);
+
+                              final orgId =
+                                  loginDeatils?.data?.organisationId ?? 0;
+                              final url = Uri.parse(
+                                "${ApiConstant.BILTY_URL}?token=$token&empId=$empId&orgId=$orgId",
+                              );
+
+                              debugPrint("Bilty Url : $url");
+
+                              if (!await launchUrl(url)) {
                                 throw Exception('Could not launch $url');
                               }
                             },
-                            child:
-                            empCounts("0", "E-Bilty", Images.bilty, Color(
-                                0xFFFFEDF9)),),
+                            child: empCounts(
+                              "0",
+                              "E-Bilty",
+                              Images.bilty,
+                              const Color(0xFFFFEDF9),
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 38.w,),
+                        SizedBox(width: 38.w),
                         Visibility(
                           visible: true,
-                          child: InkWell(onTap: () {
-                            advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
-                            advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
-                            Navigator.pushNamed(context, AppRoutes.advertise);
-                          }, child: empCounts("0", "Advertise Portal", Images.crm, Color(
-                              0xFFFFEDF9)),),
+                          child: InkWell(
+                            onTap: () {
+                              final orgId =
+                                  loginDeatils?.data?.organisationId ?? 0;
+                              final userId = loginDeatils?.data?.id ?? 0;
+
+                              advProvider.getAdvertiseListByOrg(orgId);
+                              advProvider.getAdvertiseListByUser(userId);
+
+                              Navigator.pushNamed(
+                                  context, AppRoutes.advertise);
+                            },
+                            child: empCounts(
+                              "0",
+                              "Advertise Portal",
+                              Images.crm,
+                              const Color(0xFFFFEDF9),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -157,21 +222,18 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
           ],
         ),
       ),
-
-
     );
   }
 
-  empCounts(String totCount, String name, String image, Color color) {
+  Widget empCounts(String totCount, String name, String image, Color color) {
     return Container(
       width: 329.w,
       height: 166.h,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.50, color: Colors.white),
+          side: const BorderSide(width: 0.50, color: Colors.white),
           borderRadius: BorderRadius.circular(10),
-
         ),
       ),
       child: Row(
@@ -182,74 +244,128 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
               width: 108.w,
               height: 110.h,
               decoration: ShapeDecoration(
-                color: color, //Color(0xFFEAF8F4)
-                shape: CircleBorder(),
-
+                color: color,
+                shape: const CircleBorder(),
               ),
               child: Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: SvgPicture.asset(
-                  image, height: 10.h, width: 10.w, color: Colors.black,),
+                  image,
+                  height: 10.h,
+                  width: 10.w,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w300,
-                  )
-              )
+                name,
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  String? token;
-
   Future<void> getEmpToken(int empId) async {
-    String authToken = await LocalSharePreferences()
+    final authToken = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
 
-    String myUrl = ApiConstant.BASE_URL +
-        "api/getTokenByEmployeeId?employeeId=${empId}";
-    debugPrint("Get Token Url:" + myUrl);
+    final myUrl =
+        "${ApiConstant.BASE_URL}api/getTokenByEmployeeId?employeeId=$empId";
+    debugPrint("Get Token Url: $myUrl");
 
     EasyLoading.show(status: "Loading");
-    final req = await http.get(Uri.parse(myUrl), headers: {
-      "Content-Type": "application/json",
-      'Authorization': 'Bearer ${authToken}',
-    });
+    final req = await http.get(
+      Uri.parse(myUrl),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $authToken',
+      },
+    );
     EasyLoading.dismiss();
-    print('the body is ${req.body}');
+
+    debugPrint('the body is ${req.body}');
     if (req.statusCode == 200) {
-      var jwtResponse = json.decode(req.body);
-      print('the response is ${jwtResponse}');
-      JWTLoginData jwtLoginData =
-      JWTLoginData.fromJson(jwtResponse);
+      final jwtResponse = json.decode(req.body);
+      debugPrint('the response is $jwtResponse');
+
+      final jwtLoginData = JWTLoginData.fromJson(jwtResponse);
+
       if (jwtLoginData.data != null) {
-        token = jwtLoginData.data!;
-        print("Final Generated Token ::" + token!);
+        token = jwtLoginData.data;
+        debugPrint("Final Generated Token :: $token");
       } else {
         showCustomToast(
-            context, jwtLoginData.message!, Icons.clear, Colors.red);
+          context,
+          jwtLoginData.message ?? "Token generation failed",
+          Icons.clear,
+          Colors.red,
+        );
       }
     }
   }
 
-  final advProvider = locator<AdvProvider>();
-  bool isAdmin = false;
-  LoginDeatils? loginDeatils;
   Future<void> getLoginDetail() async {
-    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
-    isAdmin =  loginDeatils!.data!.isAdmin!;
-    advProvider.getCtmsOrganization();
-   // getEmpToken(loginDeatils!.data!.id!);
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+
+    if (loginDeatils?.data != null) {
+      debugPrint("CurrentLoggedIn username:::: ${loginDeatils!.data!.firstName}");
+      isAdmin = loginDeatils!.data!.isAdmin ?? false;
+    }
+    await getCtmsOrganization();
+  }
+
+  Future<void> getCtmsOrganization() async {
+    loginDeatil =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+
+    final orgId = loginDeatil?.data?.organisationId;
+    if (orgId == null) return;
+
+    final dio = Dio();
+    final token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+
+    final response = await dio.get(
+      "${ApiConstant.GET_CTMS_ORG}?Id=$orgId",
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    debugPrint(response.data.toString());
+
+    final ctmsOrganizationResponse = CtmsOrganizationResponse.fromJson(
+      jsonDecode(response.data),
+    );
+
+    ctmsOrganization = ctmsOrganizationResponse.data;
+
+    if (ctmsOrganization != null) {
+      await LocalSharePreferences().setString(
+        SharedPreferencesConstant.connectOrganizationId,
+        ctmsOrganization!.connectOrgId?.toString() ?? "",
+      );
+      await LocalSharePreferences().setString(
+        SharedPreferencesConstant.connectUserId,
+        ctmsOrganization!.connectUserId?.toString() ?? "",
+      );
+
+      debugPrint("Tkd OrgId::: ${ctmsOrganization!.connectOrgId}");
+      debugPrint(ctmsOrganization!.connectUserId.toString());
+    }
   }
 }

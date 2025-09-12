@@ -1,14 +1,14 @@
+// Updated BidList.dart
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/locator.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/comp_bid_provider.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
-import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
 import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/filter_button.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
@@ -23,12 +23,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class BidList extends StatefulWidget {
-  final bidProvider = locator<OrgProvider>();
-
-
+  final bidProvider = locator<CompanyBidProvider>();
   Organization organization;
-  BidList(this.organization,{Key? key}) : super(key: key) {
-  //  bidProvider.getReceivedQuoteList(organization.id!);
+  BidList(this.organization, {Key? key}) : super(key: key) {
     bidProvider.getPlacedQuoteList(organization.id!);
   }
 
@@ -37,19 +34,14 @@ class BidList extends StatefulWidget {
 }
 
 class _BidListState extends State<BidList> {
+  String selectedFromDate = '';
+  String selectedToDate = '';
 
-
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 33.0.w,vertical: 20.h),
-      child:Consumer<OrgProvider>(
+      padding: EdgeInsets.symmetric(horizontal: 33.0.w, vertical: 20.h),
+      child: Consumer<CompanyBidProvider>(
         builder: (context, model, child) => SingleChildScrollView(
           child: Column(
             children: [
@@ -57,93 +49,184 @@ class _BidListState extends State<BidList> {
                 height: 40,
                 child: Row(
                   children: [
-                    getCircularContainer(
-                        "Placed Quotes",
-                        (model.selectedQuoteTab == "Placed Quotes"),
-                        0,
-                        model),
-                    SizedBox(width: 10.w,),
-                    getCircularContainer(
-                        "Received Quotes",
-                        (model.selectedQuoteTab == "Received Quotes"),
-                        1,
-                        model),
+                    getCircularContainer("Placed Quotes", (model.selectedQuoteTab == "Placed Quotes"), 0, model),
+                    SizedBox(width: 10.w),
+                    getCircularContainer("Received Quotes", (model.selectedQuoteTab == "Received Quotes"), 1, model),
                   ],
                 ),
               ),
-              SizedBox(height: 26.h,),
+              SizedBox(height: 26.h),
               Row(
-                mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextView(
-                    title:'Total Quote : ${model.orgBigingList.length}',
+                    title: 'Total Quote : ${model.orgBigingList.length}',
                     color: Colors.black,
                     fontSize: 22.sp,
                     fontWeight: FontWeight.w600,
-                  ) ,
+                  ),
                   filterIcon(model)
                 ],
               ),
-              SizedBox(height: 32.h,),
+              SizedBox(height: 32.h),
               Container(
                 decoration: BoxDecoration(
-                    color: AppColor.white, borderRadius: BorderRadius.circular(5)),
+                  color: AppColor.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 padding: EdgeInsets.all(20),
-                child: model.orgBigingList.isEmpty
-                    ? Container(
-                    height:
-                    MediaQuery.of(context).size.height - 600,
-                    child: Center(
-                        child: TextView(
-                            title: "No Record Found",
-                            fontSize: 16.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w900)))
-                    : Table(
-                      columnWidths: {
-                    0: FlexColumnWidth(60),
-                    1: FlexColumnWidth(40),
-                    2: FlexColumnWidth(40),
-                    3: FlexColumnWidth(40),
-                    4: FlexColumnWidth(40),
-                    5: FlexColumnWidth(40),
-                    6: FlexColumnWidth(40),
-                    7: FlexColumnWidth(40),
-                    8: FlexColumnWidth(30),
-                    9: FlexColumnWidth(70),
-                                      },
-                                      textBaseline: TextBaseline.ideographic,
-                                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                                      children: [
-                    /// Table Header
-                    TableRow(
-                      children: [
-                        tableHeader("Material"),
-                        tableHeader("Routes"),
-                        tableHeader("Km"),
-                        tableHeader("Total Quotes"),
-                        tableHeader("Best Match"),
-                        tableHeader("End Time"),
-                        tableHeader("Status"),
-                        tableHeader("Price"),
-                        // tableHeader("Action"),
-                      ],
+                child: model.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : model.orgBigingList.isEmpty
+                    ? Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 50.h),
+                    child: Text(
+                      "No Record Found",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey,
+                      ),
                     ),
-                    for (int i=0;i<model.orgBigingList.length;i++)  tableRow(
-                      context,
-                      material: model.orgBigingList[i].genericCardsDto!.companyName,
-                      route1: model.orgBigingList[i].genericCardsDto!.source,
-                      route2: model.orgBigingList[i].genericCardsDto!.destination,
-                      km: model.orgBigingList[i].bidingList!.length==0?'-':model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.km,
-                      totalBids: model.orgBigingList[i].bidingList!.length.toString(),
-                      bestMatch:model.orgBigingList[i].bidingList!.length==0?'-':model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.bestMatch,//model.orgBigingList[i].companyName,
-                      endtime:model.orgBigingList[i].bidingList!.length==0?'-':model.orgBigingList[i].bidingList!.length==0?'-':model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.endTime,//model.orgBigingList[i].postingTime,
-                      status: model.orgBigingList[i].bidingList!.length==0?'-':model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.status.toString(),
-                      price: model.orgBigingList[i].bidingList!.length==0?'-':'${model.orgBigingList[i].bidingList![model.orgBigingList[i].bidingList!.length-1].bidings!.amount.toString()}',
-                    ),
-                                      ],
-                                    ),
-          
+                  ),
+                )
+                    : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: model.orgBigingList.length,
+                  itemBuilder: (context, i) {
+                    final item = model.orgBigingList[i];
+                    final biding = item.bidingList?.isNotEmpty == true
+                        ? item.bidingList!.last.bidings
+                        : null;
+
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isWide = constraints.maxWidth > 600;
+
+                        return Container(
+                          margin: EdgeInsets.only(bottom: 20.h),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.r),
+                            gradient: LinearGradient(
+                              colors: [Colors.white, Colors.grey.shade100],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              // Side Image
+                              Container(
+                                width: 90.w,
+                                height: 120.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey.shade50,
+                                  borderRadius: BorderRadius.horizontal(left: Radius.circular(20.r)),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.horizontal(left: Radius.circular(20.r)),
+                                  child: Image.asset(
+                                    'assets/org/container.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+
+                              // Content Section
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(isWide ? 20.w : 14.w),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Company Name
+                                      Text(
+                                        item.genericCardsDto?.companyName ?? '-',
+                                        style: TextStyle(
+                                          fontSize: isWide ? 18.sp : 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey[900],
+                                        ),
+                                      ),
+                                      SizedBox(height: 4.h),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on, size: 16.sp, color: Colors.blueGrey),
+                                          SizedBox(width: 4.w),
+                                          Expanded(
+                                            child: Text(
+                                              "${item.genericCardsDto?.source ?? '-'} → ${item.genericCardsDto?.destination ?? '-'}",
+                                              style: TextStyle(fontSize: 13.sp, color: Colors.blueGrey[600]),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10.h),
+
+                                      // Info Chips
+                                      Wrap(
+                                        spacing: 8.w,
+                                        runSpacing: 8.h,
+                                        children: [
+                                          _infoChip("📞", biding?.mobileNumber?.toString() ?? '-'),
+                                          _infoChip("📊", item.bidingList?.length.toString() ?? '-'),
+                                          _infoChip("✉️", biding?.emailId ?? '-'),
+                                          _infoChip("👤", biding?.userName ?? '-'),
+                                          _infoChip("✅", biding?.status?.toString() ?? '-'),
+                                          _infoChip("💰", biding?.amount?.toString() ?? '-'),
+                                        ],
+                                      ),
+
+                                      SizedBox(height: 12.h),
+
+                                      // Action Buttons
+                                      Row(
+                                        children: [
+                                          ElevatedButton.icon(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.visibility, size: 18.sp),
+                                            label: Text("View"),
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12.r),
+                                              ),
+                                            ),
+                                          ),
+                                         /* SizedBox(width: 10.w),
+                                          OutlinedButton.icon(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.check_circle_outline, size: 18.sp),
+                                            label: Text("Approve"),
+                                            style: OutlinedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12.r),
+                                              ),
+                                              side: BorderSide(color: Colors.blueGrey),
+                                            ),
+                                          ),*/
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+
               ),
             ],
           ),
@@ -152,7 +235,32 @@ class _BidListState extends State<BidList> {
     );
   }
 
-  filterIcon(OrgProvider model) {
+  // Helper for Chip UI
+  Widget _infoChip(String icon, String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: Colors.blueGrey.shade50,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: TextStyle(fontSize: 14.sp)),
+          SizedBox(width: 4.w),
+          Text(
+            text,
+            style: TextStyle(fontSize: 13.sp, color: Colors.blueGrey[700]),
+          ),
+        ],
+      ),
+    );
+  }
+
+// keep your existing filterIcon, _showDateWiseDialog, _buildText, getCircularContainer methods untouched
+
+
+filterIcon(CompanyBidProvider model) {
     return Container(
         width: 130.w,
         height: 43.h,
@@ -188,7 +296,7 @@ class _BidListState extends State<BidList> {
                       _buildPopupMenu('Sort By Company Name Z to A', 1,model),
                     ];
                   }
-                  },
+                },
               ),
               Text(
                 "Filter",
@@ -208,14 +316,14 @@ class _BidListState extends State<BidList> {
 
   PopupMenuItem _buildPopupMenu(
       String title,
-      int? id, OrgProvider model,
+      int? id, CompanyBidProvider model,
       ) {
     return PopupMenuItem(
       child: Text(title,style: TextStyle(
-      fontSize: 14.sp,
+          fontSize: 14.sp,
           fontFamily: GoogleFonts.poppins().fontFamily,
-        fontWeight: FontWeight.w500,
-        color: Colors.black),),
+          fontWeight: FontWeight.w500,
+          color: Colors.black),),
       onTap: () {
         if (id == 0) {
           model.orgBigingList.sort(
@@ -248,7 +356,7 @@ class _BidListState extends State<BidList> {
     );
   }
 
-  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter,OrgProvider model) {
+  Widget _showDateWiseDialog(BuildContext context, StateSetter stateSetter,CompanyBidProvider model) {
     return Container(
       width: 350.w,
       height: 350.h,
@@ -308,13 +416,13 @@ class _BidListState extends State<BidList> {
                           fontStyle: FontStyle.normal),
                     ),
                     onPressed: () {
-                     if(selectedFromDate.isNotEmpty && selectedToDate.isNotEmpty){
-                       model.getPlacedQuoteListByDate(selectedFromDate,selectedToDate,widget.organization.id!);
-                       Navigator.of(context).pop();
-                     }else{
-                       showCustomToast(
-                           context, "Please select date", Icons.clear, Colors.red);
-                     }
+                      if(selectedFromDate.isNotEmpty && selectedToDate.isNotEmpty){
+                        model.getPlacedQuoteListByDate(selectedFromDate,selectedToDate,widget.organization.id!);
+                        Navigator.of(context).pop();
+                      }else{
+                        showCustomToast(
+                            context, "Please select date", Icons.clear, Colors.red);
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -335,9 +443,6 @@ class _BidListState extends State<BidList> {
     );
   }
 
-
-  String selectedFromDate = '';
-  String selectedToDate = '';
 
   Widget _buildText(
       BuildContext context, String label, String label1, Function onClick) {
@@ -390,10 +495,10 @@ class _BidListState extends State<BidList> {
 
   TableRow tableRow(context, {String? material,String? route1,String? route2,String? km,String? totalBids,String? bestMatch,String? endtime,String?status,String?price}) {
     return TableRow(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        color: Colors.white
-      ),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: Colors.white
+        ),
         children: [
           //Full Name
           Padding(
@@ -419,7 +524,7 @@ class _BidListState extends State<BidList> {
           ),
 
           SizedBox(
-           // height: 70.h,
+            // height: 70.h,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -533,7 +638,7 @@ class _BidListState extends State<BidList> {
   }
 
   getCircularContainer(
-      String title, bool isSelected, int i, OrgProvider model) {
+      String title, bool isSelected, int i, CompanyBidProvider model) {
     return InkWell(
       onTap: () {
         setState(() {
@@ -554,7 +659,7 @@ class _BidListState extends State<BidList> {
             title,
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.black,
-              fontSize: 20.sp,
+              fontSize: 18.sp,
               fontFamily: GoogleFonts.poppins().fontFamily,
               fontWeight: FontWeight.w500,
             ),

@@ -7,12 +7,16 @@ class FullLoadModel {
 
   FullLoadModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    if (json['data'] != null) {
+
+    if (json['data'] != null && json['data'] is List) {
       data = <OrgFullLoadModel>[];
       json['data'].forEach((v) {
-        data!.add(new OrgFullLoadModel.fromJson(v));
+        data!.add(OrgFullLoadModel.fromJson(v));
       });
+    } else {
+      data = []; // fallback if data is "", null, or not a list
     }
+
     success = json['success'];
   }
 

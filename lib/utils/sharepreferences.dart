@@ -37,6 +37,22 @@ class LocalSharePreferences{
     return val;
   }
 
+  setCompanyVisitingFlag(bool flag) async {
+    if (flag == false) {
+    }
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setBool("Visited", flag);
+  }
+
+
+  Future<bool?> getCompanyVisitingFlag() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    bool? alreadyVisited = await _prefs.getBool("Visited") ?? false;
+    return alreadyVisited;
+  }
+
+
+
   Future<LoginDeatils> getLoginData() async{
    String data  = await getString(SharedPreferencesConstant.LoginKey);
    LoginDeatils loginDeatils=LoginDeatils.fromJson(jsonDecode(data));

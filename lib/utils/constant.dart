@@ -2,8 +2,8 @@ import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 class ApiConstant {
 
- // static String BASE_URL = 'http://ec2-13-127-77-140.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
-  static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
+  static String BASE_URL = 'http://ec2-13-200-229-164.ap-south-1.compute.amazonaws.com:8080/ctmsOrg/';
+ // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
  // static String BASE_URL = "https://api.tkdost.com/ctmsOrg/";
  // static String BILTY_URL = 'http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty';
   static String BILTY_URL = "http://builty2.0.s3-website.ap-south-1.amazonaws.com/builty";
@@ -55,9 +55,5 @@ class ApiConstant {
 
   static String CREATE_MAIL = BASE_URL + "api/Employee/SendEmailRemainder";
   static String SEND_MAIL_CC = BASE_URL + "api/Employee/SendCCEmail";
-//  static String token = '';
- // static String token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmdAZ21haWwuY29tIiwiZXhwIjoxNjk4ODc2MjQ5LCJpYXQiOjE2OTg4NDAyNDl9.VgbYGJ0Dgj3kwHXLxuWo_zZeJcxTs9R3I9zg-nhpnN8';
-
-
 
 }

@@ -32,12 +32,14 @@ import 'package:flutter_hr_management/organization_portal/base_widget/custom_tex
 import 'package:flutter_hr_management/organization_portal/base_widget/getImage.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/getLoader.dart';
 
+import '../company_provider/all_users_provider.dart';
+
 class AllUsers extends StatefulWidget {
-  Organization organization;
-  final orgProvider = locator<OrgProvider>();
+  Organization? organization;
+  final orgProvider = locator<OrgUserProvider>();
 
   AllUsers(this.organization, {Key? key}) : super(key: key) {
-    orgProvider.getUsersByCompanyId(organization.id!);
+    orgProvider.getUsersByCompanyId(organization!.id!);
   }
 
   @override
@@ -46,7 +48,7 @@ class AllUsers extends StatefulWidget {
 
 class _AllUsersState extends State<AllUsers> {
   final authProvider = locator<AuthProvider>();
-  final orgProvider = locator<OrgProvider>();
+  final orgProvider = locator<OrgUserProvider>();
   String selectedTab = "All Users";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -77,26 +79,13 @@ class _AllUsersState extends State<AllUsers> {
                         },
                       ),
                       SizedBox(height: 16.h,),
-                      Expanded(child: AllUsersList(widget.organization)),
+                      Expanded(child: AllUsersList(widget.organization!)),
                     ],
                   ),
                 ),
               ],
             ),
-           /* if (ResponsiveWidget.isDesktop(context)) Positioned(
-              top: 105.h,
-              left: 265.w,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-                child: SvgPicture.asset(
-                  "assets/back_button.svg",
-                  height: 80.h,
-                  width: 80.w,
-                ),
-              ),
-            ) else SizedBox.shrink(),*/
+
           ],
         ));
   }

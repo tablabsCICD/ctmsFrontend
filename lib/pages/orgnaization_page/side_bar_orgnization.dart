@@ -28,19 +28,17 @@ class SideBarOrganization extends StatefulWidget {
 }
 
 class _SideBarOrganization extends State<SideBarOrganization> {
-
-  static bool  isDashbord=true;
-  static bool isMonitoring=false;
-  static bool isCRM=false;
-  static bool isCustomer=false;
-  static bool isHRM=false;
-  static bool isBuilty=false;
-  static bool isAdv=false;
+  static bool isDashbord = true;
+  static bool isMonitoring = false;
+  static bool isCRM = false;
+  static bool isCustomer = false;
+  static bool isHRM = false;
+  static bool isBuilty = false;
+  static bool isAdv = false;
   final orgProvider = locator<OrgProvider>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getLoginDetail();
   }
@@ -50,33 +48,34 @@ class _SideBarOrganization extends State<SideBarOrganization> {
     return Drawer(
       elevation: 0,
       child: Container(
-
         color: AppColor.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 47.h,),
+            SizedBox(height: 47.h),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/logo.svg",
+                  height: 77.h,
+                  width: 133.w,
+                ),
+              ),
             ),
-
-            SizedBox(height: 47.h,),
+            SizedBox(height: 47.h),
             DrawerListTile(
               isSelect: isDashbord,
               title: "Dashboard",
               icon: "assets/menu/dashboard_menu.svg",
               press: () {
-                isMonitoring=false;
-                isCRM=false;
-                isHRM=false;
-                isBuilty=false;
-                isAdv=false;
-                isDashbord=true;
-                setState(() {
-
-                });
-
+                isMonitoring = false;
+                isCRM = false;
+                isHRM = false;
+                isBuilty = false;
+                isAdv = false;
+                isDashbord = true;
+                setState(() {});
               },
             ),
             DrawerListTile(
@@ -84,22 +83,22 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Monitoring",
               icon: Images.monitoring,
               press: () async {
-                isMonitoring=true;
-                isCRM=false;
-                isHRM=false;
-                isBuilty=false;
-                isAdv=false;
-                isDashbord=false;
-                setState(() {
-
-                });
-                Organization organization = await orgProvider.getOrgDetails();
-                print(organization.companyName);
+                isMonitoring = true;
+                isCRM = false;
+                isHRM = false;
+                isBuilty = false;
+                isAdv = false;
+                isDashbord = false;
+                setState(() {});
+                Organization? organization =
+                await orgProvider.getOrgDetails();
+                print(organization!.companyName);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (builder) =>
-                            CompanyDashboard(organization)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (builder) => CompanyDashboard(organization),
+                  ),
+                );
               },
             ),
             DrawerListTile(
@@ -107,38 +106,37 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "CRM",
               icon: Images.crm,
               press: () {
-                isMonitoring=false;
-                isCRM=true;
-                isHRM=false;
-                isBuilty=false;
-                isAdv=false;
-                isDashbord=false;
-                setState(() {
-
-                });
+                isMonitoring = false;
+                isCRM = true;
+                isHRM = false;
+                isBuilty = false;
+                isAdv = false;
+                isDashbord = false;
+                setState(() {});
                 Navigator.pushNamed(context, AppRoutes.crm);
               },
-            ), DrawerListTile(
+            ),
+            DrawerListTile(
               isSelect: isHRM,
               title: "HRM",
               icon: Images.hrm,
               press: () async {
-                isMonitoring=false;
-                isCRM=false;
-                isHRM=true;
-                isBuilty=false;
-                isAdv=false;
-                isDashbord=false;
-                setState(() {
-
-                });
-                final url =Uri.parse("http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee");
-                if (!await launchUrl(url,)) {
-                throw Exception('Could not launch $url');
+                isMonitoring = false;
+                isCRM = false;
+                isHRM = true;
+                isBuilty = false;
+                isAdv = false;
+                isDashbord = false;
+                setState(() {});
+                final url = Uri.parse(
+                  "http://tkd-hrms.s3-website.ap-south-1.amazonaws.com/hrm/employee",
+                );
+                if (!await launchUrl(url)) {
+                  throw Exception('Could not launch $url');
                 }
               },
             ),
-           /* DrawerListTile(
+            /* DrawerListTile(
               isSelect: isCustomer,
               title: "E-Invoices",
               icon: Images.invoice,
@@ -151,20 +149,20 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "E-Bilty",
               icon: Images.bilty,
               press: () async {
-                isMonitoring=false;
-                isCRM=false;
-                isHRM=false;
-                isBuilty=true;
-                isAdv=false;
-                isDashbord=false;
-                setState(() {
-
-                });
-                await  getEmpToken(loginDeatils!.data!.id!);
-                final url = Uri.parse(ApiConstant.BILTY_URL+
-                    "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}");
-                debugPrint("Bilty Url : "+url.toString());
-                if (!await launchUrl(url,)) {
+                isMonitoring = false;
+                isCRM = false;
+                isHRM = false;
+                isBuilty = true;
+                isAdv = false;
+                isDashbord = false;
+                setState(() {});
+                await getEmpToken(loginDeatils!.data!.id!);
+                final url = Uri.parse(
+                  ApiConstant.BILTY_URL +
+                      "?token=${token}&empId=${loginDeatils!.data!.id!}&orgId=${loginDeatils!.data!.organisationId}",
+                );
+                debugPrint("Bilty Url : " + url.toString());
+                if (!await launchUrl(url)) {
                   throw Exception('Could not launch $url');
                 }
               },
@@ -174,17 +172,17 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Advertise Portal",
               icon: Images.hrm,
               press: () async {
-                isMonitoring=false;
-                isCRM=false;
-                isHRM=false;
-                isBuilty=false;
-                isAdv=true;
-                isDashbord=false;
-                setState(() {
-
-                });
-                advProvider.getAdvertiseListByOrg(loginDeatils!.data!.organisationId!);
-                advProvider.getAdvertiseListByUser(loginDeatils!.data!.id!);
+                isMonitoring = false;
+                isCRM = false;
+                isHRM = false;
+                isBuilty = false;
+                isAdv = true;
+                isDashbord = false;
+                setState(() {});
+                advProvider.getAdvertiseListByOrg(
+                    loginDeatils!.data!.organisationId!);
+                advProvider.getAdvertiseListByUser(
+                    loginDeatils!.data!.id!);
                 Navigator.pushNamed(context, AppRoutes.advertise);
               },
             ),
@@ -193,18 +191,14 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               title: "Log Out",
               icon: "assets/menu/logout_menu.svg",
               press: () {
-
                 showAlertDialog(context);
-
               },
             ),
-
           ],
         ),
       ),
     );
   }
-
 
   String? token;
 
@@ -212,28 +206,34 @@ class _SideBarOrganization extends State<SideBarOrganization> {
     String authToken = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
 
-    String myUrl = ApiConstant.BASE_URL +
-        "api/getTokenByEmployeeId?employeeId=${empId}";
+    String myUrl =
+        ApiConstant.BASE_URL + "api/getTokenByEmployeeId?employeeId=${empId}";
     debugPrint("Get Token Url:" + myUrl);
 
     EasyLoading.show(status: "Loading");
-    final req = await http.get(Uri.parse(myUrl), headers: {
-      "Content-Type": "application/json",
-      'Authorization': 'Bearer ${authToken}',
-    });
+    final req = await http.get(
+      Uri.parse(myUrl),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ${authToken}',
+      },
+    );
     EasyLoading.dismiss();
     print('the body is ${req.body}');
     if (req.statusCode == 200) {
       var jwtResponse = json.decode(req.body);
       print('the response is ${jwtResponse}');
-      JWTLoginData jwtLoginData =
-      JWTLoginData.fromJson(jwtResponse);
+      JWTLoginData jwtLoginData = JWTLoginData.fromJson(jwtResponse);
       if (jwtLoginData.data != null) {
         token = jwtLoginData.data!;
         print("Final Generated Token ::" + token!);
       } else {
         showCustomToast(
-            context, jwtLoginData.message!, Icons.clear, Colors.red);
+          context,
+          jwtLoginData.message!,
+          Icons.clear,
+          Colors.red,
+        );
       }
     }
   }
@@ -241,21 +241,25 @@ class _SideBarOrganization extends State<SideBarOrganization> {
   final advProvider = locator<AdvProvider>();
   bool isAdmin = false;
   LoginDeatils? loginDeatils;
+
   Future<void> getLoginDetail() async {
-    loginDeatils=await LocalSharePreferences.localSharePreferences.getLoginData();
-    isAdmin =  loginDeatils!.data!.isAdmin!;
+    loginDeatils =
+    await LocalSharePreferences.localSharePreferences.getLoginData();
+    isAdmin = loginDeatils!.data!.isAdmin!;
     advProvider.getCtmsOrganization();
     // getEmpToken(loginDeatils!.data!.id!);
   }
 
-
   showAlertDialog(BuildContext context) {
-    // set up the button
     Widget okButton = TextButton(
       child: Text("Ok"),
-      onPressed: () async{
+      onPressed: () async {
         await LocalSharePreferences().logOut();
-        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.entry, (route) => false) ;
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.entry,
+              (route) => false,
+        );
       },
     );
 
@@ -263,21 +267,18 @@ class _SideBarOrganization extends State<SideBarOrganization> {
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context);
-
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Log Out"),
       content: Text("Do you want to log out"),
       actions: [
         okButton,
-        cancelButton
+        cancelButton,
       ],
     );
 
-    // show the dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -287,29 +288,35 @@ class _SideBarOrganization extends State<SideBarOrganization> {
   }
 }
 
-
 class DrawerListTile extends StatelessWidget {
   final String? title, icon;
   final VoidCallback? press;
   final bool isSelect;
 
-  const DrawerListTile({Key? key, this.title, this.icon, this.press, required this.isSelect})
-      : super(key: key);
+  const DrawerListTile({
+    Key? key,
+    this.title,
+    this.icon,
+    this.press,
+    required this.isSelect,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: press,
       horizontalTitleGap: 0.0,
-
       title: Container(
         width: 232.w,
         height: 65.h,
-        decoration:isSelect? ShapeDecoration(
+        decoration: isSelect
+            ? ShapeDecoration(
           color: Color(0xFFC3262C),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-        ): ShapeDecoration(
+        )
+            : ShapeDecoration(
           color: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -318,22 +325,24 @@ class DrawerListTile extends StatelessWidget {
         child: Center(
           child: Row(
             children: [
-              SizedBox(width: 33.w,),
+              SizedBox(width: 33.w),
               SvgPicture.asset(
                 icon!,
-                color: isSelect?AppColor.white:Colors.grey,
+                color: isSelect ? AppColor.white : Colors.grey,
                 height: 25.h,
                 width: 25.w,
               ),
-              SizedBox(width: 27.w,),
+              SizedBox(width: 27.w),
               Text(
                 title!,
-                style: isSelect?TextStyle(
+                style: isSelect
+                    ? TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,
                   fontWeight: FontWeight.w300,
-                ):TextStyle(
+                )
+                    : TextStyle(
                   color: Colors.black,
                   fontSize: 18.sp,
                   fontFamily: GoogleFonts.poppins().fontFamily,

@@ -288,7 +288,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                           shrinkWrap: true,
                           crossAxisCount: ResponsiveWidget.isMobile(context)? 1: 3,
                           crossAxisSpacing: 10,
-                          mainAxisSpacing: 12,
+                          mainAxisSpacing: 10,
                           itemCount: filteredMeetingList.length,
 
                           ///meetingList.length,
@@ -799,45 +799,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
                 SizedBox(
                   height: 25.h,
                 ),
-                // isLoad && meetingList.length > 0
-                //     ? Table(
-                //         defaultVerticalAlignment:
-                //             TableCellVerticalAlignment.middle,
-                //         children: [
-                //           /// Table Header
-                //           TableRow(
-                //             decoration: BoxDecoration(
-                //               border: Border(
-                //                   bottom: BorderSide(
-                //                 color: Colors.grey,
-                //                 width: 0.5,
-                //               )),
-                //             ),
-                //             children: [
-                //               tableHeader("Full Name"),
-                //               if (!AppResponsive.isMobile(context))
-                //                 tableHeader("Designation"),
-                //               tableHeader("Mobile Number"),
-                //               if (!AppResponsive.isMobile(context))
-                //                 tableHeader(""),
-                //             ],
-                //           ),
-                //
-                //           /// Table Data
-                //
-                //           for (int i = 0; i < meetingList.length; i++)
-                //             tableRow(context,
-                //                 name: meetingList[i].title,
-                //                 color: Colors.blue,
-                //                 image: "assets/img.png",
-                //                 designation: meetingList[i].description,
-                //                 status: meetingList[i].time,
-                //                 index: i),
-                //         ],
-                //       )
-                //     : Center(
-                //         child: Text("No any meeting found"),
-                //       ),
+
                 Container(
                   decoration: BoxDecoration(
                       color: AppColor.white,
@@ -899,399 +861,229 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
 
   bool isJoin = true;
 
-  meetingDetailCard(MeetingData meetingData) {
-    return Container(
-      height: 451.h,
-      width: 330.w,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.r), color: Colors.white),
-      // padding: EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /*Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 14.0.h, right: 14.w),
-                child: SvgPicture.asset(
-                  'assets/more_icon.svg',
-                  height: 14.h,
-                  width: 34.w,
-                ),
-              ),
-            ],
-          ),*/
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14.0.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+  Widget meetingDetailCard(MeetingData meetingData) {
+    final participantCount = meetingData.employeeId?.length ?? 0;
+
+    return Card(
+      margin: EdgeInsets.symmetric(vertical:12.h,horizontal: 6.w),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      elevation: 0,
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Header
+            Row(
               children: [
-                getImage(meetingData.createdMettingBy!.image??'',
-                    height: 35.h, width: 35.w),
-                SizedBox(
-                  width: 23.w,
+                getImage(
+                  meetingData.createdMettingBy?.image ?? '',
+                  height: 40.h,
+                  width: 40.w,
                 ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    meetingData.title ?? "No Title",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12.h),
+            Divider(),
+
+            /// Meeting Link
+            Text(
+              "Meeting Link",
+              style: GoogleFonts.poppins(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _launchUrl(meetingData.meetingLink ?? ""),
+                    child: Text(
+                      meetingData.meetingLink ?? "No link",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14.sp,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: "Copy Link",
+                  onPressed: () async {
+                    await Clipboard.setData(
+                      ClipboardData(text: meetingData.meetingLink ?? ""),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Link copied!")),
+                    );
+                  },
+                  icon: Icon(Icons.copy, color: Colors.blue),
+                ),
+                IconButton(
+                  tooltip: "Share",
+                  onPressed: () {
+                    Share.share(
+                      "To Join the meeting on Google Meet, click this link:\n${meetingData.meetingLink}",
+                      subject: "Please join meet",
+                    );
+                  },
+                  icon: SvgPicture.asset(
+                    'assets/images/share_icon.svg',
+                    width: 24.w,
+                    height: 24.h,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+
+            /// Company Name + Participants
+            Text(
+              meetingData.lead?.companyName ?? "Unknown Company",
+              style: GoogleFonts.poppins(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            SizedBox(
+              height: 40.h,
+              child: Stack(
+                children: [
+                  for (int i = 0; i < participantCount && i < 3; i++)
+                    Positioned(
+                      left: i * 28,
+                      child: CircleAvatar(
+                        radius: 18.r,
+                        backgroundColor: Colors.blue.shade200,
+                        child: getImage(
+                          "", // replace with employee image if available
+                          height: 25.h,
+                          width: 25.w,
+                        ),
+                      ),
+                    ),
+                  if (participantCount > 3)
+                    Positioned(
+                      left: 3 * 28,
+                      child: CircleAvatar(
+                        radius: 18.r,
+                        backgroundColor: Colors.redAccent,
+                        child: Text(
+                          "+${participantCount - 3}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12.sp,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20.h),
+
+            /// Date + Time
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/time.svg',
+                  width: 18.w,
+                  height: 18.h,
+                ),
+                SizedBox(width: 10.w),
                 Text(
-                  meetingData.title.toString() ?? '',
-                  // "Document Update",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
+                  "${meetingData.date ?? ''} ${meetingData.time ?? ''}",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Divider(),
-          SizedBox(
-            height: 2.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            SizedBox(height: 20.h),
+
+            /// Buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Meeting Link",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _launchUrl(meetingData.meetingLink!);
-                      },
-                      child: Text(
-                        meetingData.meetingLink.toString() ?? '',
-                        // "https:www.googlemeetjk75",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 15.sp,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        await Clipboard.setData(ClipboardData(text:meetingData.meetingLink.toString() ));
-                        // copied successfully
-                      },
-                      child: Tooltip(
-                        message: "Copy Link",
-                          child: Icon(Icons.copy,color: Colors.blue,)
-                      ),
-                    ),
-                    InkWell(
-                      onTap:(){
-                        Share.share("To Join the meeting on Google Meet,click this link:\n"+meetingData.meetingLink.toString(),subject: "Please join meet");
-                      },
-                      child: SvgPicture.asset(
-                        'assets/images/share_icon.svg',
-                        width: 30.w,
-                        height: 30.h,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Text(
-                  "${meetingData.lead!.companyName}",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                SizedBox(height: 5.h),
-                SizedBox(
-                  height: 30.h,
-                  child: Stack(
+                /// If creator → Reschedule + Cancel
+                if (loginDetails?.data?.id == meetingData.createdMettingBy?.id)
+                  Row(
                     children: [
-                      for (int i = 1; i <= 4; i++)
-                        i <= 3
-                            ? Positioned(
-                                left: i * 12,
-                                child: Container(
-                                    decoration: ShapeDecoration(
-                                      color: Colors.blue,
-                                      shape: CircleBorder(),
-                                    ),
-                                    height: 35.h,
-                                    width: 35.w,
-                                    child: getImage("",
-                                        height: 25.h, width: 25.w)),
-                              )
-                            : i>=(meetingData.employeeId!.length/2)+1?Positioned(left:i*12,child: SizedBox.shrink()):Positioned(
-                                left: i * 12,
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFC3262C),
-                                    shape: CircleBorder(),
-                                  ),
-                                  height: 30.h,
-                                  width: 30.w,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "+${(meetingData.employeeId!.length/2)+1 - 3}",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14.sp,
-                                      fontFamily:
-                                          GoogleFonts.poppins().fontFamily,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                      OutlinedButton(
+                        onPressed: () => _showEditAlertDialog(meetingData),
+                        child: Text("Reschedule"),
+                      ),
+                      SizedBox(width: 5.w),
+                      if (meetingData.active == true)
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                          ),
+                          onPressed: () => cancelMeetingg(meetingData.id),
+                          child: Text("Cancel"),
+                        ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 34.h,
-                ),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/time.svg',
-                      width: 16.w,
-                      height: 19.h,
-                    ),
-                    SizedBox(
-                      width: 20.w,
-                    ),
-                    Text(
-                      "${meetingData.date.toString() ?? ''} " +
-                              meetingData.time.toString() ??
-                          '',
-                      // "Time : 11:00 AM",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15.sp,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 34.h,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    loginDetails!.data!.id! == meetingData.createdMettingBy!.id
-                        ? SizedBox(
-                           // width: 164.w,
-                            height: 45.h,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                OutlinedButton(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        MaterialStateProperty.resolveWith<Color?>(
-                                      (Set<MaterialState> states) {
-                                        if (states.contains(MaterialState.hovered))
-                                          return ThemeColor
-                                              .theme_blue; //<-- SEE HERE
-                                        return isJoin
-                                            ? ThemeColor.theme_blue
-                                            : ThemeColor
-                                                .theme_blue; // Defer to the widget's default.
-                                      },
-                                    ),
-                                    backgroundColor:
-                                        MaterialStateProperty.resolveWith<Color?>(
-                                      (Set<MaterialState> states) {
-                                        if (states.contains(MaterialState.hovered))
-                                          return ThemeColor.white; //<-- SEE HERE
-                                        return isJoin
-                                            ? ThemeColor.white
-                                            : ThemeColor
-                                                .white; // Defer to the widget's default.
-                                      },
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    if (loginDetails!.data!.id! ==
-                                        meetingData.createdMettingBy!.id) {
-                                      _showEditAlertDialog(meetingData);
-                                    }
-                                    setState(() {
-                                      isJoin = false;
-                                    });
-                                  },
-                                  child: Textview(
-                                      TextStyle(
-                                        fontSize: 12.sp,
-                                        fontFamily:
-                                            GoogleFonts.poppins().fontFamily,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      title: 'Reschedule'),
-                                ),
-                                SizedBox(width: 10.w,),
-                                meetingData.active==true?OutlinedButton(
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                          (Set<MaterialState> states) {
-                                        if (states.contains(MaterialState.hovered))
-                                          return ThemeColor
-                                              .theme_blue; //<-- SEE HERE
-                                        return  ThemeColor
-                                            .theme_blue; // Defer to the widget's default.
-                                      },
-                                    ),
-                                    backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                          (Set<MaterialState> states) {
-                                        if (states.contains(MaterialState.hovered))
-                                          return ThemeColor.white; //<-- SEE HERE
-                                        return  ThemeColor
-                                            .white; // Defer to the widget's default.
-                                      },
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    cancelMeetingg(meetingData.id);
-                                    setState(() {
-                                    });
-                                  },
-                                  child: Textview(
-                                      TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 12.sp,
-                                        fontFamily:
-                                        GoogleFonts.poppins().fontFamily,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      title: 'Cancel'),
-                                ): SizedBox.shrink(),
-                              ],
-                            ),
-                          )
-                        : SizedBox.shrink(),
-                  /*  SizedBox(
-                      width: 23.w,
-                    ),*/
-                   meetingData.active==true? checkDateExpiry(meetingData.date)==true?SizedBox(
-                      //width: 100.w,
-                      height: 40.h,
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered))
-                                return ThemeColor.white; //<-- SEE HERE
-                              return isJoin
-                                  ? ThemeColor.white
-                                  : ThemeColor
-                                      .white; // Defer to the widget's default.
-                            },
-                          ),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered))
-                                return ThemeColor.red; //<-- SEE HERE
-                              return ThemeColor.red; // Defer to the widget's default.
-                            },
-                          ),
-                        ),
-                        onPressed: () {
 
-                        },
-                        child: Textview(
-                            TextStyle(
-                              fontSize: 12.sp,
-                              fontFamily: GoogleFonts.poppins().fontFamily,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            title: 'Completed'),
-                      ),
-                    ):SizedBox(
-                     width: 100.w,
-                     height: 40.h,
-                     child: OutlinedButton(
-                       style: ButtonStyle(
-                         foregroundColor:
-                         MaterialStateProperty.resolveWith<Color?>(
-                               (Set<MaterialState> states) {
-                             if (states.contains(MaterialState.hovered))
-                               return ThemeColor.white; //<-- SEE HERE
-                             return isJoin
-                                 ? ThemeColor.white
-                                 : ThemeColor
-                                 .white; // Defer to the widget's default.
-                           },
-                         ),
-                         backgroundColor:
-                         MaterialStateProperty.resolveWith<Color?>(
-                               (Set<MaterialState> states) {
-                             if (states.contains(MaterialState.hovered))
-                               return ThemeColor.theme_blue; //<-- SEE HERE
-                             return isJoin
-                                 ? ThemeColor.theme_blue
-                                 : ThemeColor
-                                 .theme_blue; // Defer to the widget's default.
-                           },
-                         ),
-                       ),
-                       onPressed: () {
-                         _launchUrl(meetingData.meetingLink!);
-
-                         setState(() {
-                           isJoin = true;
-                         });
-                       },
-                       child: Textview(
-                           TextStyle(
-                             fontSize: 12.sp,
-                             fontFamily: GoogleFonts.poppins().fontFamily,
-                             fontWeight: FontWeight.w400,
-                           ),
-                           title: 'Join'),
-                     ),
-                   ): Textview(
-                       TextStyle(
-                         color: Colors.red,
-                         fontSize: 12.sp,
-                         fontFamily:
-                         GoogleFonts.poppins().fontFamily,
-                         fontWeight: FontWeight.w400,
-                       ),
-                       title: 'InActive Meeting'),
-                  ],
-                )
+                /// Participant Buttons
+                if (meetingData.active == true)
+                  isMeetingCompleted(meetingData.date, meetingData.time)
+                      ? OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {},
+                    child: Text("Completed"),
+                  )
+                      : OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: ThemeColor.theme_blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      _launchUrl(meetingData.meetingLink ?? "");
+                      setState(() => isJoin = true);
+                    },
+                    child: Text("Join"),
+                  )
+                else
+                  Text(
+                    "Inactive Meeting",
+                    style: GoogleFonts.poppins(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+
 
   filterIcon() {
     return Container(
@@ -1357,8 +1149,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       onTap: (){
        // ApiGetMeeting();
         if(id==0) {
-         /* filteredMeetingList.sort((a, b){ //sorting in descending order
-            return DateTime.parse(b).compareTo(DateTime.parse(a));*/
+
           filteredMeetingList.sort((b, a) => b.date!.compareTo(a.date!));
           setState(() {});
         }
@@ -1500,42 +1291,55 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   Future<void> ApiGetMeeting() async {
     LocalSharePreferences localSharePreferences = LocalSharePreferences();
     LoginDeatils deatils = await localSharePreferences.getLoginData();
-    print("EmpId::" + deatils.data!.id!.toString());
+    print("EmpId::${deatils.data!.id!}");
+
     isLoad = true;
     meetingList.clear();
     filteredMeetingList.clear();
     setState(() {});
+
     print(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
     var roleResponse = await ApiHelper()
         .apiGet(ApiConstant.GET_EMPLOYE_ALL_METTING(deatils.data!.id!));
+
     print('the data is: ${roleResponse.response}');
-    if (roleResponse.response["success"] == true){
-      MeetingListResponse meetingResponse = MeetingListResponse.fromJson(roleResponse.response);
-      meetingList.addAll(meetingResponse.data!);
+
+    if (roleResponse.response["success"] == true) {
+      MeetingListResponse meetingResponse =
+      MeetingListResponse.fromJson(roleResponse.response);
+
+      meetingList.addAll(meetingResponse.data ?? []);
       filteredMeetingList.clear();
       pastMeetingList.clear();
       rescheduleMeetingList.clear();
       inActiveMeetingList.clear();
-      meetingList.forEach((element) {
+      upcomingMeetingList.clear();
+
+      for (var element in meetingList) {
         filteredMeetingList.add(element);
-        if(element.status=="reschedule"){
+
+        if (element.status == "reschedule") {
           rescheduleMeetingList.add(element);
         }
-        if(element.active==false){
+
+        if (element.active == false) {
           inActiveMeetingList.add(element);
         }
-        if (checkDateExpiry(element.date)) {
+
+        // ✅ Use new time-based expiry check
+        if (isMeetingCompleted(element.date, element.time)) {
           pastMeetingList.add(element);
         } else {
           upcomingMeetingList.add(element);
         }
-      });
-      print("PastMEETING lIST : " + pastMeetingList.length.toString());
-      print("upcomingMEETING lIST : " + upcomingMeetingList.length.toString());
+      }
+
+      print("PastMEETING lIST : ${pastMeetingList.length}");
+      print("upcomingMEETING lIST : ${upcomingMeetingList.length}");
       setState(() {});
     }
-    print('meetingList Length :' + meetingList.length.toString());
 
+    print('meetingList Length : ${meetingList.length}');
     isLoad = false;
     setState(() {});
   }
@@ -1559,25 +1363,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       },
     );
 
-    //SingleChildScrollView(
-    //             child: Container(
-    //                 color: Colors.transparent,
-    //                 height: 1024.h,
-    //                 width: MediaQuery.of(context).size.width,
-    //                 child: Stack(
-    //                   children: [
-    //                     Align(
-    //                       alignment: Alignment.centerRight,
-    //                       child: Container(
-    //                         color: Colors.transparent,
-    //                         width: 408.w,
-    //                         child: addMeeting(),
-    //                       ),
-    //                     )
-    //                   ],
-    //                 )
-    //             ),
-    //           )
+
   }
 
   Future<void> _showEditAlertDialog(MeetingData meetingData) async {
@@ -1609,25 +1395,6 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
       },
     );
 
-    //SingleChildScrollView(
-    //             child: Container(
-    //                 color: Colors.transparent,
-    //                 height: 1024.h,
-    //                 width: MediaQuery.of(context).size.width,
-    //                 child: Stack(
-    //                   children: [
-    //                     Align(
-    //                       alignment: Alignment.centerRight,
-    //                       child: Container(
-    //                         color: Colors.transparent,
-    //                         width: 408.w,
-    //                         child: addMeeting(),
-    //                       ),
-    //                     )
-    //                   ],
-    //                 )
-    //             ),
-    //           )
   }
 
   String? selectedMeetingType = "Your Meetings";
@@ -1640,11 +1407,7 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
   ) {
     return InkWell(
       onTap: () {
-       /* if (title == "Schedule") {
-          filteredMeetingList.clear();
-          filteredMeetingList.addAll(filteredMeetingList);
-          selectedMeetingType = title;
-        } else*/ if (title == "Reschedule") {
+      if (title == "Reschedule") {
           filteredMeetingList.clear();
           filteredMeetingList.addAll(rescheduleMeetingList);
           selectedMeetingType = title;
@@ -1714,18 +1477,42 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     );
   }
 
-  bool checkDateExpiry(String? date) {
-    DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(date!);
-    final expirationDate = DateTime.now();
-    debugPrint("Current Date ::${expirationDate} and MeetingDate ::${tempDate}");
-  //  final bool isExpired = expirationDate.isBefore(tempDate);
-    if(tempDate.compareTo(expirationDate) < 0){
-      print("DT1 is before DT2");
-      return true;
-    }else {
+  bool isMeetingCompleted(String? date, String? time) {
+    if (date == null || date.isEmpty) return false;
+
+    try {
+      // Parse date safely
+      DateTime meetingDate = DateFormat("yyyy-MM-dd").parse(date);
+
+      if (time != null && time.isNotEmpty) {
+        // Clean extra spaces → "06 : 00 PM" → "06:00 PM"
+        String cleanTime = time.replaceAll(" ", "");
+
+        DateTime parsedTime;
+        if (cleanTime.contains("AM") || cleanTime.contains("PM")) {
+          parsedTime = DateFormat("hh:mm a").parse(cleanTime);
+        } else {
+          parsedTime = DateFormat("HH:mm").parse(cleanTime);
+        }
+
+        meetingDate = DateTime(
+          meetingDate.year,
+          meetingDate.month,
+          meetingDate.day,
+          parsedTime.hour,
+          parsedTime.minute,
+        );
+      }
+
+      print("DEBUG :: meetingDateTime = $meetingDate, now = ${DateTime.now()}");
+      return DateTime.now().isAfter(meetingDate);
+    } catch (e) {
+      debugPrint("❌ isMeetingCompleted parse error: $e");
       return false;
     }
   }
+
+
 
   Future<void> cancelMeetingg(int? id) async {
     String token = await LocalSharePreferences()
@@ -1748,35 +1535,5 @@ class _MeetingPageScreen extends State<MeetingPageScreen> {
     }
   }
 
-// Future<void> _showEditAlertDialog() async {
-//   return showDialog<void>(
-//     context: context,
-//     barrierDismissible: false, // user must tap button!
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         backgroundColor: Colors.transparent,// <-- SEE HERE
-//         title: const Text(''),
-//         content: SingleChildScrollView(
-//           child: Container(
-//               color: Colors.transparent,
-//               height: 1024.h,
-//               width: MediaQuery.of(context).size.width,
-//               child: Stack(
-//                 children: [
-//                   Align(
-//                     alignment: Alignment.centerRight,
-//                     child: Container(
-//                       color: Colors.transparent,
-//                       width: 408.w,
-//                       child: addMeeting(),
-//                     ),
-//                   )
-//                 ],
-//               )
-//           ),
-//         ),
-//       );;
-//     },
-//   );
-// }
+
 }

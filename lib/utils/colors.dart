@@ -14,6 +14,7 @@ static Color red=Color(0xFFC3262C);
  static Color redShade=Color(0xFFF18F93);
 static Color subColor=Color(0x99001E49);
 
+ static Color black=Color(0x99000000);
 
 static Color green=Color(0xFF1DD19E);
 

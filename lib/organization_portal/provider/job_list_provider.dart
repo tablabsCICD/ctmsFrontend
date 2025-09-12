@@ -10,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 
+import '../../constant/SharedPreferencesConstant.dart';
+
 class JobListProvider extends ChangeNotifier {
   int selectedPage = 0;
   ScrollController scrollController = ScrollController();
@@ -31,7 +33,7 @@ class JobListProvider extends ChangeNotifier {
   }
 
   getOrgId()async{
-    orgId = (await orgProvider.getCompanyOrgId())!;
+    orgId =int.parse(await  LocalSharePreferences().getString(SharedPreferencesConstant.connectOrganizationId));
   }
 
   getAllJobs(int id) async {

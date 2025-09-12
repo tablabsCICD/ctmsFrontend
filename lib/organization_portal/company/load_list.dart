@@ -37,17 +37,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
-
 class LoadList extends StatefulWidget {
   final orgProvider = locator<OrgProvider>();
   final buySellProvider = locator<BuySellProvider>();
-  Organization organization;
-  int index;
-  LoadList(this.organization,{Key? key, required this.index}) : super(key: key) {
-    orgProvider.getOrgFullLoadList(organization.id!);
-    orgProvider.getUsersByCompanyId(organization.id!);
-    orgProvider.getAllBranch(organization.id!);
-  }
+  final Organization organization;
+  final int index;
+
+  LoadList(this.organization, {Key? key, required this.index}) : super(key: key);
+
   @override
   State<LoadList> createState() => _LoadListState();
 }
@@ -55,23 +52,29 @@ class LoadList extends StatefulWidget {
 class _LoadListState extends State<LoadList> {
   final bidProvider = locator<BidProvider>();
   final orgProvider = locator<OrgProvider>();
-  TextEditingController bidAmtController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController sourceController = TextEditingController();
-  TextEditingController destinationController = TextEditingController();
-  TextEditingController filterController = TextEditingController();
-  int counter = 0;
-  var selectedPageNumber = 1;
   final dashboardProvider = locator<DashboardProvider>();
-  ScrollController _scrollController = ScrollController();
-  String? selectedFromCity = '', selectedToCity = "";
+
+  final ScrollController _scrollController = ScrollController();
+
+  int selectedPageNumber = 1;
+  String? selectedFromCity = '';
+  String? selectedToCity = '';
   String? branchNamedropdownvalue;
   String? userNamedropdownvalue;
+
+  bool _isInitCalled = false; // ✅ Guard flag
 
   @override
   void initState() {
     super.initState();
+
+    // ✅ Prevent duplicate API calls
+    if (!_isInitCalled) {
+      _isInitCalled = true;
+      orgProvider.getOrgFullLoadList(widget.organization.id!);
+      orgProvider.getAllBranch(widget.organization.id!);
+    }
+
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -81,9 +84,22 @@ class _LoadListState extends State<LoadList> {
     });
   }
 
-
-
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+
+  TextEditingController bidAmtController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController sourceController = TextEditingController();
+  TextEditingController destinationController = TextEditingController();
+  TextEditingController filterController = TextEditingController();
+  int counter = 0;
+
+   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Consumer<OrgProvider>(
@@ -91,153 +107,147 @@ class _LoadListState extends State<LoadList> {
             padding: ResponsiveWidget.isDesktop(context)
                 ? EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h)
                 : EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                child: Column(
-                  children: [
-                    Visibility(
-                      visible: widget.index==1?true:false,
-                      child: Container(
-                          height: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                                child: InkWell(
-                                  onTap: () {
-                                   // _showMultiSelect(context);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CustomSearchCityTextField(
-                                        hintText: 'From',
-                                        controller: selectedFromCity!,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      GetCityList())).then((value) {
-                                            if (value.toString().isNotEmpty &&
-                                                value != null) {
-                                              selectedFromCity = value[0];
-                                              setState(() {});
-                                            }
-                                          });
-                                        },
+            child: Column(
+                children: [
+                  Visibility(
+                    visible: widget.index==1?true:false,
+                    child: Container(
+                        height: 60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: InkWell(
+                                onTap: () {
+                                  // _showMultiSelect(context);
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomSearchCityTextField(
+                                      hintText: 'From',
+                                      controller: selectedFromCity ?? '',
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GetCityList())).then((value) {
+                                          if (value != null && value.toString().isNotEmpty) {
+                                            selectedFromCity = value[0];
+                                            setState(() {});
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 25.w,
+                                    ),
+                                    TextView(
+                                      title: "To",
+                                      fontSize:15.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff000000),
+                                    ),
+                                    SizedBox(
+                                      width: 25.w,
+                                    ),
+                                    CustomSearchCityTextField(
+                                      hintText: 'To',
+                                      controller: selectedToCity ?? '',
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GetCityList())).then((value) {
+                                          if (value != null && value.toString().isNotEmpty) {
+                                            selectedToCity = value[0];
+                                            setState(() {});
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 25.w,
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        model.getSearchByNameList(widget.organization.id!,
+                                            '', selectedFromCity ?? '', selectedToCity ?? '');
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        foregroundColor: Colors.white,
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5))),
                                       ),
-                                      SizedBox(
-                                        width: 25.w,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 0),
+                                        child: Text("Search",
+                                            style: Style.button),
                                       ),
-                                      TextView(
-                                        title: "To",
-                                        fontSize:15.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xff000000),
-                                      ),
-                                      SizedBox(
-                                        width: 25.w,
-                                      ),
-                                      CustomSearchCityTextField(
-                                        hintText: 'To',
-                                        controller: selectedToCity!,
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      GetCityList())).then((value) {
-                                            if (value.toString().isNotEmpty &&
-                                                value != null) {
-                                              selectedToCity = value[0];
-                                              setState(() {});
-                                            }
-                                          });
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 25.w,
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          model.getSearchByNameList(widget.organization.id!,
-                                              '', selectedFromCity!, selectedToCity!);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.black,
-                                          foregroundColor: Colors.white,
-                                          elevation: 3,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5))),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 0),
-                                          child: Text("Search",
-                                              style: Style.button),
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Spacer(),
-                              Row(
-                                children: [
-                                  filterIcon(model),
-                                  SizedBox(
-                                    width: 27.w,
-                                  ),
-                                 /* SvgPicture.asset('assets/more_icon.svg'),
+                            ),
+                            Spacer(),
+                            Row(
+                              children: [
+                                filterIcon(model),
+                                SizedBox(
+                                  width: 27.w,
+                                ),
+                                /* SvgPicture.asset('assets/more_icon.svg'),
                                   SizedBox(
                                     width: 27.w,
                                   ),*/
-                                ],
-                              ),
-                            ],
-                          )
-                      ),
+                              ],
+                            ),
+                          ],
+                        )
                     ),
-                    Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
-                    Visibility(
-                      visible: widget.index==1?true:false,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          getContainer(model,"All Loads",0,model.fullLoadPostCount.toString(), Color(0xffEAF8F4),'assets/org/all_load.svg'),
-                          getContainer(model,"Full Loads",1,model.fullLoadCount.toString(), Color(0xffFFEDF9),'assets/org/full_load.svg'),
-                          getContainer(model,"Part Loads",3, model.partLoadCount.toString(), Color(0xffFEF0E5),'assets/org/part_load.svg'),
-                        ],
-                      ),
+                  ),
+                  Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
+                  Visibility(
+                    visible: widget.index==1?true:false,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        getContainer(model,"All Loads",0,model.fullLoadPostCount?.toString() ?? '', Color(0xffEAF8F4),'assets/org/all_load.svg'),
+                        getContainer(model,"Full Loads",1,model.fullLoadCount?.toString() ?? '', Color(0xffFFEDF9),'assets/org/full_load.svg'),
+                        getContainer(model,"Part Loads",3, model.partLoadCount?.toString() ?? '', Color(0xffFEF0E5),'assets/org/part_load.svg'),
+                      ],
                     ),
-                    Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
-                    getPostList(model,context),
-            ]
-           )
+                  ),
+                  Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
+                  getPostList(model,context),
+                ]
+            )
         )
     );
 
   }
-  Set<int>? selectedValues = [1, 2, 3, 4, 5].toSet();
+  Set<int>? selectedValues = {1, 2, 3, 4, 5};
 
-    String getText(Set<int>? selectedValues) {
+  String getText(Set<int>? selectedValues) {
     int count = selectedValues!.length;
     String message = 'All Requirements';
     if (count == 5)
       return message;
     else
-      return '${count} ' + 'selected Requirements';
+      return '$count selected Requirements';
   }
 
   var selectedTab = 'All Loads';
   late List<int> selectedValuesList = <int>[];
-
-
-
   getPostList(OrgProvider model,BuildContext context) {
     return /* model.isLoading==true?Expanded(
           child: Container(
@@ -245,9 +255,9 @@ class _LoadListState extends State<LoadList> {
               MediaQuery.of(context).size.height - 600,
               child: Center(
                   child: CircularProgressIndicator()))):*/
-      model.orgFullLoadList.isEmpty && model.isLoading==false
+      (model.orgFullLoadList.isEmpty && model.isLoading==false
           ?  Container(
-        margin: EdgeInsets.all(30),
+          margin: EdgeInsets.all(30),
           height:
           MediaQuery.of(context).size.height - 600,
           decoration: BoxDecoration(
@@ -260,282 +270,281 @@ class _LoadListState extends State<LoadList> {
                   fontWeight: FontWeight.w900)))
           :model.orgAllFullLoadList.isEmpty
           ? Container(
-              height:
-              MediaQuery.of(context).size.height - 600,
+          height:
+          MediaQuery.of(context).size.height - 600,
           decoration: BoxDecoration(
               color: AppColor.white, borderRadius: BorderRadius.circular(10)),
           margin: EdgeInsets.all(20),
-              child: Center(
-                  child: CircularProgressIndicator()))
+          child: Center(
+              child: CircularProgressIndicator()))
           :Expanded(
-            child: StaggeredGridView.countBuilder(
-            controller: _scrollController,
-            physics: ScrollPhysics(),
-      staggeredTileBuilder: (int index) =>
-      StaggeredTile.fit(1),
-      shrinkWrap: true,
-      crossAxisCount: ResponsiveWidget.isDesktop(context)
-      ? 2
-            : ResponsiveWidget.isMobile(context)
-      ? 1
-            : 2,
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 12,
-      itemCount: model.orgFullLoadList.length,
-      itemBuilder: (context, index) {
-       return InkWell(
-            onTap: () {},
-            child: Card(
-                color:Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.circular(10.0.r),
-                ),
-                elevation: 1,
-                child: Container(
-                  height: 230.h,
-                 // width: 510.w,
-                  decoration: BoxDecoration(
+          child: StaggeredGridView.countBuilder(
+              controller: _scrollController,
+              physics: ScrollPhysics(),
+              staggeredTileBuilder: (int index) =>
+                  StaggeredTile.fit(1),
+              shrinkWrap: true,
+              crossAxisCount: ResponsiveWidget.isDesktop(context)
+                  ? 2
+                  : ResponsiveWidget.isMobile(context)
+                  ? 1
+                  : 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 12,
+              itemCount: model.orgFullLoadList.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {},
+                  child: Card(
                       color:Colors.white,
-                    borderRadius: BorderRadius.circular(10.r)
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 180.w,
-                        child: Column(
-                          children: [
-                            Image.asset('assets/org/container.png',height: 150.h,width: 174.w,),
-                            Padding(
-                              padding: EdgeInsets.only(left: 5),
-                              child: TextView(
-                                title: "${model.orgFullLoadList[index].topicName}",
-                                fontSize:12.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff000000),
-                              ),
-                            ),
-                            /*TextView(
-                              title: "${model.orgFullLoadList[index].vehicleSize}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff000000),
-                            ),*/
-                          ],
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                        BorderRadius.circular(10.0.r),
                       ),
-                     // SizedBox(width: 17.w),
-                      SizedBox(
-                        width: 174.w,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 150.w,
-                              height: 25.h,
-                              alignment: Alignment.center,
-                              decoration: new BoxDecoration(
-                                  color: model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Full load required"
-                                      ? ColorResources
-                                      .FULL_LOAD_REQUIRED
-                                      : model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Part load required"
-                                      ? ColorResources
-                                      .PART_LOAD_REQUIRED
-                                      : model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Full load available"
-                                      ? ColorResources
-                                      .FULL_LOAD_AVAILABLE
-                                      : ColorResources
-                                      .PART_LOAD_AVAILABLE,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft:
-                                      Radius.circular(5),
-                                      bottomRight:
-                                      Radius.circular(5))),
-                              child: TextView(
-                                title: "${model.orgFullLoadList[index].mainTag}",
-                                fontSize:15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Full load required"
-                                      ? ColorResources
-                                      .FLR_TEXT
-                                      : model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Part load required"
-                                      ? ColorResources
-                                      .PLR_TEXT
-                                      : model
-                                      .orgFullLoadList[
-                                  index]
-                                      .mainTag ==
-                                      "Full load available"
-                                      ? ColorResources
-                                      .FLA_TEXT
-                                      : ColorResources
-                                      .PLA_TEXT)),
-                            SizedBox(height: 30.h,),
-                            TextView(
-                              title: "${model.orgFullLoadList[index].source}",
-                              fontSize:14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff000000),
-                            ),
-                            Container(color: Colors.black,width: 1.w,height: 48.h,),
-                            TextView(
-                              title: "${model.orgFullLoadList[index].destination}",
-                              fontSize:14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff000000),
-                            ),
-                            SizedBox(height: 20.h,),
-                           /* TextView(
-                              title: "Expire : ${model.orgFullLoadList[index].expireDate}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w300,
-                              color: Color(0xff000000),
-                            ),*/
-                          ],
+                      elevation: 1,
+                      child: Container(
+                        height: 230.h,
+                        // width: 510.w,
+                        decoration: BoxDecoration(
+                            color:Colors.white,
+                            borderRadius: BorderRadius.circular(10.r)
                         ),
-                      ),
-                      SizedBox(width: 20.w,),
-                      SizedBox(
-                        width: 170.w,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(height: 10.h,),
-                            Container(
-                              width: 130.w,
-                                alignment: Alignment.centerRight,
-                                child: InkWell(onTap: (){
-                                 // orgProvider.deleteFullLoad(model.orgFullLoadList[index]);
-                                  showAlertDialog(context,model.orgFullLoadList[index]);
-                                }, child: SvgPicture.asset('assets/images/delete.svg',height: 20.h,width: 20.w,))),
-                            SizedBox(height: 20.h,),
-                            Row(
-                              children: [
-                                getImage('',height: 30.h),
-                                SizedBox(width: 10.w,),
-                                Expanded(
-                                  child: Text(
-                                     "${model.orgFullLoadList[index].nameOfPerson}",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize:14.sp,
+                            SizedBox(
+                              width: 180.w,
+                              child: Column(
+                                children: [
+                                  Image.asset('assets/org/container.png',height: 150.h,width: 174.w,),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5),
+                                    child: TextView(
+                                      title: "${model.orgFullLoadList[index].topicName ?? ''}",
+                                      fontSize:12.sp,
                                       fontWeight: FontWeight.w600,
                                       color: Color(0xff000000),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5.h,),
-                            Row(
-                              children: [
-                                SizedBox(width: 15.w,),
-                                SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
-                                SizedBox(width: 20.w,),
-                                SizedBox(
-                                  width: 100.w,
-                                  child: Text(
-                                     "${model.orgFullLoadList[index].companyName}",
-                                    style:TextStyle(fontSize:15.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xff000000),),overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                  SizedBox(height: 30.h,),
-                  SizedBox(
-                    width: 121.w,
-                    height: 40.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) => new CupertinoAlertDialog(
-                              title: Column(
-                                children: [
-                                  Text(
-                                      'Contact Number : ${model.orgFullLoadList[index].mobileNumber}',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold)),
-                                  Text(
-                                      'Email_Id : ${model.orgFullLoadList[index].mobileNumber}',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold)),
+                                  /*TextView(
+                              title: "${model.orgFullLoadList[index].vehicleSize ?? ''}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xff000000),
+                            ),*/
                                 ],
                               ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.all(10.0),
-                                    child: Text('Ok',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 18)),
+                            ),
+                            // SizedBox(width: 17.w),
+                            SizedBox(
+                              width: 174.w,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 150.w,
+                                    height: 25.h,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Full load required"
+                                            ? ColorResources
+                                            .FULL_LOAD_REQUIRED
+                                            : model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Part load required"
+                                            ? ColorResources
+                                            .PART_LOAD_REQUIRED
+                                            : model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Full load available"
+                                            ? ColorResources
+                                            .FULL_LOAD_AVAILABLE
+                                            : ColorResources
+                                            .PART_LOAD_AVAILABLE,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft:
+                                            Radius.circular(5),
+                                            bottomRight:
+                                            Radius.circular(5))),
+                                    child: TextView(
+                                        title: "${model.orgFullLoadList[index].mainTag ?? ''}",
+                                        fontSize:15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Full load required"
+                                            ? ColorResources
+                                            .FLR_TEXT
+                                            : model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Part load required"
+                                            ? ColorResources
+                                            .PLR_TEXT
+                                            : model
+                                            .orgFullLoadList[
+                                        index]
+                                            .mainTag ==
+                                            "Full load available"
+                                            ? ColorResources
+                                            .FLA_TEXT
+                                            : ColorResources
+                                            .PLA_TEXT),
                                   ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ));
-                      },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ThemeColor.theme_blue,
-                          foregroundColor: Colors.white,
-                          elevation: 3,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
-                        ),
-                        child: TextView(
-                          title: "Contact",
-                          fontSize:15.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xffffffff),
-                        ),
-                    ),
-                  )
+                                  SizedBox(height: 30.h,),
+                                  TextView(
+                                    title: "${model.orgFullLoadList[index].source ?? ''}",
+                                    fontSize:14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff000000),
+                                  ),
+                                  Container(color: Colors.black,width: 1.w,height: 48.h,),
+                                  TextView(
+                                    title: "${model.orgFullLoadList[index].destination ?? ''}",
+                                    fontSize:14.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff000000),
+                                  ),
+                                  SizedBox(height: 20.h,),
+                                  /* TextView(
+                              title: "Expire : ${model.orgFullLoadList[index].expireDate ?? ''}",
+                              fontSize:15.sp,
+                              fontWeight: FontWeight.w300,
+                              color: Color(0xff000000),
+                            ),*/
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 20.w,),
+                            SizedBox(
+                              width: 170.w,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 10.h,),
+                                  Container(
+                                      width: 130.w,
+                                      alignment: Alignment.centerRight,
+                                      child: InkWell(onTap: (){
+                                        // orgProvider.deleteFullLoad(model.orgFullLoadList[index]);
+                                        showAlertDialog(context,model.orgFullLoadList[index]);
+                                      }, child: SvgPicture.asset('assets/images/delete.svg',height: 20.h,width: 20.w,))),
+                                  SizedBox(height: 20.h,),
+                                  Row(
+                                    children: [
+                                      getImage('',height: 30.h),
+                                      SizedBox(width: 10.w,),
+                                      Expanded(
+                                        child: Text(
+                                          "${model.orgFullLoadList[index].nameOfPerson ?? ''}",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize:14.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff000000),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5.h,),
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 15.w,),
+                                      SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
+                                      SizedBox(width: 20.w,),
+                                      SizedBox(
+                                        width: 100.w,
+                                        child: Text(
+                                          "${model.orgFullLoadList[index].companyName ?? ''}",
+                                          style:TextStyle(fontSize:15.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff000000),),overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 30.h,),
+                                  SizedBox(
+                                    width: 121.w,
+                                    height: 40.h,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => CupertinoAlertDialog(
+                                              title: Column(
+                                                children: [
+                                                  Text(
+                                                      'Contact Number : ${model.orgFullLoadList[index].mobileNumber ?? ''}',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.bold)),
+                                                  Text(
+                                                      'Email_Id : ${model.orgFullLoadList[index].mobileNumber ?? ''}',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.bold)),
+                                                ],
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(10.0),
+                                                    child: Text('Ok',
+                                                        style: TextStyle(
+                                                            color: Colors.green,
+                                                            fontSize: 18)),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            ));
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: ThemeColor.theme_blue,
+                                        foregroundColor: Colors.white,
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
+                                      ),
+                                      child: TextView(
+                                        title: "Contact",
+                                        fontSize:15.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xffffffff),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                )),
-        );
+                      )),
+                );
+              }
+          ),));
       }
-      ),
-
-    );
-  }
   getContainer(OrgProvider model,String title, int value,String count, Color bgColor, String img) {
     return InkWell(
-     onTap: (){
-       model.getFilterFullLoadList(title);
-     },
+      onTap: (){
+        model.getFilterFullLoadList(title);
+      },
       child:  Container(
         width: 329.w,
         height: 162.h,
@@ -650,7 +659,7 @@ class _LoadListState extends State<LoadList> {
           fontFamily: GoogleFonts.poppins().fontFamily,
           fontWeight: FontWeight.w500,
           color: Colors.black),),
-      onTap: (){
+      onTap: () {
         if(index==5){
           showDialog<void>(
             context: context,
@@ -661,16 +670,14 @@ class _LoadListState extends State<LoadList> {
                 backgroundColor: Colors.transparent,
                 insetAnimationDuration: Duration(milliseconds: 200),
                 insetAnimationCurve: Curves.easeOutExpo,
-                // <-- SEE HERE
                 child: StatefulBuilder(builder:
                     (BuildContext context, StateSetter setState) {
-                  return _branchNameWiseDialog(context, setState,index!);
+                  return _branchNameWiseDialog(context, setState, index!);
                 }),
               );
             },
           );
-        }else
-        if(index==6){
+        } else if(index==6){
           showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
@@ -680,15 +687,14 @@ class _LoadListState extends State<LoadList> {
                 backgroundColor: Colors.transparent,
                 insetAnimationDuration: Duration(milliseconds: 200),
                 insetAnimationCurve: Curves.easeOutExpo,
-                // <-- SEE HERE
                 child: StatefulBuilder(builder:
                     (BuildContext context, StateSetter setState) {
-                  return _userNameWiseDialog(context, setState,index!,model);
+                  return _userNameWiseDialog(context, setState, index!, model);
                 }),
               );
             },
           );
-        }else {
+        } else {
           setState(() {
             selectedTab = title;
             model.getFilterFullLoadList(title);
@@ -724,7 +730,7 @@ class _LoadListState extends State<LoadList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  _buildDropdownField('Branch Name', 'Please select branch', stateSetter,true),
+                  _buildDropdownField('Branch Name', 'Please select branch', stateSetter, true),
                   SizedBox(
                     height: 30.h,
                   ),
@@ -738,7 +744,7 @@ class _LoadListState extends State<LoadList> {
                       ),
                       onPressed: () {
                         if(branchNameController.text.isNotEmpty){
-                        orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);}else{
+                          orgProvider.getOrgFullLoadListByBranch(widget.organization.id!, branchNameController.text);}else{
                           showCustomToast(
                               context, "Please select branch name", Icons.clear, Colors.red);
                         }
@@ -786,7 +792,7 @@ class _LoadListState extends State<LoadList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  _buildDropdownField('Employee Name', 'Please select employee name', stateSetter,false),
+                  _buildDropdownField('Employee Name', 'Please select employee name', stateSetter, false),
                   SizedBox(
                     height: 30.h,
                   ),
@@ -800,14 +806,14 @@ class _LoadListState extends State<LoadList> {
                       ),
                       onPressed: () {
                         if(userNameController.text.isNotEmpty){
-                        if(model.userList.isNotEmpty){
-                          model.userList.forEach((element) async {
-                            if("${element.firstName} ${element.lastName}" == userNameController.text){
-                              await orgProvider.getOrgFullLoadListByEmployee(widget.organization.id!, element.id!);
-                              Navigator.of(context).pop();
-                            }
-                          });
-                        }}
+                          if(model.userList.isNotEmpty){
+                            model.userList.forEach((element) async {
+                              if("${element.firstName} ${element.lastName}" == userNameController.text){
+                                await orgProvider.getOrgFullLoadListByEmployee(widget.organization.id!, element.id!);
+                                Navigator.of(context).pop();
+                              }
+                            });
+                          }}
                         else{
                           showCustomToast(
                               context, "Please select username", Icons.clear, Colors.red);
@@ -838,8 +844,6 @@ class _LoadListState extends State<LoadList> {
 
   Widget _buildDropdownField(
       String label, String hint, StateSetter stateSetter, bool isBranch) {
-
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -868,7 +872,7 @@ class _LoadListState extends State<LoadList> {
                 border: Border.all(color: Colors.grey, width: 0.7),
                 borderRadius: BorderRadius.circular(5.0),
               ),
-              child: DropdownButton(
+              child: DropdownButton<String>(
                 value: isBranch?branchNamedropdownvalue:userNamedropdownvalue,
                 isExpanded: true,
                 icon: const Icon(Icons.arrow_drop_down),
@@ -883,7 +887,7 @@ class _LoadListState extends State<LoadList> {
                   ),
                 ),
                 items: isBranch?orgProvider.branchNameList.map((String items) {
-                  return DropdownMenuItem(
+                  return DropdownMenuItem<String>(
                     value: items,
                     child: Text(
                       items,
@@ -895,7 +899,7 @@ class _LoadListState extends State<LoadList> {
                     ),
                   );
                 }).toList():orgProvider.userNameList.map((String items) {
-                  return DropdownMenuItem(
+                  return DropdownMenuItem<String>(
                     value: items,
                     child: Text(
                       items,
@@ -910,11 +914,11 @@ class _LoadListState extends State<LoadList> {
                 onChanged: (String? newValue) {
                   stateSetter(() {
                     if(isBranch){
-                    branchNamedropdownvalue = newValue!;
-                    branchNameController.text = branchNamedropdownvalue!;
+                      branchNamedropdownvalue = newValue;
+                      branchNameController.text = branchNamedropdownvalue ?? '';
                     }else{
-                      userNamedropdownvalue = newValue!;
-                      userNameController.text = userNamedropdownvalue!;
+                      userNamedropdownvalue = newValue;
+                      userNameController.text = userNamedropdownvalue ?? '';
                     }
                   });
                 },
@@ -932,7 +936,7 @@ class _LoadListState extends State<LoadList> {
       child: Text("Yes",style: TextStyle(color: Colors.red),),
       onPressed: () async {
         await orgProvider.deleteFullLoad(orgFullLoadList);
-       Navigator.pop(context);
+        Navigator.pop(context);
       },
     );
 

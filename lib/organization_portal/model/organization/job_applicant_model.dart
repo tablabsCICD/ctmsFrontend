@@ -34,12 +34,15 @@ class JobApplicantList {
     jobDetails = json['jobDetails'] != null
         ? new JobDetails.fromJson(json['jobDetails'])
         : null;
-    if (json['applicantList'] != null) {
+    if (json['applicantList'] != null && json['applicantList'] is List) {
       applicantList = <ApplicantList>[];
       json['applicantList'].forEach((v) {
         applicantList!.add(new ApplicantList.fromJson(v));
       });
+    } else {
+      applicantList = []; // fallback if data is "", null, or not a list
     }
+
   }
 
   Map<String, dynamic> toJson() {

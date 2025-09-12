@@ -141,7 +141,7 @@ class _CompanySideBarState extends State<CompanySideBar> {
                 //  Navigator.restorablePushReplacementNamed(context,AppRoutes.employee_dashbord);
                 Navigator.of(context).restorablePushReplacement(
                     (context, arguments) => MaterialPageRoute(
-                        builder: (builder) => AllUsers(organization!)));
+                        builder: (builder) => AllUsers(organization)));
               },
             ),
             DrawerListTile(

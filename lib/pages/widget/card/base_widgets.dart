@@ -1,17 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/images.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/textview.dart';
+import 'package:flutter_hr_management/organization_portal/model/truck_load_model.dart';
+import 'package:flutter_hr_management/organization_portal/util/utils.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../organization_portal/localization/language_constrants.dart';
+import '../../../utils/colors.dart';
 import '../textview.dart';
+import '../toast.dart';
+import '../verified_tag.dart';
 
 class BaseWidget {
 
@@ -141,6 +146,810 @@ class BaseWidget {
 
   }
 
+
+  Widget deleteButton(Function(int) onMenuTap, TruckLoad load, {bool isOwnPost = false}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(right: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              onMenuTap(10);
+            },
+            child: Container(
+              height: 38,
+              width: 253,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 0.50, color: Color(0x33001E49)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: ThemeColor.red,
+                      fontSize: 12,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  //SvgPicture.asset(Images.delete)
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          InkWell(
+              onTap: () {},
+              child: isOwnPost
+                  ? popUpmenuForMyPost(onMenuTap,load)
+                  : popUpmenuForOwnPost(onMenuTap,load))
+        ],
+      ),
+    );
+  }
+
+  popUpmenuForMyPost(Function(int) onMenuTap, TruckLoad load) {
+    return PopupMenuButton(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1, color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: SvgPicture.asset(Images.post_menu)),
+      onSelected: (dynamic val) {
+        onMenuTap(val);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: () {
+            load.isOpenForBid==1? onMenuTap(11):ToastMessage.show(context, "Your Post already Completed Successfully");;
+          },
+          child: Row(
+            children: [
+              /* SvgPicture.asset(
+                Images.delete,
+                color: Colors.black,
+                width: 20,
+                height: 20,
+              ),*/
+              Icon(Icons.done,color: load.isOpenForBid==1?Colors.black:Colors.green,),
+              SizedBox(
+                width: 12,
+              ),
+              Text(
+                load.isOpenForBid==1?"Complete":"Completed",
+                style: TextStyle(
+                  color:load.isOpenForBid==1?Colors.black:Colors.green,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                width: 13,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(3);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.share_white,
+                  color: Colors.black,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("share", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(4);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.star_border,
+                  color: Colors.black,
+                  size: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("rating", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(5);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.return_route,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("re_post", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(6);
+            },
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/two_way_arrow.png",
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("city_interchange", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(7);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.edit_outlined,
+                  color: Colors.black,
+                  size: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("edit", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+      ],
+    );
+  }
+
+  Widget profileWithUser(String profileLink, String name, String companyName,
+      {int verify = 0, int transporterOrAgent = 0}) {
+    return Container(
+      width: double.infinity,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [getImageclip(profileLink, height: 40, width: 40)],
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              name,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                                fontFamily:
+                                                GoogleFonts.poppins()
+                                                    .fontFamily,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            Visibility(
+                                              visible:
+                                              verify != 0 ? true : false,
+                                              child:
+                                              VerifiedTag().onVeriedTag(),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: Text(
+                                            companyName,
+                                            style: TextStyle(
+                                              color: Color(0x99001E49),
+                                              fontSize: 10,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: Text(
+                                            Utils().getTranport(
+                                                transporterOrAgent),
+                                            style: TextStyle(
+                                              color: Color(0x99001E49),
+                                              fontSize: 10,
+                                              fontFamily: GoogleFonts.poppins()
+                                                  .fontFamily,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        RatingBar.builder(
+                                          itemSize: 10,
+                                          initialRating: 4.5,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          ignoreGestures: true,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 1.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 5,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  popUpmenuForOwnPost(Function(int) onMenuTap,TruckLoad load) {
+    return PopupMenuButton(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1, color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: SvgPicture.asset(Images.post_menu)),
+      onSelected: (dynamic val) {
+        onMenuTap(val);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: () {
+            load.isOpenForBid==1? onMenuTap(11):ToastMessage.show(context, "Your Post already Completed Successfully");;
+          },
+          child: Row(
+            children: [
+              /* SvgPicture.asset(
+                Images.delete,
+                color: Colors.black,
+                width: 20,
+                height: 20,
+              ),*/
+              Icon(Icons.done,color: load.isOpenForBid==1?Colors.black:Colors.green,),
+              SizedBox(
+                width: 12,
+              ),
+              Text(
+                load.isOpenForBid==1?"Complete":"Completed",
+                style: TextStyle(
+                  color:load.isOpenForBid==1?Colors.black:Colors.green,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                width: 13,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(3);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.share_white,
+                  color: Colors.black,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("share", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(5);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.return_route,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("re_post", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(6);
+            },
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/two_way_arrow.png",
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated("city_interchange", context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(7);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.edit_outlined,
+                  color: Colors.black,
+                  size: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated('edit', context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+      ],
+    );
+  }
+
+  popUpmenu(Function(int) onMenuTap) {
+    return PopupMenuButton(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1, color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: SvgPicture.asset(Images.post_menu)),
+      onSelected: (dynamic val) {
+        onMenuTap(val);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: () {
+            onMenuTap(1);
+          },
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                Images.message,
+                color: Colors.black,
+                width: 20,
+                height: 20,
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Text(
+                getTranslated('chat', context)!,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                width: 13,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(2);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.call_white,
+                  color: Colors.black,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated('call', context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(3);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.share_white,
+                  color: Colors.black,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated('share', context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(4);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.star_border,
+                  color: Colors.black,
+                  size: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  getTranslated('rating', context)!,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+      ],
+    );
+  }
+
+  Widget headingWithDescription(String title, String date, String field1,
+      String field2, String field3, bool isJobPost) {
+    return Container(
+      width: double.infinity,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: GoogleFonts
+                                .poppins()
+                                .fontFamily,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          date,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Color(0x99001E49),
+                            fontSize: 12,
+                            fontFamily: GoogleFonts
+                                .poppins()
+                                .fontFamily,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              isJobPost ? "Experience : " : "Mfg Year : ",
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              field1,
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              isJobPost ? "Role : " : "Model : ",
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              field2,
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        isJobPost ? SizedBox.shrink() : Row(
+                          children: [
+                            Text(
+                              "Price : ",
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              field3,
+                              style: TextStyle(
+                                color: Color(0x99001E49),
+                                fontSize: 12,
+                                fontFamily: GoogleFonts
+                                    .poppins()
+                                    .fontFamily,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   Widget profileDirectory(String profileLink,String name,String companyName,{int verify=0}){
 
     return  Container(
@@ -304,6 +1113,58 @@ class BaseWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget deleteMyPostButton(Function(int) onMenuTap) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(right: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          InkWell(
+            onTap: () {
+              onMenuTap(10);
+            },
+            child: Container(
+              height: 38,
+              width: 253,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 0.50, color: Color(0x33001E49)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: ThemeColor.red,
+                      fontSize: 12,
+                      fontFamily: GoogleFonts
+                          .poppins()
+                          .fontFamily,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SvgPicture.asset(Images.delete)
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 8),
+          InkWell(onTap: () {}, child: popUpmenuOwnPost(onMenuTap))
         ],
       ),
     );
@@ -655,99 +1516,6 @@ class BaseWidget {
     );
   }
 
-  popUpmenu(Function(int) onMenuTap){
-    return PopupMenuButton(
-
-
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1.w, color: Color(0x332C363F)),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Center(child: SvgPicture.asset(Images.post_menu)),
-        onSelected: (dynamic val){
-
-        onMenuTap(val);
-
-
-      },
-
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            onTap: (){
-              onMenuTap(1);
-
-            },
-
-            child: Row(
-              children: [
-                SvgPicture.asset(Images.message,color: Colors.black,width: 20.w,height: 20.h,),
-                SizedBox(width: 12.w,),
-                Text(
-                  S().chat,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
-
-
-                ),
-                SizedBox(width: 13.w,),
-              ],
-            ),
-          ),
-
-          PopupMenuItem(
-            onTap: (){
-              onMenuTap(2);
-            },
-
-              child: Row(
-                children: [
-                  SvgPicture.asset(Images.call_white,color: Colors.black,width: 20.w,height: 20.h,),
-                  SizedBox(width: 12.w,),
-                  Text(
-                    S().call,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  )
-                ],
-              )
-          ),
-          PopupMenuItem(
-            onTap: (){
-              onMenuTap(3);
-            },
-
-              child: Row(
-                children: [
-                  SvgPicture.asset(Images.share_white,color: Colors.black,width: 20.w,height: 20.h,),
-                  SizedBox(width: 12.w,),
-                  Text(
-                    S().share,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  )
-                ],
-              )
-          ),
-
-        ],
-    );
-  }
-
 
   Widget onlyBidButton(Function onTab){
     return InkWell(
@@ -839,65 +1607,65 @@ class BaseWidget {
     return image(image: link);
   }
 
-  Widget  carouseImage(List<String?> imgList){
-    return   Container(
-        child: CarouselSlider(
-          options: CarouselOptions(
-              padEnds: false,
-              pageSnapping: false,
-            enableInfiniteScroll: false,
-
-          ),
-          items: imgList
-              .map((item) => Container(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                  child: imageLink(item!)),
+  Widget carouseImage(List<String?> imgList) {
+    PageController _pageController = PageController(viewportFraction: 0.95);
+    return SizedBox(
+      height: 220,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: imgList.length,
+        itemBuilder: (context, index) {
+          final item = imgList[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: imageLink(item!),
             ),
-          ))
-              .toList(),
-        ));
+          );
+        },
+      ),
+    );
   }
 
-
-  Widget  carouseImageDelete(List<String?> imgList,Function(String)  onDelete){
-    return   Container(
-        child: CarouselSlider(
-          options: CarouselOptions(
-            padEnds: false,
-            pageSnapping: false,
-            enableInfiniteScroll: false,
-
-          ),
-          items: imgList
-              .map((item) => Container(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  Center(
-                      child: imageLinkDelete(item!)),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: InkWell(
-                      onTap: (){
-                        onDelete(item);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset(Images.delete,color: Colors.white,),
+  Widget carouseImageDelete(List<String?> imgList, Function(String) onDelete) {
+    PageController _pageController = PageController(viewportFraction: 0.95);
+    return SizedBox(
+      height: 220,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: imgList.length,
+        itemBuilder: (context, index) {
+          final item = imgList[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                Center(
+                  child: imageLinkDelete(item!),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: InkWell(
+                    onTap: () {
+                      onDelete(item);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        Images.delete,
+                        color: Colors.white,
                       ),
                     ),
-                  )
-                  
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
-          ))
-              .toList(),
-        ));
+          );
+        },
+      ),
+    );
   }
+
 
   Widget imageLinkDelete(String link) {
     // return Container(

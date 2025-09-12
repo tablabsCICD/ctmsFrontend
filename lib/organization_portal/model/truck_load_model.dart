@@ -6,7 +6,7 @@ class TruckLoadType {
     required this.last,
     required this.size,
     required this.number,
-    this.sort,
+    //  this.sort,
     required this.first,
     required this.numberOfElements,
   });
@@ -16,7 +16,7 @@ class TruckLoadType {
   late final bool last;
   late final int size;
   late final int number;
-  late final String? sort;
+  // late final String? sort;
   late final bool first;
   late final int numberOfElements;
 
@@ -27,23 +27,23 @@ class TruckLoadType {
     last = json['last'];
     size = json['size'];
     number = json['number'];
-    sort = json['sort']?? '';
+    //sort = json['sort']?? '';
     first = json['first'];
     numberOfElements = json['numberOfElements'];
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['content'] = content.map((e)=>e.toJson()).toList();
-    _data['totalElements'] = totalElements;
-    _data['totalPages'] = totalPages;
-    _data['last'] = last;
-    _data['size'] = size;
-    _data['number'] = number;
-    _data['sort'] = sort;
-    _data['first'] = first;
-    _data['numberOfElements'] = numberOfElements;
-    return _data;
+    final data = <String, dynamic>{};
+    data['content'] = content.map((e)=>e.toJson()).toList();
+    data['totalElements'] = totalElements;
+    data['totalPages'] = totalPages;
+    data['last'] = last;
+    data['size'] = size;
+    data['number'] = number;
+    // _data['sort'] = sort;
+    data['first'] = first;
+    data['numberOfElements'] = numberOfElements;
+    return data;
   }
 }
 
@@ -86,7 +86,16 @@ class TruckLoad {
     this.fullLoadChoice,
     this.loadWeight,
     this.typeOfCargo,
-    this.otherDetails
+    this.otherDetails,
+    this.comment,
+    this.likes,
+    this.postImages,
+    this.transporterOrAgent,
+    this.userList,
+    this.mobileOrLandline,
+    this.expireDate,
+    this.isSharedInGroup,
+    this.isOpenForBid
   });
   late final int? id;
   late final int? userId;
@@ -124,8 +133,22 @@ class TruckLoad {
   late final String? typeOfPayment;
   late final String? fullLoadChoice;
   late final String? loadWeight;
- late final String? typeOfCargo;
- late final String? otherDetails;
+  late final String? typeOfCargo;
+  late final String? otherDetails;
+  late final dynamic likes;
+  late final dynamic comment;
+  late final List<dynamic>?postImages;
+  late final int?transporterOrAgent;
+  late final String? userList;
+  late final String? mobileOrLandline;
+  late final String? expireDate;
+
+  late final int? isverified;
+  late final bool? isSharedInGroup;
+  late final int? isOpenForBid;
+
+
+
 
 
   TruckLoad.fromJson(Map<String, dynamic> json){
@@ -155,60 +178,87 @@ class TruckLoad {
     mfgYear = json['mfgYear']?? '';
     estPrice = json['estPrice']?? '';
     dnd = json['dnd']?? 0;
+    transporterOrAgent = json['transporterOrAgent']?? 0;
+
     vehicleSize = json['vehicleSize']?? '';
     association = json['association']?? '';
     isPaid = json['isPaid']?? 0;
+    isverified = json['isverified']?? 0;
+
     website = json['website']?? '';
+
     alterativeNumber = json['alterativeNumber']?? '';
     companyDetailsName = json['companyDetailsName']?? '';
     isVerifiedByCompany = json['isVerifiedByCompany']?? '';
     typeOfPayment = json['typeOfPayment']?? '';
     fullLoadChoice = json['fullLoadChoice']?? '';
-    loadWeight = json['loadWeight']?? '';
-    typeOfCargo = json['typeOfCargo']?? '';
+    loadWeight = json['vehicleWeight']?? '';
+    typeOfCargo = json['cargoType']?? '';
     otherDetails = json['otherDetails']?? '';
+    likes=json['likes']??'';
+    comment=json['comment']??'';
+    postImages=json['images']??'';
+    userList=json['userList']??'';
+    expireDate=json['expireDate']??'';
+
+    mobileOrLandline=json['mobileOrLandline']??'';
+    isSharedInGroup=json['isSharedInGroup']??false;
+    isOpenForBid=json['isOpenForBid']??1;
+
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['userId'] = userId;
-    _data['type'] = type;
-    _data['postingTime'] = postingTime;
-    _data['companyName'] = companyName;
-    _data['nameOfPerson'] = nameOfPerson;
-    _data['companyRating'] = companyRating;
-    _data['content'] = content;
-    _data['topicName'] = topicName;
-    _data['tableName'] = tableName;
-    _data['companyLogo'] = companyLogo;
-    _data['partLoadOrNot'] = partLoadOrNot;
-    _data['reminderUserName'] = reminderUserName;
-    _data['sharableLink'] = sharableLink;
-    _data['deviceId'] = deviceId;
-    _data['ratings'] = ratings;
-    _data['mobileNumber'] = mobileNumber;
-    _data['source'] = source;
-    _data['destination'] = destination;
-    _data['mainTag'] = mainTag;
-    _data['privatePost'] = privatePost;
-    _data['makerName'] = makerName;
-    _data['modelName'] = modelName;
-    _data['mfgYear'] = mfgYear;
-    _data['estPrice'] = estPrice;
-    _data['dnd'] = dnd;
-    _data['vehicleSize'] = vehicleSize;
-    _data['association'] = association;
-    _data['isPaid'] = isPaid;
-    _data['website'] = website;
-    _data['alterativeNumber'] = alterativeNumber;
-    _data['companyDetailsName'] = companyDetailsName;
-    _data['isVerifiedByCompany'] = isVerifiedByCompany;
-    _data['typeOfPayment'] = typeOfPayment;
-    _data['fullLoadChoice'] = fullLoadChoice;
-    _data['loadWeight'] = loadWeight;
-    _data['typeOfCargo'] = typeOfCargo;
-    _data['otherDetails'] = otherDetails;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['type'] = type;
+    data['postingTime'] = postingTime;
+    data['companyName'] = companyName;
+    data['nameOfPerson'] = nameOfPerson;
+    data['companyRating'] = companyRating;
+    data['content'] = content;
+    data['topicName'] = topicName;
+    data['tableName'] = tableName;
+    data['companyLogo'] = companyLogo;
+    data['partLoadOrNot'] = partLoadOrNot;
+    data['reminderUserName'] = reminderUserName;
+    data['sharableLink'] = sharableLink;
+    data['deviceId'] = deviceId;
+    data['ratings'] = ratings;
+    data['mobileNumber'] = mobileNumber;
+    data['source'] = source;
+    data['destination'] = destination;
+    data['mainTag'] = mainTag;
+    data['privatePost'] = privatePost;
+    data['makerName'] = makerName;
+    data['modelName'] = modelName;
+    data['mfgYear'] = mfgYear;
+    data['estPrice'] = estPrice;
+    data['dnd'] = dnd;
+    data['vehicleSize'] = vehicleSize;
+    data['association'] = association;
+    data['isPaid'] = isPaid;
+    data['website'] = website;
+    data['alterativeNumber'] = alterativeNumber;
+    data['companyDetailsName'] = companyDetailsName;
+    data['isVerifiedByCompany'] = isVerifiedByCompany;
+    data['typeOfPayment'] = typeOfPayment;
+    data['fullLoadChoice'] = fullLoadChoice;
+    data['vehicleWeight'] = loadWeight;
+    data['cargoType'] = typeOfCargo;
+    data['otherDetails'] = otherDetails;
+    data['likes'] = likes;
+    data['comment'] = comment;
+    data['images'] = postImages;
+    data['transporterOrAgent'] = transporterOrAgent;
+    data['userList'] = userList;
+    data['isverified'] = isverified;
+    data['mobileOrLandline'] = mobileOrLandline;
+    data['expireDate'] = expireDate;
+    data['isSharedInGroup'] = isSharedInGroup;
+    data['isOpenForBid'] = isOpenForBid;
+
+
+    return data;
   }
 }

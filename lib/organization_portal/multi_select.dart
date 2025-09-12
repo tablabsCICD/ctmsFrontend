@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/organization_portal/company/company_provider/more_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_hr_management/organization_portal/dialog/animated_custom_dialog.dart';
 import 'package:flutter_hr_management/organization_portal/dialog/my_dialog.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/truck_load_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/more_provider.dart';
 import 'package:flutter_hr_management/organization_portal/util/style.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/custom_button.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/custom_textview.dart';

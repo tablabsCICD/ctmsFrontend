@@ -23,12 +23,16 @@ class LoadListModel {
         this.number});
 
   LoadListModel.fromJson(Map<String, dynamic> json) {
-    if (json['content'] != null) {
+    if (json['content'] != null && json['content'] is List) {
       content = <OrgFullLoadModel>[];
       json['content'].forEach((v) {
         content!.add(new OrgFullLoadModel.fromJson(v));
       });
+    } else {
+      content = []; // fallback if data is "", null, or not a list
     }
+
+
     last = json['last'];
     totalPages = json['totalPages'];
     totalElements = json['totalElements'];

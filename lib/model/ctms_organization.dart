@@ -180,8 +180,8 @@ class CtmsOrganization {
         rulesForTaxinvoice!.add(v);
       });
     }
-    connectOrgId = json['connectOrgId'];
-    connectUserId = json['connectUserId'];
+    connectOrgId = json['connectOrgId']??3;
+    connectUserId = json['connectUserId']??73;
   }
 
   Map<String, dynamic> toJson() {

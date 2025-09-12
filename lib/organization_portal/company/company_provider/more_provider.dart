@@ -3,25 +3,33 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_hr_management/organization_portal/model/comments_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/feedback_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/gallary_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/job_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/pool_purchase_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/truck_load_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_hr_management/organization_portal/network/api_call.dart';
-import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:overlay_support/overlay_support.dart';
 
-import '../model/discussion_model.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../locator.dart';
+import '../../../model/api_response.dart';
+import '../../../model/response/comman_response.dart';
+import '../../../network/api_helper.dart';
+import '../../../utils/constant.dart';
+import '../../model/discussion_model.dart';
+import '../../model/feedback_model.dart';
+import '../../model/gallary_model.dart';
+import '../../model/my_job_list.dart';
+import '../../model/pool_purchase_model.dart';
+import '../../model/truck_load_model.dart';
+import '../../provider/auth_provider.dart';
+import '../../provider/buy_sell_provider.dart';
+import '../../provider/dashboard_provider.dart';
+import '../../util/app_constants.dart';
+
 
 class MoreProvider extends ChangeNotifier {
   List<TruckLoad> allPostList = [];
   List<TruckLoad> myFullLoadTypeList = [];
   List<TruckLoad> myPartLoadTypeList = [];
-  List<TruckLoad> myJobList = [];
+  List<MyJobData> myJobList = [];
   List<TruckLoad> myOwnPostList = [];
-  List<Job> myJobsList = [];
   List<TruckLoad> myBuyVehicleList = [];
   List<PoolPurchase> myPoolPurchaseList = [];
   List<Gallery> myGalleryList = [];
@@ -47,6 +55,10 @@ class MoreProvider extends ChangeNotifier {
       partLoadFlag = false,
       galleryFlag = false;
 
+  DashboardProvider dashboardProvider = locator<DashboardProvider>();
+  BuySellProvider buySellProvider = locator<BuySellProvider>();
+  AuthProvider authProvider = locator<AuthProvider>();
+
   getOwnPostList(String userName,{int currentPage = 0}) async {
     isMoreLoading = true;
     notifyListeners();
@@ -55,13 +67,13 @@ class MoreProvider extends ChangeNotifier {
       allPostList.clear();
       myFullLoadTypeList.clear();
       myPartLoadTypeList.clear();
-      myJobList.clear();
       myBuyVehicleList.clear();
     }
 
-    String myUrl = AppConstants.GET_OWNPOST + '?userName=${userName}';
-    print(myUrl);
+    String myUrl = AppConstants.GET_OWNPOST + '?userId=${userName}&page=$currentPage&size=100';
+    print("OwnPost::"+myUrl);
     var req = await http.get(Uri.parse(myUrl));
+    print("OwnPost Response:::::"+req.body);
     isMoreFirstLoading= false;
     isMoreLoading = false;
     response = json.decode(req.body);
@@ -73,9 +85,80 @@ class MoreProvider extends ChangeNotifier {
       else if (allPostList[i].type == 'Part Load')
         myPartLoadTypeList.add(allPostList[i]);
       else if (allPostList[i].type == 'Jobs')
-        myJobList.add(myJobList[i]);
+        null;
       else
         myBuyVehicleList.add(allPostList[i]);
+    }
+    notifyListeners();
+  }
+
+  getOwnJobList(String userName,{int currentPage = 0}) async {
+    isMoreLoading = true;
+    notifyListeners();
+    if(currentPage == 0){
+      myJobList.clear();
+    }
+    print("the url is ${AppConstants.BASE_URL}getPostJobsByUserId/${authProvider.userDetailList[0].id}");
+    ApiResponse apiResponse=await ApiHelper().apiGet("${AppConstants.BASE_URL}getPostJobsByUserId/${authProvider.userDetailList[0].id}");
+    print('the status code is ${apiResponse.status}');
+    isMoreLoading=false;
+    if(apiResponse.status==200){
+      MyJobList jobList=MyJobList.fromJson(jsonDecode(apiResponse.response));
+      myJobList.addAll(jobList.data!);
+      print('the lenghth is ${myJobList.length}');
+    }else{
+    }
+    notifyListeners();
+  }
+
+  reSendPost(BuildContext context,TruckLoad postBidData)async {
+    String myUrl = AppConstants.BASE_URL+"repost?id=${postBidData.id!}&interchange=${false}";
+    print(myUrl);
+    var apiResponse=await http.post(Uri.parse(myUrl));
+    if(apiResponse.statusCode==200){
+      var jsonData = jsonDecode(apiResponse.body);
+      CommonResponse commonResponse = CommonResponse.fromJson(jsonData);
+      if(commonResponse.isSuccess == true){
+        await getOwnPostList(authProvider.userDetailList[0].id.toString(),currentPage: 0);
+        showSimpleNotification(
+            Text("Re-post submitted successfully!",style: TextStyle(color: Colors.white),),
+            background: Colors.black
+        );}
+      else{
+        showSimpleNotification(
+            Text(commonResponse.message.toString(),style: TextStyle(color: Colors.white),),
+            background: Colors.orange
+        );
+      }
+      return commonResponse.isSuccess;
+    }else if(apiResponse.statusCode == 402){
+      showSimpleNotification(
+          Text("Please update your package",style: TextStyle(color: Colors.white),),
+          background: Colors.orange
+      );
+      return false;
+    }else{
+      showSimpleNotification(
+          Text("Please Try Again!",style: TextStyle(color: Colors.white),),
+          background: Colors.red
+      );
+      return false;
+    }
+  }
+
+  interChnageSendPost(BuildContext context,TruckLoad postBidData) async{
+    var apiResponse=await http.post(Uri.parse(AppConstants.BASE_URL+"repost?id=${postBidData.id!}&interchange=${true}"));
+    if(apiResponse.statusCode==200){
+      getOwnPostList(authProvider.userDetailList[0].id.toString(),currentPage: 0);
+      showSimpleNotification(
+          Text("Intercity post submitted successfully!",style: TextStyle(color: Colors.white),),
+          background: Colors.black
+      );
+    }else{
+      showSimpleNotification(
+          Text("Please try again",style: TextStyle(color: Colors.white),),
+          background: Colors.black
+      );
     }
     notifyListeners();
   }
@@ -100,53 +183,65 @@ class MoreProvider extends ChangeNotifier {
 
   getDiscussionList(String userName)async{
     discussionList.clear();
-    APIHelper apiHelper=APIHelper();
-    var result=await apiHelper.ApiGetData(AppConstants.GET_DISCUSSION+'/getByUserName?userName=${userName}');
-    DiscussionData discussion = await DiscussionData.fromJson(result);
+    ApiHelper apiHelper=ApiHelper();
+    var result=await apiHelper.apiGet(AppConstants.GET_DISCUSSION+'/getByUserName?userName=${userName}');
+    DiscussionData discussion = await DiscussionData.fromJson(result.response);
     discussionList.addAll(discussion.content!);
   }
 
-  deleteJob(TruckLoad job) async {
-    String myUrl = AppConstants.POST_JOB + '?id=${job.id}';
+  deleteJob(MyJobData job) async {
+    String myUrl = AppConstants.POST_JOB + '?id=${job.postJob!.id}';
     var req = await http.delete(Uri.parse(myUrl));
     response = json.decode(req.body);
     myJobList.remove(job);
     notifyListeners();
   }
 
-  deleteFullLoad(TruckLoad truckLoad) async {
-    String myUrl = AppConstants.BASE_URL + 'fullTruckLoad?id=${truckLoad.id}';
-    print(myUrl);
-
+  deleteFullLoad(int id,int index) async {
+    TruckLoad truckLoad = await getRequirementDetails(id);
+    String myUrl = AppConstants.BASE_URL + 'fullTruckLoad?id=${id}';
     var req = await http.delete(Uri.parse(myUrl));
     var deleteResponse = json.decode(req.body);
-    print(deleteResponse);
     truckLoad.type == 'Full Load'
-        ? myFullLoadTypeList.remove(truckLoad)
-        : myPartLoadTypeList.remove(truckLoad);
+        ? myFullLoadTypeList.removeAt(index)
+        : myPartLoadTypeList.removeAt(index);
+   await getOwnPostList(authProvider.userDetailList[0].id.toString());
+    print("delete response: "+deleteResponse);
     notifyListeners();
   }
 
-  deleteBuySell(TruckLoad truckLoad) async {
-    String myUrl = AppConstants.POST_BUY_SELL + '?id=${truckLoad.id}';
-    var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
-    myBuyVehicleList.remove(truckLoad);
+  TruckLoad? truckLoad;
+  getRequirementDetails(int id) async {
+    String myUrl = AppConstants.BASE_URL +'fullTruckLoad/${id}';
+    print(myUrl);
+    var req = await http.get(Uri.parse(myUrl));
+    response = await json.decode(req.body);
+    var list = TruckLoadType.fromJson(response);
+    truckLoad = list.content[0];
     notifyListeners();
+    return truckLoad;
+  }
+
+  deleteBuySell(int id,int index) async {
+    String myUrl = AppConstants.POST_BUY_SELL + '?id=${id}';
+    var req = await http.delete(Uri.parse(myUrl));
+    json.decode(req.body);
+    notifyListeners();
+    myBuyVehicleList.removeAt(index);
+    buySellProvider.notifyListeners();
   }
 
   deleteMultipleBuySell() async {
     String myUrl = AppConstants.POST_BUY_SELL + '/deleteMultiple';
     var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
-    // myBuyVehicleList.remove();
+    json.decode(req.body);
     notifyListeners();
   }
 
   deleteGallery(Gallery gallery) async {
     String myUrl = AppConstants.GALLERY + '?id=${gallery.id}';
     var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
+    json.decode(req.body);
     myGalleryList.remove(gallery);
     notifyListeners();
   }
@@ -154,7 +249,7 @@ class MoreProvider extends ChangeNotifier {
   deletePoolPurchase(PoolPurchase obj) async {
     String myUrl = AppConstants.BULK_DATA + '?id=${obj.id}';
     var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
+    json.decode(req.body);
     myPoolPurchaseList.remove(obj);
     notifyListeners();
   }
@@ -162,7 +257,7 @@ class MoreProvider extends ChangeNotifier {
   deleteFeedback(FeedBack obj) async {
     String myUrl = AppConstants.BASE_URL + 'Feedback?id=${obj.id}';
     var req = await http.delete(Uri.parse(myUrl));
-    var deleteResponse = json.decode(req.body);
+    json.decode(req.body);
     feedbackList.remove(obj);
     notifyListeners();
   }
@@ -180,7 +275,9 @@ class MoreProvider extends ChangeNotifier {
   getGalleryList(String id) async {
     myGalleryList.clear();
     String myUrl = AppConstants.GALLERY + '/byUserId?userId=${id}';
+    print("Own News Url : $myUrl");
     var req = await http.get(Uri.parse(myUrl));
+    print("Own News Response : ${req.body}");
     galleryResponse = json.decode(req.body);
     var type = GalleryModel.fromJson(galleryResponse);
     myGalleryList = type.content;
@@ -220,7 +317,6 @@ class MoreProvider extends ChangeNotifier {
   final now = new DateTime.now();
 
   saveFeedback({int? id,String? feedbackDetails,int? postId,int? userId,String? type,int? rating}) async {
-    String date = DateFormat.yMMMMd('en_US').format(now);
     String myUrl = AppConstants.BASE_URL + 'Feedback';
     Uri uri = Uri.parse(myUrl);
     Map<String, dynamic> data = {

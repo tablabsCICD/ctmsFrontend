@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/feedback_model.dart';
@@ -78,7 +79,7 @@ class RepeatProvider extends ChangeNotifier {
           print('id'+element.postId.toString());
           Load load = await getFullLoadTruckById(element.postId!);
           print('object'+ load.transporterOrCustomerName.toString());
-          dashboardProvider.savePost(
+          dashboardProvider.savePost(context as BuildContext,
             mobile: authProvider.userDetailList[0].mobileNumber ,
             destination: load.destination,
             dnd: 0,
