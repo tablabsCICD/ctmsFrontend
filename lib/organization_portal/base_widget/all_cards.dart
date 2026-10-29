@@ -1,104 +1,102 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:tkd_app/locator.dart';
-import 'package:tkd_app/model/truck_load_model.dart';
-import 'package:tkd_app/provider/auth_provider.dart';
-import 'package:tkd_app/provider/buy_sell_provider.dart';
-import 'package:tkd_app/provider/delete_interface.dart';
-import 'package:tkd_app/view/base_widget/home_base_widgets.dart';
-import 'package:tkd_app/view/base_widget/utils.dart';
+
+import '../../locator.dart';
+import '../../pages/widget/card/base_widgets.dart';
+import '../../pages/widget/toast.dart';
+import '../../utils/colors.dart';
+import '../model/truck_load_model.dart';
+import '../provider/auth_provider.dart';
+import '../provider/buy_sell_provider.dart';
+import '../provider/delete_interface.dart';
+import '../util/ResponsiveWidget.dart';
+import '../util/utils.dart';
 
 class AllCards {
   final buysellProvider = locator<BuySellProvider>();
   final authProvider = locator<AuthProvider>();
 
-  cardSellBuyPost(
-      int index, BuildContext context, TruckLoad load, DeletePostInf postDelete,
-      {int? userId, bool? isDashBoard}) {
+  Widget cardSellBuyPost(
+      int index,
+      BuildContext context,
+      TruckLoad load,
+      DeletePostInf postDelete, {
+        int? userId,
+        bool? isDashBoard,
+      }) {
     return Container(
       width: 335,
-      // height: 255,
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        shadows: [
+        shadows: const [
           BoxShadow(
             color: Color(0x114A5568),
             blurRadius: 8,
             offset: Offset(0, 3),
-            spreadRadius: 0,
           )
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// TAG
           Align(
             alignment: Alignment.topRight,
             child: Container(
-              width: 100,
-              height: 18,
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: ShapeDecoration(
-                color: Color(0xffd0a232),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4)),
+              constraints: const BoxConstraints(minHeight: 18, maxWidth: 130),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xffd0a232),
+                borderRadius: BorderRadius.circular(6),
               ),
-              child: Center(
-                child: Text(
-                  load.mainTag!,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 8,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w600,
-                  ),
+              child: Text(
+                load.mainTag ?? "-",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ),
-          SizedBox(height: 8),
+
+          const SizedBox(height: 8),
+
+          /// PROFILE
           BaseWidget().profile(
-              load.companyLogo!, load.nameOfPerson!, load.companyName!,
-              verify: load.isverified!),
+            load.companyLogo ?? "",
+            load.nameOfPerson ?? "-",
+            load.companyName ?? "-",
+            verify: 1,
+          ),
+
+          const SizedBox(height: 8),
+
+          /// HEADING + DETAILS
           BaseWidget().headingWithDescription(
-              load.topicName!,
-              getDateObject(load.postingTime),
-              load.mfgYear!,
-              load.modelName!,
-              load.estPrice!,
-              false),
-          SizedBox(height: 8),
-          imageLoad(load),
-          load.userId == userId
-              ? BaseWidget().deleteButton((val) {
-                  if (val == 10) {
-                    if (isDashBoard == true) {
-                      buysellProvider.deleteBuySell(load.id!, index,
-                          load.mainTag == "Sell vehicle" ? false : true);
-                    } else {
-                      postDelete.deleteOwnPost(load.id!, index);
-                    }
-                  } else {
-                    Utils().openMenu(val, load, context);
-                  }
-                }, false)
-              : BaseWidget().getInTouchButton((val) {
-                  Utils().openMenu(val, load, context);
-                })
+            load.topicName ?? "-",
+            getDateObject(load.postingTime),
+            load.mfgYear ?? "-",
+            load.modelName ?? "-",
+            load.estPrice ?? "-",
+            false,
+          ),
         ],
       ),
     );
   }
+
 
   cardJobPost(
       int index, BuildContext context, TruckLoad load, DeletePostInf postDelete,
@@ -155,18 +153,132 @@ class AllCards {
               verify: load.isverified!,
               transporterOrAgent: load.transporterOrAgent!),
           BaseWidget().headingWithDescription("Job Title",
-              getDateObject(load.postingTime), "-", load.topicName!, '', true),
+              getDateObject( load.postingTime ), "-", load.topicName!, '', true),
           SizedBox(height: 8),
-          BaseWidget().heading("Job Description", load.content!),
-          load.userId == userId
-              ? BaseWidget().deleteButton((val) {
-                  if (val == 10) {
-                  } else {
-                    Utils().openMenu(val, load, context);
-                  }
-                }, false)
-              : jobApply(load, context)
+          BaseWidget().heading("Job Description", load.content!,''),
+
         ],
+      ),
+    );
+  }
+
+  cardLoadHome(int index, BuildContext context, TruckLoad load, int userId,
+      DeletePostInf postDelete, bool isOwnPost) {
+    return Opacity(
+      opacity: Utils().isExpired(load.expireDate!) || (load.isOpenForBid==0) ? 0.5 : 1.0,
+      child: Container(
+        width: 335,
+        padding: EdgeInsets.all(12),
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x114A5568),
+              blurRadius: 8,
+              offset: Offset(0, 3),
+              spreadRadius: 0,
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Visibility(
+              visible:load.expireDate==''?false:true,
+              child: Container(
+                width: 120,
+                height: 20,
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(2)
+                  ),
+                  border: Border.all(
+                    width: 0.5,
+                    color: ThemeColor.red,
+                    style: BorderStyle.solid,
+                  ),
+                ),
+                child: Center(
+                  child: Text("valid till: ${load.expireDate==''?"-":load.expireDate!}",
+                    style: TextStyle(
+                      color: ThemeColor.black,
+                      fontSize: 8,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: SizedBox(
+                height: 50,
+                width: 140,
+                child: Column(
+                  children: [
+                    Text(
+                      "TKD${load.id}",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 10,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Container(
+                      width: 120,
+                      height: 18,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: ShapeDecoration(
+                        color: Color(0xFF2C8FEA),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          Utils().mainTag(load.mainTag!),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            load.privatePost == 1
+                ? SizedBox.shrink()
+                : BaseWidget().profileWithUser(
+                load.companyLogo!, load.nameOfPerson!, load.companyName!,
+                verify: load.isverified!,
+                transporterOrAgent: load.transporterOrAgent!),
+            BaseWidget().routes(load.source!, load.destination!),
+            SizedBox(
+              height: 7,
+            ),
+            BaseWidget().heading(
+                load.topicName!, getDateObject(
+              load.postingTime
+            ), load.content!),
+         /*  BaseWidget().bidButton((val) {
+              if (load.dnd == 1) {
+                ToastMessage.show(context, "This is DND Post");
+              } else {
+                Utils().openMenu(val, load, context);
+              }
+            })*/
+          ],
+        ),
       ),
     );
   }
@@ -243,70 +355,6 @@ class AllCards {
     }
   }
 
-  imageLoad(TruckLoad load) {
-    if (load.postImages!.length == 0) {
-      return Column(
-        children: [
-          SizedBox(
-            height: 0,
-          ),
-        ],
-      );
-    } else if (load.postImages!.length == 1) {
-      return Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: CachedNetworkImage(
-              imageUrl: load.postImages!.first,
-              placeholder: (context, url) =>
-                  SvgPicture.asset("assets/svg/logo.svg"),
-              errorWidget: (context, url, error) => ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    "https://igps.net/wp-content/uploads/2018/08/shutterstock_711168088.jpg",
-                    fit: BoxFit.fill,
-                    width: 311,
-                    height: 200,
-                  )),
-              fit: BoxFit.fill,
-              width: 311,
-              height: 200,
-            ),
-          ),
-          SizedBox(
-            height: 9,
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: [
-          Container(
-              transform: Matrix4.translationValues(0.0, -25.0, 00),
-              child: Container(
-                  child: CarouselSlider(
-                options: CarouselOptions(
-                  padEnds: false,
-                  pageSnapping: false,
-                  enableInfiniteScroll: false,
-                ),
-                items: load.postImages!
-                    .map((item) => Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(child: imageLink(item!)),
-                          ),
-                        ))
-                    .toList(),
-              ))),
-          SizedBox(
-            height: 9,
-          ),
-        ],
-      );
-    }
-  }
 
   Widget imageLink(String link) {
     return CachedNetworkImage(

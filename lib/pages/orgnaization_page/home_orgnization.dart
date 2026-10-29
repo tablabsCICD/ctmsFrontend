@@ -15,7 +15,7 @@ import 'package:flutter_hr_management/organization_portal/provider/org_provider.
 import 'package:flutter_hr_management/pages/orgnaization_page/side_bar_orgnization.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,8 +38,9 @@ class HomeOrganizationScreen extends StatefulWidget{
 
 }
 class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
-  final orgProvider = locator<OrgProvider>();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final orgProvider = locator<OrgProvider>();
   final advProvider = locator<AdvProvider>();
 
   String? token;
@@ -51,7 +52,19 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
   @override
   void initState() {
     super.initState();
-    getLoginDetail();
+  //  getLoginDetail();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await orgProvider.loadOrgFromLocal();
+      if (orgProvider.org == null) {
+        await orgProvider.getCtmsOrganization();
+      }
+
+      if (orgProvider.org != null) {
+        debugPrint("✅ Org loaded: ${orgProvider.org!.companyName}");
+      } else {
+        ToastMessage.show(context, "No organisation found. Please contact admin.");
+      }
+    });
   }
 
   @override
@@ -84,26 +97,16 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
                         Consumer<OrgProvider>(
                           builder: (context, model, child) => InkWell(
                             onTap: () async {
-                              final Organization? organization =
-                              await orgProvider.getOrgDetails();
 
-                              if (organization == null || organization.id == null) {
-                                ToastMessage.show(
-                                  context,
-                                  "No organisation found. Please contact admin.",
-                                );
+                              final org = context.read<OrgProvider>().org;
+                              if (org == null) {
+                                ToastMessage.show(context, "No organisation found. Please contact admin.");
                                 return;
                               }
 
-                              debugPrint(
-                                  "Connect Organization : ${organization.id}, ${organization.companyName}");
-
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (builder) =>
-                                      CompanyDashboard(organization),
-                                ),
+                                MaterialPageRoute(builder: (builder) => CompanyDashboard(org)),
                               );
                             },
                             child: empCounts(
@@ -314,7 +317,7 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
     }
   }
 
-  Future<void> getLoginDetail() async {
+  /*Future<void> getLoginDetail() async {
     loginDeatils =
     await LocalSharePreferences.localSharePreferences.getLoginData();
 
@@ -367,5 +370,5 @@ class _HomeOrganizationScreen extends State<HomeOrganizationScreen> {
       debugPrint("Tkd OrgId::: ${ctmsOrganization!.connectOrgId}");
       debugPrint(ctmsOrganization!.connectUserId.toString());
     }
-  }
+  }*/
 }

@@ -26,7 +26,7 @@ import 'package:flutter_hr_management/pages/widget/datepicker.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/pages/widget/textviewone.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -42,8 +42,10 @@ import 'package:flutter_hr_management/organization_portal/localization/language_
 
 import 'package:universal_html/html.dart' as html;
 
+import '../company_provider/comp_buy_sell_provider.dart';
+
 class CompBuySell extends StatefulWidget {
-  final buySellProvider = locator<OrgProvider>();
+  final buySellProvider = locator<CompBuySellProvider>();
   Organization organization;
   CompBuySell(this.organization,{Key? key}) : super(key: key) {
     buySellProvider.getBuyVehicles(organization.id!);
@@ -88,59 +90,11 @@ class _CompBuySellState extends State<CompBuySell> {
                 ),
               ],
             ),
-           /* if (ResponsiveWidget.isDesktop(context)) Positioned(
-              top: 105.h,
-              left: 265.w,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-                child: SvgPicture.asset(
-                  "assets/back_button.svg",
-                  height: 80.h,
-                  width: 80.w,
-                ),
-              ),
-            ) else SizedBox.shrink(),*/
+
           ],
         ));
   }
 
-  var selectedTab = 'Buy Vehicles';
 
-  getCircularContainer(String title, bool isSelected) {
-    return InkWell(
-      onTap: (){
-        setState(() {
-          selectedTab = title;
-        });
-      },
-      child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 2.7),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Container(
-          height: 30,
-          alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 8,horizontal: 20),
-          child: CustomText(title,style: Style.filterHeading,textAlign: TextAlign.center,),
-          decoration: BoxDecoration(
-            color: isSelected? Colors.white :Color(0xffe6e0d7),
-            border: isSelected? null : Border.all(color: Color(0xffd1ccc4)),
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                offset: Offset(0, 0),
-                blurRadius: 5,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 

@@ -1,264 +1,299 @@
 class TruckLoadType {
+  List<TruckLoad>? content;
+  bool? last;
+  int? totalElements;
+  int? totalPages;
+  int? numberOfElements;
+  bool? first;
+  dynamic sort;
+  int? size;
+  int? number;
+
   TruckLoadType({
-    required this.content,
-    required this.totalElements,
-    required this.totalPages,
-    required this.last,
-    required this.size,
-    required this.number,
-    //  this.sort,
-    required this.first,
-    required this.numberOfElements,
+    this.content,
+    this.last,
+    this.totalElements,
+    this.totalPages,
+    this.numberOfElements,
+    this.first,
+    this.sort,
+    this.size,
+    this.number,
   });
-  late final List<TruckLoad> content;
-  late final int totalElements;
-  late final int totalPages;
-  late final bool last;
-  late final int size;
-  late final int number;
-  // late final String? sort;
-  late final bool first;
-  late final int numberOfElements;
 
-  TruckLoadType.fromJson(Map<String, dynamic> json){
-    content = List.from(json['content']).map((e)=>TruckLoad.fromJson(e)).toList();
-    totalElements = json['totalElements'];
-    totalPages = json['totalPages'];
-    last = json['last'];
-    size = json['size'];
-    number = json['number'];
-    //sort = json['sort']?? '';
-    first = json['first'];
-    numberOfElements = json['numberOfElements'];
-  }
+  factory TruckLoadType.fromJson(Map<String, dynamic> json) => TruckLoadType(
+    content: json["content"] == null ? [] : List<TruckLoad>.from(json["content"]!.map((x) => TruckLoad.fromJson(x))),
+    last: json["last"],
+    totalElements: json["totalElements"],
+    totalPages: json["totalPages"],
+    numberOfElements: json["numberOfElements"],
+    first: json["first"],
+    sort: json["sort"],
+    size: json["size"],
+    number: json["number"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['content'] = content.map((e)=>e.toJson()).toList();
-    data['totalElements'] = totalElements;
-    data['totalPages'] = totalPages;
-    data['last'] = last;
-    data['size'] = size;
-    data['number'] = number;
-    // _data['sort'] = sort;
-    data['first'] = first;
-    data['numberOfElements'] = numberOfElements;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "content": content == null ? [] : List<dynamic>.from(content!.map((x) => x.toJson())),
+    "last": last,
+    "totalElements": totalElements,
+    "totalPages": totalPages,
+    "numberOfElements": numberOfElements,
+    "first": first,
+    "sort": sort,
+    "size": size,
+    "number": number,
+  };
 }
 
 class TruckLoad {
+  int? id;
+  int? userId;
+  String? type;
+  String? postingTime;
+  String? companyName;
+  String? nameOfPerson;
+  dynamic companyRating;
+  String? content;
+  String? topicName;
+  String? tableName;
+  String? companyLogo;
+  int? partLoadOrNot;
+  dynamic reminderUserName;
+  String? sharableLink;
+  String? deviceId;
+  double? ratings;
+  int? mobileNumber;
+  String? source;
+  String? destination;
+  String? mainTag;
+  int? privatePost;
+  dynamic makerName;
+  dynamic modelName;
+  dynamic mfgYear;
+  dynamic estPrice;
+  int? dnd;
+  dynamic vehicleSize;
+  dynamic association;
+  dynamic isPaid;
+  dynamic website;
+  dynamic alterativeNumber;
+  dynamic companyDetailsName;
+  String? isVerifiedByCompany;
+  dynamic typeOfPayment;
+  int? isverified;
+  dynamic typeName;
+  List<String>? images;
+  dynamic description;
+  dynamic title;
+  dynamic likes;
+  dynamic comment;
+  dynamic transporterOrAgent;
+  List<dynamic>? postImages;
+  List<dynamic>? listOfFullLoadImages;
+  dynamic cargoType;
+  dynamic vehicleWeight;
+  dynamic mobileOrLandline;
+  dynamic category;
+  dynamic isSharedInGroup;
+  int? isOpenForBid;
+  String? expireDate;
+  int? isRepeat;
+  int? ispostOwnerVerifiedForTrack;
+  int? isQuoteOwnerVerifiedForTrack;
+  int? isCompleted;
+  dynamic experience;
+  dynamic department;
+  dynamic vehicleRegistrationNumber;
+  dynamic emailId;
+  bool? isPaid99;
+
   TruckLoad({
-    required this.id,
-    required this.userId,
-    required this.type,
-    required this.postingTime,
-    required this.companyName,
-    required this.nameOfPerson,
+    this.id,
+    this.userId,
+    this.type,
+    this.postingTime,
+    this.companyName,
+    this.nameOfPerson,
     this.companyRating,
-    required this.content,
-    required this.topicName,
-    required this.tableName,
+    this.content,
+    this.topicName,
+    this.tableName,
     this.companyLogo,
-    required this.partLoadOrNot,
+    this.partLoadOrNot,
     this.reminderUserName,
-    required this.sharableLink,
-    required this.deviceId,
-    required this.ratings,
-    required this.mobileNumber,
-    required this.source,
-    required this.destination,
-    required this.mainTag,
-    required this.privatePost,
+    this.sharableLink,
+    this.deviceId,
+    this.ratings,
+    this.mobileNumber,
+    this.source,
+    this.destination,
+    this.mainTag,
+    this.privatePost,
     this.makerName,
     this.modelName,
     this.mfgYear,
     this.estPrice,
-    required this.dnd,
-    required this.vehicleSize,
-    required this.association,
-    required this.isPaid,
-    required this.website,
+    this.dnd,
+    this.vehicleSize,
+    this.association,
+    this.isPaid,
+    this.website,
     this.alterativeNumber,
-    required this.companyDetailsName,
+    this.companyDetailsName,
     this.isVerifiedByCompany,
     this.typeOfPayment,
-    this.fullLoadChoice,
-    this.loadWeight,
-    this.typeOfCargo,
-    this.otherDetails,
-    this.comment,
+    this.isverified,
+    this.typeName,
+    this.images,
+    this.description,
+    this.title,
     this.likes,
-    this.postImages,
+    this.comment,
     this.transporterOrAgent,
-    this.userList,
+    this.postImages,
+    this.listOfFullLoadImages,
+    this.cargoType,
+    this.vehicleWeight,
     this.mobileOrLandline,
-    this.expireDate,
+    this.category,
     this.isSharedInGroup,
-    this.isOpenForBid
+    this.isOpenForBid,
+    this.expireDate,
+    this.isRepeat,
+    this.ispostOwnerVerifiedForTrack,
+    this.isQuoteOwnerVerifiedForTrack,
+    this.isCompleted,
+    this.experience,
+    this.department,
+    this.vehicleRegistrationNumber,
+    this.emailId,
+    this.isPaid99,
   });
-  late final int? id;
-  late final int? userId;
-  late final String? type;
-  late final String? postingTime;
-  late final String? companyName;
-  late final String? nameOfPerson;
-  late final String? companyRating;
-  late final String? content;
-  late final String? topicName;
-  late final String? tableName;
-  late final String? companyLogo;
-  late final int? partLoadOrNot;
-  late final String? reminderUserName;
-  late final String? sharableLink;
-  late final String? deviceId;
-  late final double? ratings;
-  late final int? mobileNumber;
-  late final String? source;
-  late final String? destination;
-  late final String? mainTag;
-  late final int? privatePost;
-  late final String? makerName;
-  late final String? modelName;
-  late final String? mfgYear;
-  late final String? estPrice;
-  late final int? dnd;
-  late final String? vehicleSize;
-  late final String? association;
-  late final int? isPaid;
-  late final String? website;
-  late final String? alterativeNumber;
-  late final String? companyDetailsName;
-  late final String? isVerifiedByCompany;
-  late final String? typeOfPayment;
-  late final String? fullLoadChoice;
-  late final String? loadWeight;
-  late final String? typeOfCargo;
-  late final String? otherDetails;
-  late final dynamic likes;
-  late final dynamic comment;
-  late final List<dynamic>?postImages;
-  late final int?transporterOrAgent;
-  late final String? userList;
-  late final String? mobileOrLandline;
-  late final String? expireDate;
 
-  late final int? isverified;
-  late final bool? isSharedInGroup;
-  late final int? isOpenForBid;
+  factory TruckLoad.fromJson(Map<String, dynamic> json) => TruckLoad(
+    id: json["id"],
+    userId: json["userId"],
+    type: json["type"],
+    postingTime: json["postingTime"].toString() ,
+    companyName: json["companyName"],
+    nameOfPerson: json["nameOfPerson"],
+    companyRating: json["companyRating"],
+    content: json["content"],
+    topicName: json["topicName"],
+    tableName: json["tableName"],
+    companyLogo: json["companyLogo"],
+    partLoadOrNot: json["partLoadOrNot"],
+    reminderUserName: json["reminderUserName"],
+    sharableLink: json["sharableLink"],
+    deviceId: json["deviceId"],
+    ratings: json["ratings"]?.toDouble(),
+    mobileNumber: json["mobileNumber"],
+    source: json["source"],
+    destination: json["destination"],
+    mainTag: json["mainTag"],
+    privatePost: json["privatePost"],
+    makerName: json["makerName"],
+    modelName: json["modelName"],
+    mfgYear: json["mfgYear"],
+    estPrice: json["estPrice"],
+    dnd: json["dnd"],
+    vehicleSize: json["vehicleSize"],
+    association: json["association"],
+    isPaid: json["isPaid"],
+    website: json["website"],
+    alterativeNumber: json["alterativeNumber"],
+    companyDetailsName: json["companyDetailsName"],
+    isVerifiedByCompany: json["isVerifiedByCompany"],
+    typeOfPayment: json["typeOfPayment"],
+    isverified: json["isverified"],
+    typeName: json["typeName"],
+    images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
+    description: json["description"],
+    title: json["title"],
+    likes: json["likes"],
+    comment: json["comment"],
+    transporterOrAgent: json["transporterOrAgent"],
+    postImages: json["postImages"] == null ? [] : List<dynamic>.from(json["postImages"]!.map((x) => x)),
+    listOfFullLoadImages: json["listOfFullLoadImages"] == null ? [] : List<dynamic>.from(json["listOfFullLoadImages"]!.map((x) => x)),
+    cargoType: json["cargoType"],
+    vehicleWeight: json["vehicleWeight"],
+    mobileOrLandline: json["mobileOrLandline"],
+    category: json["category"],
+    isSharedInGroup: json["isSharedInGroup"],
+    isOpenForBid: json["isOpenForBid"],
+    expireDate: json["expireDate"].toString(),
+    isRepeat: json["isRepeat"],
+    ispostOwnerVerifiedForTrack: json["ispostOwnerVerifiedForTrack"],
+    isQuoteOwnerVerifiedForTrack: json["isQuoteOwnerVerifiedForTrack"],
+    isCompleted: json["isCompleted"],
+    experience: json["experience"],
+    department: json["department"],
+    vehicleRegistrationNumber: json["vehicleRegistrationNumber"],
+    emailId: json["emailId"],
+    isPaid99: json["isPaid99"],
+  );
 
-
-
-
-
-  TruckLoad.fromJson(Map<String, dynamic> json){
-    id = json['id']?? 0;
-    userId = json['userId']?? 0;
-    type = json['type']?? '';
-    postingTime = json['postingTime']?? '';
-    companyName = json['companyName']?? '';
-    nameOfPerson = json['nameOfPerson']?? '';
-    companyRating = json['companyRating']?? '';
-    content = json['content']?? '';
-    topicName = json['topicName']?? '';
-    tableName = json['tableName']?? '';
-    companyLogo = json['companyLogo']?? '';
-    partLoadOrNot = json['partLoadOrNot']?? 0;
-    reminderUserName = json['reminderUserName']?? '';
-    sharableLink = json['sharableLink']?? '';
-    deviceId = json['deviceId']?? '';
-    ratings = json['ratings']?? 0.0;
-    mobileNumber = json['mobileNumber']?? 0;
-    source = json['source']?? '';
-    destination = json['destination']?? '';
-    mainTag = json['mainTag']?? '';
-    privatePost = json['privatePost']?? 0;
-    makerName = json['makerName']?? '';
-    modelName = json['modelName']?? '';
-    mfgYear = json['mfgYear']?? '';
-    estPrice = json['estPrice']?? '';
-    dnd = json['dnd']?? 0;
-    transporterOrAgent = json['transporterOrAgent']?? 0;
-
-    vehicleSize = json['vehicleSize']?? '';
-    association = json['association']?? '';
-    isPaid = json['isPaid']?? 0;
-    isverified = json['isverified']?? 0;
-
-    website = json['website']?? '';
-
-    alterativeNumber = json['alterativeNumber']?? '';
-    companyDetailsName = json['companyDetailsName']?? '';
-    isVerifiedByCompany = json['isVerifiedByCompany']?? '';
-    typeOfPayment = json['typeOfPayment']?? '';
-    fullLoadChoice = json['fullLoadChoice']?? '';
-    loadWeight = json['vehicleWeight']?? '';
-    typeOfCargo = json['cargoType']?? '';
-    otherDetails = json['otherDetails']?? '';
-    likes=json['likes']??'';
-    comment=json['comment']??'';
-    postImages=json['images']??'';
-    userList=json['userList']??'';
-    expireDate=json['expireDate']??'';
-
-    mobileOrLandline=json['mobileOrLandline']??'';
-    isSharedInGroup=json['isSharedInGroup']??false;
-    isOpenForBid=json['isOpenForBid']??1;
-
-  }
-
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['userId'] = userId;
-    data['type'] = type;
-    data['postingTime'] = postingTime;
-    data['companyName'] = companyName;
-    data['nameOfPerson'] = nameOfPerson;
-    data['companyRating'] = companyRating;
-    data['content'] = content;
-    data['topicName'] = topicName;
-    data['tableName'] = tableName;
-    data['companyLogo'] = companyLogo;
-    data['partLoadOrNot'] = partLoadOrNot;
-    data['reminderUserName'] = reminderUserName;
-    data['sharableLink'] = sharableLink;
-    data['deviceId'] = deviceId;
-    data['ratings'] = ratings;
-    data['mobileNumber'] = mobileNumber;
-    data['source'] = source;
-    data['destination'] = destination;
-    data['mainTag'] = mainTag;
-    data['privatePost'] = privatePost;
-    data['makerName'] = makerName;
-    data['modelName'] = modelName;
-    data['mfgYear'] = mfgYear;
-    data['estPrice'] = estPrice;
-    data['dnd'] = dnd;
-    data['vehicleSize'] = vehicleSize;
-    data['association'] = association;
-    data['isPaid'] = isPaid;
-    data['website'] = website;
-    data['alterativeNumber'] = alterativeNumber;
-    data['companyDetailsName'] = companyDetailsName;
-    data['isVerifiedByCompany'] = isVerifiedByCompany;
-    data['typeOfPayment'] = typeOfPayment;
-    data['fullLoadChoice'] = fullLoadChoice;
-    data['vehicleWeight'] = loadWeight;
-    data['cargoType'] = typeOfCargo;
-    data['otherDetails'] = otherDetails;
-    data['likes'] = likes;
-    data['comment'] = comment;
-    data['images'] = postImages;
-    data['transporterOrAgent'] = transporterOrAgent;
-    data['userList'] = userList;
-    data['isverified'] = isverified;
-    data['mobileOrLandline'] = mobileOrLandline;
-    data['expireDate'] = expireDate;
-    data['isSharedInGroup'] = isSharedInGroup;
-    data['isOpenForBid'] = isOpenForBid;
-
-
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "userId": userId,
+    "type": type,
+    "postingTime": postingTime,
+    "companyName": companyName,
+    "nameOfPerson": nameOfPerson,
+    "companyRating": companyRating,
+    "content": content,
+    "topicName": topicName,
+    "tableName": tableName,
+    "companyLogo": companyLogo,
+    "partLoadOrNot": partLoadOrNot,
+    "reminderUserName": reminderUserName,
+    "sharableLink": sharableLink,
+    "deviceId": deviceId,
+    "ratings": ratings,
+    "mobileNumber": mobileNumber,
+    "source": source,
+    "destination": destination,
+    "mainTag": mainTag,
+    "privatePost": privatePost,
+    "makerName": makerName,
+    "modelName": modelName,
+    "mfgYear": mfgYear,
+    "estPrice": estPrice,
+    "dnd": dnd,
+    "vehicleSize": vehicleSize,
+    "association": association,
+    "isPaid": isPaid,
+    "website": website,
+    "alterativeNumber": alterativeNumber,
+    "companyDetailsName": companyDetailsName,
+    "isVerifiedByCompany": isVerifiedByCompany,
+    "typeOfPayment": typeOfPayment,
+    "isverified": isverified,
+    "typeName": typeName,
+    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
+    "description": description,
+    "title": title,
+    "likes": likes,
+    "comment": comment,
+    "transporterOrAgent": transporterOrAgent,
+    "postImages": postImages == null ? [] : List<dynamic>.from(postImages!.map((x) => x)),
+    "listOfFullLoadImages": listOfFullLoadImages == null ? [] : List<dynamic>.from(listOfFullLoadImages!.map((x) => x)),
+    "cargoType": cargoType,
+    "vehicleWeight": vehicleWeight,
+    "mobileOrLandline": mobileOrLandline,
+    "category": category,
+    "isSharedInGroup": isSharedInGroup,
+    "isOpenForBid": isOpenForBid,
+    "expireDate": expireDate,
+    "isRepeat": isRepeat,
+    "ispostOwnerVerifiedForTrack": ispostOwnerVerifiedForTrack,
+    "isQuoteOwnerVerifiedForTrack": isQuoteOwnerVerifiedForTrack,
+    "isCompleted": isCompleted,
+    "experience": experience,
+    "department": department,
+    "vehicleRegistrationNumber": vehicleRegistrationNumber,
+    "emailId": emailId,
+    "isPaid99": isPaid99,
+  };
 }

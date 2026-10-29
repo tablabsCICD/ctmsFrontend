@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_hr_management/organization_portal/base_widget/custom_sea
 import 'package:flutter_hr_management/organization_portal/base_widget/custom_textview.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/getLoader.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/comp_full_load.dart';
+import 'package:flutter_hr_management/organization_portal/company/post_details.dart';
 import 'package:flutter_hr_management/organization_portal/get_city_list.dart';
 import 'package:flutter_hr_management/organization_portal/localization/language_constrants.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/org_full_load_model.dart';
@@ -18,9 +21,9 @@ import 'package:flutter_hr_management/organization_portal/multi_select.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/buy_sell_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
+import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/organization_portal/util/color-resource.dart';
 import 'package:flutter_hr_management/organization_portal/util/star_display.dart';
 import 'package:flutter_hr_management/organization_portal/util/style.dart';
@@ -29,17 +32,18 @@ import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 class LoadList extends StatefulWidget {
-  final orgProvider = locator<OrgProvider>();
-  final buySellProvider = locator<BuySellProvider>();
+  //final orgProvider = locator<OrgProvider>();
+  //final buySellProvider = locator<BuySellProvider>();
   final Organization organization;
   final int index;
 
@@ -50,9 +54,9 @@ class LoadList extends StatefulWidget {
 }
 
 class _LoadListState extends State<LoadList> {
-  final bidProvider = locator<BidProvider>();
+  //final bidProvider = locator<BidProvider>();
   final orgProvider = locator<OrgProvider>();
-  final dashboardProvider = locator<DashboardProvider>();
+
 
   final ScrollController _scrollController = ScrollController();
 
@@ -68,21 +72,28 @@ class _LoadListState extends State<LoadList> {
   void initState() {
     super.initState();
 
-    // ✅ Prevent duplicate API calls
-    if (!_isInitCalled) {
-      _isInitCalled = true;
-      orgProvider.getOrgFullLoadList(widget.organization.id!);
-      orgProvider.getAllBranch(widget.organization.id!);
-    }
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        dashboardProvider.getFullLoadTruckList(currentPage: selectedPageNumber);
-        selectedPageNumber++;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_isInitCalled) {
+        _isInitCalled = true;
+        selectedPageNumber = 0;
+        orgProvider.getOrgFullLoadList(widget.organization.id!, currentPage: selectedPageNumber);
+        orgProvider.getAllBranch(widget.organization.id!);
+        orgProvider.getUsersByCompanyId(widget.organization.id!);
       }
+      _scrollController.addListener(() {
+        if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200) {
+          // Prevent duplicate API calls
+          if (!orgProvider.isPaginationLoading) {
+            selectedPageNumber++;
+            orgProvider.getOrgFullLoadList(widget.organization.id!,
+                currentPage: selectedPageNumber);
+          }
+        }
+      });
     });
   }
+
 
   @override
   void dispose() {
@@ -111,109 +122,109 @@ class _LoadListState extends State<LoadList> {
                 children: [
                   Visibility(
                     visible: widget.index==1?true:false,
-                    child: Container(
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: InkWell(
-                                onTap: () {
-                                  // _showMultiSelect(context);
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomSearchCityTextField(
-                                      hintText: 'From',
-                                      controller: selectedFromCity ?? '',
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    GetCityList())).then((value) {
-                                          if (value != null && value.toString().isNotEmpty) {
-                                            selectedFromCity = value[0];
-                                            setState(() {});
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 25.w,
-                                    ),
-                                    TextView(
-                                      title: "To",
-                                      fontSize:15.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff000000),
-                                    ),
-                                    SizedBox(
-                                      width: 25.w,
-                                    ),
-                                    CustomSearchCityTextField(
-                                      hintText: 'To',
-                                      controller: selectedToCity ?? '',
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    GetCityList())).then((value) {
-                                          if (value != null && value.toString().isNotEmpty) {
-                                            selectedToCity = value[0];
-                                            setState(() {});
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 25.w,
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        model.getSearchByNameList(widget.organization.id!,
-                                            '', selectedFromCity ?? '', selectedToCity ?? '');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black,
-                                        foregroundColor: Colors.white,
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5))),
+                      child: Container(
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    // _showMultiSelect(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomSearchCityTextField(
+                                        hintText: 'From',
+                                        controller: TextEditingController(text: selectedFromCity),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GetCityList())).then((value) {
+                                            if (value != null && value.toString().isNotEmpty) {
+                                              selectedFromCity = value[0];
+                                              setState(() {});
+                                            }
+                                          });
+                                        },
                                       ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 10, horizontal: 0),
-                                        child: Text("Search",
-                                            style: Style.button),
+                                      SizedBox(
+                                        width: 25.w,
                                       ),
-                                    ),
-                                  ],
+                                      TextView(
+                                        title: "To",
+                                        fontSize:15.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff000000),
+                                      ),
+                                      SizedBox(
+                                        width: 25.w,
+                                      ),
+                                      CustomSearchCityTextField(
+                                        hintText: 'To',
+                                        controller: TextEditingController(text: selectedToCity),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GetCityList())).then((value) {
+                                            if (value != null && value.toString().isNotEmpty) {
+                                              selectedToCity = value[0];
+                                              setState(() {});
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: 25.w,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          model.getSearchByNameList(widget.organization.id!,
+                                              '', selectedFromCity ?? '', selectedToCity ?? '');
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                          foregroundColor: Colors.white,
+                                          elevation: 3,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5))),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 0),
+                                          child: Text("Search",
+                                              style: Style.button),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Spacer(),
-                            Row(
-                              children: [
-                                filterIcon(model),
-                                SizedBox(
-                                  width: 27.w,
-                                ),
-                                /* SvgPicture.asset('assets/more_icon.svg'),
+                              Spacer(),
+                              Row(
+                                children: [
+                                  filterIcon(model),
                                   SizedBox(
                                     width: 27.w,
-                                  ),*/
-                              ],
-                            ),
-                          ],
-                        )
-                    ),
+                                  ),
+                                  /* SvgPicture.asset('assets/more_icon.svg'),
+                                    SizedBox(
+                                      width: 27.w,
+                                    ),*/
+                                ],
+                              ),
+                            ],
+                          )
+                      ),
                   ),
                   Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
                   Visibility(
@@ -228,7 +239,12 @@ class _LoadListState extends State<LoadList> {
                     ),
                   ),
                   Visibility(visible: widget.index==1?true:false,child: SizedBox(height: 30.h,)),
-                  getPostList(model,context),
+                 Expanded(child: getPostList(model, context)),
+                  if (model.isPaginationLoading)
+                    const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: CircularProgressIndicator(),
+                    ),
                 ]
             )
         )
@@ -248,298 +264,294 @@ class _LoadListState extends State<LoadList> {
 
   var selectedTab = 'All Loads';
   late List<int> selectedValuesList = <int>[];
-  getPostList(OrgProvider model,BuildContext context) {
-    return /* model.isLoading==true?Expanded(
-          child: Container(
-              height:
-              MediaQuery.of(context).size.height - 600,
-              child: Center(
-                  child: CircularProgressIndicator()))):*/
-      (model.orgFullLoadList.isEmpty && model.isLoading==false
-          ?  Container(
-          margin: EdgeInsets.all(30),
-          height:
-          MediaQuery.of(context).size.height - 600,
-          decoration: BoxDecoration(
-              color: AppColor.white, borderRadius: BorderRadius.circular(5)),
-          child: Center(
-              child: TextView(
-                  title: "No Record Found",
-                  fontSize: 16.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w900)))
-          :model.orgAllFullLoadList.isEmpty
-          ? Container(
-          height:
-          MediaQuery.of(context).size.height - 600,
-          decoration: BoxDecoration(
-              color: AppColor.white, borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.all(20),
-          child: Center(
-              child: CircularProgressIndicator()))
-          :Expanded(
-          child: StaggeredGridView.countBuilder(
-              controller: _scrollController,
-              physics: ScrollPhysics(),
-              staggeredTileBuilder: (int index) =>
-                  StaggeredTile.fit(1),
-              shrinkWrap: true,
-              crossAxisCount: ResponsiveWidget.isDesktop(context)
-                  ? 2
-                  : ResponsiveWidget.isMobile(context)
-                  ? 1
-                  : 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 12,
-              itemCount: model.orgFullLoadList.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {},
-                  child: Card(
-                      color:Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.circular(10.0.r),
-                      ),
-                      elevation: 1,
-                      child: Container(
-                        height: 230.h,
-                        // width: 510.w,
-                        decoration: BoxDecoration(
-                            color:Colors.white,
-                            borderRadius: BorderRadius.circular(10.r)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 180.w,
-                              child: Column(
-                                children: [
-                                  Image.asset('assets/org/container.png',height: 150.h,width: 174.w,),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: TextView(
-                                      title: "${model.orgFullLoadList[index].topicName ?? ''}",
-                                      fontSize:12.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff000000),
-                                    ),
-                                  ),
-                                  /*TextView(
-                              title: "${model.orgFullLoadList[index].vehicleSize ?? ''}",
-                              fontSize:15.sp,
+  Widget getPostList(OrgProvider model, BuildContext context) {
+    if (model.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (model.orgFullLoadList.isEmpty) {
+      return const Center(child: Text("No loads found"));
+    }
+
+    print('getPostList : ${model.orgFullLoadList.length}');
+
+    return StaggeredGridView.countBuilder(
+      controller: _scrollController,
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
+      crossAxisCount: ResponsiveWidget.isDesktop(context)
+          ? 2
+          : ResponsiveWidget.isMobile(context)
+          ? 1
+          : 2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 12,
+      itemCount: model.orgFullLoadList.length,
+      itemBuilder: (context, index) {
+        final loadItem = model.orgFullLoadList[index];
+
+          return InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => buildPostBidDialog(context, loadItem.id!),
+              );
+            },
+            child: Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0.r),
+              ),
+              child: Container(
+                height: 230.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    /// Left side - image + title
+                    SizedBox(
+                      width: 180.w,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.red, // 🔴 Red border
+                                width: 0.5,        // Optional: thickness
+                              ),
+                              borderRadius: BorderRadius.circular(3), // Optional: rounded corners
+                            ),
+                            child: TextView(
+                              title: loadItem.postingTime ?? '',
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xff000000),
+                            ),
+                          ),
+                          Image.asset(
+                            'assets/org/container.png',
+                            height: 150.h,
+                            width: 174.w,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: TextView(
+                              title: loadItem.topicName ?? '',
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xff000000),
-                            ),*/
-                                ],
+                              color: const Color(0xff000000),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// Middle side - tags + route
+                    SizedBox(
+                      width: 174.w,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 150.w,
+                            height: 25.h,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: loadItem.mainTag == "Full load required"
+                                  ? ColorResources.FULL_LOAD_REQUIRED
+                                  : loadItem.mainTag == "Part load required"
+                                  ? ColorResources.PART_LOAD_REQUIRED
+                                  : loadItem.mainTag == "Full load available"
+                                  ? ColorResources.FULL_LOAD_AVAILABLE
+                                  : ColorResources.PART_LOAD_AVAILABLE,
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(5),
+                                bottomRight: Radius.circular(5),
                               ),
                             ),
-                            // SizedBox(width: 17.w),
-                            SizedBox(
-                              width: 174.w,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 150.w,
-                                    height: 25.h,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Full load required"
-                                            ? ColorResources
-                                            .FULL_LOAD_REQUIRED
-                                            : model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Part load required"
-                                            ? ColorResources
-                                            .PART_LOAD_REQUIRED
-                                            : model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Full load available"
-                                            ? ColorResources
-                                            .FULL_LOAD_AVAILABLE
-                                            : ColorResources
-                                            .PART_LOAD_AVAILABLE,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft:
-                                            Radius.circular(5),
-                                            bottomRight:
-                                            Radius.circular(5))),
-                                    child: TextView(
-                                        title: "${model.orgFullLoadList[index].mainTag ?? ''}",
-                                        fontSize:15.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Full load required"
-                                            ? ColorResources
-                                            .FLR_TEXT
-                                            : model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Part load required"
-                                            ? ColorResources
-                                            .PLR_TEXT
-                                            : model
-                                            .orgFullLoadList[
-                                        index]
-                                            .mainTag ==
-                                            "Full load available"
-                                            ? ColorResources
-                                            .FLA_TEXT
-                                            : ColorResources
-                                            .PLA_TEXT),
-                                  ),
-                                  SizedBox(height: 30.h,),
-                                  TextView(
-                                    title: "${model.orgFullLoadList[index].source ?? ''}",
-                                    fontSize:14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff000000),
-                                  ),
-                                  Container(color: Colors.black,width: 1.w,height: 48.h,),
-                                  TextView(
-                                    title: "${model.orgFullLoadList[index].destination ?? ''}",
-                                    fontSize:14.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff000000),
-                                  ),
-                                  SizedBox(height: 20.h,),
-                                  /* TextView(
-                              title: "Expire : ${model.orgFullLoadList[index].expireDate ?? ''}",
-                              fontSize:15.sp,
-                              fontWeight: FontWeight.w300,
-                              color: Color(0xff000000),
-                            ),*/
-                                ],
+                            child: TextView(
+                              title: loadItem.mainTag ?? '',
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: loadItem.mainTag == "Full load required"
+                                  ? ColorResources.FLR_TEXT
+                                  : loadItem.mainTag == "Part load required"
+                                  ? ColorResources.PLR_TEXT
+                                  : loadItem.mainTag == "Full load available"
+                                  ? ColorResources.FLA_TEXT
+                                  : ColorResources.PLA_TEXT,
+                            ),
+                          ),
+                          SizedBox(height: 30.h),
+                          TextView(
+                            title: loadItem.source ?? '',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000),
+                          ),
+                          Container(
+                            color: Colors.black,
+                            width: 1.w,
+                            height: 48.h,
+                          ),
+                          TextView(
+                            title: loadItem.destination ?? '',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff000000),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// Right side - actions
+                    SizedBox(width: 20.w),
+                    SizedBox(
+                      width: 170.w,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10.h),
+                          Container(
+                            width: 130.w,
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: () {
+                                showAlertDialog(context, loadItem);
+                              },
+                              child: SvgPicture.asset(
+                                'assets/images/delete.svg',
+                                height: 20.h,
+                                width: 20.w,
                               ),
                             ),
-                            SizedBox(width: 20.w,),
-                            SizedBox(
-                              width: 170.w,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 10.h,),
-                                  Container(
-                                      width: 130.w,
-                                      alignment: Alignment.centerRight,
-                                      child: InkWell(onTap: (){
-                                        // orgProvider.deleteFullLoad(model.orgFullLoadList[index]);
-                                        showAlertDialog(context,model.orgFullLoadList[index]);
-                                      }, child: SvgPicture.asset('assets/images/delete.svg',height: 20.h,width: 20.w,))),
-                                  SizedBox(height: 20.h,),
-                                  Row(
-                                    children: [
-                                      getImage('',height: 30.h),
-                                      SizedBox(width: 10.w,),
-                                      Expanded(
-                                        child: Text(
-                                          "${model.orgFullLoadList[index].nameOfPerson ?? ''}",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize:14.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xff000000),
+                          ),
+                          SizedBox(height: 20.h),
+                          Row(
+                            children: [
+                              getImage('', height: 30.h),
+                              SizedBox(width: 10.w),
+                              Expanded(
+                                child: Text(
+                                  loadItem.nameOfPerson ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5.h),
+                          Row(
+                            children: [
+                              SizedBox(width: 15.w),
+                              SvgPicture.asset(
+                                'assets/sheild.svg',
+                                height: 12.h,
+                                width: 12.w,
+                              ),
+                              SizedBox(width: 20.w),
+                              SizedBox(
+                                width: 100.w,
+                                child: Text(
+                                  loadItem.companyName ?? '',
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xff000000),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 30.h),
+                          SizedBox(
+                            width: 121.w,
+                            height: 40.h,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => CupertinoAlertDialog(
+                                    title: Column(
+                                      children: [
+                                        Text(
+                                          'Contact Number : ${loadItem.mobileNumber ?? ''}',
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5.h,),
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 15.w,),
-                                      SvgPicture.asset('assets/sheild.svg',height: 12.h,width: 12.w,),
-                                      SizedBox(width: 20.w,),
-                                      SizedBox(
-                                        width: 100.w,
-                                        child: Text(
-                                          "${model.orgFullLoadList[index].companyName ?? ''}",
-                                          style:TextStyle(fontSize:15.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: Color(0xff000000),),overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 30.h,),
-                                  SizedBox(
-                                    width: 121.w,
-                                    height: 40.h,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (_) => CupertinoAlertDialog(
-                                              title: Column(
-                                                children: [
-                                                  Text(
-                                                      'Contact Number : ${model.orgFullLoadList[index].mobileNumber ?? ''}',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.bold)),
-                                                  Text(
-                                                      'Email_Id : ${model.orgFullLoadList[index].mobileNumber ?? ''}',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.bold)),
-                                                ],
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets.all(10.0),
-                                                    child: Text('Ok',
-                                                        style: TextStyle(
-                                                            color: Colors.green,
-                                                            fontSize: 18)),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            ));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: ThemeColor.theme_blue,
-                                        foregroundColor: Colors.white,
-                                        elevation: 3,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.r))),
-                                      ),
-                                      child: TextView(
-                                        title: "Contact",
-                                        fontSize:15.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xffffffff),
-                                      ),
+                                       /* Text(
+                                          'Email_Id : ${loadItem. ?? ''}',
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),*/
+                                      ],
                                     ),
-                                  )
-                                ],
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'Ok',
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ThemeColor.theme_blue,
+                                foregroundColor: Colors.white,
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.r)),
+                                ),
+                              ),
+                              child: TextView(
+                                title: "Contact",
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xffffffff),
                               ),
                             ),
-                          ],
-                        ),
-                      )),
-                );
-              }
-          ),));
-      }
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+
+    );
+  }
+
   getContainer(OrgProvider model,String title, int value,String count, Color bgColor, String img) {
     return InkWell(
       onTap: (){
@@ -962,4 +974,6 @@ class _LoadListState extends State<LoadList> {
       },
     );
   }
+
+
 }

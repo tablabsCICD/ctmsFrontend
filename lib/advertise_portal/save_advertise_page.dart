@@ -32,7 +32,7 @@ import 'package:flutter_hr_management/pages/widget/side_bar_menu.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,7 +70,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getLoginDetails();
+   // getLoginDetails();
     //_companyNameController.text = orgProvider.orgnization[0].companyName!;
   }
 
@@ -86,7 +86,7 @@ class _SaveAdvertisePageState extends State<SaveAdvertisePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideBar(),
+      drawer: AdvertiseSideBar(),
       key: _key,
       backgroundColor: ThemeColor.baground,
       body: Consumer<AdvProvider>(

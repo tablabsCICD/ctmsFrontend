@@ -1,34 +1,49 @@
 class FullLoadModel {
-  String? message;
-  List<OrgFullLoadModel>? data;
-  bool? success;
+  int? number;
+  int? size;
+  int? numberOfElements;
+  bool? last;
+  int? totalPages;
+  dynamic sort;
+  List<OrgFullLoadModel>? content;
+  bool? first;
+  int? totalElements;
 
-  FullLoadModel({this.message, this.data, this.success});
+  FullLoadModel({
+    this.number,
+    this.size,
+    this.numberOfElements,
+    this.last,
+    this.totalPages,
+    this.sort,
+    this.content,
+    this.first,
+    this.totalElements,
+  });
 
-  FullLoadModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
+  factory FullLoadModel.fromJson(Map<String, dynamic> json) => FullLoadModel(
+    number: json["number"],
+    size: json["size"],
+    numberOfElements: json["numberOfElements"],
+    last: json["last"],
+    totalPages: json["totalPages"],
+    sort: json["sort"],
+    content: json["content"] == null ? [] : List<OrgFullLoadModel>.from(json["content"]!.map((x) => OrgFullLoadModel.fromJson(x))),
+    first: json["first"],
+    totalElements: json["totalElements"],
+  );
 
-    if (json['data'] != null && json['data'] is List) {
-      data = <OrgFullLoadModel>[];
-      json['data'].forEach((v) {
-        data!.add(OrgFullLoadModel.fromJson(v));
-      });
-    } else {
-      data = []; // fallback if data is "", null, or not a list
-    }
-
-    success = json['success'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
-    }
-    data['success'] = this.success;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "number": number,
+    "size": size,
+    "numberOfElements": numberOfElements,
+    "last": last,
+    "totalPages": totalPages,
+    "sort": sort,
+    "content": content == null ? [] : List<dynamic>.from(content!.map((x) => x.toJson())),
+    "first": first,
+    "totalElements": totalElements,
+  };
 }
 
 class OrgFullLoadModel {
@@ -38,7 +53,7 @@ class OrgFullLoadModel {
   String? postingTime;
   String? companyName;
   String? nameOfPerson;
-  double? companyRating;
+  String? companyRating;
   String? content;
   String? topicName;
   String? tableName;
@@ -72,188 +87,169 @@ class OrgFullLoadModel {
   String? description;
   String? title;
   int? likes;
-  int? comment;
   int? transporterOrAgent;
-  List<String>? postImages;
-  List<String>? listOfFullLoadImages;
   String? cargoType;
   String? vehicleWeight;
-  int? mobileOrLandline;
+  String? mobileOrLandline;
   String? category;
+  bool? isSharedInGroup;
+  int? isOpenForBid;
+  String? expireDate;
+  int? isRepeat;
 
-  OrgFullLoadModel(
-      {this.id,
-        this.userId,
-        this.type,
-        this.postingTime,
-        this.companyName,
-        this.nameOfPerson,
-        this.companyRating,
-        this.content,
-        this.topicName,
-        this.tableName,
-        this.companyLogo,
-        this.partLoadOrNot,
-        this.reminderUserName,
-        this.sharableLink,
-        this.deviceId,
-        this.ratings,
-        this.mobileNumber,
-        this.source,
-        this.destination,
-        this.mainTag,
-        this.privatePost,
-        this.makerName,
-        this.modelName,
-        this.mfgYear,
-        this.estPrice,
-        this.dnd,
-        this.vehicleSize,
-        this.association,
-        this.isPaid,
-        this.website,
-        this.alterativeNumber,
-        this.companyDetailsName,
-        this.isVerifiedByCompany,
-        this.typeOfPayment,
-        this.isverified,
-        this.typeName,
-        this.images,
-        this.description,
-        this.title,
-        this.likes,
-        this.comment,
-        this.transporterOrAgent,
-        this.postImages,
-        this.listOfFullLoadImages,
-        this.cargoType,
-        this.vehicleWeight,
-        this.mobileOrLandline,
-        this.category});
+  OrgFullLoadModel({
+    this.id,
+    this.userId,
+    this.type,
+    this.postingTime,
+    this.companyName,
+    this.nameOfPerson,
+    this.companyRating,
+    this.content,
+    this.topicName,
+    this.tableName,
+    this.companyLogo,
+    this.partLoadOrNot,
+    this.reminderUserName,
+    this.sharableLink,
+    this.deviceId,
+    this.ratings,
+    this.mobileNumber,
+    this.source,
+    this.destination,
+    this.mainTag,
+    this.privatePost,
+    this.makerName,
+    this.modelName,
+    this.mfgYear,
+    this.estPrice,
+    this.dnd,
+    this.vehicleSize,
+    this.association,
+    this.isPaid,
+    this.website,
+    this.alterativeNumber,
+    this.companyDetailsName,
+    this.isVerifiedByCompany,
+    this.typeOfPayment,
+    this.isverified,
+    this.typeName,
+    this.images,
+    this.description,
+    this.title,
+    this.likes,
+    this.transporterOrAgent,
+    this.cargoType,
+    this.vehicleWeight,
+    this.mobileOrLandline,
+    this.category,
+    this.isSharedInGroup,
+    this.isOpenForBid,
+    this.expireDate,
+    this.isRepeat,
+  });
 
-  OrgFullLoadModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['userId'];
-    type = json['type'];
-    postingTime = json['postingTime'];
-    companyName = json['companyName'];
-    nameOfPerson = json['nameOfPerson'];
-    companyRating = json['companyRating'];
-    content = json['content'];
-    topicName = json['topicName'];
-    tableName = json['tableName'];
-    companyLogo = json['companyLogo'];
-    partLoadOrNot = json['partLoadOrNot'];
-    reminderUserName = json['reminderUserName'];
-    sharableLink = json['sharableLink'];
-    deviceId = json['deviceId'];
-    ratings = json['ratings'];
-    mobileNumber = json['mobileNumber'];
-    source = json['source'];
-    destination = json['destination'];
-    mainTag = json['mainTag'];
-    privatePost = json['privatePost'];
-    makerName = json['makerName'];
-    modelName = json['modelName'];
-    mfgYear = json['mfgYear'];
-    estPrice = json['estPrice'];
-    dnd = json['dnd'];
-    vehicleSize = json['vehicleSize'];
-    association = json['association'];
-    isPaid = json['isPaid'];
-    website = json['website'];
-    alterativeNumber = json['alterativeNumber'];
-    companyDetailsName = json['companyDetailsName'];
-    isVerifiedByCompany = json['isVerifiedByCompany'];
-    typeOfPayment = json['typeOfPayment'];
-    isverified = json['isverified'];
-    typeName = json['typeName'];
-    if (json['images'] != null) {
-      images = <String>[];
-      json['images'].forEach((v) {
-        images!.add(v);
-      });
-    }
-    description = json['description'];
-    title = json['title'];
-    likes = json['likes'];
-    comment = json['comment'];
-    transporterOrAgent = json['transporterOrAgent'];
-    if (json['postImages'] != null) {
-      postImages = <String>[];
-      json['postImages'].forEach((v) {
-        postImages!.add(v);
-      });
-    }
-    if (json['listOfFullLoadImages'] != null) {
-      listOfFullLoadImages = <String>[];
-      json['listOfFullLoadImages'].forEach((v) {
-        listOfFullLoadImages!.add((v));
-      });
-    }
-    cargoType = json['cargoType'];
-    vehicleWeight = json['vehicleWeight'];
-    mobileOrLandline = json['mobileOrLandline'];
-    category = json['category'];
-  }
+  factory OrgFullLoadModel.fromJson(Map<String, dynamic> json) => OrgFullLoadModel(
+    id: json["id"],
+    userId: json["userId"],
+    type: json["type"]??'',
+    postingTime: json["postingTime"],
+    companyName: json["companyName"]??"",
+    nameOfPerson: json["nameOfPerson"]??"",
+    companyRating: json["companyRating"],
+    content: json["content"],
+    topicName: json["topicName"],
+    tableName: json["tableName"]??"",
+    companyLogo: json["companyLogo"],
+    partLoadOrNot: json["partLoadOrNot"],
+    reminderUserName: json["reminderUserName"],
+    sharableLink: json["sharableLink"],
+    deviceId: json["deviceId"]??"",
+    ratings: json["ratings"],
+    mobileNumber: json["mobileNumber"],
+    source: json["source"]??"",
+    destination: json["destination"],
+    mainTag: json["mainTag"]??"",
+    privatePost: json["privatePost"],
+    makerName: json["makerName"],
+    modelName: json["modelName"],
+    mfgYear: json["mfgYear"],
+    estPrice: json["estPrice"],
+    dnd: json["dnd"],
+    vehicleSize: json["vehicleSize"],
+    association: json["association"],
+    isPaid: json["isPaid"],
+    website: json["website"],
+    alterativeNumber: json["alterativeNumber"],
+    companyDetailsName: json["companyDetailsName"]!,
+    isVerifiedByCompany: json["isVerifiedByCompany"],
+    typeOfPayment: json["typeOfPayment"]??"",
+    isverified: json["isverified"],
+    typeName: json["typeName"],
+    images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
+    description: json["description"],
+    title: json["title"],
+    likes: json["likes"],
+    transporterOrAgent: json["transporterOrAgent"],
+    cargoType:json["cargoType"]??"",
+    vehicleWeight: json["vehicleWeight"],
+    mobileOrLandline: json["mobileOrLandline"],
+    category: json["category"],
+    isSharedInGroup: json["isSharedInGroup"],
+    isOpenForBid: json["isOpenForBid"],
+    expireDate: json["expireDate"],
+    isRepeat: json["isRepeat"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['userId'] = this.userId;
-    data['type'] = this.type;
-    data['postingTime'] = this.postingTime;
-    data['companyName'] = this.companyName;
-    data['nameOfPerson'] = this.nameOfPerson;
-    data['companyRating'] = this.companyRating;
-    data['content'] = this.content;
-    data['topicName'] = this.topicName;
-    data['tableName'] = this.tableName;
-    data['companyLogo'] = this.companyLogo;
-    data['partLoadOrNot'] = this.partLoadOrNot;
-    data['reminderUserName'] = this.reminderUserName;
-    data['sharableLink'] = this.sharableLink;
-    data['deviceId'] = this.deviceId;
-    data['ratings'] = this.ratings;
-    data['mobileNumber'] = this.mobileNumber;
-    data['source'] = this.source;
-    data['destination'] = this.destination;
-    data['mainTag'] = this.mainTag;
-    data['privatePost'] = this.privatePost;
-    data['makerName'] = this.makerName;
-    data['modelName'] = this.modelName;
-    data['mfgYear'] = this.mfgYear;
-    data['estPrice'] = this.estPrice;
-    data['dnd'] = this.dnd;
-    data['vehicleSize'] = this.vehicleSize;
-    data['association'] = this.association;
-    data['isPaid'] = this.isPaid;
-    data['website'] = this.website;
-    data['alterativeNumber'] = this.alterativeNumber;
-    data['companyDetailsName'] = this.companyDetailsName;
-    data['isVerifiedByCompany'] = this.isVerifiedByCompany;
-    data['typeOfPayment'] = this.typeOfPayment;
-    data['isverified'] = this.isverified;
-    data['typeName'] = this.typeName;
-    if (this.images != null) {
-      data['images'] = this.images!.map((v) => v).toList();
-    }
-    data['description'] = this.description;
-    data['title'] = this.title;
-    data['likes'] = this.likes;
-    data['comment'] = this.comment;
-    data['transporterOrAgent'] = this.transporterOrAgent;
-    if (this.postImages != null) {
-      data['postImages'] = this.postImages!.map((v) => v).toList();
-    }
-    if (this.listOfFullLoadImages != null) {
-      data['listOfFullLoadImages'] =
-          this.listOfFullLoadImages!.map((v) => v).toList();
-    }
-    data['cargoType'] = this.cargoType;
-    data['vehicleWeight'] = this.vehicleWeight;
-    data['mobileOrLandline'] = this.mobileOrLandline;
-    data['category'] = this.category;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "userId": userId,
+    "type": type,
+    "postingTime": postingTime,
+    "companyName": companyName,
+    "nameOfPerson": nameOfPerson,
+    "companyRating": companyRating,
+    "content": content,
+    "topicName": topicName,
+    "tableName": tableName,
+    "companyLogo": companyLogo,
+    "partLoadOrNot": partLoadOrNot,
+    "reminderUserName": reminderUserName,
+    "sharableLink": sharableLink,
+    "deviceId": deviceId,
+    "ratings": ratings,
+    "mobileNumber": mobileNumber,
+    "source": source,
+    "destination": destination,
+    "mainTag": mainTag,
+    "privatePost": privatePost,
+    "makerName": makerName,
+    "modelName": modelName,
+    "mfgYear": mfgYear,
+    "estPrice": estPrice,
+    "dnd": dnd,
+    "vehicleSize": vehicleSize,
+    "association": association,
+    "isPaid": isPaid,
+    "website": website,
+    "alterativeNumber": alterativeNumber,
+    "companyDetailsName": companyDetailsName,
+    "isVerifiedByCompany": isVerifiedByCompany,
+    "typeOfPayment": typeOfPayment,
+    "isverified": isverified,
+    "typeName": typeName,
+    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
+    "description": description,
+    "title": title,
+    "likes": likes,
+    "transporterOrAgent": transporterOrAgent,
+    "cargoType": cargoType,
+    "vehicleWeight": vehicleWeight,
+    "mobileOrLandline": mobileOrLandline,
+    "category": category,
+    "isSharedInGroup": isSharedInGroup,
+    "isOpenForBid": isOpenForBid,
+    "expireDate": expireDate,
+    "isRepeat": isRepeat,
+  };
 }

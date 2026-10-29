@@ -19,7 +19,7 @@ import 'package:flutter_hr_management/organization_portal/model/userdata.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 class CreateOrgProvider extends ChangeNotifier{

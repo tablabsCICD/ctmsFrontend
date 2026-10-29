@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/branch_model.dart';
 import 'package:flutter_hr_management/model/ctms_organization.dart';
@@ -19,7 +20,7 @@ import 'package:flutter_hr_management/organization_portal/model/organization/sea
 import 'package:flutter_hr_management/organization_portal/model/tkd_user_mobile_response.dart';
 import 'package:flutter_hr_management/organization_portal/model/userdata.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -34,8 +35,10 @@ import 'package:flutter_hr_management/organization_portal/model/organization_mod
 import 'package:flutter_hr_management/organization_portal/model/pool_purchase_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/truck_load_model.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:universal_html/js_util.dart';
 
 import '../../../pages/widget/toast.dart';
+import '../../../utils/date.dart';
 import '../../delete_user.dart';
 
 class OrgUserProvider extends ChangeNotifier {
@@ -208,15 +211,21 @@ class OrgUserProvider extends ChangeNotifier {
     }
   }
 
-  sendOtp(String mobileNumber,BuildContext context)async{
-    ApiHelper apiHelper=ApiHelper();
-    var response= await apiHelper.apiGet(AppConstants.USER_FIND_BY_MOBILE(mobileNumber));
+  Future<bool> sendOtp(String mobileNumber, BuildContext context) async {
+    ApiHelper apiHelper = ApiHelper();
+    var response = await apiHelper.apiGet(AppConstants.USER_FIND_BY_MOBILE(mobileNumber));
 
-    if(response.status==200){
-      DeleteUser deleteUser=DeleteUser.fromJson(response.response);
-      callSwitch(deleteUser,context,mobileNumber);
-    }else{
-      ToastMessage.show(context, " Please try again ");
+    if (response.status == 200) {
+      DeleteUser deleteUser = DeleteUser.fromJson(response.response);
+
+      // Call your internal function if needed
+      callSwitch(deleteUser, context, mobileNumber);
+
+      // Return true indicating OTP can be sent
+      return true;
+    } else {
+      ToastMessage.show(context, "Please try again");
+      return false;
     }
   }
 
@@ -247,13 +256,14 @@ class OrgUserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  verifyOtp(BuildContext context,String mobileNumber,String otp) async{
+  verifyOtp(BuildContext context,String mobileNumber,String otp, ConnectUser element, Organization organization) async{
     String myUrl = AppConstants.OTP_VERIFICATION(mobileNumber,otp);
     var req = await ApiHelper().apiPost(myUrl);
     if(req.status== 200){
       User user=User.fromJson(req.response);
       if(user.content!.isNotEmpty){
-        ToastMessage.show(context,"${user.content!.first.firstName} ${user.content!.first.lastName} added successfully to our organization");
+        ToastMessage.show(context,"${user.content!.first.firstName} ${user.content!.first.lastName} verify otp successfully");
+        addToCTMS(context, element, organization);
       }else{
         ToastMessage.show(context,"Please try again");
       }
@@ -262,8 +272,183 @@ class OrgUserProvider extends ChangeNotifier {
     }else{
       ToastMessage.show(context,"Please try again");
     }
-
   }
+
+  bool _isFilterEnabled = false; // example state variable
+
+  bool get isFilterEnabled => _isFilterEnabled;
+
+  void toggleFilter() {
+    _isFilterEnabled = !_isFilterEnabled;
+    notifyListeners();
+  }
+
+  Future<bool> updateUserStatus(BuildContext context,int userId, int status) async {
+    ApiHelper apiHelper = ApiHelper();
+    print(AppConstants.USER_STATUS(userId,status));
+    var response = await apiHelper.apiPutWithoutBody(AppConstants.USER_STATUS(userId,status));
+    print(response.response);
+    if (response.status == 200) {
+     // final parsed = json.decode(response.response);
+      if (response.response["success"] == true) {
+       ToastMessage.show(context, response.response['message']);
+     }
+      return true;
+    } else {
+      ToastMessage.show(context, "Please try again");
+      return false;
+    }
+  }
+
+
+  Future<void> addToCTMS(BuildContext context,ConnectUser selectedEmp, Organization organization) async {
+    try {
+      final token = await LocalSharePreferences().getString(SharedPreferencesConstant.AuthToken);
+      LoginDeatils currentUser =
+      await LocalSharePreferences.localSharePreferences.getLoginData();
+      final requestParameter = {
+        "aadharNo": selectedEmp.aadharCard,
+        "active": selectedEmp.isSelected,
+        "address": selectedEmp.companyAddress,
+        "birthdate": '',
+        "boardingDeatails": {
+          "aadharCard": selectedEmp.aadharCard,
+          "active": "true",
+          "boardingId": 0,
+          "degreeCertificate": "string",
+          "experienceCertificate": "string",
+          "otherDocuments": ["string"],
+          "panCard": "string",
+          "tenthDCertificate": "string",
+          "twelthCertificate": "string"
+        },
+        "branchId": loginDeatils!.data!.branch!.id,
+        "connectOrgId": organization.id,
+        "contact": selectedEmp.mobileNumber,
+        "createdDate": '',
+        "departmentId": loginDeatils!.data!.departmentId,
+        "designation": selectedEmp.transporterOrAgent,
+        "deviceId": selectedEmp.deviceId,
+        "emailId": selectedEmp.emailId,
+        "employeeLocation": "ONSITE",
+        "esiNO": '',
+        "firstName": selectedEmp.firstName,
+        "image": selectedEmp.profilePicture,
+        "isActive": 0,
+        "is_admin": false,
+        "lastName": selectedEmp.lastName,
+        "mobileNumber": selectedEmp.mobileNumber,
+        "organisationId": loginDeatils!.data!.organisationId,
+        "os": selectedEmp.os,
+        "otp": selectedEmp.otp ?? "",
+        "panNo": selectedEmp.panCardForVerification,
+        "password": selectedEmp.password ?? "",
+        "roleId": 0,
+        "securityAnswer": loginDeatils!.data!.securityAnswer,
+        "securityQuestion": loginDeatils!.data!.securityQuestion,
+        "status": loginDeatils!.data!.status
+      };
+
+      EasyLoading.show(status: "Adding to CTMS...");
+      final response = await http.post(
+        Uri.parse(ApiConstant.SAVE_EMP),
+        body: jsonEncode(requestParameter),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      EasyLoading.dismiss();
+
+      final resData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (resData['errorCode'].toString() == "500") {
+          showCustomToast(context, resData['errorMessage'].toString(), Icons.clear, Colors.red);
+          return;
+        } else {
+          // success -> call TKD backend next
+          await addToTKDConnect(context,selectedEmp, organization);
+        }
+      } else {
+        showCustomToast(context, "Something went wrong while saving to CTMS", Icons.clear, Colors.red);
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+      showCustomToast(context, "Unexpected error: $e", Icons.clear, Colors.red);
+    }
+  }
+
+// ---------- 7) Add to TKD Connect improved implementation ----------
+  Future<void> addToTKDConnect(BuildContext context,ConnectUser selectedEmp, Organization organization) async {
+    try {
+      final requestParameter = {
+        "id": selectedEmp.id,
+        "aadharCard": selectedEmp.aadharCard,
+        "aadharCardForVerification": selectedEmp.aadharCard,
+        "alternativeNumber": selectedEmp.mobileNumber,
+        "branchName": selectedEmp.branchName,
+        "city": selectedEmp.city,
+        "companyAddress": organization.companyAddress,
+        "companyId": organization.id,
+        "companyLogo": organization.companyLogo,
+        "companyName": organization.companyName,
+        "country": "India",
+        "deviceId": "NA",
+        "emailId": selectedEmp.emailId,
+        "firstName": selectedEmp.firstName,
+        "idOfMainBranch": 0,
+        "isPaid": 0,
+        "isUserVerifiedByCompany": 1,
+        "landlineNumber": selectedEmp.mobileNumber,
+        "lastName": selectedEmp.lastName,
+        "loggedTime": GetDateFormat.getCurrentDate(),
+        "loggedUserName": "NA",
+        "mainBranch": 0,
+        "mobileNumber": selectedEmp.mobileNumber,
+        "numberOfTimesRating": 0,
+        "os": "string",
+        "otp": "string",
+        "paidStartDate": "string",
+        "panCardForVerification": selectedEmp.panCardForVerification,
+        "password": selectedEmp.password,
+        "preferredRouresEntered": 0,
+        "profilePicture": selectedEmp.profilePicture,
+        "ratings": 0,
+        "state": "Maharastra",
+        "transporterOrAgent": 0,
+        "userName": "NA",
+        "validTill": "string",
+        "verified": 0,
+        "website": organization.website,
+      };
+
+      EasyLoading.show(status: "Adding to TKD Connect...");
+      final response = await http.put(
+        Uri.parse(AppConstants.REGISTRATION),
+        body: jsonEncode(requestParameter),
+        headers: {"Content-Type": "application/json"},
+      );
+      EasyLoading.dismiss();
+
+      final resData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (resData['errorCode'].toString() == "500") {
+          showCustomToast(context, resData['errorMessage'].toString(), Icons.clear, Colors.red);
+        } else {
+          // refresh provider user list
+          await getUsersByCompanyId(organization.id!);
+          showCustomToast(context, "Employee added successfully", Icons.check, Colors.green);
+          Navigator.of(context).pop();
+        }
+      } else {
+        showCustomToast(context, "Something went wrong while adding to TKD", Icons.clear, Colors.red);
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+      showCustomToast(context, "Unexpected error: $e", Icons.clear, Colors.red);
+    }
+  }
+
 }
 
 

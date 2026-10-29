@@ -11,7 +11,7 @@ import 'package:flutter_hr_management/model/response/img_upload_response.dart';
 import 'package:flutter_hr_management/organization_portal/provider/Create_Org_Provider.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';

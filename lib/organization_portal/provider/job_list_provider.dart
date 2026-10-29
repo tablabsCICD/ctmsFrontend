@@ -112,6 +112,8 @@ class JobListProvider extends ChangeNotifier {
       int? isSelected,
       int? isSalaryNegotiable,
       String? experience) async {
+    final connectUserIdStr = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.connectUserId);
     String myUrl = AppConstants.BASE_URL + "/postJob";
     Uri uri = Uri.parse(myUrl);
     Map<String, dynamic> data = {
@@ -137,7 +139,7 @@ class JobListProvider extends ChangeNotifier {
       "tableName": "Jobs",
       "topicName": "Jobs",
       "type": "Jobs",
-      "userId": orgProvider.connectUserId
+      "userId": connectUserIdStr
     };
     var body = json.encode(data);
     print(body);

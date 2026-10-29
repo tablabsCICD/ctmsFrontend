@@ -1,5 +1,7 @@
 class Images {
-  static String logo = "assets/images/logo.svg";
+  static String logo = "assets/images/logo_black.svg";
+  //static String logo = "assets/images/tablabs_logo.svg";
+
   static String close_circle = "assets/images/close_circle.svg";
   static String search_normal = "assets/images/search_normal.svg";
   static String green_tick = "assets/images/green_tick.svg";

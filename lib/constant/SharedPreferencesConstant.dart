@@ -6,6 +6,8 @@ class SharedPreferencesConstant{
   static String companyKey="companyKey";
   static String connectOrganizationId="connectOrganizationId";
   static String ctmsOrganizationId="ctmscompanyKey";
+  static String connectOrganization="connectOrganization";
+  static String ctmsOrganization="ctmsOrganization";
   static String connectUserId="companyKey";
 
 }

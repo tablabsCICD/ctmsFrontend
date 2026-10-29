@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../model/my_bids.dart';
 import '../../../organization_portal/localization/language_constrants.dart';
 import '../../../utils/colors.dart';
 import '../textview.dart';
@@ -1349,27 +1350,27 @@ class BaseWidget {
     );
   }
 
-  Widget showBidButton(Function(int) onMenuTap,bool isBid){
+  Widget showBidButton(Function(int) onMenuTap, bool isBid, PostBidData postBidData,) {
     return Container(
       width: double.infinity,
-      padding:  EdgeInsets.only(right: 8.w),
+      padding: EdgeInsets.only(right: 8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InkWell(
-            onTap: (){
+            onTap: () {
               onMenuTap(0);
             },
             child: Container(
-              height: 38.h,
-              width: 253.w,
-              padding:  EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+              height: 38,
+              width: 253,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 0.50.w, color: Color(0x33001E49)),
+                  side: BorderSide(width: 0.50, color: Color(0x33001E49)),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -1379,26 +1380,130 @@ class BaseWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    S().showAllQuotes,
+                    "Show All Quotes",
                     style: TextStyle(
                       color: Color(0xFF001E49),
-                      fontSize: 12.sp,
+                      fontSize: 12,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                 ],
               ),
             ),
           ),
-          SizedBox(width: 8.w),
-          InkWell(onTap:(){
-
-
-          },child: isBid?popUpmenuOwnBid(onMenuTap):popUpmenuOwnPost(onMenuTap))
+          /*SizedBox(width: 8),
+          InkWell(
+              onTap: () {},
+              child: isBid
+                  ? popUpmenuOwnBid(onMenuTap)
+                  : popUpmenuOwnPostnew(onMenuTap,postBidData))*/
         ],
       ),
+    );
+  }
+  popUpmenuOwnPostnew(Function(int) onMenuTap,PostBidData postBidData) {
+    return PopupMenuButton(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1, color: Color(0x332C363F)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: SvgPicture.asset(Images.post_menu)),
+      onSelected: (dynamic val) {
+        onMenuTap(val);
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: () {
+            onMenuTap(1);
+          },
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                Images.delete,
+                color: Colors.black,
+                width: 20,
+                height: 20,
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              Text(
+                "Delete",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                width: 13,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          onTap: () {
+            postBidData.genericCardsDto!.isOpenForBid==1? onMenuTap(8):ToastMessage.show(context, "Your Post already Completed Successfully");;
+          },
+          child: Row(
+            children: [
+              /* SvgPicture.asset(
+                Images.delete,
+                color: Colors.black,
+                width: 20,
+                height: 20,
+              ),*/
+              Icon(Icons.done,color: postBidData.genericCardsDto!.isOpenForBid==1?Colors.black:Colors.green,),
+              SizedBox(
+                width: 12,
+              ),
+              Text(
+                postBidData.genericCardsDto!.isOpenForBid==1?"Complete":"Completed",
+                style: TextStyle(
+                  color: postBidData.genericCardsDto!.isOpenForBid==1?Colors.black:Colors.green,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                width: 13,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+            onTap: () {
+              onMenuTap(3);
+            },
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  Images.share_white,
+                  color: Colors.black,
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  "Share",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                )
+              ],
+            )),
+      ],
     );
   }
 

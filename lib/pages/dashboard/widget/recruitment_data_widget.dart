@@ -7,7 +7,7 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
 import 'package:flutter_hr_management/pages/widget/progress_dialog.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';

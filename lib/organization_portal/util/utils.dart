@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
@@ -18,7 +19,7 @@ import '../dialog/share_dialog_box.dart';
 import '../model/truck_load_model.dart' show TruckLoad;
 import '../provider/auth_provider.dart';
 import '../provider/bid_provider.dart';
-import '../provider/dashboard_provider.dart';
+
 import 'app_constant.dart';
 import 'color-resource.dart';
 
@@ -63,7 +64,7 @@ class Utils {
   }
 
   final authProvider = locator<AuthProvider>();
-  final dashboardProvider = locator<DashboardProvider>();
+
 
   callFunction(BuildContext context, String mobile) async {
     if (authProvider.userDetailList[0].isPaid == 0) {
@@ -360,5 +361,9 @@ class Utils {
       case 30:
         return "Black";
     }
+  }
+
+  static String formatDate(DateTime date) {
+    return DateFormat('dd MMM yyyy').format(date);
   }
 }

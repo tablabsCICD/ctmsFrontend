@@ -45,7 +45,7 @@ class BidProvider extends ChangeNotifier{
     var req = await http.get(Uri.parse(myUrl));
     response = json.decode(req.body);
     var type = TruckLoadType.fromJson(response);
-    allPostList = type.content;
+    allPostList = type.content!;
     for (int i = 0; i < allPostList.length; i++) {
       if (allPostList[i].tableName == 'FullTruckLoad')
       {

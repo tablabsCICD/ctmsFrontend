@@ -4,7 +4,7 @@ import 'package:flutter_hr_management/model/employee_model.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';

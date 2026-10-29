@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 class CustomSearchCityTextField extends StatelessWidget {
-  final String controller;
+  final TextEditingController controller; // changed from String to TextEditingController
   final String hintText;
   final TextInputType? textInputType;
   final int maxLine;
@@ -20,7 +20,7 @@ class CustomSearchCityTextField extends StatelessWidget {
   final bool? obsecure;
   final bool? readOnly;
   final String? validatorMsg;
-  Function? onTap;
+  final Function? onTap;
 
   CustomSearchCityTextField({
     required this.controller,
@@ -34,23 +34,24 @@ class CustomSearchCityTextField extends StatelessWidget {
     this.iconData,
     this.obsecure,
     this.readOnly,
-    this.onTap
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onTap!();
+        if (onTap != null) {
+          onTap!();
+        }
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
         height: 52.h,
         width: 275.w,
-
         child: TextFormField(
           textAlign: TextAlign.center,
-          controller: TextEditingController(text: controller),
+          controller: controller,
           enabled: false,
           style: Style.dropdownValue,
           validator: (value) {
@@ -62,19 +63,27 @@ class CustomSearchCityTextField extends StatelessWidget {
           decoration: InputDecoration(
             fillColor: Colors.white,
             filled: true,
-            contentPadding: EdgeInsets.only(bottom: 10,left: 0,right: 0),
-            prefixIcon: Icon(Icons.location_on_outlined,size: 15,color: Color(0xff292929)),
-              suffixIcon: controller.isEmpty?Icon(Icons.keyboard_arrow_down,size: 20,color: Color(0xff292929)):Icon(Icons.close,size: 20,color: Color(0xffC3262C)),
-              hintText: hintText,
-              hintStyle: TextStyle(
-                  fontSize: 15.sp,
-                  color: Color(0xff292929),
-                  fontWeight: FontWeight.w300,
-                  fontFamily: GoogleFonts.poppins().fontFamily
-              ),
-              border:OutlineInputBorder(
-                borderRadius: new BorderRadius.circular(8.0.r),
-                ),
+            contentPadding: EdgeInsets.only(bottom: 10, left: 0, right: 0),
+            prefixIcon:
+            Icon(Icons.location_on_outlined, size: 15, color: Color(0xff292929)),
+            suffixIcon: controller.text.isEmpty
+                ? Icon(Icons.keyboard_arrow_down, size: 20, color: Color(0xff292929))
+                : GestureDetector(
+              onTap: () {
+                controller.clear();
+                // If you want, you can call setState or notify parent to rebuild here
+              },
+              child: Icon(Icons.close, size: 20, color: Color(0xffC3262C)),
+            ),
+            hintText: hintText,
+            hintStyle: TextStyle(
+                fontSize: 15.sp,
+                color: Color(0xff292929),
+                fontWeight: FontWeight.w300,
+                fontFamily: GoogleFonts.poppins().fontFamily),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0.r),
+            ),
           ),
           keyboardType: TextInputType.text,
         ),

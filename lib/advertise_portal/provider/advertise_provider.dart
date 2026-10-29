@@ -9,7 +9,7 @@ import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';

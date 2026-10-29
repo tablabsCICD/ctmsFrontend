@@ -16,7 +16,6 @@ import 'package:flutter_hr_management/organization_portal/multi_select.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/buy_sell_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/general_post_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
@@ -56,7 +55,6 @@ class _GeneralPostListState extends State<GeneralPostList> {
   TextEditingController filterController = TextEditingController();
   int counter = 0;
   var selectedPageNumber = 1;
-  final dashboardProvider = locator<DashboardProvider>();
   ScrollController _scrollController = ScrollController();
   String? selectedFromCity = '', selectedToCity = "";
 

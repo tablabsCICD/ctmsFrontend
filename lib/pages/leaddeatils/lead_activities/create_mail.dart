@@ -17,7 +17,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../common/app_colors.dart';
 import '../../../model/lead_model.dart';
 import '../../../model/response/lead_list.dart';
-import '../../../utils/constant.dart';
+import '../../../constant/constant.dart';
 
 class CreateMail extends StatefulWidget {
   bool onlyMail;

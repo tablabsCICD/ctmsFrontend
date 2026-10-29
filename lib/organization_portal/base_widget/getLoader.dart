@@ -5,15 +5,17 @@ import 'package:flutter_hr_management/organization_portal/util/style.dart';
 
 getLoader(bool loading){
   return  loading ? Container(
+    alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Loading....",style: Style.heading,),
           SizedBox(height: 10,),
-          SpinKitCircle(
+         /* SpinKitCircle(
             color: Colors.grey,
            // size: 50.0,
-          )
+          )*/
+          CircularProgressIndicator()
          ],
       )
   ) : SizedBox.shrink();

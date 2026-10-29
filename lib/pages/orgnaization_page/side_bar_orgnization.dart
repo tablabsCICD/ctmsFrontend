@@ -14,13 +14,15 @@ import 'package:flutter_hr_management/organization_portal/model/organization_mod
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/sharepreferences.dart';
+import '../widget/toast.dart';
 
 class SideBarOrganization extends StatefulWidget {
   @override
@@ -40,7 +42,19 @@ class _SideBarOrganization extends State<SideBarOrganization> {
   @override
   void initState() {
     super.initState();
-    getLoginDetail();
+   // getLoginDetail();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await orgProvider.loadOrgFromLocal();
+      if (orgProvider.org == null) {
+        await orgProvider.getCtmsOrganization();
+      }
+
+      if (orgProvider.org != null) {
+        debugPrint("✅ Org loaded: ${orgProvider.org!.companyName}");
+      } else {
+        ToastMessage.show(context, "No organisation found. Please contact admin.");
+      }
+    });
   }
 
   @override
@@ -57,7 +71,8 @@ class _SideBarOrganization extends State<SideBarOrganization> {
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Center(
                 child: SvgPicture.asset(
-                  "assets/logo.svg",
+                 // "assets/logo.svg",
+                  Images.logo,
                   height: 77.h,
                   width: 133.w,
                 ),
@@ -90,13 +105,25 @@ class _SideBarOrganization extends State<SideBarOrganization> {
                 isAdv = false;
                 isDashbord = false;
                 setState(() {});
-                Organization? organization =
-                await orgProvider.getOrgDetails();
-                print(organization!.companyName);
+                final org = orgProvider.org;
+                if (org == null) {
+                  ToastMessage.show(
+                    context,
+                    "No organisation found. Please contact admin.",
+                  );
+                  return;
+                }
+
+
+
+
+                debugPrint(
+                    "Connect Organization : ${org.id}, ${org.companyName}");
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (builder) => CompanyDashboard(organization),
+                    builder: (builder) => CompanyDashboard(org),
                   ),
                 );
               },
@@ -309,6 +336,7 @@ class DrawerListTile extends StatelessWidget {
       title: Container(
         width: 232.w,
         height: 65.h,
+        padding: EdgeInsets.symmetric(horizontal: 10),
         decoration: isSelect
             ? ShapeDecoration(
           color: Color(0xFFC3262C),

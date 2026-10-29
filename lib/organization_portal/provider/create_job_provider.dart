@@ -8,7 +8,7 @@ import 'package:flutter_hr_management/organization_portal/model/userdata.dart';
 
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
 import 'package:flutter_hr_management/pages/widget/toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 class CreateJobProvider extends ChangeNotifier{
@@ -26,24 +26,7 @@ class CreateJobProvider extends ChangeNotifier{
 
 
 
-  showExpDialog(BuildContext context)async{
-    String? cityName= await showModalBottomSheet<String?>(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return FractionallySizedBox(
-              heightFactor: 0.9,
-              child: ExperienceScreen());
-        });
-    print('the cityName is $cityName');
-    if(cityName!=null){
-      expFrom=cityName!.split(",").first;
-      expTo=cityName!.split(",").last;
-      expUpdate=true;
-      buttonEnble();
-      notifyListeners();
-    }
-  }
+
 
 
 

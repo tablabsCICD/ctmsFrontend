@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/organization_portal/company/company_menu/company_side_bar.dart';
-import 'package:flutter_hr_management/organization_portal/company/jobs/job_list_screen.dart';
+import 'package:flutter_hr_management/organization_portal/company/job_list_screen.dart';
 import 'package:flutter_hr_management/organization_portal/company/load_list.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
@@ -28,7 +28,6 @@ import 'package:flutter_hr_management/organization_portal/multi_select.dart';
 import 'package:flutter_hr_management/organization_portal/open_whatsapp.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/share_data.dart';
 
@@ -63,8 +62,6 @@ class CompJobsScreen extends StatefulWidget {
     // dashboardProvider.getOrgFullLoadList(organization.id!);
   }
 
-
-
   @override
   _CompJobsScreenState createState() => _CompJobsScreenState();
 }
@@ -81,7 +78,6 @@ class _CompJobsScreenState extends State<CompJobsScreen> {
   TextEditingController filterController = TextEditingController();
   int counter = 0;
   var selectedPageNumber = 1;
-  final dashboardProvider = locator<DashboardProvider>();
   ScrollController _scrollController = ScrollController();
   String? selectedFromCity = '',selectedToCity = "";
 
@@ -90,7 +86,7 @@ class _CompJobsScreenState extends State<CompJobsScreen> {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        dashboardProvider.getFullLoadTruckList(currentPage: selectedPageNumber);
+       // dashboardProvider.getFullLoadTruckList(currentPage: selectedPageNumber);
         selectedPageNumber++;
       }
     });

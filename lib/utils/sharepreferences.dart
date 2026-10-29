@@ -51,7 +51,17 @@ class LocalSharePreferences{
     return alreadyVisited;
   }
 
+  Future<void> saveLoginFlag(bool isLoggedIn) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(SharedPreferencesConstant.LoginKeyBool, isLoggedIn);
+  }
 
+  Future<bool?> isUserLoggedIn() async {
+    bool? isLoggedIN=false;
+    final prefs = await SharedPreferences.getInstance();
+    isLoggedIN = prefs.getBool(SharedPreferencesConstant.LoginKeyBool);
+    return isLoggedIN;
+  }
 
   Future<LoginDeatils> getLoginData() async{
    String data  = await getString(SharedPreferencesConstant.LoginKey);
@@ -71,11 +81,12 @@ class LocalSharePreferences{
   }
 
   Future<bool> logOut()async{
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.clear();
+
     setBool(SharedPreferencesConstant.LoginKeyBool, false);
-    LocalSharePreferences()
-        .setString(SharedPreferencesConstant.AuthToken, "null");
+    setString(SharedPreferencesConstant.AuthToken, "null");
+    setString(SharedPreferencesConstant.LoginKey, "null");
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     return true;
   }
 

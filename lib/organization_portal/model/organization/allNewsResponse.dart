@@ -1,48 +1,24 @@
-class GetAllNewsResponse {
-  List<Content>? content;
-  bool? last;
-  int? totalElements;
-  int? totalPages;
-  dynamic sort;
-  bool? first;
-  int? numberOfElements;
-  int? size;
-  int? number;
+class TrackingResponse {
+  String? message;
+  List<Content>? data;
+  bool? success;
 
-  GetAllNewsResponse({
-    this.content,
-    this.last,
-    this.totalElements,
-    this.totalPages,
-    this.sort,
-    this.first,
-    this.numberOfElements,
-    this.size,
-    this.number,
+  TrackingResponse({
+    this.message,
+    this.data,
+    this.success,
   });
 
-  factory GetAllNewsResponse.fromJson(Map<String, dynamic> json) => GetAllNewsResponse(
-    content: json["content"] == null ? [] : List<Content>.from(json["content"]!.map((x) => Content.fromJson(x))),
-    last: json["last"],
-    totalElements: json["totalElements"],
-    totalPages: json["totalPages"],
-    sort: json["sort"],
-    first: json["first"],
-    numberOfElements: json["numberOfElements"],
-    size: json["size"],
-    number: json["number"],
+  factory TrackingResponse.fromJson(Map<String, dynamic> json) => TrackingResponse(
+    message: json["message"],
+    data: json["data"] == null ? [] : List<Content>.from(json["data"]!.map((x) => Content.fromJson(x))),
+    success: json["success"],
   );
 
   Map<String, dynamic> toJson() => {
-    "content": content == null ? [] : List<dynamic>.from(content!.map((x) => x.toJson())),
-    "last": last,
-    "totalElements": totalElements,
-    "totalPages": totalPages,
-    "sort": sort,
-    "first": first,
-    "numberOfElements": numberOfElements,
-    "size": size,
-    "number": number,
+    "message": message,
+    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+    "success": success,
   };
 }
 
@@ -58,13 +34,13 @@ class Content {
   dynamic image5;
   int? isApproved;
   DateTime? date;
-  ImageType? imageType;
+  String? imageType;
   dynamic youtubeLink;
-  String? firstName;
-  String? lastName;
-  int? mobileNumber;
-  String? companyName;
-  String? profilePicture;
+  dynamic firstName;
+  dynamic lastName;
+  dynamic mobileNumber;
+  dynamic companyName;
+  dynamic profilePicture;
 
   Content({
     this.id,
@@ -99,7 +75,7 @@ class Content {
     image5: json["image5"],
     isApproved: json["isApproved"],
     date: json["date"] == null ? null : DateTime.parse(json["date"]),
-    imageType: imageTypeValues.map[json["imageType"]],
+    imageType: json["imageType"],
     youtubeLink: json["youtubeLink"],
     firstName: json["firstName"],
     lastName: json["lastName"],
@@ -120,7 +96,7 @@ class Content {
     "image5": image5,
     "isApproved": isApproved,
     "date": date?.toIso8601String(),
-    "imageType": imageTypeValues.reverse[imageType],
+    "imageType": imageType,
     "youtubeLink": youtubeLink,
     "firstName": firstName,
     "lastName": lastName,
@@ -128,26 +104,4 @@ class Content {
     "companyName": companyName,
     "profilePicture": profilePicture,
   };
-}
-
-enum ImageType {
-  APPLICATION_OCTET_STREAM,
-  IMAGE_WEBP
-}
-
-final imageTypeValues = EnumValues({
-  "application/octet-stream": ImageType.APPLICATION_OCTET_STREAM,
-  "image/webp": ImageType.IMAGE_WEBP
-});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

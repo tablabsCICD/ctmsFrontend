@@ -16,7 +16,7 @@ import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/pages/dashboard/widget/header_widget.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/lead_activities/create_mail.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';

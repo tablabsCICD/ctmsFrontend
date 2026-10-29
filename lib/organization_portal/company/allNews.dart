@@ -1,26 +1,31 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hr_management/organization_portal/model/auth_api.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tkd_app/view/screens/news/addNews.dart';
-
+import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
+import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../locator.dart';
-import '../../../model/allNewsResponse.dart';
-import '../../../model/auth_api.dart';
-import '../../../provider/auth_provider.dart';
-import '../../../provider/news_provider.dart';
-import '../../../util/colors.dart';
-import '../../../util/images.dart';
-import '../../../widgets/base_widgets.dart';
-import '../../base_widget/app_constant.dart';
+import '../../constant/images.dart';
+import '../../pages/widget/card/base_widgets.dart';
+import '../../utils/colors.dart';
+import '../model/organization/allNewsResponse.dart';
+import '../util/ResponsiveWidget.dart';
+import '../util/app_constant.dart';
+import 'company_provider/news_provider.dart';
 
 
 class AllNewsScreen extends StatefulWidget {
-  const AllNewsScreen();
+  Organization organization;
+  AllNewsScreen(this.organization);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,88 +34,12 @@ class AllNewsScreen extends StatefulWidget {
 }
 
 class _AllNewsScreenState extends State<AllNewsScreen> {
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getUser();
-  }
-  User? user;
-  List<User> userDetailList = [];
-  final authProvider = locator<AuthProvider>();
-
-  getUser() async {
-    int? empid = await authProvider.getEmpId();
-    if (empid != null) {
-      userDetailList = await authProvider.getUserDetails(empid);
-      user = userDetailList[0];
-    }}
+  Timer? _debounce;
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Visibility(
-        visible: true,
-        child: InkWell(
-          onTap: () async {
-            await Navigator.push(context, MaterialPageRoute(builder: (builder)=>AddNewsScreen()));
-          },
-          child: Container(
-            width: 155,
-            height: 38,
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            decoration: ShapeDecoration(
-              color: ThemeColor.theme_blue,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Add News",
-                  style: TextStyle(
-                    color: ThemeColor.progress_color,
-                    fontSize: 12,
-                    fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: Stack(children: [
-                          SvgPicture.asset(
-                            Images.add,
-                            height: 16,
-                            width: 16,
-                          )
-                        ]),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
       body: Consumer<NewsProvider>(
         builder: (context, provider, child) {
           return Container(
@@ -119,11 +48,10 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                top_bar(context, provider),
+               /* top_bar(context, provider),
                 SizedBox(
                   height: 16,
-                ),
-                allNewsTag(provider),
+                ),*/
                 provider.allNews.isEmpty && provider.isLoadDone
                     ? Center(
                         child: Padding(
@@ -144,23 +72,31 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
     return Consumer<NewsProvider>(
       builder: (context, provider, child) {
         return Expanded(
-          child: ListView.builder(
-              controller: provider.scrollControllerVertical,
-              itemCount: provider.allNews.length,
-              itemBuilder: (BuildContext context, int index) {
+          child: Container(
+            padding:
+            EdgeInsets.symmetric(horizontal: 33.w, vertical: 31.h),
+            child: StaggeredGridView.countBuilder(
+              physics: ScrollPhysics(),
+              crossAxisCount: ResponsiveWidget.isDesktop(context) ? 3 : 1,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 12,
+              itemCount:  provider.allNews.length,
+              itemBuilder: (context, index) {
                 return newsItem(provider.allNews[index]);
-              }),
+              },
+              staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+            ),
+          ),
         );
       },
     );
   }
 
+
   top_bar(BuildContext context, provider) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 87,
+      height: 60,
       decoration: const ShapeDecoration(
-        color: Color(0xFFC3262C),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(16),
@@ -168,22 +104,7 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
           ),
         ),
       ),
-      child: searchBoxFilter(),
-    );
-  }
-
-  searchBoxFilter() {
-    return Consumer<NewsProvider>(
-      builder: (context, provider, child) {
-        return Transform.translate(
-          offset: Offset(0.0, 25.0),
-          // Adjust as needed for vertical centering
-          child: Center(
-            // This ensures the search bar is centered
-            child: serachBarFilter(),
-          ),
-        );
-      },
+      child: serachBarFilter(),
     );
   }
 
@@ -196,8 +117,8 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 260,
               height: 52,
+              margin: EdgeInsets.symmetric(horizontal: 50),
               padding: const EdgeInsets.symmetric(horizontal: 0),
               decoration: ShapeDecoration(
                 color: Colors.white,
@@ -243,7 +164,10 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
                             child: TextField(
                               controller: provider.searchController,
                               onChanged: (value) {
-                                provider.getBySearchData();
+                                if (_debounce?.isActive ?? false) _debounce!.cancel();
+                                _debounce = Timer(const Duration(milliseconds: 500), () {
+                                  provider.getBySearchData(widget.organization);
+                                });
                               },
                               decoration: InputDecoration(
                                   hintText: "Search News",
@@ -276,61 +200,6 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
     );
   }
 
-
-  Widget allNewsTag(NewsProvider provider) {
-    return Container(
-      margin: EdgeInsets.only(left: 20, top: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ChoiceChip(
-            backgroundColor: Colors.transparent,
-            selectedColor: ThemeColor.theme_blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: ThemeColor.theme_blue,
-              ),
-            ),
-            label: Text(
-              "All News",
-              style: TextStyle(
-                color: !provider.myNews ? Colors.white : Colors.black,
-                fontSize: 12,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w600,
-                height: 0,
-              ),
-            ),
-            selected: !provider.myNews,
-            onSelected: (_) => provider.toggleMyNews(false),
-          ),
-          ChoiceChip(
-            backgroundColor: Colors.transparent,
-            selectedColor: ThemeColor.theme_blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: ThemeColor.theme_blue,
-              ),
-            ),
-            label: Text(
-              "My News",
-              style: TextStyle(
-                color: provider.myNews ? Colors.white : Colors.black,
-                fontSize: 12,
-                fontFamily: GoogleFonts.poppins().fontFamily,
-                fontWeight: FontWeight.w600,
-                height: 0,
-              ),
-            ),
-            selected: provider.myNews,
-            onSelected: (_) => provider.toggleMyNews(true),
-          ),
-        ],
-      ),
-    );
-  }
 
 
   newsItem(Content content)  {
@@ -369,13 +238,12 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
                       height: 0,
                     ),
                   ),
-                  user!.id==content.userId?InkWell(
+                InkWell(
                     onTap: (){
                         showDeletePopup(content,provider);
                     },
                     child: SvgPicture.asset(Images.delete,),
-                  ):SizedBox.shrink()
-                ],
+                  )                ],
               ),
               Container(
                 child: Text(
@@ -455,7 +323,7 @@ class _AllNewsScreenState extends State<AllNewsScreen> {
             TextButton(
               child:  Text("Delete",style: TextStyle(fontFamily: AppConstant.FONTFAMILY,color: ThemeColor.red)),
               onPressed: () {
-                provider.deletePost(content, context);
+                provider.deletePost(content, context,widget.organization);
                 Navigator.of(context).pop();
               },
             ),

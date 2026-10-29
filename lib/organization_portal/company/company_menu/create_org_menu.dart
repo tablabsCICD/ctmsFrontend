@@ -32,7 +32,6 @@ import 'package:flutter_hr_management/organization_portal/multi_select.dart';
 import 'package:flutter_hr_management/organization_portal/open_whatsapp.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/share_data.dart';
 

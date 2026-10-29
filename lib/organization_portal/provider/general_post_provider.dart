@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
 import 'package:flutter_hr_management/model/response/job_list.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 
 import '../../utils/sharepreferences.dart';
 

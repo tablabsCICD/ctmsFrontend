@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../constant/images.dart';
 import '../../utils/sharepreferences.dart';
 
 class SideBar extends StatefulWidget {
@@ -59,7 +60,7 @@ class _SideBarState extends State<SideBar> {
               ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Center(child: SvgPicture.asset("assets/logo.svg",height: 77.h,width: 133.w,)),
+                child: Center(child: SvgPicture.asset( Images.logo,height: 77.h,width: 133.w,)),
               ),
 
               SizedBox(height: 30.h,),

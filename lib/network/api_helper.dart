@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 
 import '';
@@ -9,6 +9,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../model/api_response.dart';
+
+import 'package:http/http.dart' as http;
 
 class ApiHelper{
 
@@ -38,6 +40,15 @@ class ApiHelper{
         .getString(SharedPreferencesConstant.AuthToken);
     var body = json.encode(data);
     var request = await dio.put(URL,data: body,options: Options(headers:{ "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',}));
+    ApiResponse apiResponseHelper = returnResponse(request);
+    return apiResponseHelper;
+  }
+
+  Future<ApiResponse>  apiPutWithoutBody(String URL) async{
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var request = await dio.put(URL,options: Options(headers:{ "Content-Type": "application/json",
       'Authorization': 'Bearer ${token}',}));
     ApiResponse apiResponseHelper = returnResponse(request);
     return apiResponseHelper;
@@ -77,6 +88,16 @@ class ApiHelper{
     }
   }
 
+  Future<dynamic> ApiAddPostDataMapRequest(
+      String url, Map<String, dynamic> data) async {
+    var body = json.encode(data);
+    final response = await http.post(Uri.parse(url),
+        headers: {"Content-Type": "application/json"}, body: body);
+    print("response : ${response.statusCode}" +
+        " --- " +
+        response.body.toString());
+    return response;
+  }
 
   Future<String> uploadImage(XFile file) async {
     EasyLoading.show(status: "Uploading");

@@ -5,7 +5,7 @@ import 'package:flutter_hr_management/common/app_colors.dart';
 import 'package:flutter_hr_management/organization_portal/company/more/more_screen.dart';
 import 'package:flutter_hr_management/organization_portal/model/tkd_emp_list_response.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/date.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -31,10 +31,12 @@ import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.
 import 'package:flutter_hr_management/organization_portal/util/star_display.dart';
 import 'package:flutter_hr_management/organization_portal/util/style.dart';
 import 'package:flutter_hr_management/organization_portal/base_widget/getImage.dart';
+import '../../pages/widget/toast.dart';
+import '../model/userdata.dart';
 import 'company_provider/all_users_provider.dart';
 
 class AllUsersList extends StatefulWidget {
-  Organization organization;
+  final Organization organization;
   final userProvider = locator<OrgUserProvider>();
 
   AllUsersList(this.organization, {Key? key}) : super(key: key) {
@@ -42,24 +44,49 @@ class AllUsersList extends StatefulWidget {
   }
 
   @override
-  _AllUsersListState createState() => _AllUsersListState();
+  State<AllUsersList> createState() => _AllUsersListState();
 }
 
 class _AllUsersListState extends State<AllUsersList> {
+  // Providers
   final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgUserProvider>();
+
+  // Controllers
+  final otpController = TextEditingController();
+
+  // UI States
   String selectedTab = "All Users";
+  bool _isInitialFetchDone = false;
 
-   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  // Employee Search Data
+  List<String> foundEmp = [];
+  List<String> EmpList = [];
+  List<ConnectUser> EmployeeList = [];
+  bool isLoad = false;
+  TKDEmployeeListResponse? employeeListResponse;
 
+  @override
+  void dispose() {
+    otpController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+
+    // ✅ Prevent crash if organization is null
+    if (widget.organization == null) {
+      return Scaffold(
+        body: Center(
+          child: Text(
+            "Organization data not available.",
+            style: TextStyle(color: Colors.red, fontSize: 18),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: ThemeColor.baground,
@@ -75,7 +102,7 @@ class _AllUsersListState extends State<AllUsersList> {
                   Container(
                     height: 40,
                     margin:
-                        EdgeInsets.symmetric(horizontal: 33.h, vertical: 20.h),
+                    EdgeInsets.symmetric(horizontal: 33.h, vertical: 20.h),
                     child: Row(
                       children: [
                         getCircularContainer("All Users", 0),
@@ -124,7 +151,6 @@ class _AllUsersListState extends State<AllUsersList> {
               ),
             ),
 
-            // No Records Case
             if (model.userList.isEmpty && !model.isLoading)
               Container(
                 margin: EdgeInsets.all(30),
@@ -138,11 +164,10 @@ class _AllUsersListState extends State<AllUsersList> {
                 ),
               )
             else
-              // User Cards Grid
               Expanded(
                 child: Container(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 33.w, vertical: 31.h),
+                  EdgeInsets.symmetric(horizontal: 33.w, vertical: 31.h),
                   child: StaggeredGridView.countBuilder(
                     physics: ScrollPhysics(),
                     crossAxisCount: ResponsiveWidget.isDesktop(context) ? 2 : 1,
@@ -151,13 +176,21 @@ class _AllUsersListState extends State<AllUsersList> {
                     itemCount: model.userList.length,
                     itemBuilder: (context, index) {
                       final user = model.userList[index];
-                      var isApproved = user.isUserVerifiedByCompany == 1;
+
+                      // ✅ Ensure fields are not null before using them
+                      final String firstName = user.firstName ?? "Unknown";
+                      final String lastName = user.lastName ?? "";
+                      final bool isApproved =
+                          (user.isUserVerifiedByCompany ?? 0) == 1;
+
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) => MoreScreen(user)));
+                         Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (builder) => MoreScreen(user),
+                            ),
+                          );
                         },
                         child: Card(
                           color: Colors.white,
@@ -170,15 +203,12 @@ class _AllUsersListState extends State<AllUsersList> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // User Header
                                 ListTile(
-                                  leading:
-                                      getImage(user.profilePicture.toString()),
+                                  leading: getImage(user.profilePicture ?? ""),
                                   title: Row(
                                     children: [
                                       TextView(
-                                        title:
-                                            "${user.firstName} ${user.lastName}",
+                                        title: "$firstName $lastName",
                                         fontSize: 15.sp,
                                         fontWeight: FontWeight.w600,
                                         color: Colors.black,
@@ -187,7 +217,7 @@ class _AllUsersListState extends State<AllUsersList> {
                                       if (isApproved)
                                         Tooltip(
                                           message:
-                                              "This user is verified by '${user.companyName}'",
+                                          "This user is verified by '${user.companyName ?? "Company"}'",
                                           child: SvgPicture.asset(
                                             'assets/org/sheild.svg',
                                             width: 5,
@@ -198,191 +228,140 @@ class _AllUsersListState extends State<AllUsersList> {
                                   ),
                                   subtitle: Padding(
                                     padding: EdgeInsets.only(top: 10.h),
-                                    child: StarDisplay(
-                                        value: 5), // Replace with actual rating
+                                    child: StarDisplay(value: 5),
                                   ),
                                   trailing: isApproved
                                       ? Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.circle,
-                                                size: 10.r,
-                                                color: Colors.green),
-                                            SizedBox(width: 5.w),
-                                            TextView(
-                                              title: 'Approved',
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.green,
-                                            ),
-                                          ],
-                                        )
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.circle,
+                                          size: 10.r,
+                                          color: Colors.green),
+                                      SizedBox(width: 5.w),
+                                      TextView(
+                                        title: 'Approved',
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.green,
+                                      ),
+                                    ],
+                                  )
                                       : null,
                                 ),
 
-                                // User Details
+                                // ✅ Use empty string if null
                                 getUserDetails('Email Id', user.emailId ?? ""),
                                 getUserDetails(
-                                    'Phone', user.mobileNumber.toString()),
+                                    'Phone', user.mobileNumber.toString() ?? ""),
                                 getUserDetails(
-                                    'Address', "${user.city}, ${user.state}"),
+                                    'Address',
+                                    "${user.city ?? ""}, ${user.state ?? ""}"),
                                 getUserDetails(
                                     'Company Name', user.companyName ?? ""),
                                 getUserDetails('Company Address',
                                     user.companyAddress ?? ""),
                                 SizedBox(height: 10.h),
 
-                                // Admin Actions
                                 if (orgProvider.loginDeatils?.data?.isAdmin ==
                                     true)
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      // Reject button (always visible if not approved)
-                                    //  if (!isApproved)
+                                      if (isApproved)
                                         OutlinedButton(
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  'Reject User',
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                        GoogleFonts.poppins()
-                                                            .fontFamily,
-                                                  ),
-                                                ),
-                                                content: Text(
-                                                  'Are you sure you want to reject this user?',
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily:
-                                                        GoogleFonts.poppins()
-                                                            .fontFamily,
-                                                  ),
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text('No',
-                                                        style: TextStyle(
-                                                            color: ThemeColor
-                                                                .theme_blue)),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      userApproval(model, index,
-                                                          false); // Reject user
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      'Yes',
-                                                      style: TextStyle(
-                                                          color: ThemeColor.red,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: ThemeColor.red,
-                                          ),
-                                          child: Text(
-                                            "Reject",
-                                            style: TextStyle(
-                                              fontSize: 12.sp,
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-
-                                      SizedBox(width: 8.w),
-
-                                      // If not verified yet → Show Verify button
-                                      if (!isApproved)
-                                        OutlinedButton(
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  'Verify User through Send Opt',
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                                  ),
-                                                ),
-                                                content: Text(
-                                                  'Are you sure you want to send otp to ${user.firstName} ${user.lastName}?',
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                                  ),
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text('No',
-                                                        style: TextStyle(
-                                                            color: ThemeColor
-                                                                .theme_blue)),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      await orgProvider.sendOtp(user.mobileNumber.toString(),context);
-                                                      setState(() {
-                                                        user.isSendOtp = true;
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      'Yes',
-                                                      style: TextStyle(
-                                                          color: Colors.green,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    ),
-                                                  ),
-                                                ],
+                                          onPressed: () async {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (builder) => MoreScreen(user),
                                               ),
                                             );
                                           },
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor:
-                                                ThemeColor.theme_blue,
+                                            ThemeColor.theme_blue,
                                           ),
                                           child: Text(
-                                            user.isSendOtp==true?"Resend Otp":"Send Otp",
+                                            "View Details",
                                             style: TextStyle(
                                               fontSize: 12.sp,
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      // Reject button
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title: Text('Reject User'),
+                                              content: Text(
+                                                  'Are you sure you want to reject this user?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text('No'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                   await orgProvider.updateUserStatus(context,user.id!,0);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: ThemeColor.red,
+                                                        fontWeight:
+                                                        FontWeight.w600),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: ThemeColor.red,
+                                        ),
+                                        child: Text(
+                                          "Reject",
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8.w),
+
+                                      if (!isApproved)
+                                        OutlinedButton(
+                                          onPressed: () async {
+                                            await orgProvider.sendOtp(
+                                                user.mobileNumber.toString() ?? "", context);
+                                            setState(() {
+                                              user.isSendOtp = true;
+                                            });
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor:
+                                            ThemeColor.theme_blue,
+                                          ),
+                                          child: Text(
+                                            user.isSendOtp == true
+                                                ? "Resend Otp"
+                                                : "Send Otp",
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.white,
                                             ),
                                           ),
                                         ),
 
-                                      // After verification → Show Approve button
-                                      if (user.isSendOtp! && !isApproved)
+                                      if (user.isSendOtp == true && !isApproved)
                                         OutlinedButton(
                                           onPressed: () async {
                                             final otpController =
@@ -391,16 +370,8 @@ class _AllUsersListState extends State<AllUsersList> {
                                             await showDialog(
                                               context: context,
                                               builder: (_) => AlertDialog(
-                                                title: Text(
-                                                  'OTP Verification',
-                                                  style: TextStyle(
-                                                    fontSize: 16.sp,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontFamily:
-                                                    GoogleFonts.poppins()
-                                                        .fontFamily,
-                                                  ),
-                                                ),
+                                                title:
+                                                const Text('OTP Verification'),
                                                 content: TextField(
                                                   controller: otpController,
                                                   decoration: InputDecoration(
@@ -419,36 +390,38 @@ class _AllUsersListState extends State<AllUsersList> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
-                                                      if (otpController.text.isNotEmpty
-                                                          ) {
-                                                        await orgProvider.verifyOtp(context, user.mobileNumber.toString(), otpController.text);
+                                                      if (otpController
+                                                          .text.isNotEmpty) {
+                                                        await orgProvider
+                                                            .verifyOtp(
+                                                          context,
+                                                          user.mobileNumber.toString() ??
+                                                              "",
+                                                          otpController.text,
+                                                          user,
+                                                          widget.organization,
+                                                        );
                                                         setState(() {
-                                                          isApproved = true;
                                                           user.isSendOtp = false;
                                                         });
-                                                        userApproval(
-                                                            model, index, true);
+                                                        await orgProvider.updateUserStatus(context,user.id!,1);
                                                       }
                                                       Navigator.pop(context);
                                                     },
-                                                    child: Text("Send Otp"),
+                                                    child: Text("Verify Otp"),
                                                   ),
                                                 ],
                                               ),
                                             );
-
                                           },
-
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor:
-                                                ThemeColor.theme_blue,
+                                            ThemeColor.theme_blue,
                                           ),
                                           child: Text(
                                             "Verify & Approve",
                                             style: TextStyle(
                                               fontSize: 12.sp,
-                                              fontFamily: GoogleFonts.poppins()
-                                                  .fontFamily,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.white,
                                             ),
@@ -466,14 +439,13 @@ class _AllUsersListState extends State<AllUsersList> {
                   ),
                 ),
               ),
-
-            // Optional loader
-            // if (model.isLoading) getLoader(true),
           ],
         ),
       ),
     );
   }
+
+
 
   Widget filterIcon(OrgUserProvider model) {
     return Container(
@@ -547,7 +519,6 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  bool _isInitialFetchDone = false;
 
   Future<void> _showAlertDialog() async {
     _isInitialFetchDone = false; // Reset when dialog is opened
@@ -576,14 +547,8 @@ class _AllUsersListState extends State<AllUsersList> {
     );
   }
 
-  List<String> foundEmp = [];
   List<String> uniqueFoundEmp = [];
-  List<ConnectUser> EmployeeList = [];
-  List<String> EmpList = [];
-  List<ConnectUser> allUserList = [];
-  bool isLoad = false;
 
-  TKDEmployeeListResponse? employeeListResponse;
 
   getEmployeeName(String char, StateSetter stateSetter) async {
     String token = await LocalSharePreferences()
@@ -660,224 +625,135 @@ class _AllUsersListState extends State<AllUsersList> {
           Expanded(
             child: isLoad
                 ? Center(
-                    child: CircularProgressIndicator(), // Or your custom loader
-                  )
+              child: CircularProgressIndicator(), // Or your custom loader
+            )
                 : foundEmp.isNotEmpty
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: foundEmp.length,
-                        itemBuilder: (context, index) => ListTile(
-                          onTap: () {
-                            EmployeeList.forEach((element) {
-                              if (foundEmp[index] ==
-                                  "${element.firstName} ${element.lastName}") {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text("Add Employee"),
-                                      content:
-                                          Text("You want to add employee?"),
-                                      actions: [
-                                        TextButton(
-                                            child: Text(
-                                              "Add",
-                                              style: TextStyle(
-                                                  color: Colors.green),
-                                            ),
-                                            onPressed: () async {
-                                              addToCTMS(element, stateSetter);
-                                              Navigator.of(context).pop();
-                                            }),
-                                        TextButton(
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            });
-                          },
-                          title: Text(foundEmp[index]),
-                        ),
-                      )
-                    : const Center(
-                        child: Text(
-                          'No results found',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
+                ? ListView.builder(
+              shrinkWrap: true,
+              itemCount: foundEmp.length,
+              itemBuilder: (context, index) => ListTile(
+                onTap: () {
+                  EmployeeList.forEach((element) {
+                    if (foundEmp[index] == "${element.firstName} ${element.lastName}") {
+                      showAddEmployeeDialog(context, element, index);
+                    }
+                  });
+                },
+                title: Text(foundEmp[index]),
+              ),
+            )
+
+                : const Center(
+              child: Text(
+                'No results found',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Future<void> addToTKDConnect(
-      ConnectUser selectedEmp, StateSetter stateSetter) async {
-    try {
-      final requestParameter = {
-        "id": selectedEmp.id,
-        "aadharCard": selectedEmp.aadharCard,
-        "aadharCardForVerification": selectedEmp.aadharCard,
-        "alternativeNumber": selectedEmp.mobileNumber,
-        "branchName": selectedEmp.branchName,
-        "city": selectedEmp.city,
-        "companyAddress": widget.organization.companyAddress,
-        "companyId": widget.organization.id,
-        "companyLogo": widget.organization.companyLogo,
-        "companyName": widget.organization.companyName,
-        "country": "India",
-        "deviceId": "NA",
-        "emailId": selectedEmp.emailId,
-        "firstName": selectedEmp.firstName,
-        "idOfMainBranch": 0,
-        "isPaid": 0,
-        "isUserVerifiedByCompany": 0,
-        "landlineNumber": selectedEmp.mobileNumber,
-        "lastName": selectedEmp.lastName,
-        "loggedTime": GetDateFormat.getCurrentDate(),
-        "loggedUserName": "NA",
-        "mainBranch": 0,
-        "mobileNumber": selectedEmp.mobileNumber,
-        "numberOfTimesRating": 0,
-        "os": "string",
-        "otp": "string",
-        "paidStartDate": "string",
-        "panCardForVerification": selectedEmp.panCardForVerification,
-        "password": selectedEmp.password,
-        "preferredRouresEntered": 0,
-        "profilePicture": selectedEmp.profilePicture,
-        "ratings": 0,
-        "state": "Maharastra",
-        "transporterOrAgent": 0,
-        "userName": "NA",
-        "validTill": "string",
-        "verified": 0,
-        "website": widget.organization.website,
-      };
+  // Function to show OTP verification dialog
+  Future<bool> showOtpDialog(BuildContext context, ConnectUser element) async {
+    TextEditingController otpController = TextEditingController();
 
-      EasyLoading.show(status: "Loading");
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // force user to verify/cancel
+      builder: (_) => AlertDialog(
+        title: Text(
+          'OTP Verification',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+        ),
+        content: TextField(
+          controller: otpController,
+          decoration: InputDecoration(
+            labelText: "Enter OTP",
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.number,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (otpController.text.isEmpty) return;
+              bool otpVerified = await orgProvider.verifyOtp(
+                context,
+                element.mobileNumber.toString(),
+                otpController.text,
+                element,widget.organization
+              );
 
-      final response = await http.put(
-        Uri.parse(AppConstants.REGISTRATION),
-        body: jsonEncode(requestParameter),
-        headers: {"Content-Type": "application/json"},
-      );
-
-      EasyLoading.dismiss();
-      final resData = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        if (resData['errorCode'].toString() == "500") {
-          showCustomToast(context, resData['errorMessage'].toString(),
-              Icons.clear, Colors.red);
-        } else {
-          orgProvider.getUsersByCompanyId(widget.organization.id!);
-          showCustomToast(context, "Employee added successfully", Icons.check,
-              Colors.green);
-          Navigator.of(context).pop();
-        }
-      } else {
-        showCustomToast(
-            context, "Something went wrong", Icons.clear, Colors.red);
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      EasyLoading.dismiss();
-      showCustomToast(context, "Unexpected error: $e", Icons.clear, Colors.red);
-    }
+              if (otpVerified) {
+                Navigator.pop(context, true); // OTP verified
+              } else {
+                ToastMessage.show(context, "OTP verification failed!");
+              }
+            },
+            child: Text("Verify OTP"),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 
-  Future<void> addToCTMS(
-      ConnectUser selectedEmp, StateSetter stateSetter) async {
-    try {
-      final token = await LocalSharePreferences()
-          .getString(SharedPreferencesConstant.AuthToken);
+// Function to show Add Employee dialog
+  void showAddEmployeeDialog(BuildContext context, ConnectUser element, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Add Employee"),
+        content: Text("You want to add employee.. First we need to send OTP"),
+        actions: [
+          TextButton(
+            child: Text("Send OTP", style: TextStyle(color: Colors.green)),
+            onPressed: () async {
+              // 1. Send OTP
+              bool otpReady = await orgProvider.sendOtp(
+                element.mobileNumber.toString(),
+                context,
+              );
 
-      final requestParameter = {
-        "aadharNo": selectedEmp.aadharCard,
-        "active": selectedEmp.isSelected,
-        "address": selectedEmp.companyAddress,
-        "birthdate": '',
-        "boardingDeatails": {
-          "aadharCard": selectedEmp.aadharCard,
-          "active": "true",
-          "boardingId": 0,
-          "degreeCertificate": "string",
-          "experienceCertificate": "string",
-          "otherDocuments": ["string"],
-          "panCard": "string",
-          "tenthDCertificate": "string",
-          "twelthCertificate": "string"
-        },
-        "branchId": orgProvider.loginDeatils!.data!.branch!.id,
-        "connectOrgId": widget.organization.id,
-        "contact": selectedEmp.mobileNumber,
-        "createdDate": '',
-        "departmentId": orgProvider.loginDeatils!.data!.departmentId,
-        "designation": selectedEmp.transporterOrAgent,
-        "deviceId": selectedEmp.deviceId,
-        "emailId": selectedEmp.emailId,
-        "employeeLocation": "ONSITE",
-        "esiNO": '',
-        "firstName": selectedEmp.firstName,
-        "image": selectedEmp.profilePicture,
-        "isActive": 0,
-        "is_admin": false,
-        "lastName": selectedEmp.lastName,
-        "mobileNumber": selectedEmp.mobileNumber,
-        "organisationId": orgProvider.loginDeatils!.data!.organisationId,
-        "os": selectedEmp.os,
-        "otp": selectedEmp.otp,
-        "panNo": selectedEmp.panCardForVerification,
-        "password": selectedEmp.password,
-        "roleId": 0,
-        "securityAnswer": orgProvider.loginDeatils!.data!.securityAnswer,
-        "securityQuestion": orgProvider.loginDeatils!.data!.securityQuestion,
-        "status": orgProvider.loginDeatils!.data!.status
-      };
+              if (!otpReady) {
+                ToastMessage.show(context, "Failed to send OTP!");
+                return;
+              }
 
-      EasyLoading.show(status: "Loading");
+              element.isSendOtp = true;
 
-      final response = await http.post(
-        Uri.parse(ApiConstant.SAVE_EMP),
-        body: jsonEncode(requestParameter),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
-      );
+              // 2. Show OTP dialog and wait for verification
+              bool verified = await showOtpDialog(context, element);
 
-      EasyLoading.dismiss();
-      final resData = jsonDecode(response.body);
+              // 3. If verified, add to CTMS
+              if (verified) {
+                Navigator.of(context).pop();
+                ToastMessage.show(context, "Employee added successfully!");
+              }
 
-      if (response.statusCode == 200) {
-        if (resData['errorCode'].toString() == "500") {
-          showCustomToast(context, resData['errorMessage'].toString(),
-              Icons.clear, Colors.red);
-        } else {
-          await addToTKDConnect(selectedEmp, stateSetter);
-        }
-      } else {
-        showCustomToast(
-            context, "Something went wrong", Icons.clear, Colors.red);
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      EasyLoading.dismiss();
-      showCustomToast(context, "Unexpected error: $e", Icons.clear, Colors.red);
-    }
+              // 4. Close Add Employee dialog
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Cancel", style: TextStyle(color: Colors.red)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget getCircularContainer(String title, int i) {
+   Widget getCircularContainer(String title, int i) {
     return Consumer<OrgUserProvider>(
       builder: (context, model, child) {
         final bool isSelected = selectedTab == title;
@@ -899,7 +775,7 @@ class _AllUsersListState extends State<AllUsersList> {
               color: isSelected ? const Color(0xffC3262C) : Colors.white,
               border: Border.all(
                 color:
-                    isSelected ? const Color(0xffC3262C) : Colors.grey.shade300,
+                isSelected ? const Color(0xffC3262C) : Colors.grey.shade300,
                 width: 1,
               ),
             ),
@@ -955,93 +831,5 @@ class _AllUsersListState extends State<AllUsersList> {
         ],
       ),
     );
-  }
-
-  Future<void> userApproval(
-      OrgUserProvider model, int index, bool isApprove) async {
-    final user = model.userList[index];
-
-    // Optional: show loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
-
-    try {
-      final authApi = await authProvider.updateUser(
-        aadharCard: user.aadharCard,
-        alternativeNumber: user.alternativeNumber,
-        city: user.city,
-        companyId: user.companyId,
-        companyAddress: user.companyAddress,
-        companyLogo: user.companyLogo,
-        companyName: user.companyName,
-        country: user.country,
-        deviceId: user.deviceId,
-        emailId: user.emailId,
-        firstName: user.firstName,
-        id: user.id,
-        idOfMainBranch: user.idOfMainBranch,
-        isPaid: user.isPaid,
-        isUserVerifiedByCompany: isApprove ? 1 : 0,
-        landlineNumber: user.landlineNumber,
-        lastName: user.lastName,
-        loggedTime: user.loggedTime?.toString(),
-        loggedUserName: user.loggedUserName,
-        mainBranch: user.mainBranch,
-        mobileNumber: user.mobileNumber,
-        numberOfTimesRating: user.numberOfTimesRating,
-        os: user.os,
-        otp: user.otp,
-        paidStartDate: user.paidStartDate,
-        password: user.password,
-        preferredRouresEntered: user.preferredRouresEntered,
-        profilePicture: user.profilePicture,
-        rating: user.ratings,
-        state: user.state,
-        transporterOrAgent: user.transporterOrAgent,
-        userName: user.userName,
-        validTill: user.validTill,
-        website: user.website,
-        verified: user.verified,
-      );
-
-      Navigator.of(context).pop(); // close loader
-
-      if (authApi.content != null && authApi.content!.isNotEmpty) {
-        model.selectedTab = "All Users";
-        selectedTab = "All Users";
-        await model.getUsersByCompanyId(widget.organization.id!);
-
-        showCustomToast(
-          context,
-          isApprove
-              ? "User approved successfully."
-              : "User rejected successfully.",
-          Icons.check,
-          Colors.green,
-        );
-
-        setState(() {});
-      } else {
-        showCustomToast(
-          context,
-          isApprove
-              ? "User approval failed. Please try again."
-              : "User rejection failed. Please try again.",
-          Icons.clear,
-          Colors.red,
-        );
-      }
-    } catch (e) {
-      Navigator.of(context).pop(); // ensure loader is closed
-      showCustomToast(
-        context,
-        "Something went wrong. Please try again.",
-        Icons.error,
-        Colors.red,
-      );
-    }
   }
 }

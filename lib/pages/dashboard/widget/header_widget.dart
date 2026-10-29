@@ -23,7 +23,7 @@ import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/pages/widget/textview.dart';
 import 'package:flutter_hr_management/route/app_routes.dart';
 import 'package:flutter_hr_management/utils/colors.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -720,7 +720,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     print('the body ${response.data}');
     EasyLoading.dismiss();
     if (response.statusCode == 200) {
-      orgProvider.getOrgDetails();
       setState(() {});
       showCustomToast(context, "Profile updated", Icons.check, Colors.green);
     } else {

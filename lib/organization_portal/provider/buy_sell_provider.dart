@@ -27,7 +27,7 @@ class BuySellProvider extends ChangeNotifier{
     isLoadingForBuyVehicles = false;
     response = json.decode(req.body);
     var type = TruckLoadType.fromJson(response);
-    buyVehicleList.addAll(type.content);
+    buyVehicleList.addAll(type.content!);
     notifyListeners();
     return type;
   }
@@ -42,7 +42,7 @@ class BuySellProvider extends ChangeNotifier{
     isLoadingForSellVehicles = false;
     response1 = json.decode(req.body);
     var type1 = TruckLoadType.fromJson(response1);
-    sellVehicleList.addAll(type1.content);
+    sellVehicleList.addAll(type1.content!);
     notifyListeners();
     return type1;
   }

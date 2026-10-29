@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
 import 'package:flutter_hr_management/pages/widget/getImage.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../common/app_colors.dart';

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/model/response/report_list.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../common/app_colors.dart';

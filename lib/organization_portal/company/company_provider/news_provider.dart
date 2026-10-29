@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:tkd_app/util/colors.dart';
-import 'package:tkd_app/view/screens/gallery/image_picker_helper.dart';
-
-import '../locator.dart';
-import '../model/allNewsResponse.dart';
-import '../model/api_response.dart';
-import '../model/auth_api.dart';
-import '../model/request/addNewsRequest.dart';
-import '../network/api_call.dart';
-import '../util/app_constants.dart';
-import '../widgets/toast.dart';
-import 'auth_provider.dart';
-
+import 'package:flutter_hr_management/organization_portal/model/organization/allNewsResponse.dart';
+import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
+import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import '../../../constant/SharedPreferencesConstant.dart';
+import '../../../model/api_response.dart';
+import '../../../network/api_helper.dart';
+import '../../../pages/widget/toast.dart';
+import '../../../utils/sharepreferences.dart';
+import '../../model/auth_api.dart';
 
 class NewsProvider extends ChangeNotifier {
-  NewsProvider() : super() {
-   // pagenationHorizantal();
-   // pagenationVerical();
-    getAllData();
-  }
 
   int allSelectedPage = 0;
   int selectedPage = 0;
@@ -33,15 +24,6 @@ class NewsProvider extends ChangeNotifier {
 
   bool get myNews => _myNews;
 
-  void toggleMyNews(bool value) {
-    _myNews = value;
-    if(_myNews==true){
-      getMyNewsData();
-    }else{
-      getAllData();
-    }
-    notifyListeners();
-  }
 
   ScrollController scrollControllerVertical = ScrollController();
   ScrollController scrollControllerHorizantal = ScrollController();
@@ -51,33 +33,23 @@ class NewsProvider extends ChangeNotifier {
   TextEditingController linkController = TextEditingController();
   List<String> images = [];
 
-  uploadImage(BuildContext context) async {
-    String? image = await ImagePickerHelper().pickAndUploadImage(context);
-    if (image != null) {
-      images.add(image);
-      print("Image uploaded successfully: ${images[0]}");
-    } else {
-      print("Image upload failed or was cancelled.");
-    }
-    notifyListeners();
-  }
 
-  getAllData() async {
-    String myUrl = ApiConstant.GET_NEWS_LIST(allSelectedPage);
+  getAllData(int orgId) async {
+    String myUrl = AppConstants.GET_NEWS_LIST(orgId,'');
 
     print("Url $myUrl");
-    ApiResponse apiResponse = await ApiHelper().apiWithoutDecodeGet(myUrl);
+    ApiResponse apiResponse = await ApiHelper().apiGet(myUrl);
 
     if (apiResponse.status == 200) {
-      GetAllNewsResponse newsResponse =
-          GetAllNewsResponse.fromJson(apiResponse.response);
+      TrackingResponse newsResponse =
+      TrackingResponse.fromJson(apiResponse.response);
 
       if (allSelectedPage == 0) {
         allNews.clear();
         allNewsTemp.clear();
       }
-      allNews.addAll(newsResponse.content!);
-      allNewsTemp.addAll(newsResponse.content!);
+      allNews.addAll(newsResponse.data!);
+      allNewsTemp.addAll(newsResponse.data!);
      // allSelectedPage++;
     }
     isLoadDone = true;
@@ -85,163 +57,43 @@ class NewsProvider extends ChangeNotifier {
   }
 
 
+  getBySearchData(Organization organization) async {
+    String query = searchController.text.trim();
 
- /* pagenationVerical() {
-    scrollControllerVertical.addListener(() {
-      if (scrollControllerVertical.position.pixels ==
-          scrollControllerVertical.position.maxScrollExtent) {
-        toggleMyNews(_myNews);
-      }
-    });
-  }
+    if (query.length > 2) {
+      String myUrl = AppConstants.GET_NEWS_LIST(organization.id, query);
+      print("Search URL: $myUrl");
 
-  pagenationHorizantal() {
-    scrollControllerHorizantal.addListener(() {
-      if (scrollControllerHorizantal.position.pixels ==
-          scrollControllerHorizantal.position.maxScrollExtent) {
-        toggleMyNews(_myNews);
-      }
-    });
-  }
-*/
-  checkValidation(BuildContext context) {
-    if (topicController.text.isEmpty) {
-      ToastMessage.show(context, "Please add news title");
-    } else {
-      if (images.isEmpty) {
-        ToastMessage.show(context, "Please upload image");
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                'Add News',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              content: Text(
-                'Are you sure you want to add this news?',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12.sp,
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                  },
-                  child: Text(
-                    'No',
-                    style: TextStyle(
-                      color: ThemeColor.theme_blue,
-                      fontSize: 12.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    createPost(context);
-                  },
-                  child: Text(
-                    'Yes',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 12.sp,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-    notifyListeners();
-  }
+      ApiResponse apiResponse = await ApiHelper().apiGet(myUrl);
 
-  final authProvider = locator<AuthProvider>();
-  createPost(BuildContext context) async {
-    User user =
-        await authProvider.getLoginData();
-    AddNewsRequest postLoad = AddNewsRequest();
-    postLoad.companyName = user.companyName!;
-    postLoad.description = descriptionController.text;
-    postLoad.date = '';
-    postLoad.firstName = user.firstName!;
-    postLoad.image = images[0];
-    postLoad.lastName = user.lastName;
-    postLoad.mobileNumber = user.mobileNumber!;
-    postLoad.profilePicture = user.profilePicture;
-    postLoad.topicName = topicController.text;
-    postLoad.userId = user.id;
-    postLoad.image2 = images[0];
-    postLoad.image3 = images[0];
-    postLoad.image4 = images[0];
-    postLoad.image5 = images[0];
-    postLoad.imageType = "png";
-    postLoad.isApproved = 1;
-    postLoad.youtubeLink = linkController.text;
-
-    ApiResponse response = await ApiHelper().ApiAddPostDataMapRequest(
-        "${ApiConstant.ADD_NEWS}",
-        postLoad.toJson());
-    print('The response status code: ${response.status}');
-
-    if (response.status == 200) {
-      Content content = Content.fromJson(response.response);
-      allNews.add(content);
-      ToastMessage.show(context, "News added successfully!");
-      toggleMyNews(true);
-      notifyListeners();
-      Navigator.pop(context);
-      Navigator.pop(context); // Close the first dialog
-    } else {
-      ToastMessage.show(context, "Please try again");
-    }
-  }
-
-  getBySearchData() async {
-    if (searchController.text.length > 2) {
-      String myUrl = ApiConstant.SEARCH_NEWS(searchController.text);
-      ApiResponse apiResponse = await ApiHelper().apiWithoutDecodeGet(myUrl);
       if (apiResponse.status == 200) {
-        GetAllNewsResponse newsResponse =
-        GetAllNewsResponse.fromJson(apiResponse.response);
-        allNews.clear();
-        allNews.addAll(newsResponse.content!);
+        TrackingResponse newsResponse =
+        TrackingResponse.fromJson(apiResponse.response);
+
+        allNews.clear(); // Clear current list before adding search results
+        allNews.addAll(newsResponse.data ?? []);
       }
     } else {
+      // When search box is empty or short, show all news again
       allNews.clear();
       allNews.addAll(allNewsTemp);
     }
+
     notifyListeners();
   }
 
-  getMyNewsData() async {
-    User user =
-    await authProvider.getLoginData();
-      String myUrl = ApiConstant.MY_NEWS(user.id,selectedPage);
+
+  getMyNewsData(ConnectUser user) async {
+      String myUrl = AppConstants.MY_NEWS(user.id,selectedPage);
       print(myUrl);
-      ApiResponse apiResponse = await ApiHelper().apiWithoutDecodeGet(myUrl);
+      ApiResponse apiResponse = await ApiHelper().apiGet(myUrl);
       if (apiResponse.status == 200) {
-        GetAllNewsResponse newsResponse =
-        GetAllNewsResponse.fromJson(apiResponse.response);
+        TrackingResponse newsResponse =
+        TrackingResponse.fromJson(apiResponse.response);
         if (selectedPage == 0) {
           allNews.clear();
         }
-        allNews.addAll(newsResponse.content!);
+        allNews.addAll(newsResponse.data!);
         //selectedPage++;
       }
     notifyListeners();
@@ -261,21 +113,21 @@ class NewsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  deletePost(Content content,BuildContext context)async{
-    String myUrl = '${ApiConstant.DELETE_NEWS(content.id)}';
+  deletePost(Content content,BuildContext context, Organization organization)async{
+    String myUrl = '${AppConstants.DELETE_NEWS(content.id)}';
     print(myUrl);
-    ApiResponse apiResponse= await ApiHelper().ApiDeleteData(myUrl);
-    print(apiResponse.response);
-    if(apiResponse.status==200){
-      toggleMyNews(true);
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    var request = await http.delete(Uri.parse(myUrl),headers: { "Content-Type": "application/json",
+      'Authorization': 'Bearer ${token}',});
+
+    if(request.statusCode==200){
       ToastMessage.show(context, "Post deleted successfully");
-      notifyListeners();
+      getAllData(organization.id!);
     }else{
       ToastMessage.show(context, "Please try again");
     }
   }
 
-  Future<String?> pickAndUploadImage(BuildContext context) async {
 
-  }
 }

@@ -20,7 +20,6 @@ import 'package:flutter_hr_management/organization_portal/dialog/my_dialog.dart'
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
 import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/util/ResponsiveWidget.dart';
 import 'package:flutter_hr_management/organization_portal/util/color-resource.dart';
@@ -93,7 +92,7 @@ class _AllUsersState extends State<AllUsers> {
 
 
   getCircularContainer(String title, bool isSelected, int i) {
-    return Consumer<OrgProvider>(
+    return Consumer<OrgUserProvider>(
       builder: (context, model, child) => InkWell(
         onTap: () {
           setState(() {

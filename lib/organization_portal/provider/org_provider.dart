@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/constant/SharedPreferencesConstant.dart';
 import 'package:flutter_hr_management/model/branch_model.dart';
@@ -12,43 +11,34 @@ import 'package:flutter_hr_management/model/response/branch_response_model.dart'
 import 'package:flutter_hr_management/model/response/ctms_organization.dart';
 import 'package:flutter_hr_management/model/response/login_data.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
-import 'package:flutter_hr_management/organization_portal/company/load_list.dart';
-import 'package:flutter_hr_management/organization_portal/model/load_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/organization/org_quote_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/organization/search_load_list.dart';
 import 'package:flutter_hr_management/organization_portal/model/tkd_user_mobile_response.dart';
 import 'package:flutter_hr_management/organization_portal/model/userdata.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
-import 'package:flutter_hr_management/utils/constant.dart';
+import 'package:flutter_hr_management/constant/constant.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_hr_management/organization_portal/model/auth_api.dart';
-
 import 'package:flutter_hr_management/organization_portal/model/organization/org_buy_sell_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/org_full_load_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/org_pool_purchase_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization/org_static_data_model.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/pool_purchase_model.dart';
-import 'package:flutter_hr_management/organization_portal/model/truck_load_model.dart';
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pages/widget/toast.dart';
-import '../../route/app_routes.dart';
 import '../delete_user.dart';
+import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger(
+  printer: PrettyPrinter(),
+);
 
 class OrgProvider extends ChangeNotifier {
   List<Organization> orgVerifiedList = [];
   List<Organization> orgList = [];
   List<Organization> orgnization = [];
-
-  List<ConnectUser> userList = [];
-  List<ConnectUser> allUserList = [];
-  List<ConnectUser> rejectedUserList = [];
-  List<ConnectUser> approvedUserList = [];
-  List<ConnectUser> pendingUserList = [];
 
   List<OrgFullLoadModel> orgFullLoadList = [];
   List<OrgFullLoadModel> orgAllFullLoadList = [];
@@ -57,10 +47,6 @@ class OrgProvider extends ChangeNotifier {
   List<OrgFullLoadModel> orgPLAList = [];
   List<OrgFullLoadModel> orgPLRList = [];
 
-  List<OrgBuySellModel1> orgBuySellList = [];
-  List<OrgBuySellModel1> orgBuyList = [];
-  List<OrgBuySellModel1> orgSellList = [];
-  List<OrgBuySellModel1> finalBuySellList = [];
 
   List<OrgPoolPurchaseModel> orgVehicleList = [];
   List<OrgPoolPurchaseModel> orgTyreList = [];
@@ -68,6 +54,10 @@ class OrgProvider extends ChangeNotifier {
   List<OrgPoolPurchaseModel> orgFinanceList = [];
   List<OrgPoolPurchaseModel> orgInsuranceList = [];
   List<OrgPoolPurchaseModel> orgOtherList = [];
+
+  Organization? _org;
+  Organization? get org => _org;
+
 
   var response;
   int userCount = 0,
@@ -86,13 +76,105 @@ class OrgProvider extends ChangeNotifier {
   List<Branch> branchList = [];
   List<String> branchNameList = ['Shreeji'];
 
+  Future<void> getCtmsOrganization() async {
+    String token = await LocalSharePreferences()
+        .getString(SharedPreferencesConstant.AuthToken);
+    print("token::::"+token);
+    LoginDeatils currentUser =    await LocalSharePreferences().getLoginData();
+    print(currentUser.data!.firstName);
+    print("${ApiConstant.GET_CTMS_ORG}?Id=${currentUser.data!.organisationId}");
+    final response = await Dio().get(
+      "${ApiConstant.GET_CTMS_ORG}?Id=${currentUser.data!.organisationId}",
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    debugPrint(response.data.toString());
+    if(response.statusCode==200 && response.data != null ) {
+
+      final ctmsOrganizationResponse = CtmsOrganizationResponse.fromJson(
+        jsonDecode(response.data),
+      );
+
+      ctmsOrganization = ctmsOrganizationResponse.data;
+
+      if (ctmsOrganization != null) {
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.ctmsOrganizationId,
+          ctmsOrganization!.id?.toString() ?? "",
+        );
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.connectUserId,
+          ctmsOrganization!.connectUserId?.toString() ?? "",
+        );
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.connectOrganizationId,
+          ctmsOrganization!.connectOrgId?.toString() ?? "",
+        );
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.ctmsOrganization,
+          ctmsOrganization!.toString() ?? "",
+        );
+        debugPrint("Tkd OrgId::: ${ctmsOrganization!.connectOrgId}");
+        debugPrint(ctmsOrganization!.connectUserId.toString());
+        getConnectOrgDetails(ctmsOrganization!.connectOrgId!);
+      }
+    }
+  }
+
+  bool isOrgLoading = false;
+
+  /// Get company details by id
+  Future<Organization?> getConnectOrgDetails(int id) async {
+    isOrgLoading = true;
+    notifyListeners();
+    try {
+      String myUrl = AppConstants.COMPANY_BY_ID + '${id}';
+      print("GetOrg TKD Details: $myUrl");
+      final req = await http.get(Uri.parse(myUrl));
+      if (req.statusCode == 200) {
+        final parsed = json.decode(req.body);
+        print("Org Response : ${req.body}");
+        Organization organization = Organization.fromJson(parsed);
+        orgnization.add(organization);
+        _org = organization;
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.connectOrganization,
+          organization.toString() ?? "",
+        );
+
+        await LocalSharePreferences().setString(
+          SharedPreferencesConstant.connectOrganization,
+          jsonEncode(organization.toJson()),
+        );
+
+        debugPrint("✅ Organization data saved locally");
+        return organization;
+      } else {
+        debugPrint("getCompanyDetails failed: ${req.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("getCompanyDetails exception: $e");
+      return null;
+    } finally {
+      isOrgLoading = false;
+      notifyListeners();
+    }
+  }
+
+
   /// Get all branches for current user's organization
   Future<void> getAllBranch(int orgId) async {
     try {
       String token = await LocalSharePreferences()
           .getString(SharedPreferencesConstant.AuthToken);
       LoginDeatils currentUser =
-      await LocalSharePreferences.localSharePreferences.getLoginData();
+          await LocalSharePreferences.localSharePreferences.getLoginData();
       String myUrl = ApiConstant.BASE_URL +
           "api/branch/getAll?organisationId=${currentUser.data!.organisationId!}&page=0&size=10&sortDir=asc";
       print("Get All Branch : $myUrl");
@@ -116,7 +198,8 @@ class OrgProvider extends ChangeNotifier {
         }
         debugPrint("Branch List:: $branchList");
         for (var element in branchList) {
-          if (element.branchName != null) branchNameList.add(element.branchName!);
+          if (element.branchName != null)
+            branchNameList.add(element.branchName!);
         }
         debugPrint("Branch Name List:: $branchNameList");
       }
@@ -127,127 +210,18 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  void filterSearchResults(String query, String type) {
-    if (type == "User") {
-      userList.clear();
-      for (var element in allUserList) {
-        final first = element.firstName ?? '';
-        final last = element.lastName ?? '';
-        final mobile = element.mobileNumber?.toString() ?? '';
-        if (first.toLowerCase().contains(query.toLowerCase()) ||
-            last.toLowerCase().contains(query.toLowerCase()) ||
-            mobile.contains(query)) {
-          userList.add(element);
-        }
-      }
-      debugPrint('Final Users : ${userList.length}');
-      notifyListeners();
-    } else if (type == "Load") {
-      orgFullLoadList.clear();
-      for (var element in orgAllFullLoadList) {
-        final source = element.source ?? '';
-        final dest = element.destination ?? '';
-        final mobile = element.mobileNumber?.toString() ?? '';
-        if (source.toLowerCase().contains(query.toLowerCase()) ||
-            dest.toLowerCase().contains(query.toLowerCase()) ||
-            mobile.contains(query)) {
-          orgFullLoadList.add(element);
-        }
-      }
-      debugPrint('Final Load List : ${orgFullLoadList.length}');
-      notifyListeners();
-    }
-  }
-
-  bool isOrgLoading = false;
-
-  /// Get company details by id
-  Future<Organization?> getCompanyDetails(int id) async {
-    isOrgLoading = true;
-    notifyListeners();
-    try {
-      String myUrl = AppConstants.COMPANY_BY_ID + '${id}';
-      print("GetOrg TKD Details: $myUrl");
-      final req = await http.get(Uri.parse(myUrl));
-      if (req.statusCode == 200) {
-        final parsed = json.decode(req.body);
-        print("Org Response : ${req.body}");
-        Organization organizationModel = Organization.fromJson(parsed);
-        orgnization.add(organizationModel);
-        return organizationModel;
-      } else {
-        debugPrint("getCompanyDetails failed: ${req.statusCode}");
-        return null;
-      }
-    } catch (e) {
-      debugPrint("getCompanyDetails exception: $e");
-      return null;
-    } finally {
-      isOrgLoading = false;
-      notifyListeners();
-    }
-  }
 
   int? connectUserId;
   List<String> userNameList = [];
 
-  /// Get users by company id
-  Future<void> getUsersByCompanyId(int id) async {
-    try {
-      selectedTab = "All Users";
-      String myUrl = AppConstants.USER_BY_COMP_ID + '${id}';
-      print("All users by company:: $myUrl");
-      final req = await http.get(Uri.parse(myUrl));
-      print("All User response: ${req.body}");
-      final parsed = json.decode(req.body);
-      final list = AuthApi.fromJson(parsed);
-      userList.clear();
-      userList = list.content ?? [];
-      allUserList.clear();
-      allUserList.addAll(userList);
-      approvedUserList.clear();
-      pendingUserList.clear();
-      userNameList.clear();
-      rejectedUserList.clear();
-
-      // Try to get local login details once
-      LoginDeatils? localLogin;
-      try {
-        localLogin = await LocalSharePreferences.localSharePreferences.getLoginData();
-      } catch (_) {
-        localLogin = null;
-      }
-
-      for (var element in userList) {
-        userNameList.add('${element.firstName ?? ''} ${element.lastName ?? ''}');
-        if (localLogin?.data?.contact != null &&
-            element.mobileNumber == localLogin!.data!.contact) {
-          connectUserId = element.id;
-        }
-        if (element.isUserVerifiedByCompany == 1) {
-          approvedUserList.add(element);
-        } else if (element.isUserVerifiedByCompany == 0) {
-          rejectedUserList.add(element);
-        } else {
-          pendingUserList.add(element);
-        }
-      }
-      userCount = userList.length;
-    } catch (e) {
-      debugPrint("getUsersByCompanyId error: $e");
-    } finally {
-      notifyListeners();
-    }
-  }
-
   LoginDeatils? loginDeatils;
   CtmsOrganization? ctmsOrganization;
 
-  /// Get CTMS organization details and save connect ids to preferences
+ /* /// Get CTMS organization details and save connect ids to preferences
   Future<void> getCtmsOrganization() async {
     try {
       loginDeatils =
-      await LocalSharePreferences.localSharePreferences.getLoginData();
+          await LocalSharePreferences.localSharePreferences.getLoginData();
       final dio = Dio();
       String token = await LocalSharePreferences()
           .getString(SharedPreferencesConstant.AuthToken);
@@ -259,9 +233,10 @@ class OrgProvider extends ChangeNotifier {
             'Authorization': 'Bearer $token',
           }));
       debugPrint(response.data.toString());
-      final parsed = response.data is String ? jsonDecode(response.data) : response.data;
+      final parsed =
+          response.data is String ? jsonDecode(response.data) : response.data;
       CtmsOrganizationResponse ctmsOrganizationResponse =
-      CtmsOrganizationResponse.fromJson(parsed);
+          CtmsOrganizationResponse.fromJson(parsed);
       ctmsOrganization = ctmsOrganizationResponse.data;
       if (ctmsOrganization != null) {
         await LocalSharePreferences().setString(
@@ -271,14 +246,14 @@ class OrgProvider extends ChangeNotifier {
             SharedPreferencesConstant.connectUserId,
             ctmsOrganization!.connectUserId?.toString() ?? '');
         debugPrint("Connect Org Id:::" +
-            (await LocalSharePreferences().getString(
-                SharedPreferencesConstant.connectOrganizationId)));
+            (await LocalSharePreferences()
+                .getString(SharedPreferencesConstant.connectOrganizationId)));
         debugPrint(ctmsOrganization!.connectUserId?.toString() ?? '');
       }
     } catch (e) {
       debugPrint("getCtmsOrganization error: $e");
     }
-  }
+  }*/
 
   ConnectUser? connectUser;
 
@@ -304,12 +279,12 @@ class OrgProvider extends ChangeNotifier {
     return req;
   }
 
-  /// Get organization details using saved connectOrganizationId
+ /* /// Get organization details using saved connectOrganizationId
   Future<Organization?> getOrgDetails() async {
     try {
       final connectIdStr = await LocalSharePreferences()
           .getString(SharedPreferencesConstant.connectOrganizationId);
-      final orgId = int.tryParse(connectIdStr ?? '');
+      final orgId = int.tryParse(connectIdStr);
       debugPrint(
           "TKDORGID:::::::::::::::::::::::::::::::::::::::::::::::::::::::: $orgId");
       if (orgId == null) return null;
@@ -318,7 +293,7 @@ class OrgProvider extends ChangeNotifier {
         debugPrint(organization.companyName ?? '');
       }
       loginDeatils =
-      await LocalSharePreferences.localSharePreferences.getLoginData();
+          await LocalSharePreferences.localSharePreferences.getLoginData();
       notifyListeners();
       return organization;
     } catch (e) {
@@ -327,33 +302,17 @@ class OrgProvider extends ChangeNotifier {
       return null;
     }
   }
+*/
 
-  void getUserList(String title) {
-    userList.clear();
-    if (title == "All Users") {
-      userList.addAll(allUserList);
-      notifyListeners();
-    }
-    if (title == "Approved") {
-      userList.addAll(approvedUserList);
-      notifyListeners();
-    }
-    if (title == "Rejected") {
-      userList.addAll(rejectedUserList);
-      notifyListeners();
-    }
-    if (title == "Pending") {
-      userList.addAll(pendingUserList);
-      notifyListeners();
-    }
-  }
-
-  String selectedBuySellTab = "Buy a Vehicle";
-  String selectedTab = "All Users";
+  String selectedBuySellTab = "Buy Vehicle";
 
   /// Get static organization statistics
   Future<void> getStaticData(int id) async {
     isLoading = true;
+    userCount =0 ;
+    fullLoadPostCount =0 ;
+    bidCont =0 ;
+    buySellPostCount =0 ;
     notifyListeners();
     try {
       String myUrl = AppConstants.get_Static_Data + "${id}";
@@ -377,99 +336,148 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  /// Get buy/sell posts by organization id
-  Future<void> getBuyVehicles(int id) async {
+  List<ConnectUser> userList = [];
+
+  Future<void> getUsersByCompanyId(int id) async {
+    loginDeatils =
+        await LocalSharePreferences.localSharePreferences.getLoginData();
     try {
-      String myUrl = AppConstants.get_Buy_Sell_Vehicles + "${id}";
-      selectedBuySellTab = "Buy a Vehicle";
-      print("Get BuySell Data By OrgId - $myUrl");
+      String myUrl = AppConstants.USER_BY_COMP_ID + '${id}';
+      print("All users by company:: $myUrl");
       final req = await http.get(Uri.parse(myUrl));
+      print("All User response: ${req.body}");
       final parsed = json.decode(req.body);
-      debugPrint(parsed.toString());
-      if (req.statusCode == 200) {
-        orgBuySellList.clear();
-        final buySellModel = BuySellModel.fromJson(parsed);
-        orgBuySellList.addAll(buySellModel.data ?? []);
-        orgBuyList.clear();
-        orgSellList.clear();
-        finalBuySellList.clear();
-        buySellPostCount = orgBuySellList.length;
-        for (var element in orgBuySellList) {
-          final typeField = element.type ?? element.type ?? '';
-          if (typeField.toLowerCase().contains("buy")) {
-            orgBuyList.add(element);
-          } else {
-            orgSellList.add(element);
+      final list = AuthApi.fromJson(parsed);
+      userList.clear();
+      userList = list.content ?? [];
+
+      userNameList.clear();
+
+      // Try to get local login details once
+      LoginDeatils? localLogin;
+      try {
+        localLogin =
+            await LocalSharePreferences.localSharePreferences.getLoginData();
+      } catch (_) {
+        localLogin = null;
+      }
+
+      for (var element in userList) {
+        if (element.isUserVerifiedByCompany == 1) {
+          userNameList
+              .add('${element.firstName ?? ''} ${element.lastName ?? ''}');
+          if (localLogin?.data?.contact != null &&
+              element.mobileNumber == localLogin!.data!.contact) {
+            connectUserId = element.id;
           }
-        }
-        // If selectedBuySellTab contains 'Buy' show buy list else show sell
-        if (selectedBuySellTab.toLowerCase().contains("buy")) {
-          finalBuySellList.addAll(orgBuyList);
-        } else {
-          finalBuySellList.addAll(orgSellList);
         }
       }
     } catch (e) {
-      debugPrint("getBuyVehicles error: $e");
+      debugPrint("getUsersByCompanyId error: $e");
     } finally {
       notifyListeners();
     }
   }
 
-  void getFinalBuySellList(String title) {
-    selectedBuySellTab = title;
-    finalBuySellList.clear();
-    if (selectedBuySellTab == "Buy a Vehicle") {
-      finalBuySellList.addAll(orgBuyList);
-    } else {
-      finalBuySellList.addAll(orgSellList);
+  void filterSearchResults(String query, String type) {
+    orgFullLoadList.clear();
+    for (var element in orgAllFullLoadList) {
+      final source = element.source ?? '';
+      final dest = element.destination ?? '';
+      final mobile = element.mobileNumber?.toString() ?? '';
+      if (source.toLowerCase().contains(query.toLowerCase()) ||
+          dest.toLowerCase().contains(query.toLowerCase()) ||
+          mobile.contains(query)) {
+        orgFullLoadList.add(element);
+      }
     }
-    debugPrint("$selectedBuySellTab List ${finalBuySellList.length}");
+    debugPrint('Final Load List : ${orgFullLoadList.length}');
     notifyListeners();
   }
 
-  /// Get full load list for organization
-  Future<void> getOrgFullLoadList(int id) async {
-    try {
-      isLoading = true;
-      String myUrl = AppConstants.get_Org_FullLoadList + "${id}";
-      print("Get All Load Truck Data Url - $myUrl");
-      final req = await http.get(Uri.parse(myUrl));
-      print("Get All Load Truck Data Response- ${req.body}");
-      final parsed = json.decode(req.body);
-      debugPrint(parsed.toString());
-      if (req.statusCode == 200) {
-        final fullLoadModel = FullLoadModel.fromJson(parsed);
-        orgFullLoadList = fullLoadModel.data ?? [];
+  bool isPaginationLoading = false;
+
+
+    Future<void> getOrgFullLoadList(int id, {required int currentPage}) async {
+      if (currentPage == 0) {
         orgAllFullLoadList.clear();
-        orgAllFullLoadList.addAll(orgFullLoadList);
-        allPostCount = orgAllFullLoadList.length;
-        orgFLAList.clear();
-        orgFLRList.clear();
-        orgPLAList.clear();
-        orgPLRList.clear();
-        for (var element in orgFullLoadList) {
-          final tag = element.mainTag ?? '';
-          if (tag.toLowerCase() == "full load available") {
-            orgFLAList.add(element);
-          } else if (tag.toLowerCase() == "full load required") {
-            orgFLRList.add(element);
-          } else if (tag.toLowerCase() == "part load available") {
-            orgPLAList.add(element);
-          } else {
-            orgPLRList.add(element);
-          }
-        }
-        fullLoadCount = orgFLRList.length + orgFLAList.length;
-        partLoadCount = orgPLRList.length + orgPLAList.length;
+        orgFullLoadList.clear();
+        isLoading = true;
+      } else {
+        isPaginationLoading = true;
       }
-    } catch (e) {
-      debugPrint("getOrgFullLoadList error: $e");
-    } finally {
-      isLoading = false;
+      notifyListeners();
+
+      try {
+        final myUrl =
+            "${AppConstants.get_Org_FullLoadList}?companyId=$id&page=$currentPage&size=10&latestPost=yes";
+
+        logger.i("🌍 Fetching Load Data: $myUrl");
+        print("🌍 Fetching Load Data: $myUrl");
+        final req = await http.get(Uri.parse(myUrl));
+        logger.i("Status: ${req.statusCode}");
+        logger.i("Body: ${req.body}");
+        print("Body: ${req.body}");
+        if (req.statusCode == 200 && req.body.isNotEmpty) {
+          try {
+            final parsed = json.decode(req.body);
+
+            final fullLoadModel = FullLoadModel.fromJson(parsed);
+            print("🌍 JSON parsed successfully"+fullLoadModel.content!.length.toString());
+            print("🌍 JSON parsed successfully");
+            if (currentPage == 0) {
+              orgFullLoadList.clear();
+                orgFullLoadList.addAll(fullLoadModel.content ?? []);
+            } else {
+              orgFullLoadList.addAll(fullLoadModel.content ?? []);
+            }
+
+            orgAllFullLoadList.clear();
+            orgAllFullLoadList.addAll(orgFullLoadList);
+
+            allPostCount = orgAllFullLoadList.length;
+            print('allPostCount : $allPostCount');
+            // 🔹 Rebuild category lists
+            orgFLAList
+              ..clear()
+              ..addAll(orgAllFullLoadList.where(
+                      (e) => (e.mainTag ?? '').toLowerCase() == "full load available"));
+
+            orgFLRList
+              ..clear()
+              ..addAll(orgAllFullLoadList.where(
+                      (e) => (e.mainTag ?? '').toLowerCase() == "full load required"));
+
+            orgPLAList
+              ..clear()
+              ..addAll(orgAllFullLoadList.where(
+                      (e) => (e.mainTag ?? '').toLowerCase() == "part load available"));
+
+            orgPLRList
+              ..clear()
+              ..addAll(orgAllFullLoadList.where(
+                      (e) => (e.mainTag ?? '').toLowerCase() == "part load required"));
+
+            print("✅ Total items in to full load: $allPostCount");
+          } catch (e, st) {
+            print("❌ JSON parse error to full load: $e\n$st");
+          }
+        } else {
+          print("❌ API Failed to full load: ${req.statusCode} ${req.reasonPhrase}");
+        }
+      } catch (e, st) {
+        print("❌ Network error to full load: $e\n$st");
+      } finally {
+        print('finally block to full load');
+        isLoading = false;
+        isPaginationLoading = false;
+        notifyListeners();
+      }
+      notifyListeners();
       notifyListeners();
     }
-  }
+
+
 
 
 
@@ -478,7 +486,6 @@ class OrgProvider extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-
       orgFullLoadList.clear();
 
       final url =
@@ -489,14 +496,15 @@ class OrgProvider extends ChangeNotifier {
       print("Get All Load Truck By Branch Response - ${response.body}");
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);
-        debugPrint(parsed.toString());
+        //debugPrint(parsed.toString());
 
         final fullLoadModel = FullLoadModel.fromJson(parsed);
 
-        if (fullLoadModel.success == true) {
-          orgFullLoadList.addAll(fullLoadModel.data ?? []);
+        if (fullLoadModel.content != null) {
+          debugPrint(fullLoadModel.content!.length.toString());
+          orgFullLoadList.addAll(fullLoadModel.content ?? []);
         } else {
-          debugPrint("getOrgFullLoadListByBranch: ${fullLoadModel.message}");
+          debugPrint("getOrgFullLoadListByBranch: ${fullLoadModel.numberOfElements}");
           orgFullLoadList.clear();
         }
       } else {
@@ -511,7 +519,6 @@ class OrgProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   /// Get full load by employee (userId)
   Future<void> getOrgFullLoadListByEmployee(int id, int userId) async {
@@ -528,18 +535,19 @@ class OrgProvider extends ChangeNotifier {
       print("Get All Load Truck Data By UserName Response - ${response.body}");
       if (response.statusCode == 200) {
         final parsed = json.decode(response.body);
-        debugPrint(parsed.toString());
+      //  debugPrint(parsed.toString());
 
         final fullLoadModel = FullLoadModel.fromJson(parsed);
-
-        if (fullLoadModel.success == true) {
-          orgFullLoadList.addAll(fullLoadModel.data ?? []);
+        debugPrint(fullLoadModel.content!.length.toString());
+        if (fullLoadModel.content != null) {
+          orgFullLoadList.addAll(fullLoadModel.content ?? []);
         } else {
-          debugPrint("getOrgFullLoadListByEmployee: ${fullLoadModel.message}");
+          debugPrint("getOrgFullLoadListByEmployee: ${fullLoadModel.numberOfElements}");
           orgFullLoadList.clear();
         }
       } else {
-        debugPrint("getOrgFullLoadListByEmployee error: ${response.statusCode}");
+        debugPrint(
+            "getOrgFullLoadListByEmployee error: ${response.statusCode}");
         orgFullLoadList.clear();
       }
     } catch (e) {
@@ -551,8 +559,7 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-
-  void getFilterFullLoadList(String title) {
+  getFilterFullLoadList(String title) {
     orgFullLoadList.clear();
     if (title == "All Loads") {
       orgFullLoadList.addAll(orgAllFullLoadList);
@@ -581,7 +588,8 @@ class OrgProvider extends ChangeNotifier {
   }
 
   /// Search loads by source/destination
-  Future<void> getSearchByNameList(int id, String name, String source, String dest) async {
+  Future<void> getSearchByNameList(
+      int id, String name, String source, String dest) async {
     try {
       isLoading = true;
       notifyListeners();
@@ -600,32 +608,31 @@ class OrgProvider extends ChangeNotifier {
 
         final fullLoadModel = FullLoadModel.fromJson(parsed);
 
-        if (fullLoadModel.success == true) {
-          orgFullLoadList = fullLoadModel.data ?? [];
+        if (fullLoadModel.content != null) {
+          orgFullLoadList = fullLoadModel.content ?? [];
 
-          orgAllFullLoadList
+         /* orgAllFullLoadList
             ..clear()
-            ..addAll(orgFullLoadList);
+            ..addAll(orgFullLoadList);*/
         } else {
-          debugPrint("getSearchByNameList: ${fullLoadModel.message}");
+          debugPrint("getSearchByNameList: ${fullLoadModel.numberOfElements}");
           orgFullLoadList.clear();
-          orgAllFullLoadList.clear();
+         // orgAllFullLoadList.clear();
         }
       } else {
         debugPrint("getSearchByNameList error: ${response.statusCode}");
         orgFullLoadList.clear();
-        orgAllFullLoadList.clear();
+      //  orgAllFullLoadList.clear();
       }
     } catch (e) {
       debugPrint("getSearchByNameList error: $e");
       orgFullLoadList.clear();
-      orgAllFullLoadList.clear();
+     // orgAllFullLoadList.clear();
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
-
 
   /// Delete full load
   Future<void> deleteFullLoad(OrgFullLoadModel truckLoad) async {
@@ -642,22 +649,6 @@ class OrgProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  /// Delete buy/sell post
-  Future<void> deleteBuySell(OrgBuySellModel truckLoad) async {
-    try {
-      String myUrl = AppConstants.POST_BUY_SELL + '?id=${truckLoad.id}';
-      final req = await http.delete(Uri.parse(myUrl));
-      final deleteResponse = json.decode(req.body);
-      debugPrint(deleteResponse.toString());
-      orgBuySellList.removeWhere((e) => e.id == truckLoad.id);
-    } catch (e) {
-      debugPrint("deleteBuySell error: $e");
-    } finally {
-      notifyListeners();
-    }
-  }
-
 
 
 
@@ -693,13 +684,15 @@ class OrgProvider extends ChangeNotifier {
         return null;
       }
 
-      request.files.add(http.MultipartFile("profilePicture", stream, objectFile.size,
+      request.files.add(http.MultipartFile(
+          "profilePicture", stream, objectFile.size,
           filename: objectFile.name));
 
       request.headers.addAll(headers);
       final streamedResponse = await request.send();
       debugPrint(streamedResponse.statusCode.toString());
-      final bodyString = await streamedResponse.stream.transform(utf8.decoder).join();
+      final bodyString =
+          await streamedResponse.stream.transform(utf8.decoder).join();
       debugPrint(bodyString);
       uploadedDocs = bodyString;
       return uploadedDocs;
@@ -709,63 +702,31 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  sendOtp(String mobileNumber,BuildContext context)async{
-      ApiHelper apiHelper=ApiHelper();
-      var response= await apiHelper.apiGet(AppConstants.USER_FIND_BY_MOBILE(mobileNumber));
 
-      if(response.status==200){
-        DeleteUser deleteUser=DeleteUser.fromJson(response.response);
-        callSwitch(deleteUser,context,mobileNumber);
-      }else{
-        ToastMessage.show(context, " Please try again ");
-      }
-    }
-
-  void callSwitch(DeleteUser user,BuildContext context,String mobileNumber) {
-    switch (user.errorCode){
-      case '200':
-        callOtp(context,mobileNumber);
-        break;
-      case '201':
-        ToastMessage.show(context, "User is deleted please register again");
-        break;
-      case '500':
-        ToastMessage.show(context, "Mobile number is not register please register");
-        break;
-    }
-  }
-
-  void callOtp(BuildContext context, String mobileNumber) async {
-    var req = await ApiHelper().apiPost(AppConstants.SEND_OTP(mobileNumber));
-
-    if (req.status == 200) {
-      ToastMessage.show(context, "OTP sent successfully");
-
-    } else {
-      ToastMessage.show(context, "Please try again");
-    }
-
+ void setOrg(Organization organization) {
+    _org = organization;
     notifyListeners();
   }
 
-  verifyOtp(BuildContext context,String mobileNumber,String otp) async{
-    String myUrl = AppConstants.OTP_VERIFICATION(mobileNumber,otp);
-    var req = await ApiHelper().apiPost(myUrl);
-    if(req.status== 200){
-      User user=User.fromJson(req.response);
-      if(user.content!.isNotEmpty){
-        ToastMessage.show(context,"${user.content!.first.firstName} ${user.content!.first.lastName} added successfully to our organization");
-      }else{
-        ToastMessage.show(context,"Please try again");
+  /// ✅ Load organization data from SharedPreferences
+  Future<void> loadOrgFromLocal() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final data = prefs.getString(SharedPreferencesConstant.connectOrganization);
+      if (data != null && data != "null" && data.isNotEmpty) {
+        _org = Organization.fromJson(jsonDecode(data));
+        notifyListeners();
       }
-      notifyListeners();
-
-    }else{
-      ToastMessage.show(context,"Please try again");
+    } catch (e) {
+      debugPrint("❌ Error loading org from local: $e");
     }
+  }
 
+  /// ✅ Clear org data when user logs out
+  Future<void> clearOrg() async {
+    _org = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(SharedPreferencesConstant.connectOrganization);
+    notifyListeners();
   }
 }
-
-
-

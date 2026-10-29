@@ -5,9 +5,7 @@ import 'package:flutter_hr_management/advertise_portal/edit_adv.dart';
 import 'package:flutter_hr_management/advertise_portal/my_advertise_page.dart';
 import 'package:flutter_hr_management/advertise_portal/save_advertise_page.dart';
 import 'package:flutter_hr_management/entry_screen.dart';
-
 import 'package:flutter_hr_management/pages/customerdeatils/customer_dashboard.dart';
-import 'package:flutter_hr_management/pages/customerdeatils/customer_list.dart';
 import 'package:flutter_hr_management/pages/home_page.dart';
 import 'package:flutter_hr_management/pages/leaddeatils/short_lead_dashboard.dart';
 import 'package:flutter_hr_management/pages/meeting/meetingdashbord.dart';

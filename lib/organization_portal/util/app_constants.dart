@@ -9,8 +9,8 @@ import '../model/auth_api.dart';
 class AppConstants {
 
   static final String APP_VERSION="2.0.6";
-  static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
-  //static String BASE_URL = "http://ec2-13-200-229-164.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
+ static String BASE_URL = "https://api.tkdost.com/tkd2/api/"; //Production Url
+ //static String BASE_URL = "http://ec2-13-200-229-164.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
 // static String BASE_URL = "http://ec2-35-154-166-48.ap-south-1.compute.amazonaws.com:8080/tkd2/api/"; //Test Url
   static String LOGIN = BASE_URL + "authLogin/emailId";
   static String REGISTRATION = BASE_URL + "companyRegistration";
@@ -94,13 +94,14 @@ class AppConstants {
   static String get_TkdUser_By_Mobile =  BASE_URL + '/getByMobileNumber?mobileNumber=';
   static String get_Static_Data =  BASE_URL + 'fullTruckStatistics?companyId=';
   static String get_Received_QuoteList =  BASE_URL + 'getOwnPostAndBidByCompanyId?companyId=';
-  static String get_Placed_QuoteList =  BASE_URL + 'getBidderPostAndBidByCompanyId?companyId=';
+  static String get_Placed_QuoteList =  BASE_URL + 'getBidderPostAndBidByCompanyId2?companyId=';
   static String get_Placed_QuoteList_ByDate =  BASE_URL + 'getBidderPostAndBidByCompanyIdWithDateFilter?companyId=';
+  static String get_Received_QuoteList_ByDate =  BASE_URL + 'getOwnPostAndBidByCompanyIdWithDateFilter?companyId=';
   static String get_Buy_Sell_Vehicles =  BASE_URL + 'GetbuysellcompanyId?company_id=';
-  static String get_Org_FullLoadList =  BASE_URL + 'getFullLoadByCompanyIdForMonitoring?companyId=';
-  static String get_Org_FullLoadList_ByBranch =  BASE_URL + 'GetFullLoadByCompanyIdAndBranchName?companyId=';
+  static String get_Org_FullLoadList =  BASE_URL + 'getFullLoadByCompanyIdForMonitoring';
+  static String get_Org_FullLoadList_ByBranch =  BASE_URL + 'GetFullLoadByCompanyIdAndBranchName/pagination?companyId=';
   static String get_Org_FullLoadList_ByEmployee =  BASE_URL + 'getFullLoadByUserIdForMonitoring?userId=';
-  static String get_Search_ByNameList =  BASE_URL + '/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=';
+  static String get_Search_ByNameList =  BASE_URL + 'getFullTRuckLoadOfUsersBasedOnSourceAndDesination/pagination?source=';
   static String get_Org_PoolPurchaseList =  BASE_URL + 'getBulkBuySell/ForOrganisation?organizationId=';
   static String delete_FullLoad =  BASE_URL + 'fullTruckLoad?id=';
   static String SEND_OTP(mobile) => "${BASE_URL}sendOtp?mobileNos=$mobile";
@@ -108,7 +109,13 @@ class AppConstants {
   static String USER_FIND_BY_MOBILE(mobile) =>
       "${BASE_URL}DeleteUser/getByMobileNumber?mobileNumber=$mobile";
 
-
+ static String GET_NEWS_LIST(id, text)=> "${BASE_URL}byCompanyId?companyId=$id&keyword=$text";
+ static String MY_NEWS(id, page) => "${BASE_URL}Gallery/byUserId?userId=$id&page=$page&size=1000";
+ static String ADD_NEWS= "${BASE_URL}Gallery";
+ static String DELETE_NEWS(id) => "${BASE_URL}Gallery?id=$id";
+ static String SEARCH_NEWS(char) => "${BASE_URL}Gallery/searchByAnyKey?key=$char&page=0&size=100";
+ static String USER_STATUS(userId,status) => "${BASE_URL}verifyUser?userId=$userId&status=$status";
+ static String ACCEPTBID="${BASE_URL}acceptedBid/save";
 
   static List<LanguageModel> languages = [
     LanguageModel(imageUrl: '', languageName: 'English', countryCode: 'US', languageCode: 'en',isSelected: true),
