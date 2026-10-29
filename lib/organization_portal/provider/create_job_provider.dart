@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hr_management/generated/l10n.dart';
 import 'package:flutter_hr_management/model/api_response.dart';
 import 'package:flutter_hr_management/network/api_helper.dart';
-import 'package:flutter_hr_management/organization_portal/company/jobs/experience_screen.dart';
+
 import 'package:flutter_hr_management/organization_portal/model/userdata.dart';
 
 import 'package:flutter_hr_management/organization_portal/util/app_constants.dart';

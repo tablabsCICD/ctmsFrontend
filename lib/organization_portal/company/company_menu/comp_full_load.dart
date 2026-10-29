@@ -23,11 +23,7 @@ import 'package:flutter_hr_management/organization_portal/dialog/my_dialog.dart'
 import 'package:flutter_hr_management/organization_portal/dialog/share_dialog_box.dart';
 import 'package:flutter_hr_management/locator.dart';
 import 'package:flutter_hr_management/organization_portal/model/organization_model.dart';
-import 'package:flutter_hr_management/organization_portal/multi_select.dart';
-import 'package:flutter_hr_management/organization_portal/open_whatsapp.dart';
-import 'package:flutter_hr_management/organization_portal/provider/auth_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/bid_provider.dart';
-import 'package:flutter_hr_management/organization_portal/provider/dashboard_provider.dart';
+
 import 'package:flutter_hr_management/organization_portal/provider/org_provider.dart';
 import 'package:flutter_hr_management/organization_portal/share_data.dart';
 
@@ -54,11 +50,9 @@ import 'package:flutter_hr_management/organization_portal/util/date_converter.da
 import 'package:flutter_hr_management/organization_portal/util/star_display.dart';
 
 class LoadScreen extends StatefulWidget {
-  final dashboardProvider = locator<OrgProvider>();
-  final buySellProvider = locator<OrgProvider>();
+
   Organization organization;
   LoadScreen(this.organization,{Key? key}) : super(key: key) {
-    //dashboardProvider.getOrgFullLoadList(organization.id!);
   }
 
 
@@ -96,36 +90,17 @@ class CompLoadScreen extends StatefulWidget {
 }
 
 class _CompLoadScreenState extends State<CompLoadScreen> {
-  final bidProvider = locator<BidProvider>();
-  final authProvider = locator<AuthProvider>();
   final orgProvider = locator<OrgProvider>();
-  TextEditingController bidAmtController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController sourceController = TextEditingController();
-  TextEditingController destinationController = TextEditingController();
-  TextEditingController filterController = TextEditingController();
-  int counter = 0;
-  var selectedPageNumber = 1;
-  final dashboardProvider = locator<DashboardProvider>();
-  ScrollController _scrollController = ScrollController();
-  String? selectedFromCity = '',selectedToCity = "";
+
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        dashboardProvider.getFullLoadTruckList(currentPage: selectedPageNumber);
-        selectedPageNumber++;
-      }
-    });
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
         key: _scaffoldKey,
         drawer: CompanySideBar(),
@@ -156,97 +131,9 @@ class _CompLoadScreenState extends State<CompLoadScreen> {
                 ),
               ],
             ),
-           /* if (ResponsiveWidget.isDesktop(context)) Positioned(
-              top: 105.h,
-              left: 265.w,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
-                },
-                child: SvgPicture.asset(
-                  "assets/back_button.svg",
-                  height: 80.h,
-                  width: 80.w,
-                ),
-              ),
-            ) else SizedBox.shrink(),*/
           ],
         ));
-
-
   }
 
-  Set<int>? selectedValues = [1, 2, 3, 4, 5].toSet();
 
-  void _showMultiSelect(BuildContext context) async {
-    final items = <MultiSelectDialogItem<int>>[
-      MultiSelectDialogItem(1, 'All Requirements'),
-      MultiSelectDialogItem(2, 'Required - Full load vehicle'),
-      MultiSelectDialogItem(3, 'Required - Part load vehicle'),
-      MultiSelectDialogItem(4, 'Available - Full load vehicle'),
-      MultiSelectDialogItem(5, 'Available - Part load vehicle'),
-    ];
-
-    selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-          initialSelectedValues: selectedValues,
-        );
-      },
-    );
-    print(selectedValues!.length);
-    print(selectedValues);
-  }
-
-  String getText(Set<int>? selectedValues) {
-    int count = selectedValues!.length;
-    String message = getTranslated('all_requirements', context)!;
-    if (count == 5)
-      return message;
-    else
-      return '${count} ' + getTranslated('requirements_selected', context)!;
-  }
-
-  var selectedTab = 'All Loads';
-  late List<int> selectedValuesList = <int>[];
-
-  getCircularContainer(String title, bool isSelected,int i) {
-    return Consumer<OrgProvider>(
-      builder: (context, model, child) =>InkWell(
-        onTap: (){
-          setState(() {
-            selectedTab = title;
-            model.getFilterFullLoadList(title);
-          });
-        },
-        child: Card(
-          margin: EdgeInsets.symmetric(horizontal: 2.7),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Container(
-            height: 30,
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(vertical: 8,horizontal: 20),
-            child: CustomText(title,style: Style.filterHeading,textAlign: TextAlign.center,),
-            decoration: BoxDecoration(
-              color: isSelected? Colors.white :Color(0xffe6e0d7),
-              border: isSelected? null : Border.all(color: Color(0xffd1ccc4)),
-              borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  offset: Offset(0, 0),
-                  blurRadius: 5,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
