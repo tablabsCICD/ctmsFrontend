@@ -112,7 +112,7 @@ class _ShareDialogBoxState extends State<ShareDialogBox> {
                         iconName: "GooglePlus"
                       ),
                       buildSocialButton(
-                          icon: FontAwesomeIcons.facebookSquare,
+                          icon: FontAwesomeIcons.squareFacebook,
                           color:Colors.blue,
                           onClicked: ()=>shareSocialMedia(widget.loadTypeList,SocialMedia.facebook),
                           iconName : "Facebook"
@@ -161,7 +161,7 @@ class _ShareDialogBoxState extends State<ShareDialogBox> {
     );
   }
 
-  Widget buildSocialButton({required IconData icon,Color? color,required VoidCallback onClicked, required String iconName}){
+  Widget buildSocialButton({required dynamic icon,Color? color,required VoidCallback onClicked, required String iconName}){
     return InkWell(
       onTap: (){
         onClicked();
@@ -173,7 +173,9 @@ class _ShareDialogBoxState extends State<ShareDialogBox> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-              child: FaIcon(icon,color: color,size:40),
+              child: icon is FaIconData
+                  ? FaIcon(icon, color: color, size: 40)
+                  : Icon(icon as IconData, color: color, size: 40),
             ),
             Text(iconName),
           ],

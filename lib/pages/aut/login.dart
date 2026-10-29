@@ -3,7 +3,6 @@ import 'package:flutter_hr_management/common/app_responsive.dart';
 import 'package:flutter_hr_management/pages/widget/show_toast.dart';
 import 'package:flutter_hr_management/utils/sharepreferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -221,7 +220,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreen extends State<LoginScreen> {
-  final CarouselController _controller = CarouselController();
+  final CarouselSliderController _controller = CarouselSliderController();
   List<Onboarding> imageList = [
     Onboarding("assets/images/img1.svg", 'Welcome Back!',
         'Welcome back to the best. We are\nalways here, waiting for you!'),

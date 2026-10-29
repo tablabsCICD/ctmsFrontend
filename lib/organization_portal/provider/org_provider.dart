@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -177,18 +176,16 @@ class OrgProvider extends ChangeNotifier {
 
   bool isLoad = false;
   Branch? branch;
-  List<Branch> branchList=[];
-  List<String> branchNameList=['Shreeji'];
+  List<Branch> branchList = [];
+  List<String> branchNameList = ['Shreeji'];
   Future<void> getAllBranch() async {
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    String myUrl = ApiConstant.BASE_URL +
-        "api/branch/getAll?page=0&size=10&sortDir=asc";
-    print("Get All Branch :" + myUrl
-    );
+    String myUrl =
+        ApiConstant.BASE_URL + "api/branch/getAll?page=0&size=10&sortDir=asc";
+    print("Get All Branch :" + myUrl);
     final dio = Dio();
-    final response = await dio.get(
-        myUrl,
+    final response = await dio.get(myUrl,
         options: Options(headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ${token}',
@@ -196,13 +193,13 @@ class OrgProvider extends ChangeNotifier {
     print(response.data);
     if (response.statusCode == 200) {
       BranchResponse branchResponse =
-      BranchResponse.fromJson(jsonDecode(response.data));
+          BranchResponse.fromJson(jsonDecode(response.data));
       branchNameList.clear();
       branchList.clear();
       branchList.addAll(branchResponse.data!.content as Iterable<Branch>);
       debugPrint("Branch List:: ${branchList}\n ");
       branchList.forEach((element) {
-          branchNameList.add(element.branchName!);
+        branchNameList.add(element.branchName!);
       });
       debugPrint("Branch Name List:: ${branchNameList}\n ");
     }
@@ -211,22 +208,22 @@ class OrgProvider extends ChangeNotifier {
 
   createOrg(
       {String? panCard,
-        String? tanCard,
-        String? city,
-        String? companyAddress,
-        String? cMobile,
-        String? gst,
-        String? companyName,
-        String? gst1,
-        String? typeOfRegistration,
-        String? landlineNumber,
-        int? numberOfTimesRating,
-        int? rating,
-        int? verified,
-        String? state,
-        String? offEmail,
-        String? pointName,
-        String? website}) async {
+      String? tanCard,
+      String? city,
+      String? companyAddress,
+      String? cMobile,
+      String? gst,
+      String? companyName,
+      String? gst1,
+      String? typeOfRegistration,
+      String? landlineNumber,
+      int? numberOfTimesRating,
+      int? rating,
+      int? verified,
+      String? state,
+      String? offEmail,
+      String? pointName,
+      String? website}) async {
     String myUrl = AppConstants.COMPANY;
     Uri uri = Uri.parse(myUrl);
     Map<String, dynamic> data = {
@@ -317,7 +314,7 @@ class OrgProvider extends ChangeNotifier {
     pendingUserList.clear();
     rejectedUserList.clear();
     userList.forEach((element) {
-      if(element.mobileNumber==loginDeatils!.data!.contact){
+      if (element.mobileNumber == loginDeatils!.data!.contact) {
         connectUserId = element.id;
       }
       if (element.isUserVerifiedByCompany == 1) {
@@ -336,18 +333,26 @@ class OrgProvider extends ChangeNotifier {
   CtmsOrganization? ctmsOrganization;
   getCtmsOrganization() async {
     loginDeatils =
-    await LocalSharePreferences.localSharePreferences.getLoginData();
+        await LocalSharePreferences.localSharePreferences.getLoginData();
     final dio = Dio();
     String token = await LocalSharePreferences()
         .getString(SharedPreferencesConstant.AuthToken);
-    final response = await dio.get(ApiConstant.GET_CTMS_ORG +"?Id=${loginDeatils!.data!.organisationId}",options: Options(headers:{ "Content-Type": "application/json",
-      'Authorization': 'Bearer ${token}',}));
+    final response = await dio.get(
+        ApiConstant.GET_CTMS_ORG + "?Id=${loginDeatils!.data!.organisationId}",
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ${token}',
+        }));
     print(response.data);
-    CtmsOrganizationResponse ctmsOrganizationResponse = CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
+    CtmsOrganizationResponse ctmsOrganizationResponse =
+        CtmsOrganizationResponse.fromJson(jsonDecode(response.data));
     print(ctmsOrganizationResponse.data);
     ctmsOrganization = ctmsOrganizationResponse.data;
-    LocalSharePreferences().setString(SharedPreferencesConstant.connectOrganizationId, ctmsOrganization!.connectOrgId!.toString());
-    LocalSharePreferences().setString(SharedPreferencesConstant.connectUserId, ctmsOrganization!.connectUserId!.toString());
+    LocalSharePreferences().setString(
+        SharedPreferencesConstant.connectOrganizationId,
+        ctmsOrganization!.connectOrgId!.toString());
+    LocalSharePreferences().setString(SharedPreferencesConstant.connectUserId,
+        ctmsOrganization!.connectUserId!.toString());
     print(ctmsOrganization!.connectOrgId!.toString());
     print(ctmsOrganization!.connectUserId!.toString());
     setCompanyOrgId(ctmsOrganization!.connectOrgId!);
@@ -355,7 +360,8 @@ class OrgProvider extends ChangeNotifier {
 
   getOrgDetails() async {
     getCtmsOrganization();
-    List<Organization> organization = await getCompanyDetails(ctmsOrganization!.connectOrgId!);
+    List<Organization> organization =
+        await getCompanyDetails(ctmsOrganization!.connectOrgId!);
     print(organization[0].companyName);
     setCompanyOrgId(organization[0].id!);
     notifyListeners();
@@ -386,25 +392,24 @@ class OrgProvider extends ChangeNotifier {
   String selectedBuySellTab = "Buy a Vehicle";
   String selectedTab = "All Users";
 
-
-
   getStaticData(int id) async {
     isLoading = true;
     notifyListeners();
     //String myUrl = "http://ec2-13-233-64-33.ap-south-1.compute.amazonaws.com:8080/tkd2/api/getStastitcs?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL+"fullTruckStatistics?companyId=${id}";
-     //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
+    String myUrl =
+        AppConstants.BASE_URL + "fullTruckStatistics?companyId=${id}";
+    //   "https://api.tkdost.com/tkd2/api/getStastitcs?organizationId=${id}";
     print("GET Statistics URL : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     var response = json.decode(req.body);
-    if(response['data']==''){
-
-    }else{
+    if (response['data'] == '') {
+    } else {
       var type = OrgStaticDataModel.fromJson(response);
       print(response);
       userCount = type.data!.totalCompanyRegister!;
-      fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck!+type.data!.totalLoggedUserNameWithPartLoad!;
+      fullLoadPostCount = type.data!.totalLoggedUserNameInFullTruck! +
+          type.data!.totalLoggedUserNameWithPartLoad!;
       bidCont = type.data!.totalLoggedUserNameInBiding!;
       buySellPostCount = type.data!.totalLoggedUserNameInBuySell!;
     }
@@ -413,7 +418,8 @@ class OrgProvider extends ChangeNotifier {
 
   getReceivedQuoteList(int id) async {
     isLoading = true;
-    String myUrl = AppConstants.BASE_URL+ "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
+    String myUrl = AppConstants.BASE_URL +
+        "getOwnPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
     print("Get Received Quote Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -433,7 +439,8 @@ class OrgProvider extends ChangeNotifier {
   getPlacedQuoteList(int id) async {
     isLoading = true;
 
-    String myUrl = AppConstants.BASE_URL+ "getBidderPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
+    String myUrl = AppConstants.BASE_URL +
+        "getBidderPostAndBidByCompanyId?companyId=${id}&latestPost=yes";
     print("Get Placed Quote Data by OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
@@ -457,44 +464,45 @@ class OrgProvider extends ChangeNotifier {
   getFinalQuoteList(String title, int? orgId) {
     selectedQuoteTab = title;
     orgBigingList.clear();
-    if(selectedQuoteTab=="Placed Quotes"){
+    if (selectedQuoteTab == "Placed Quotes") {
       getPlacedQuoteList(orgId!);
       orgBigingList.addAll(placedBigingList);
-    }else if(selectedQuoteTab=="Received Quotes"){
+    } else if (selectedQuoteTab == "Received Quotes") {
       getReceivedQuoteList(orgId!);
       orgBigingList.addAll(receivedBigingList);
     }
-    print(selectedQuoteTab +"List"+finalBuySellList.length.toString());
+    print(selectedQuoteTab + "List" + finalBuySellList.length.toString());
     notifyListeners();
   }
 
   getBuyVehicles(int id) async {
     // String myUrl = AppConstants.BASE_URL + "getBuySell/ForOrganisation?organizationId=${id}";
-    String myUrl = AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
-    selectedBuySellTab="Buy a Vehicle";
+    String myUrl =
+        AppConstants.BASE_URL + "GetbuysellcompanyId?company_id=${id}";
+    selectedBuySellTab = "Buy a Vehicle";
     print("Get BuySell Data By OrgId - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     final response = json.decode(req.body);
     print(response);
-    if(req.statusCode ==200) {
+    if (req.statusCode == 200) {
       orgBuySellList.clear();
       BuySellModel buySellModel = BuySellModel.fromJson(response);
       orgBuySellList.addAll(buySellModel.data!);
       orgBuyList.clear();
       orgSellList.clear();
       finalBuySellList.clear();
-     buySellPostCount = orgBuySellList.length;
-     orgBuySellList.forEach((element) {
+      buySellPostCount = orgBuySellList.length;
+      orgBuySellList.forEach((element) {
         if (element.type == "Buy a Vehicle") {
           orgBuyList.add(element);
         } else {
           orgSellList.add(element);
         }
       });
-      if(selectedBuySellTab=="Buy a Vehicle"){
+      if (selectedBuySellTab == "Buy a Vehicle") {
         finalBuySellList.addAll(orgBuyList);
-      }else{
+      } else {
         finalBuySellList.addAll(orgSellList);
       }
     }
@@ -504,12 +512,12 @@ class OrgProvider extends ChangeNotifier {
   getFinalBuySellList(String title) {
     selectedBuySellTab = title;
     finalBuySellList.clear();
-    if(selectedBuySellTab=="Buy a Vehicle"){
+    if (selectedBuySellTab == "Buy a Vehicle") {
       finalBuySellList.addAll(orgBuyList);
-    }else{
+    } else {
       finalBuySellList.addAll(orgSellList);
     }
-    print(selectedBuySellTab +"List"+finalBuySellList.length.toString());
+    print(selectedBuySellTab + "List" + finalBuySellList.length.toString());
     notifyListeners();
   }
 
@@ -517,7 +525,8 @@ class OrgProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     //String myUrl = "https://api.tkdost.com/tkd2/api/getFullLoad/ForOrganisation?organizationId=${id}";
-     String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyId?companyId=${id}";
+    String myUrl =
+        AppConstants.BASE_URL + "GetFullLoadByCompanyId?companyId=${id}";
     print("Get All Load Truck Data - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
@@ -527,7 +536,7 @@ class OrgProvider extends ChangeNotifier {
     if (req.statusCode == 200) {
       FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
       orgFullLoadList = fullLoadModel.data!;
-     /* orgFullLoadList = List<OrgFullLoadModel>.from(
+      /* orgFullLoadList = List<OrgFullLoadModel>.from(
           response.map((json) => OrgFullLoadModel.fromJson(json)));*/
       orgAllFullLoadList.clear();
       orgAllFullLoadList.addAll(orgFullLoadList);
@@ -552,11 +561,12 @@ class OrgProvider extends ChangeNotifier {
     }
   }
 
-  getOrgFullLoadListByBranch(int id,String branchName) async {
+  getOrgFullLoadListByBranch(int id, String branchName) async {
     orgFullLoadList.clear();
     isLoading = true;
     notifyListeners();
-    String myUrl = AppConstants.BASE_URL+"GetFullLoadByCompanyIdAndBranchName?companyId=${id}&branchName=${branchName}";
+    String myUrl = AppConstants.BASE_URL +
+        "GetFullLoadByCompanyIdAndBranchName?companyId=${id}&branchName=${branchName}";
     print("Get All Load Truck Data By Branch - " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     final response = json.decode(req.body);
@@ -568,8 +578,6 @@ class OrgProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-
 
   getFilterFullLoadList(String title) {
     orgFullLoadList.clear();
@@ -600,25 +608,27 @@ class OrgProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getSearchByNameList(int id,String name, String source, String dest) async {
+  getSearchByNameList(int id, String name, String source, String dest) async {
     isLoading = true;
     notifyListeners();
     orgFullLoadList.clear();
-        String myUrl = AppConstants.BASE_URL+"/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=${source}&destination=${dest}&companyId=${id}";
-    print("Get Data By Source and Destination : "+myUrl);
+    String myUrl = AppConstants.BASE_URL +
+        "/getFullTRuckLoadOfUsersBasedOnSourceAndDesination?source=${source}&destination=${dest}&companyId=${id}";
+    print("Get Data By Source and Destination : " + myUrl);
     var req = await http.get(Uri.parse(myUrl));
     isLoading = false;
     response = json.decode(req.body);
     print(response);
-    if(response['success']==false){
+    if (response['success'] == false) {
       orgAllFullLoadList = [];
-      orgFullLoadList=[];
-    }else{
-    FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
-    orgFullLoadList.clear();
-    orgFullLoadList = fullLoadModel.data!;
-    orgAllFullLoadList.clear();
-    orgAllFullLoadList.addAll(orgFullLoadList);}
+      orgFullLoadList = [];
+    } else {
+      FullLoadModel fullLoadModel = FullLoadModel.fromJson(response);
+      orgFullLoadList.clear();
+      orgFullLoadList = fullLoadModel.data!;
+      orgAllFullLoadList.clear();
+      orgAllFullLoadList.addAll(orgFullLoadList);
+    }
     notifyListeners();
   }
 
